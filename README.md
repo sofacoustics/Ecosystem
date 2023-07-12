@@ -27,6 +27,14 @@ Populate database with Laravel and Breeze default tables:
 
 	php artisan migrate
 
+Other dependencies:
+
+	composer require guzzlehttp/guzzle
+
+### Setup VSCode
+
+<https://dev.to/snakepy/how-to-debug-laravel-apps-with-laravel-apps-with-xdebuger-in-vs-code-8cp>
+
 ## Design
 
 ### Routes
