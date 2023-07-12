@@ -1,5 +1,10 @@
 # SONICOM Ecosystem in Laravel
 
+## Requirements
+
+composer
+mailpit
+
 ## Install
 
 Install Laravel
@@ -34,4 +39,8 @@ Here is a list of what sort of URLs the site will support:
 /user/logout
 /user/profile
 
-####
+#### API
+
+/api/datasets
+
+
