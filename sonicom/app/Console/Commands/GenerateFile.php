@@ -26,6 +26,8 @@ class GenerateFile extends Command
     public function handle()
     {
 			// create a file here
+			//jw:todo it is possible to add this to a queue, which might
+			//jw:todo be a good idea for longer jobs
 			$tdir=storage_path('app/public/test');
 			exec("mkdir -p $tdir");
 			exec("octave-cli octave/generate-file.m " . $tdir . "/" . $this->argument('filename'));
