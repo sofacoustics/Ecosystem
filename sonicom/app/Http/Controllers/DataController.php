@@ -30,7 +30,9 @@ class DataController extends Controller
         $this->access_token = $body['access_token'];
     } 
 
-    //
+		/*
+		 * List all datasets
+		 */
     public function index() : View
     {
         $url = "https://test.radar-service.eu/radar/api/datasets/?query=parentId:$this->workspace";
