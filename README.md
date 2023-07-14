@@ -16,12 +16,12 @@ Set .env `DB_CONNECTION=sqlite`
 Install Breeze - a minimal, simple implementation of all of Laravel's authentication features, including login, registration, password reset, email verification, and password confirmation.
 
 	composer require laravel/breeze --dev
- 
+
 	php artisan breeze:install blade
 
 Start the Vite development server to automatically recompile our CSS and refresh the browser when we make changes to our Blade templates
 
-	npm run dev 
+	npm run dev
 
 Populate database with Laravel and Breeze default tables:
 
@@ -51,4 +51,18 @@ Here is a list of what sort of URLs the site will support:
 
 /api/datasets
 
+### Commands
 
+#### app:generate-file <name>
+
+Calls an octave script which creates a file. This can be called from within a controller using Artisan::call('app:generate-file ...)
+
+## Laravel Documentation
+
+### Tinker
+
+<https://tighten.com/insights/supercharge-your-laravel-tinker-workflow/>
+
+### Menus
+
+<https://coding-lesson.com/creating-dynamic-nested-menus-in-laravel-with-relationships/>
