@@ -19,10 +19,15 @@ class MenuItemSeeder extends Seeder
        ]);
 
        MenuItem::create([
-        'title' => 'About Us',
-        'url' => 'about-us',
+        'title' => 'Data',
+        'url' => '/data',
        ]);
 
+			 MenuItem::create([
+        'title' => 'About SONICOM',
+        'url' => 'about-sonicom',
+       ]);
+/*
        $services = MenuItem::create([
         'title' => 'Services',
         'url' => '/services',
@@ -38,10 +43,11 @@ class MenuItemSeeder extends Seeder
             'url' => '/services/mobile-development',
             'parent_id' => $services->id,
         ]);
-
+ */
         MenuItem::create([
             'title' => 'Contact Us',
             'url' => '/contact-us',
         ]);
-    }
+		}
+ 
 }
