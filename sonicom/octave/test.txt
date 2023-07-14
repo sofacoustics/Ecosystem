@@ -1,0 +1,8 @@
+# Created by Octave 7.1.0, Thu Jul 13 11:30:40 2023 CEST <jw@jw-t470s>
+# name: content
+# type: sq_string
+# elements: 1
+# length: 24
+This is the test content
+
+

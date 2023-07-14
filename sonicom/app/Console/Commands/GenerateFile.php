@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+
+class GenerateFile extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'app:generate-file {filename : The file name to save to}';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Generate a file (for testing)';
+
+    /**
+     * Execute the console command.
+     */
+    public function handle()
+    {
+			// create a file here
+			$tdir=storage_path('app/public/test');
+			exec("mkdir -p $tdir");
+			exec("octave-cli octave/generate-file.m " . $tdir . "/" . $this->argument('filename'));
+    }
+}
