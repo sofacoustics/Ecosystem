@@ -98,3 +98,12 @@
         </div>
     </div>
 </nav>
+
+<!-- https://stackoverflow.com/questions/38665770/recursive-display-of-data-with-blade-laravel  /-->
+
+{{-- https://coding-lesson.com/creating-dynamic-nested-menus-in-laravel-with-relationships/ --}}
+<ul>
+    @foreach(\App\Models\MenuItem::whereNull('parent_id')->get() as $menuItem)
+        <x-menu-item :menuItem="$menuItem"/>
+    @endforeach
+</ul>
