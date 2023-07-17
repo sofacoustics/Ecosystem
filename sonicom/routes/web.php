@@ -27,6 +27,9 @@ Route::get('/dashboard', function () {
 /// DATA
 Route::resource('data', DataController::class)
 	->only(['index']);
+Route::get('about', function() {
+	return view('pages.about');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
