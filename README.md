@@ -27,38 +27,7 @@ Populate database with Laravel and Breeze default tables:
 
 	php artisan migrate
 
-Other dependencies:
-
-	composer require guzzlehttp/guzzle
-
-### Setup VSCode
-
-<https://dev.to/snakepy/how-to-debug-laravel-apps-with-laravel-apps-with-xdebuger-in-vs-code-8cp>
-
-## Design
-
-### Routes
-
-Here is a list of what sort of URLs the site will support:
-
-#### User
-
-/user/login
-/user/logout
-/user/profile
-
-#### API
-
-/api/datasets
-
-### Commands
-
-#### app:generate-file <name>
-
-Calls an octave script which creates a file. This can be called from within a controller using Artisan::call('app:generate-file ...)
-
-## Laravel Documentation
-
+Other
 ### Tinker
 
 <https://tighten.com/insights/supercharge-your-laravel-tinker-workflow/>
