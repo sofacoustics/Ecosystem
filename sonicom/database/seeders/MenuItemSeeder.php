@@ -12,11 +12,13 @@ class MenuItemSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void
-    {
+		{
+			 /*
        MenuItem::create([
         'title' => 'Home',
         'url' => '/',
-       ]);
+			 ]);
+			 */
 
        MenuItem::create([
         'title' => 'Data',
@@ -44,10 +46,12 @@ class MenuItemSeeder extends Seeder
             'parent_id' => $services->id,
         ]);
  */
+			  /*
         MenuItem::create([
             'title' => 'Contact Us',
             'url' => '/contact-us',
-        ]);
+				]);
+			  */
 		}
  
 }
