@@ -2,7 +2,8 @@
 
 ## Requirements
 
-composer
+php 8.1
+composer 2.2
 mailpit
 
 ## Install
