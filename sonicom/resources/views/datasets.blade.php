@@ -15,6 +15,3 @@
     @endif
     </ul>
 </x-app-layout>
-
-
-
