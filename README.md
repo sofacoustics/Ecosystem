@@ -8,9 +8,13 @@ mailpit
 
 ## Install
 
-Install Laravel
+Install Laravel in an empty repository
 
 	composer create-project laravel/laravel sonicom
+
+or if you have already got laravel installed, then run
+
+	composer install
 
 Set .env `DB_CONNECTION=sqlite`
 
@@ -22,6 +26,7 @@ Install Breeze - a minimal, simple implementation of all of Laravel's authentica
 
 Start the Vite development server to automatically recompile our CSS and refresh the browser when we make changes to our Blade templates
 
+	npm install
 	npm run dev
 
 Populate database with Laravel and Breeze default tables:
