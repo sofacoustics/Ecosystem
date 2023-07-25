@@ -57,3 +57,4 @@ If you are pushing to a remote git repository, the a post-receive hook should ru
 
 * composer install
 * php artisan migrate
+* php artisan db:seed
