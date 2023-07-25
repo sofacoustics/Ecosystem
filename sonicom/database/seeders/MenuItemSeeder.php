@@ -27,7 +27,7 @@ class MenuItemSeeder extends Seeder
 
 			 MenuItem::create([
         'title' => 'About SONICOM',
-        'url' => 'about-sonicom',
+        'url' => 'about',
        ]);
 /*
        $services = MenuItem::create([
