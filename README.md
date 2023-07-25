@@ -13,7 +13,6 @@ mailpit
 If you already have Laravel in a git repository, then you will need to run a few things to get the code working.
 
 
-
 ### Installing a fresh Laravel
 
 Install Laravel in an empty repository
@@ -51,3 +50,10 @@ Other
 ### Menus
 
 <https://coding-lesson.com/creating-dynamic-nested-menus-in-laravel-with-relationships/>
+
+## git
+
+If you are pushing to a remote git repository, the a post-receive hook should run:
+
+* composer install
+* php artisan migrate
