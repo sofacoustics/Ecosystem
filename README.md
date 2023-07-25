@@ -8,6 +8,14 @@ mailpit
 
 ## Install
 
+### Installing an existing Laravel
+
+If you already have Laravel in a git repository, then you will need to run a few things to get the code working.
+
+
+
+### Installing a fresh Laravel
+
 Install Laravel in an empty repository
 
 	composer create-project laravel/laravel sonicom
@@ -34,6 +42,8 @@ Populate database with Laravel and Breeze default tables:
 	php artisan migrate
 
 Other
+
+
 ### Tinker
 
 <https://tighten.com/insights/supercharge-your-laravel-tinker-workflow/>
