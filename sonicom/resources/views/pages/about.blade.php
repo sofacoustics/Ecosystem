@@ -6,4 +6,5 @@
     </x-slot>
     <p>SONICOM bla bla bla</p>
     <p>Put all your SONICOM bla bla bla here</p>
+    <p>SONICOM: Transforming Auditory-Based Social Interaction and Communication in AR/VR</p>
 </x-app-layout>
