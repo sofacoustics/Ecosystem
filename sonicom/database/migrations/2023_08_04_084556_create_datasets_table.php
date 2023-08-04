@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('datasets', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->integer('uploader_id')->unsigned();
+            $table->string('radar_id')->nullable(); // Save the RADAR id (e.g. iqcCQbvmGzYxYUne) here
+            $table->foreign('uploader_id')->references('id')->on('users');
             $table->timestamps();
         });
     }
