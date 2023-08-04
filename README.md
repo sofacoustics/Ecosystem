@@ -85,6 +85,15 @@ bla
 
 You must map the SONICOM-DATA share to storage/app/public/data
 
+## Structure
+
+### Dataset
+
+A dataset is (like for RADAR) a set of data. We use a table 'dataset' to save information about our datasets. Each dataset has a unique id and a user associated with it. The following can be used to manipulate datasets:
+
+- Dataset model
+- Dataset controller
+
 ## TODO
 
 [ ] Add 'register' entry to menu
