@@ -36,6 +36,14 @@ return [
             'throw' => false,
         ],
 
+        'data' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/data'),
+/*            'url' => env('APP_URL').'/rawdata',*/
+/*            'visibility' => 'public',*/
+            'throw' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
