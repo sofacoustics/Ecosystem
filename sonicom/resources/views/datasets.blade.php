@@ -4,7 +4,7 @@
             Datasets
         </h2>
     </x-slot>
-    <p>The following datasets are available</p>
+    <p>The following RADAR datasets are available</p>
     <ul>
     @if (isset($datasets->data))
         @foreach ($datasets->data as $dataset)
