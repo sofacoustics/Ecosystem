@@ -12,6 +12,10 @@ mailpit
 
 If you already have Laravel in a git repository, then you will need to run a few things to get the code working.
 
+- Run `npm install`
+- Run `php artisan migrate` to create database tables
+- Run `php artisan db:seed` to create menu entries
+
 
 ### Installing a fresh Laravel
 
@@ -74,3 +78,13 @@ bla
 bla
 bla
 bla
+
+## Configuration
+
+### Storage
+
+You must map the SONICOM-DATA share to storage/app/public/data
+
+## TODO
+
+[ ] Add 'register' entry to menu
