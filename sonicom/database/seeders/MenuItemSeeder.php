@@ -25,6 +25,11 @@ class MenuItemSeeder extends Seeder
         'url' => '/data',
        ]);
 
+       MenuItem::create([
+        'title' => 'Datasets',
+        'url' => '/dataset',
+       ]);
+
 			 MenuItem::create([
         'title' => 'About SONICOM',
         'url' => 'about',
