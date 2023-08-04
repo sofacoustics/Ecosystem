@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http; // guzzle
+use Illuminate\Support\Facades\Storage;
+
 
 class DataController extends Controller
 {
@@ -30,9 +32,9 @@ class DataController extends Controller
         $this->access_token = $body['access_token'];
     } 
 
-		/*
-		 * List all datasets
-		 */
+	/*
+	* List all datasets
+	*/
     public function index() : View
     {
         $url = "https://test.radar-service.eu/radar/api/datasets/?query=parentId:$this->workspace";
@@ -45,8 +47,11 @@ class DataController extends Controller
 
         $datasets = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $response->body()));
 
+        //Storage::disk('data')->put('test.txt', 'some test text written from laravel :-)');
+
         return view('datasets', [ 
             'datasets' => $datasets
         ]);
     }
+
 }
