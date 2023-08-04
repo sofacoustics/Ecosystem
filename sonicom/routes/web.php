@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DataController;
+use App\Http\Controllers\DatasetController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,9 +28,12 @@ Route::get('/dashboard', function () {
 /// DATA
 Route::resource('data', DataController::class)
 	->only(['index']);
-Route::get('about', function() {
+Route::view('/about', 'pages.about');
+/*Route::get('about', function() {
 	return view('pages.about');
 });
+*/
+Route::resource('dataset', DatasetController::class);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
