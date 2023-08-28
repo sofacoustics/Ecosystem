@@ -63,21 +63,12 @@ If you are pushing to a remote git repository, the a post-receive hook should ru
 * php artisan migrate
 * php artisan db:seed
 
+## TODO
+
+[ ] remove Chirps directory
+[ ] Add 'register' link
 
 ## Place to push stuff when testing git deployment
-
-#
-bla bla
-
-asdfasdfasd
-asdfasdf
-bla
-bla
-bla
-bla
-bla
-bla
-bla
 
 ## Configuration
 
@@ -93,7 +84,3 @@ A dataset is (like for RADAR) a set of data. We use a table 'dataset' to save in
 
 - Dataset model
 - Dataset controller
-
-## TODO
-
-[ ] Add 'register' entry to menu
