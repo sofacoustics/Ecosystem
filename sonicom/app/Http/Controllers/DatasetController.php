@@ -24,7 +24,7 @@ class DatasetController extends Controller
     public function create()
     {
         // https://pusher.com/blog/laravel-mvc-use/#controllers-creating-our-controller
-        return view('createdataset');
+        return view('dataset\create');
 
     }
 

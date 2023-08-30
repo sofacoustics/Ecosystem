@@ -16,7 +16,6 @@ If you already have Laravel in a git repository, then you will need to run a few
 - Run `php artisan migrate` to create database tables
 - Run `php artisan db:seed` to create menu entries
 
-
 ### Installing a fresh Laravel
 
 Install Laravel in an empty repository
@@ -66,9 +65,13 @@ Run
 
 In visual studio code, start a 'Listen for xdebug' session.
 
+### Windows
+
+The same as for Linux
+
 ## git
 
-If you are pushing to a remote git repository, the a post-receive hook should run:
+If you are pushing to a remote git repository, then a post-receive hook should run:
 
 * composer install
 * php artisan migrate
@@ -77,7 +80,6 @@ If you are pushing to a remote git repository, the a post-receive hook should ru
 ## TODO
 
 [ ] remove Chirps directory
-[ ] Add 'register' link
 
 ## Place to push stuff when testing git deployment
 

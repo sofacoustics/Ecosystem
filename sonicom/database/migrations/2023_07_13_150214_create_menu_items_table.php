@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('url')->nullable();
             $table->unsignedInteger('parent_id')->nullable();
+            $table->boolean('authenticated')->default(true); // set to true, if this menu item should only be accessible if user is authenticated
             $table->timestamps();
         });
     }

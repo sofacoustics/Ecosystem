@@ -125,9 +125,13 @@
 
       <div class="text-sm lg:flex-grow">
         @foreach(\App\Models\MenuItem::whereNull('parent_id')->get() as $menuItem)
-            <a href="{{$menuItem->url}}" class="block mt-4 lg:inline-block lg:mt-0 text-black-200 hover:text-black-300 mr-4">
-            {{$menuItem->title}}
-            </a>
+            @if (!Auth::check() && $menuItem->authenticated == true)
+                {{-- Do not show menu items which are restricted to authenticated users, unless they are logged in --}}
+            @else
+                <a href="{{$menuItem->url}}" class="block mt-4 lg:inline-block lg:mt-0 text-black-200 hover:text-black-300 mr-4">
+                {{$menuItem->title}}
+                </a>
+            @endif
         @endforeach
       </div>
 				<!-- Settings Dropdown -->
