@@ -55,6 +55,17 @@ Other
 
 <https://coding-lesson.com/creating-dynamic-nested-menus-in-laravel-with-relationships/>
 
+## Debugging
+
+### Linux
+
+Run
+
+	npm run dev
+	php artisan serve
+
+In visual studio code, start a 'Listen for xdebug' session.
+
 ## git
 
 If you are pushing to a remote git repository, the a post-receive hook should run:
