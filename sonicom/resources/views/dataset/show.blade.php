@@ -5,11 +5,14 @@
         </h2>
     </x-slot>
     <h1>Title: {{ $dataset->title }}</h1>
-    <p>Description: {{ $dataset->description }}</p>
+    <h2>Description: {{ $dataset->description }}</h2>
     <p>Files</p>
-    @foreach($dataset->files as $file)
+
+    @forelse($dataset->files as $file)
         - {{ $file->name }}<br>
-    @endforeach
+    @empty
+        <p>There are no files associated with this dataset</p>
+    @endforelse
 
 
     <p>Uploaded by: {{ $user->name }}<br>
