@@ -6,6 +6,12 @@
     </x-slot>
     <h1>Title: {{ $dataset->title }}</h1>
     <p>Description: {{ $dataset->description }}</p>
+    <p>Files</p>
+    @foreach($dataset->files as $file)
+        - {{ $file->name }}<br>
+    @endforeach
+
+
     <p>Uploaded by: {{ $user->name }}<br>
     Created: {{ $dataset->created_at }}<br>
     Updated: {{ $dataset->updated_at }}</p>
