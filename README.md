@@ -45,12 +45,6 @@ Populate database with Laravel and Breeze default tables:
 
 Other
 
-### Dropping a table in order to recreate/seed
-
-- Remove migration entry in 'migrations' table
-- Drop table in your sql editor of choice
-- Run migration again (php artisan migrate) which will just run those not yet in the migrations table
-- Reseed using php artisan db:seed --class=<yourclassseeder, e.g. DatasetSeeder>
 
 ### Tinker
 
@@ -103,3 +97,31 @@ A dataset is (like for RADAR) a set of data. We use a table 'dataset' to save in
 
 - Dataset model
 - Dataset controller
+
+
+## Database
+
+### Tables
+
+#### datasets
+
+Local datasets which may or may not have been uploaded to RADAR
+
+- title
+- description
+- uploader_id
+
+#### files
+
+Files associated with datasets which are cached locally.
+
+
+## Development
+
+### Modifying a table (dropping a table in order to recreate/seed)
+
+- Remove migration entry in 'migrations' table
+- Drop table in your sql editor of choice
+- Run migration again (php artisan migrate) which will just run those not yet in the migrations table
+- Reseed using php artisan db:seed --class=<yourclassseeder, e.g. DatasetSeeder>
+

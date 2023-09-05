@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\DatasetController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +48,8 @@ Route::resource('dataset', DatasetController::class);
 //Route::resource('dataset.edit', DatasetController::class)->middleware('auth');
 //Route::resource('/dataset/create', DatasetController::class)->middleware('auth');
 //Route::post('/dataset/create','ProjectController@store');
+
+Route::resource('files', FileController::class);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
