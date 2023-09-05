@@ -9,6 +9,15 @@ use App\Http\Requests\UpdateDatasetRequest;
 
 class DatasetController extends Controller
 {
+    public function __construct()
+    {
+        // https://laracasts.com/discuss/channels/general-discussion/apply-middleware-for-certain-methods?page=0
+        //$this->middleware('auth', ['only' => ['create', 'edit']]);
+        // Users must be authenticated for all functions except index and show. 
+        // Guests will be redirected to login page
+        $this->middleware('auth', ['except' => ['index', 'show']]); 
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -23,9 +32,9 @@ class DatasetController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Dataset::class);
         // https://pusher.com/blog/laravel-mvc-use/#controllers-creating-our-controller
-        return view('dataset\create');
-
+        return view('dataset.create');
     }
 
     /**
@@ -33,7 +42,9 @@ class DatasetController extends Controller
      */
     public function store(StoreDatasetRequest $request)
     {
-        //jw:todo
+        Dataset::create($request->validated()); // https://dev.to/secmohammed/laravel-form-request-tips-tricks-2p12
+
+        return redirect('dataset')->with('success', "Dataset $request->title successfully created!");
     }
 
     /**
@@ -50,7 +61,14 @@ class DatasetController extends Controller
      */
     public function edit(Dataset $dataset)
     {
+        $this->authorize($dataset);
+        //$this->authorize('update', $dataset);
+/*        if(auth()->user()->cannot('edit', $dataset)) {
+            abort(403);
+        }    
+        */
         //
+        return view('dataset.edit', [ 'dataset' => $dataset ]);
     }
 
     /**
@@ -58,7 +76,12 @@ class DatasetController extends Controller
      */
     public function update(UpdateDatasetRequest $request, Dataset $dataset)
     {
-        //
+        $this->authorize($dataset);
+        /*if($request->user()->cannot('update', $dataset)) {
+            abort(403);
+        }    */
+        $dataset->update($request->all());
+        return redirect('dataset')->with('success', 'Dataset successfully updated!');
     }
 
     /**

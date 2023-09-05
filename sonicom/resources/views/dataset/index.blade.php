@@ -4,10 +4,25 @@
             Local Datasets
         </h2>
     </x-slot>
+    @if ($message = Session::get('success'))
+        <div class="alert alert-success alert-block">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>{{ $message }}</strong>
+        </div>
+    @endif
     <p>The following local datasets are available</p>
-
+    <table class="table-auto">
+        <tr class="text-left">
+            <th>Title</th>
+        </tr>
     @foreach ($allDatasets as $dataset)
-        <p><a class="underline" href="/dataset/{{ $dataset->id }}">{{ $dataset->title }}</a></p>
+        <tr>
+            <td><a class="btn btn-primary" href="{{ route('dataset.show', $dataset->id) }}">{{ $dataset->title }}</a>
+                @if ($dataset->uploader_id == Auth::id())
+                (<a class="btn btn-primary" href="{{ route('dataset.edit',$dataset->id) }}">Edit</a>)
+                @endif
+            </td>
+        </tr>
     @endforeach
+    </table>
 </x-app-layout>
-

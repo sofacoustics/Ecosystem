@@ -11,7 +11,7 @@ class StoreDatasetRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true; //jw:note changed from default 'false' to avoid the "403 This action is unauthorized." error
     }
 
     /**
@@ -22,7 +22,18 @@ class StoreDatasetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            //jw:todo add for rules here
+            'title' => 'required|unique:datasets,title|max:255',
+            'uploader_id' => '',
         ];
+    }
+    /*
+     * https://dev.to/secmohammed/laravel-form-request-tips-tricks-2p12
+     */
+    public function validationData()
+    {
+        return array_merge($this->all(), [
+            'uploader_id' => $this->user()->id
+        ]);
     }
 }

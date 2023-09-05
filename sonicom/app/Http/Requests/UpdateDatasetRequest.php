@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
+use App\Models\Dataset;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateDatasetRequest extends FormRequest
@@ -11,7 +13,10 @@ class UpdateDatasetRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+//        $id = $this->user()->id;
+ //       $b = $this->user()->can('update');
+  //      return $b;
+        return true; //jw:note have to return true here, if we want to be authorized to update
     }
 
     /**
@@ -23,6 +28,18 @@ class UpdateDatasetRequest extends FormRequest
     {
         return [
             //
+            'title' => 'required|unique:datasets,title|max:255',
+            'uploader_id' => 'required',
         ];
+    }
+
+    /*
+     * https://dev.to/secmohammed/laravel-form-request-tips-tricks-2p12
+     */
+    public function validationData()
+    {
+        return array_merge($this->all(), [
+            'uploader_id' => $this->user()->id
+        ]);
     }
 }

@@ -30,14 +30,18 @@ class DatasetPolicy
     public function create(User $user): bool
     {
         //
+        return $user->id != 0;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Dataset $dataset): bool
+    public function update(User $user, Dataset $dataset): Response
     {
-        //
+        // this is called from the controller edit function, when $this->authorize($dataset) is called.
+        return $user->id == $dataset->uploader_id
+            ? Response::allow()
+            : Response::deny('You may not update this dataset, since you do not own it!');
     }
 
     /**
@@ -46,6 +50,10 @@ class DatasetPolicy
     public function delete(User $user, Dataset $dataset): bool
     {
         //
+        return $user->id == $dataset->uploader_id
+            ? Response::allow()
+            : Response::deny('You may not delete this dataset, since you do not own it!');
+
     }
 
     /**
