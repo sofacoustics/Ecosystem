@@ -45,6 +45,12 @@ Populate database with Laravel and Breeze default tables:
 
 Other
 
+### Dropping a table in order to recreate/seed
+
+- Remove migration entry in 'migrations' table
+- Drop table in your sql editor of choice
+- Run migration again (php artisan migrate) which will just run those not yet in the migrations table
+- Reseed using php artisan db:seed --class=<yourclassseeder, e.g. DatasetSeeder>
 
 ### Tinker
 

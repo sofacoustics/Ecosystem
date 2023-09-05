@@ -24,6 +24,7 @@ class StoreDatasetRequest extends FormRequest
         return [
             //jw:todo add for rules here
             'title' => 'required|unique:datasets,title|max:255',
+            'description' => 'required|max:255',
             'uploader_id' => '',
         ];
     }

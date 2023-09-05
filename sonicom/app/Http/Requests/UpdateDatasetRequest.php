@@ -29,6 +29,7 @@ class UpdateDatasetRequest extends FormRequest
         return [
             //
             'title' => 'required|unique:datasets,title|max:255',
+            'description' => 'required|max:255',
             'uploader_id' => 'required',
         ];
     }

@@ -13,10 +13,8 @@ class DatasetSeeder extends Seeder
      */
     public function run(): void
     {
-        Dataset::create(array('title' => 'A local dataset', 'uploader_id' => 1));
-        Dataset::create(array('title' => 'Jonnie\'s ARI SOFA test 1', 'uploader_id' => 1, 'radar_id' => 'iqcCQbvmGzYxYUne'));
-        Dataset::create(array('title' => 'Jonnie\'s ARI SOFA test 2', 'uploader_id' => 1, 'radar_id' => 'dEZxRRrxpiHSzbBZ'));
-        
-
+        Dataset::create(array('title' => 'A local dataset', 'description' => 'A truly unique dataset, I assure you!', 'uploader_id' => 1));
+        Dataset::create(array('title' => 'Jonnie\'s ARI SOFA test 1', 'description' => 'Not much to say about this dataset.', 'uploader_id' => 1, 'radar_id' => 'iqcCQbvmGzYxYUne'));
+        Dataset::create(array('title' => 'Jonnie\'s ARI SOFA test 2', 'description' => 'Nr. 2. \'Nuf said!', 'uploader_id' => 1, 'radar_id' => 'dEZxRRrxpiHSzbBZ'));
     }
 }
