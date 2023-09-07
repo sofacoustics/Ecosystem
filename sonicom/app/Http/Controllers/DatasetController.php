@@ -89,6 +89,10 @@ class DatasetController extends Controller
      */
     public function destroy(Dataset $dataset)
     {
-        //
+        $this->authorize($dataset);
+        // delete dataset. Note that due to onDelete('cascade') in files database, the related files
+        // will be deleted too!
+        $dataset->delete();
+        return redirect()->route('dataset.index')->with('success', 'Dataset deleted successfully');
     }
 }

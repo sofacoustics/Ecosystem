@@ -47,7 +47,7 @@ class DatasetPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Dataset $dataset): bool
+    public function delete(User $user, Dataset $dataset): Response
     {
         //
         return $user->id == $dataset->uploader_id

@@ -19,7 +19,12 @@
         <tr>
             <td><a class="btn btn-primary" href="{{ route('dataset.show', $dataset->id) }}">{{ $dataset->title }}</a>
                 @if ($dataset->uploader_id == Auth::id())
-                (<a class="btn btn-primary" href="{{ route('dataset.edit',$dataset->id) }}">Edit</a>)
+                (<a class="btn btn-primary" href="{{ route('dataset.edit', $dataset->id) }}">Edit</a>,&nbsp
+                <form method="POST" id="delete-dataset" action="{{ route('dataset.destroy', $dataset->id) }}">
+                    @csrf
+                    @method('DELETE')
+                    <input type="submit" class="btn btn-primary" value="Delete">
+                </form>
                 @endif
             </td>
         </tr>

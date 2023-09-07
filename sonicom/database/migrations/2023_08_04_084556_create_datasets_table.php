@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('description');
             $table->integer('uploader_id')->unsigned();
             $table->string('radar_id')->nullable(); // Save the RADAR id (e.g. iqcCQbvmGzYxYUne) here
-            $table->foreign('uploader_id')->references('id')->on('users');
+            $table->foreign('uploader_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
