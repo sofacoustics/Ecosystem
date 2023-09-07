@@ -15,8 +15,10 @@
     @endforelse
 
 
+    <div class="text-xs">
     <p>Uploaded by: {{ $user->name }}<br>
     Created: {{ $dataset->created_at }}<br>
     Updated: {{ $dataset->updated_at }}</p>
     {{ $dataset }}
+</div>
 </x-app-layout>
