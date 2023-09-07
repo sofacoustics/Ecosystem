@@ -13,14 +13,16 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <!-- https://stackoverflow.com/questions/45279612/including-a-css-file-in-a-blade-template -->
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+        <!-- https://tailwindcss.com/docs/customizing-colors -->
+        <div class="min-h-screen bg-orange-400">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
             @if (isset($header))
-                <header class="bg-white shadow">
+                <header class="shadow bg-orange-500">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
