@@ -80,6 +80,8 @@ If you are pushing to a remote git repository, then a post-receive hook should r
 ## TODO
 
 [ ] remove Chirps directory
+[x] rename 'dataset' directory to 'datasets'
+[x] add 'delete' to dataset controller
 
 ## Place to push stuff when testing git deployment
 

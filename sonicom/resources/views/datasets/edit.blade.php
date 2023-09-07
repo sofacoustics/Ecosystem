@@ -17,11 +17,12 @@
     @endif
 
     @can('update', $dataset)
-    <form action="{{ route('dataset.update', $dataset->id) }}" method="POST">
+    <form action="{{ route('datasets.update', $dataset->id) }}" method="POST">
         @csrf
         @method('PUT')
         <label for="title">Title</label>
         <input type="text" name="title" id="title" value="{{ $dataset->title }}">
+        <input type="text" name="description" id="title" value="{{ $dataset->description }}">
         <input type="submit" name="submit" value="Submit">
     </form>
     @else

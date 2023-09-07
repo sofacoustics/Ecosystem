@@ -24,7 +24,7 @@ class DatasetController extends Controller
     public function index()
     {
         $datasets = \App\Models\Dataset::all();
-        return view('dataset\index', ['allDatasets' => $datasets]);
+        return view('datasets\index', ['allDatasets' => $datasets]);
     }
 
     /**
@@ -34,7 +34,7 @@ class DatasetController extends Controller
     {
         $this->authorize('create', Dataset::class);
         // https://pusher.com/blog/laravel-mvc-use/#controllers-creating-our-controller
-        return view('dataset.create');
+        return view('datasets.create');
     }
 
     /**
@@ -44,7 +44,7 @@ class DatasetController extends Controller
     {
         Dataset::create($request->validated()); // https://dev.to/secmohammed/laravel-form-request-tips-tricks-2p12
 
-        return redirect('dataset')->with('success', "Dataset $request->title successfully created!");
+        return redirect('datasets')->with('success', "Dataset $request->title successfully created!");
     }
 
     /**
@@ -53,7 +53,7 @@ class DatasetController extends Controller
     public function show(Dataset $dataset)
     {
         $user = \App\Models\User::where('id', $dataset->uploader_id)->first();
-        return view('dataset\show',[ 'dataset' => $dataset, 'user' => $user ]);
+        return view('datasets\show',[ 'dataset' => $dataset, 'user' => $user ]);
     }
 
     /**
@@ -68,7 +68,7 @@ class DatasetController extends Controller
         }    
         */
         //
-        return view('dataset.edit', [ 'dataset' => $dataset ]);
+        return view('datasets.edit', [ 'dataset' => $dataset ]);
     }
 
     /**
@@ -81,7 +81,7 @@ class DatasetController extends Controller
             abort(403);
         }    */
         $dataset->update($request->all());
-        return redirect('dataset')->with('success', 'Dataset successfully updated!');
+        return redirect('datasets')->with('success', 'Dataset successfully updated!');
     }
 
     /**
@@ -93,6 +93,6 @@ class DatasetController extends Controller
         // delete dataset. Note that due to onDelete('cascade') in files database, the related files
         // will be deleted too!
         $dataset->delete();
-        return redirect()->route('dataset.index')->with('success', 'Dataset deleted successfully');
+        return redirect()->route('datasets.index')->with('success', 'Dataset deleted successfully');
     }
 }

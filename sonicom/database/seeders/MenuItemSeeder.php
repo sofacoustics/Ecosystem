@@ -28,13 +28,13 @@ class MenuItemSeeder extends Seeder
 
        MenuItem::create([
         'title' => 'Datasets',
-        'url' => '/dataset',
+        'url' => '/datasets',
         'authenticated' => false,
        ]);
 
        MenuItem::create([
         'title' => 'Create Dataset',
-        'url' => '/dataset/create',
+        'url' => '/datasets/create',
        ]);
 
 			 MenuItem::create([
@@ -66,5 +66,4 @@ class MenuItemSeeder extends Seeder
 				]);
 			  */
 		}
- 
 }

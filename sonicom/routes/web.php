@@ -35,7 +35,7 @@ Route::view('/about', 'pages.about');
 });
 */
 // DATASET (auth specified in __construct())
-Route::resource('dataset', DatasetController::class);
+Route::resource('datasets', DatasetController::class);
 //Route::middleware('auth')->group(function () {
 //    Route::get('/dataset/create', [DatasetController::class, 'create']);
 //    Route::get('/dataset', [DatasetController::class, 'edit'])->name('dataset.edit');

@@ -17,7 +17,7 @@
         @endif
 
     
-        <form action="{{ route('dataset.store') }}" method="POST">
+        <form action="{{ route('datasets.store') }}" method="POST">
             @csrf
             <label for="title">Title</label>
             <input type="text" name="title" id="title">
