@@ -10,9 +10,26 @@
 % Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 % See the License for the specific language governing  permissions and limitations under the License.
 
+
+
 function CreateFigures(SOFAfile)
 % for debug purpose comment function row above, and uncomment this one:
 % SOFAfile= 'hrtf_nh4.sofa';
+
+%jw:note Check if function called with parameter. If not, use command line parameter
+if(exist("SOFAfile"))
+       if(SOFAfile == "")
+		disp('SOFAfile is empty');
+       end
+else
+	disp("SOFAfile does not exist");
+	disp(argv);
+	arg_list = argv();
+	fn = arg_list{1};
+	disp(fn);
+	SOFAfile = fn;
+end
+disp(["SOFAfile = " SOFAfile]);
 
 %% Prologue: (un)comment here if you want to:
 clc; close all; % clean-up first
