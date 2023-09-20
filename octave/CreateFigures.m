@@ -50,27 +50,32 @@ switch Obj.GLOBAL_SOFAConventions
     case 'SimpleFreeFieldHRIR'
 
         % plot ETC horizontal plane
+        disp(['Generating ' SOFAfile '_1.png']);
         figure('Name',SOFAfile);
         SOFAplotHRTF(Obj,'ETCHorizontal',1);
         saveas(gcf,[SOFAfile '_1.png'])
 
         % plot magnitude spectrum in the median plane, channel 2
+        disp(['Generating ' SOFAfile '_2.png']);        
         figure('Name',SOFAfile);
         SOFAplotHRTF(Obj,'MagMedian',2);
         saveas(gcf,[SOFAfile '_2.png'])
 
         % plot non-normalized magnitude spectrum in the median plane, channel 1
+        disp(['Generating ' SOFAfile '_3.png']);        
         figure('Name',SOFAfile);
         SOFAplotHRTF(Obj,'MagMedian','nonormalization');
         saveas(gcf,[SOFAfile '_3.png'])
 
         % plot geometry
+        disp(['Generating ' SOFAfile '_4.png']);        
         SOFAplotGeometry(Obj);
         title(['Geometry SimpleFreeFieldHRIR, ' num2str(Obj.API.M) ' position(s)'])
         set(gcf, 'Name', SOFAfile);
         saveas(gcf,[SOFAfile '_4.png'])
 
         % plot geometry, only show every 45th measurement
+        disp(['Generating ' SOFAfile '_5.png']);        
         index = 1:45:Obj.API.M;
         SOFAplotGeometry(Obj,index);
         title(['Geometry SimpleFreeFieldHRIR, reduced to ' num2str(size(index,2)) ' position(s)'])
