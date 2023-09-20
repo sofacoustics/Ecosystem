@@ -21,6 +21,8 @@
             @csrf
             <label for="title">Title</label>
             <input type="text" name="title" id="title">
+            <label for="description">Description</label>
+            <input type="text" name="description" id="description">
             {{--<input type="hidden" name="uploader_id" value="{{ Auth::id() }}">--}}
             <input type="submit" name="submit" value="Submit">
         </form>
