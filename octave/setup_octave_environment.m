@@ -2,7 +2,7 @@
 %
 % Note that installing netcdf didn't work when running the snap ocatve package
 
-sofapath = '/home/jw/syncthing/exchange/sofa/SOFAtoolbox';
+sofapath = './SOFAtoolbox';
 
 disp (["Adding sofapath " sofapath " to path"]);
 addpath(sofapath);
