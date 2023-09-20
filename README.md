@@ -88,6 +88,7 @@ If you are pushing to a remote git repository, then a post-receive hook should r
 [ ] Terminology: one user can have many databases, each with a specific dataset definition (datasetdef).
 [ ] The datasetdef can be any combination of supported file types (not extensions)
 [ ] A datasetdef's file types can have a specific visualisation specified from a supported list
+[ ] Let user specify file nomancleture when defining datasetdef
 
 ## Place to push stuff when testing git deployment
 
