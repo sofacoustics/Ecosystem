@@ -82,6 +82,12 @@ If you are pushing to a remote git repository, then a post-receive hook should r
 [ ] remove Chirps directory
 [x] rename 'dataset' directory to 'datasets'
 [x] add 'delete' to dataset controller
+[ ] Check that we're only using software with EUPL
+[ ] Allow comments on Database
+[ ] User registration must be confirmed by curator!
+[ ] Terminology: one user can have many databases, each with a specific dataset definition (datasetdef).
+[ ] The datasetdef can be any combination of supported file types (not extensions)
+[ ] A datasetdef's file types can have a specific visualisation specified from a supported list
 
 ## Place to push stuff when testing git deployment
 
