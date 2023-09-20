@@ -82,7 +82,9 @@ switch Obj0.GLOBAL_SOFAConventions
         % plot the room
         rectangle('Position',[x y w h]);
     else
-        figure; hold on;
+        
+        figure('Name', ['Figure_' round(rand(1)*100)]);
+        hold on;
     end
     
     legendEntries = [];
