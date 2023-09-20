@@ -1,6 +1,5 @@
 %Create Figures - Function to load SOFA files, create and save visualizing figures
 
-
 % #Author: Michael Mihocic: First version, loading and plotting a few figures, supporting a few conventions (31.08.2023)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
@@ -10,17 +9,16 @@
 % Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 % See the License for the specific language governing  permissions and limitations under the License.
 
-
-
 function CreateFigures(SOFAfile)
 % for debug purpose comment function row above, and uncomment this one:
 % SOFAfile= 'hrtf_nh4.sofa';
 
+
 %jw:note Check if function called with parameter. If not, use command line parameter
 if(exist("SOFAfile"))
-  if(strcmp(SOFAfile, "") == 1)
+       if(SOFAfile == "")
 		disp('SOFAfile is empty');
-  end
+       end
 else
 	disp("SOFAfile does not exist");
 	disp(argv);
@@ -31,8 +29,10 @@ else
 end
 disp(["SOFAfile = " SOFAfile]);
 
+
 %% Prologue: (un)comment here if you want to:
-clc; close all; % clean-up first
+% clc; % clean-up first
+close all; % clean-up first
 tic; % timer
 SOFAstart; % remove this optionally
 % warning('off','SOFA:upgrade');
@@ -50,53 +50,48 @@ switch Obj.GLOBAL_SOFAConventions
     case 'SimpleFreeFieldHRIR'
 
         % plot ETC horizontal plane
-        disp(['Generating ' SOFAfile '_1.png']);
         figure('Name',SOFAfile);
         SOFAplotHRTF(Obj,'ETCHorizontal',1);
-        saveas(gcf,[SOFAfile '_1.png'])
+        print ("-r600", [SOFAfile '_1.png']);
 
         % plot magnitude spectrum in the median plane, channel 2
-        disp(['Generating ' SOFAfile '_2.png']);        
         figure('Name',SOFAfile);
         SOFAplotHRTF(Obj,'MagMedian',2);
-        saveas(gcf,[SOFAfile '_2.png'])
+        print ("-r600", [SOFAfile '_2.png']);
 
         % plot non-normalized magnitude spectrum in the median plane, channel 1
-        disp(['Generating ' SOFAfile '_3.png']);        
         figure('Name',SOFAfile);
         SOFAplotHRTF(Obj,'MagMedian','nonormalization');
-        saveas(gcf,[SOFAfile '_3.png'])
+        print ("-r600", [SOFAfile '_3.png']);
 
         % plot geometry
-        disp(['Generating ' SOFAfile '_4.png']);        
         SOFAplotGeometry(Obj);
         title(['Geometry SimpleFreeFieldHRIR, ' num2str(Obj.API.M) ' position(s)'])
         set(gcf, 'Name', SOFAfile);
-        saveas(gcf,[SOFAfile '_4.png'])
+        print ("-r600", [SOFAfile '_4.png']);
 
         % plot geometry, only show every 45th measurement
-        disp(['Generating ' SOFAfile '_5.png']);        
         index = 1:45:Obj.API.M;
         SOFAplotGeometry(Obj,index);
         title(['Geometry SimpleFreeFieldHRIR, reduced to ' num2str(size(index,2)) ' position(s)'])
         set(gcf, 'Name', SOFAfile);
-        saveas(gcf,[SOFAfile '_5.png'])
+        print ("-r600", [SOFAfile '_5.png']);
 
     case 'GeneralTF'
         % plot magnitude spectrum in the median plane, channel 1
         figure('Name',SOFAfile);
         SOFAplotHRTF(Obj,'MagMedian',1,'conversion2ir');
-        saveas(gcf,[SOFAfile '_1.png'])
+        print ("-r600", [SOFAfile '_1.png']);
 
         figure('Name',mfilename);
         SOFAplotHRTF(Obj,'MagMedian',1,'noconversion2ir');
-        saveas(gcf,[SOFAfile '_2.png'])
+        print ("-r600", [SOFAfile '_2.png']);
 
     case 'GeneralFIR'
         SOFAplotGeometry(Obj);
         title(['Geometry GeneralFIR, ' num2str(Obj.API.R) ' receiver(s), ' num2str(Obj.API.M) ' position(s)'])
         set(gcf, 'Name', mfilename);
-        saveas(gcf,[SOFAfile '_1.png'])
+        print ("-r600", [SOFAfile '_1.png']);
 
     case 'AnnotatedReceiverAudio'
         % no plan yet for this convention ;-)
