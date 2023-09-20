@@ -107,7 +107,6 @@ A dataset is (like for RADAR) a set of data. We use a table 'dataset' to save in
 - Dataset model
 - Dataset controller
 
-
 ## Database
 
 ### Tables
@@ -134,3 +133,10 @@ Files associated with datasets which are cached locally.
 - Run migration again (php artisan migrate) which will just run those not yet in the migrations table
 - Reseed using php artisan db:seed --class=<yourclassseeder, e.g. DatasetSeeder>
 
+## Octave
+
+Note that the snap package wouldn't run the script - can't find nc-config
+
+Modify /etc/octaverc on Ubuntu to add paths
+
+### Problems
