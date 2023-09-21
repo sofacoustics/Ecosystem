@@ -13,23 +13,6 @@ function CreateFigures(SOFAfile)
 % for debug purpose comment function row above, and uncomment this one:
 % SOFAfile= 'hrtf_nh4.sofa';
 
-
-%jw:note Check if function called with parameter. If not, use command line parameter
-if(exist("SOFAfile"))
-	if(strcmp(SOFAfile, "")==1)
-		disp('SOFAfile is empty');
-	end
-else
-	disp("SOFAfile does not exist");
-	disp(argv);
-	arg_list = argv();
-	fn = arg_list{1};
-	disp(fn);
-	SOFAfile = fn;
-end
-disp(["SOFAfile = " SOFAfile]);
-
-
 %% Prologue: (un)comment here if you want to:
 % clc; % clean-up first
 close all; % clean-up first
@@ -65,17 +48,17 @@ switch Obj.GLOBAL_SOFAConventions
         print ("-r600", [SOFAfile '_3.png']);
 
         % plot geometry
-        SOFAplotGeometry(Obj);
-        title(['Geometry SimpleFreeFieldHRIR, ' num2str(Obj.API.M) ' position(s)'])
-        set(gcf, 'Name', SOFAfile);
-        print ("-r600", [SOFAfile '_4.png']);
+      %  SOFAplotGeometry(Obj);
+      %  title(['Geometry SimpleFreeFieldHRIR, ' num2str(Obj.API.M) ' position(s)'])
+      %  set(gcf, 'Name', SOFAfile);
+      %  print ("-r600", [SOFAfile '_4.png']);
 
         % plot geometry, only show every 45th measurement
-        index = 1:45:Obj.API.M;
-        SOFAplotGeometry(Obj,index);
-        title(['Geometry SimpleFreeFieldHRIR, reduced to ' num2str(size(index,2)) ' position(s)'])
-        set(gcf, 'Name', SOFAfile);
-        print ("-r600", [SOFAfile '_5.png']);
+      %  index = 1:45:Obj.API.M;
+      %  SOFAplotGeometry(Obj,index);
+      %  title(['Geometry SimpleFreeFieldHRIR, reduced to ' num2str(size(index,2)) ' position(s)'])
+      %  set(gcf, 'Name', SOFAfile);
+      %  print ("-r600", [SOFAfile '_5.png']);
 
     case 'GeneralTF'
         % plot magnitude spectrum in the median plane, channel 1
