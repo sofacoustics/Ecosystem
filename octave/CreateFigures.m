@@ -16,9 +16,9 @@ function CreateFigures(SOFAfile)
 
 %jw:note Check if function called with parameter. If not, use command line parameter
 if(exist("SOFAfile"))
-       if(SOFAfile == "")
+	if(strcmp(SOFAfile, "")==1)
 		disp('SOFAfile is empty');
-       end
+	end
 else
 	disp("SOFAfile does not exist");
 	disp(argv);
