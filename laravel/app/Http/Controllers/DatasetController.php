@@ -24,7 +24,7 @@ class DatasetController extends Controller
     public function index()
     {
         $datasets = \App\Models\Dataset::all();
-        return view('datasets\index', ['allDatasets' => $datasets]);
+        return view('datasets.index', ['allDatasets' => $datasets]);
     }
 
     /**
