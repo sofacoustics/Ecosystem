@@ -53,7 +53,7 @@ class DatasetController extends Controller
     public function show(Dataset $dataset)
     {
         $user = \App\Models\User::where('id', $dataset->uploader_id)->first();
-        return view('datasets\show',[ 'dataset' => $dataset, 'user' => $user ]);
+        return view('datasets.show',[ 'dataset' => $dataset, 'user' => $user ]);
     }
 
     /**
