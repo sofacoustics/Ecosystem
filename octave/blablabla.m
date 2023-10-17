@@ -1,4 +1,4 @@
-#! /usr/bin/octave -qW
+#! /snap/bin/octave -qW
 printf ("%s", program_name ());
 arg_list = argv ();
 if(nargin>0)
@@ -11,6 +11,8 @@ else
   disp("You must specify a SOFA file!");
   exit
 end
+
+setup_octave_environment
 
 fp = arg_list{1};
 # Note that SOFAtoolbox is added to path in .octaverc
