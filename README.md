@@ -123,7 +123,6 @@ Local datasets which may or may not have been uploaded to RADAR
 
 Files associated with datasets which are cached locally.
 
-
 ## Development
 
 ### Modifying a table (dropping a table in order to recreate/seed)
@@ -140,3 +139,31 @@ Note that the snap package wouldn't run the script - can't find nc-config
 Modify /etc/octaverc on Ubuntu to add paths
 
 ### Problems
+
+## Terminology
+
+### database
+
+A 'database' is a collection of data in a specific format.
+
+- It has a title
+- It is uploaded/managed by one user
+- It can contains a number of datasets as defined in it's dataset definition ('datasetdef').
+- May be linked to a RADAR dataset
+- Will be linked to visualisations and tools via its datasetdef.
+
+### dataset
+
+A 'dataset' is one record in the database. One record may contain multiple files of different datatypes. The composition of a 'dataset' is defined in the database's 'datasetdef'.
+
+### datatype
+
+A 'datatype' is one of a predefined type of data which can be assigned to a datasetdef. E.g. there may be 'HRTF', 'PNG',of 'CSV'.
+
+- It has a title. E.g. 'HRTF'
+- It may be associated tools (e.g. Sofatoolbox)
+- It may be associated visualisations (e.g. octave sofa ...)
+
+### datasetdef
+
+A 'datasetdef' is a definition of the number files of specific datatypes are in each dataset. E.g. a dataaset may contain two different hrtfs and one png per record. 
