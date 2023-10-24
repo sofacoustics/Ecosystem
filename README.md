@@ -144,17 +144,17 @@ Modify /etc/octaverc on Ubuntu to add paths
 
 ### database
 
-A 'database' is a collection of data in a specific format.
+A 'database' is a collection of data in a specific collation of formats. E.g. a collection of HRTF data, where each database record contains one HRTF and one PNG.
 
 - It has a title
 - It is uploaded/managed by one user
-- It can contains a number of datasets as defined in it's dataset definition ('datasetdef').
+- It can contain any number of datasets as defined in it's dataset definition ('datasetdef').
 - May be linked to a RADAR dataset
 - Will be linked to visualisations and tools via its datasetdef.
 
 ### dataset
 
-A 'dataset' is one record in the database. One record may contain multiple files of different datatypes. The composition of a 'dataset' is defined in the database's 'datasetdef'.
+A 'dataset' is one record in the database. One record may contain multiple files of different datatypes. The exact composition of a 'dataset' is defined in the database's 'datasetdef'.
 
 ### datatype
 
@@ -166,4 +166,4 @@ A 'datatype' is one of a predefined type of data which can be assigned to a data
 
 ### datasetdef
 
-A 'datasetdef' is a definition of the number files of specific datatypes are in each dataset. E.g. a dataaset may contain two different hrtfs and one png per record. 
+A 'datasetdef' is a definition of which datatypes are in each dataset. E.g. a dataaset may contain two different hrtfs and one png per record. 
