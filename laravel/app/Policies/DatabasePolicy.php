@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Dataset;
+use App\Models\Database;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class DatasetPolicy
+class DatabasePolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -19,7 +19,7 @@ class DatasetPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Dataset $dataset): bool
+    public function view(User $user, Database $database): bool
     {
         //
     }
@@ -36,30 +36,30 @@ class DatasetPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Dataset $dataset): Response
+    public function update(User $user, Database $database): Response
     {
-        // this is called from the controller edit function, when $this->authorize($dataset) is called.
-        return $user->id == $dataset->uploader_id
+        // this is called from the controller edit function, when $this->authorize($database) is called.
+        return $user->id == $database->uploader_id
             ? Response::allow()
-            : Response::deny('You may not update this dataset, since you do not own it!');
+            : Response::deny('You may not update this database, since you do not own it!');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Dataset $dataset): Response
+    public function delete(User $user, Database $database): Response
     {
         //
-        return $user->id == $dataset->uploader_id
+        return $user->id == $database->uploader_id
             ? Response::allow()
-            : Response::deny('You may not delete this dataset, since you do not own it!');
+            : Response::deny('You may not delete this database, since you do not own it!');
 
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Dataset $dataset): bool
+    public function restore(User $user, Database $database): bool
     {
         //
     }
@@ -67,7 +67,7 @@ class DatasetPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Dataset $dataset): bool
+    public function forceDelete(User $user, Database $database): bool
     {
         //
     }

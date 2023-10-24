@@ -1,10 +1,10 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Create a dataset
+            Create a database
         </h2>
     </x-slot>
-        <p>TODO: implement dataset creation code/form</p>
+        <p>TODO: implement database creation code/form</p>
 
         @if (count($errors) > 0)
             <div class="alert alert-danger">
@@ -17,7 +17,7 @@
         @endif
 
     
-        <form action="{{ route('datasets.store') }}" method="POST">
+        <form action="{{ route('databases.store') }}" method="POST">
             @csrf
             <label for="title">Title</label>
             <input type="text" name="title" id="title">

@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\DataController;
-use App\Http\Controllers\DatasetController;
+use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -34,20 +34,20 @@ Route::view('/about', 'pages.about');
 	return view('pages.about');
 });
 */
-// DATASET (auth specified in __construct())
-Route::resource('datasets', DatasetController::class);
+// DATABASE (auth specified in __construct())
+Route::resource('databases', DatabaseController::class);
 //Route::middleware('auth')->group(function () {
-//    Route::get('/dataset/create', [DatasetController::class, 'create']);
-//    Route::get('/dataset', [DatasetController::class, 'edit'])->name('dataset.edit');
+//    Route::get('/database/create', [DatabaseController::class, 'create']);
+//    Route::get('/database', [DatabaseController::class, 'edit'])->name('database.edit');
 //});
-//Route::resource('dataset.create', DatasetController::class)->middleware('auth');
-//Route::resource('dataset', DatasetController::class)->middleware('auth')->only([
+//Route::resource('database.create', DatabaseController::class)->middleware('auth');
+//Route::resource('database', DatabaseController::class)->middleware('auth')->only([
 //    'edit', 'create'
 //]);
 // To nest the resource controllers, you may use "dot" notation in your route declaration (https://laravel.com/docs/10.x/controllers#restful-partial-resource-routes)
-//Route::resource('dataset.edit', DatasetController::class)->middleware('auth');
-//Route::resource('/dataset/create', DatasetController::class)->middleware('auth');
-//Route::post('/dataset/create','ProjectController@store');
+//Route::resource('database.edit', DatabaseController::class)->middleware('auth');
+//Route::resource('/database/create', DatabaseController::class)->middleware('auth');
+//Route::post('/database/create','ProjectController@store');
 
 Route::resource('files', FileController::class);
 

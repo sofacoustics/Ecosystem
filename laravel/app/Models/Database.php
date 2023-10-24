@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Dataset extends Model
+class Database extends Model
 {
     use HasFactory;
     protected $fillable = ['title', 'description', 'uploader_id'];
 
     /**
-     * Get the files for a dataset
+     * Get the files for a database
      * 
      * https://laravel.com/docs/10.x/eloquent-relationships#one-to-many
      */

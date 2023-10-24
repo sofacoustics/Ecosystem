@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreDatasetRequest extends FormRequest
+class StoreDatabaseRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,7 @@ class StoreDatasetRequest extends FormRequest
     {
         return [
             //jw:todo add for rules here
-            'title' => 'required|unique:datasets,title|max:255',
+            'title' => 'required|unique:databases,title|max:255',
             'description' => 'required|max:255',
             'uploader_id' => '',
         ];

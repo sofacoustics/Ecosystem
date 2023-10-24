@@ -3,10 +3,10 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
-use App\Models\Dataset;
+use App\Models\Database;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateDatasetRequest extends FormRequest
+class UpdateDatabaseRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,7 +28,7 @@ class UpdateDatasetRequest extends FormRequest
     {
         return [
             //
-            'title' => 'required|unique:datasets,title|max:255',
+            'title' => 'required|unique:databases,title|max:255',
             'description' => 'required|max:255',
             'uploader_id' => 'required',
         ];
