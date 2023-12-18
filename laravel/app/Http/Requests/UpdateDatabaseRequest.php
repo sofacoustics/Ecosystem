@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\User;
 use App\Models\Database;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateDatabaseRequest extends FormRequest
 {
@@ -28,7 +29,11 @@ class UpdateDatabaseRequest extends FormRequest
     {
         return [
             //
-            'title' => 'required|unique:databases,title|max:255',
+            'title' => [
+                'required',
+                'max:255',
+                Rule::unique('databases')->ignore($this->route('database')->id) /* jw:note this prevents an update from complaining about uniqueness with itself */
+            ],
             'description' => 'required|max:255',
             'uploader_id' => 'required',
         ];
