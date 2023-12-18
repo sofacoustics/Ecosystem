@@ -12,12 +12,12 @@ class Database extends Model
     protected $fillable = ['title', 'description', 'uploader_id'];
 
     /**
-     * Get the files for a database
+     * Get the datasets for a database
      * 
      * https://laravel.com/docs/10.x/eloquent-relationships#one-to-many
      */
-    public function files(): HasMany
+    public function datasets(): HasMany
     {
-        return $this->hasMany(File::class);
+        return $this->hasMany(Dataset::class);
     }
 }
