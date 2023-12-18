@@ -6,12 +6,12 @@
     </x-slot>
     <h1>Title: {{ $database->title }}</h1>
     <h2>Description: {{ $database->description }}</h2>
-    <p>Files</p>
+    <p>Datasets</p>
 
-    @forelse($database->files as $file)
-        - {{ $file->name }}<br>
+    @forelse($database->datasets as $dataset)
+        - {{ $dataset->name }}<br>
     @empty
-        <p>There are no files associated with this database</p>
+        <p>There are no datasets associated with this database</p>
     @endforelse
 
 
