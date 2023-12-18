@@ -39,7 +39,7 @@ class MenuItemSeeder extends Seeder
 
 			 MenuItem::create([
         'title' => 'About SONICOM',
-        'url' => 'about',
+        'url' => '/about',
         'authenticated' => false,
        ]);
 /*
