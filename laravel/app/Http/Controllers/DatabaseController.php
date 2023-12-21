@@ -13,9 +13,9 @@ class DatabaseController extends Controller
     {
         // https://laracasts.com/discuss/channels/general-discussion/apply-middleware-for-certain-methods?page=0
         //$this->middleware('auth', ['only' => ['create', 'edit']]);
-        // Users must be authenticated for all functions except index and show. 
+        // Users must be authenticated for all functions except index and show.
         // Guests will be redirected to login page
-        $this->middleware('auth', ['except' => ['index', 'show']]); 
+        $this->middleware('auth', ['except' => ['index', 'show']]);
     }
 
     /**
@@ -65,7 +65,7 @@ class DatabaseController extends Controller
         //$this->authorize('update', $database);
 /*        if(auth()->user()->cannot('edit', $database)) {
             abort(403);
-        }    
+        }
         */
         //
         return view('databases.edit', [ 'database' => $database ]);
