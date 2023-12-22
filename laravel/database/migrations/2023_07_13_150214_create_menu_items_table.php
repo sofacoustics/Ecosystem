@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('url')->nullable();
+            $table->string('route')->nullable(); // set the route here, e.g. admin.index
             $table->unsignedInteger('parent_id')->nullable();
             $table->boolean('authenticated')->default(true); // set to true, if this menu item should only be accessible if user is authenticated
             $table->timestamps();

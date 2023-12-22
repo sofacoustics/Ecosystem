@@ -16,4 +16,16 @@ class MenuItem extends Model
     {
         return $this->hasMany(self::class, 'parent_id');
     }
+
+    public function url()
+    {
+        //return $this->url;
+        //return "bla bla";
+        $url = "";
+        if($this->route != NULL)
+            $url = route($this->route);
+        if($url =="")
+            $url = $this->url;
+        return $url;
+    }
 }

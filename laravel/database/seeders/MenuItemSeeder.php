@@ -23,24 +23,32 @@ class MenuItemSeeder extends Seeder
        MenuItem::create([
         'title' => 'Data',
         'url' => '/data',
-        'authenticated' => false,
+        'authenticated' => 0,
        ]);
 
        MenuItem::create([
         'title' => 'Databases',
         'url' => '/databases',
-        'authenticated' => false,
+        'authenticated' => 0,
        ]);
 
        MenuItem::create([
         'title' => 'Create Database',
         'url' => '/databases/create',
+        'authenticated' => 1,
        ]);
 
 			 MenuItem::create([
         'title' => 'About SONICOM',
         'url' => '/about',
-        'authenticated' => false,
+        'authenticated' => 0,
+       ]);
+
+       MenuItem::create([
+        'title' => 'Admin',
+        'url' => '/admin',
+        'route' => 'admin.index',
+        'authenticated' => 2,
        ]);
 /*
        $services = MenuItem::create([

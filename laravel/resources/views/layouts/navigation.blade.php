@@ -19,7 +19,7 @@
             </div>
 
 						<!-- Settings Dropdown -->
-						@auth						
+						@auth
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -123,14 +123,36 @@
     </div>
     <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
 
-      <div class="text-sm lg:flex-grow">
+      <div class="bg-red text-sm lg:flex-grow">
         @foreach(\App\Models\MenuItem::whereNull('parent_id')->get() as $menuItem)
-            @if (!Auth::check() && $menuItem->authenticated == true)
+            @if (!Auth::check() && $menuItem->authenticated > 0)
                 {{-- Do not show menu items which are restricted to authenticated users, unless they are logged in --}}
+            @elseif (Auth::check() && !auth()->user()->hasRole('admin') && $menuItem->authenticated == 2)
+                {{-- Do not show 'admin' menu --}}
             @else
-                <a href="{{$menuItem->url}}" class="block mt-4 lg:inline-block lg:mt-0 text-black-200 hover:text-black-300 mr-4">
+                <a href="{{$menuItem->url()}}" class="block mt-4 lg:inline-block lg:mt-0 text-black-200 hover:text-black-300 mr-4">
                 {{$menuItem->title}}
                 </a>
+
+                <!-- sub menus -->
+                @foreach(\App\Models\MenuItem::whereNotNull('parent_id')->get() as $subMenuItem)
+{{ route('admin') }}
+                    @if (\Request::path() != "$menuItem->url")
+                        {{-- We are not in the correct route to display this submenu item --}}
+                    @elseif ($subMenuItem->parent_id != $menuItem->id)
+                        {{-- This item is *not* a submenu of this menu item --}}
+                    @elseif (!Auth::check() && $subMenuItem->authenticated == 1)
+                        {{-- This item is restricted to authenticated users --}}
+                    @else
+                        @if (!auth()->user()->hasRole('admin') && $subMenuItem->authenticated == 2)
+                            {{-- This item is restricted to users with the 'admin' role --}}
+                        @else
+                            <a href="/{{$menuItem->url}}" class="block mt-4 lg:inline-block lg:mt-0 text-black-200 hover:text-black-300 mr-4">
+                            {{$subMenuItem->title}}
+                            </a>
+                        @endif
+                    @endif
+                @endforeach
             @endif
         @endforeach
       </div>
