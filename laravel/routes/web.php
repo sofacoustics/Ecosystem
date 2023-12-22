@@ -3,6 +3,7 @@
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -50,6 +51,8 @@ Route::resource('databases', DatabaseController::class);
 //Route::post('/database/create','ProjectController@store');
 
 Route::resource('files', FileController::class);
+
+Route::resource('admin', AdminController::class);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
