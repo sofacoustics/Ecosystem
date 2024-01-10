@@ -6,6 +6,11 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
+/*
+    jw:note For submenus:
+    jw:note     This component and its view assume that the parent item's routes are 'named'
+    jw:note     and that the named route is used in the the menu_items table's parent's 'route' column.
+*/
 class MenuItem extends Component
 {
     public $menuItem;
