@@ -30,7 +30,8 @@ Route::get('/dashboard', function () {
 /// DATA
 Route::resource('data', DataController::class)
 	->only(['index']);
-Route::view('/about', 'pages.about');
+/// ABOUT
+Route::view('/about', 'pages.about')->name('about');
 /*Route::get('about', function() {
 	return view('pages.about');
 });
@@ -52,8 +53,12 @@ Route::resource('databases', DatabaseController::class);
 
 Route::resource('files', FileController::class);
 
-Route::resource('admin', AdminController::class);
+/// ADMIN
+Route::group(['middleware' => ['role:admin']], function() {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin'); // named route: https://laravel.com/docs/10.x/routing#named-routes
+});
 
+/// PROFILE
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
