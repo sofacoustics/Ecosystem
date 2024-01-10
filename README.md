@@ -90,6 +90,8 @@ If you are pushing to a remote git repository, then a post-receive hook should r
 - [ ] A datasetdef's file types can have a specific visualisation specified from a supported list
 - [ ] Let user specify file nomancleture when defining datasetdef
 - [ ] Start using github issues
+- [ ] Users: Add users to specific group on creation
+- [ ] Implement Sub menus
 
 ## Place to push stuff when testing git deployment
 
