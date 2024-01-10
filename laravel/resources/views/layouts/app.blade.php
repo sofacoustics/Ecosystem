@@ -17,13 +17,13 @@
     </head>
     <body class="font-sans antialiased">
         <!-- https://tailwindcss.com/docs/customizing-colors -->
-        <div class="min-h-screen bg-orange-400">
+        <div class="min-h-screen">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
             @if (isset($header))
-                <header class="shadow bg-orange-500">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <header class="shadow">
+                    <div class="mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>
