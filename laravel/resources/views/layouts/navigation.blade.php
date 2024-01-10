@@ -103,11 +103,11 @@
 <!-- https://stackoverflow.com/questions/38665770/recursive-display-of-data-with-blade-laravel  /-->
 
 {{-- https://coding-lesson.com/creating-dynamic-nested-menus-in-laravel-with-relationships/ --}}
-{{--<ul>
+{{-- <ul>
     @foreach(\App\Models\MenuItem::whereNull('parent_id')->get() as $menuItem)
         <x-menu-item :menuItem="$menuItem"/>
     @endforeach
-</ul>--}}
+</ul> --}}
 
     {{-- https://v1.tailwindcss.com/components/navigation --}}
 <nav class="flex items-center justify-between flex-wrap bg-white  p-6">
@@ -133,29 +133,12 @@
                 <a href="{{$menuItem->url()}}" class="block mt-4 lg:inline-block lg:mt-0 text-black-200 hover:text-black-300 mr-4">
                 {{$menuItem->title}}
                 </a>
-
-                <!-- sub menus -->
-                @foreach(\App\Models\MenuItem::whereNotNull('parent_id')->get() as $subMenuItem)
-{{ route('admin') }}
-                    @if (\Request::path() != "$menuItem->url")
-                        {{-- We are not in the correct route to display this submenu item --}}
-                    @elseif ($subMenuItem->parent_id != $menuItem->id)
-                        {{-- This item is *not* a submenu of this menu item --}}
-                    @elseif (!Auth::check() && $subMenuItem->authenticated == 1)
-                        {{-- This item is restricted to authenticated users --}}
-                    @else
-                        @if (!auth()->user()->hasRole('admin') && $subMenuItem->authenticated == 2)
-                            {{-- This item is restricted to users with the 'admin' role --}}
-                        @else
-                            <a href="/{{$menuItem->url}}" class="block mt-4 lg:inline-block lg:mt-0 text-black-200 hover:text-black-300 mr-4">
-                            {{$subMenuItem->title}}
-                            </a>
-                        @endif
-                    @endif
-                @endforeach
             @endif
         @endforeach
       </div>
+
+
+</ul>
 				<!-- Settings Dropdown -->
 			  @auth
         <div class="hidden sm:flex sm:items-center sm:ml-6">
