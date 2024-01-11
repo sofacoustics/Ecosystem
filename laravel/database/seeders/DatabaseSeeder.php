@@ -19,11 +19,14 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',
         //     'email' => 'test@example.com', 
+        // ]);
+        $this->call(RolesAndPermissionsSeeder::class);
+        $this->call(UserSeeder::class);
         Database::create(array('title' => 'A local database', 'description' => 'A truly unique database, I assure you!', 'uploader_id' => 1));
         Database::create(array('title' => 'Jonnie\'s ARI SOFA test 1', 'description' => 'Not much to say about this database.', 'uploader_id' => 1, 'radar_id' => 'iqcCQbvmGzYxYUne'));
         Database::create(array('title' => 'Jonnie\'s ARI SOFA test 2', 'description' => 'Nr. 2. \'Nuf said!', 'uploader_id' => 1, 'radar_id' => 'dEZxRRrxpiHSzbBZ'));
-        // ]);
         $this->call(MenuItemSeeder::class);
+
 
 
     }
