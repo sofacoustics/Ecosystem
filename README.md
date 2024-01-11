@@ -3,8 +3,13 @@
 ## Requirements
 
 php 8.1
+php8.1-xml
+php8.1-curl
+php8.1-sqlite3
 composer 2.2
 mailpit
+nodejs
+npm
 
 ## Install
 
