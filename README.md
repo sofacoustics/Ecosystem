@@ -97,6 +97,7 @@ If you are pushing to a remote git repository, then a post-receive hook should r
 - [ ] Start using github issues
 - [ ] Users: Add users to specific group on creation
 - [ ] Implement Sub menus
+- [ ] Test filament (https://filamentphp.com/docs) for database table views
 
 ## Place to push stuff when testing git deployment
 
