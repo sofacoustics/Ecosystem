@@ -13,7 +13,8 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <!-- https://stackoverflow.com/questions/45279612/including-a-css-file-in-a-blade-template -->
+	<!-- https://stackoverflow.com/questions/45279612/including-a-css-file-in-a-blade-template -->
+	@livewireStyles
     </head>
     <body class="font-sans antialiased">
         <!-- https://tailwindcss.com/docs/customizing-colors -->
@@ -33,6 +34,7 @@
             <main>
                 {{ $slot }}
             </main>
-        </div>
+	</div>
+	@livewireScripts
     </body>
 </html>
