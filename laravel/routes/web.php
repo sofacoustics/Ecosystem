@@ -54,9 +54,10 @@ Route::resource('databases', DatabaseController::class);
 Route::resource('files', FileController::class);
 
 /// ADMIN
-Route::group(['middleware' => ['role:admin']], function() {
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin'); // named route: https://laravel.com/docs/10.x/routing#named-routes
-});
+//jw:note currently using filament 'admin' panel
+#Route::group(['middleware' => ['role:admin']], function() {
+#    Route::get('/admin', [AdminController::class, 'index'])->name('admin'); // named route: https://laravel.com/docs/10.x/routing#named-routes
+#});
 
 /// PROFILE
 Route::middleware('auth')->group(function () {
