@@ -180,6 +180,15 @@ A 'datasetdef' is a definition of which datatypes are in each dataset. E.g. a da
 
 ## Laravel
 
+### artisan
+
+#### database
+
+Drop all tables and reseed database with:
+
+	php artisan migrate:fresh --seed
+
 ### Filament
 
 Filament is a framework/stack with a panel, table and form builder. This may make it *much* easier to create interfaces to database tables.
+
