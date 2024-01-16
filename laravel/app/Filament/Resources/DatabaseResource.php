@@ -72,9 +72,9 @@ class DatabaseResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+			return [
+				RelationManagers\DatasetsRelationManager::class,
+			];
     }
 
     public static function getPages(): array
