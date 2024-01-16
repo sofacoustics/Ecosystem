@@ -15,13 +15,21 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+			// Possibly create a hashed password using php artisan tinker
+			// Then write echo Hash::make('somestring');
         $user = User::create([
             'name' => 'Jonnie Stuefer',
             'email' => 'jonnie@floorspot.org',
             'password' => '$2y$10$eljLQEcv5TU/7sgcBQZCMupOVkHPKIrPPXOgKmSs/MKlI9i.Mnp66'
            ]);
            $user->assignRole('admin');
+        $user = User::create([
+            'name' => 'Piotr Admin',
+            'email' => 'piotr.majdak@oeaw.ac.at',
+            'password' => '$2y$10$0zi3Fac89IwJ4cMLkHENTuTCfrWHey1A2qsUPX1DnhK3TTKn1RPcq'
+           ]);
+           $user->assignRole('admin');
+
 
     }
 }
