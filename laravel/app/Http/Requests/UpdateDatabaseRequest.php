@@ -35,7 +35,7 @@ class UpdateDatabaseRequest extends FormRequest
                 Rule::unique('databases')->ignore($this->route('database')->id) /* jw:note this prevents an update from complaining about uniqueness with itself */
             ],
             'description' => 'required|max:255',
-            'uploader_id' => 'required',
+            'user_id' => 'required',
         ];
     }
 
@@ -45,7 +45,7 @@ class UpdateDatabaseRequest extends FormRequest
     public function validationData()
     {
         return array_merge($this->all(), [
-            'uploader_id' => $this->user()->id
+            'user_id' => $this->user()->id
         ]);
     }
 }

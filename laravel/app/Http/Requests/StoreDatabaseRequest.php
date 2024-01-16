@@ -25,7 +25,7 @@ class StoreDatabaseRequest extends FormRequest
             //jw:todo add for rules here
             'title' => 'required|unique:databases,title|max:255',
             'description' => 'required|max:255',
-            'uploader_id' => '',
+            'user_id' => '',
         ];
     }
     /*
@@ -34,7 +34,7 @@ class StoreDatabaseRequest extends FormRequest
     public function validationData()
     {
         return array_merge($this->all(), [
-            'uploader_id' => $this->user()->id
+            'user_id' => $this->user()->id
         ]);
     }
 }

@@ -52,7 +52,7 @@ class DatabaseController extends Controller
      */
     public function show(Database $database)
     {
-        $user = \App\Models\User::where('id', $database->uploader_id)->first();
+        $user = \App\Models\User::where('id', $database->user_id)->first();
         return view('databases.show',[ 'database' => $database, 'user' => $user ]);
     }
 

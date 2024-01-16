@@ -13,7 +13,8 @@ class DatabasePolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+	    //
+	    return true;
     }
 
     /**
@@ -39,7 +40,7 @@ class DatabasePolicy
     public function update(User $user, Database $database): Response
     {
         // this is called from the controller edit function, when $this->authorize($database) is called.
-        return $user->id == $database->uploader_id
+        return $user->id == $database->user_id
             ? Response::allow()
             : Response::deny('You may not update this database, since you do not own it!');
     }
@@ -50,7 +51,7 @@ class DatabasePolicy
     public function delete(User $user, Database $database): Response
     {
         //
-        return $user->id == $database->uploader_id
+        return $user->id == $database->user_id
             ? Response::allow()
             : Response::deny('You may not delete this database, since you do not own it!');
 

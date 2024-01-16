@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Dataset extends Model
 {
@@ -24,4 +25,9 @@ class Dataset extends Model
         return $this->hasMany(File::class);
     }
 
+		//jw:note This creates the database->dataset relationship using standard column names
+		public function database(): BelongsTo
+		{
+			return $this->belongsTo(Database::class);
+		}
 }
