@@ -192,3 +192,8 @@ Drop all tables and reseed database with:
 
 Filament is a framework/stack with a panel, table and form builder. This may make it *much* easier to create interfaces to database tables.
 
+## Deploy
+
+You can deploy to the test server <http://sonicom-test.kfs.oeaw.ac.at> which will do a composer install and artisan migrate:fresh --seed in the post-receive hook
+
+	git push sonicom-test
