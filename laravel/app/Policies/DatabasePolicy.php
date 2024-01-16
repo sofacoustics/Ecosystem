@@ -22,7 +22,8 @@ class DatabasePolicy
      */
     public function view(User $user, Database $database): bool
     {
-        //
+			//
+			return true;
     }
 
     /**

@@ -61,6 +61,7 @@ class DatabaseResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -80,7 +81,8 @@ class DatabaseResource extends Resource
     {
         return [
             'index' => Pages\ListDatabases::route('/'),
-            'create' => Pages\CreateDatabase::route('/create'),
+						'create' => Pages\CreateDatabase::route('/create'),
+						'view' => Pages\ViewDatabase::route('/{record}'),
             'edit' => Pages\EditDatabase::route('/{record}/edit'),
         ];
     }
