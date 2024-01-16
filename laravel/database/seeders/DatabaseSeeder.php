@@ -25,7 +25,11 @@ class DatabaseSeeder extends Seeder
         Database::create(array('name' => 'A local database', 'description' => 'A truly unique database, I assure you!', 'user_id' => 1));
         Database::create(array('name' => 'Jonnie\'s ARI SOFA test 1', 'description' => 'Not much to say about this database.', 'user_id' => 1, 'radar_id' => 'iqcCQbvmGzYxYUne'));
         Database::create(array('name' => 'Jonnie\'s ARI SOFA test 2', 'description' => 'Nr. 2. \'Nuf said!', 'user_id' => 1, 'radar_id' => 'dEZxRRrxpiHSzbBZ'));
-        $this->call(MenuItemSeeder::class);
+				$this->call([
+					DatasetSeeder::class,
+					FileSeeder::class,
+					MenuItemSeeder::class,
+				]);
 
     }
 }

@@ -13,8 +13,8 @@ class DatasetSeeder extends Seeder
      */
     public function run(): void
     {
-        Dataset::create(array('name' => 'database 1 dataset 1', 'database_id' => 1));
-        Dataset::create(array('name' => 'database 1 dataset 2', 'database_id' => 1));
-        Dataset::create(array('name' => 'database 2 dataset 1', 'database_id' => 2));
+        Dataset::create(array('name' => 'database 1 dataset 1', 'description' => 'the first dataset', 'database_id' => 1));
+        Dataset::create(array('name' => 'database 1 dataset 2', 'description' => 'the second dataset', 'database_id' => 1));
+        Dataset::create(array('name' => 'database 2 dataset 1', 'description' => 'the first dataset of the second database', 'database_id' => 2));
     }
 }

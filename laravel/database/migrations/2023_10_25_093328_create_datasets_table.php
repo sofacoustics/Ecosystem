@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('datasets', function (Blueprint $table) {
             $table->id();
             $table->string('name'); 
+            $table->string('description'); 
             $table->integer('database_id')->unsigned();
             $table->foreign('database_id')->references('id')->on('databases')->onDelete('cascade');            
             $table->timestamps();
