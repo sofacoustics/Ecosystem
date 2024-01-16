@@ -48,12 +48,14 @@ class MenuItemSeeder extends Seeder
         'authenticated' => 0,
        ]);
 
+			 /*
        MenuItem::create([
         'id' => '5',
         'title' => 'Admin',
         'route' => 'admin',
         'authenticated' => 2,
-       ]);
+			 ]);
+				
       
        MenuItem::create([
         'id' => '6',
@@ -62,7 +64,7 @@ class MenuItemSeeder extends Seeder
         'parent_id' => '5',
         'authenticated' => 2,
        ]);
-
+				*/
 
 
 /*
