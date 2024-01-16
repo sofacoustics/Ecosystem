@@ -141,6 +141,7 @@ Files associated with datasets which are cached locally.
 - Run migration again (php artisan migrate) which will just run those not yet in the migrations table
 - Reseed using php artisan db:seed --class=<yourclassseeder, e.g. DatasetSeeder>
 
+
 ## Octave
 
 Note that the snap package wouldn't run the script - can't find nc-config
@@ -175,4 +176,10 @@ A 'datatype' is one of a predefined type of data which can be assigned to a data
 
 ### datasetdef
 
-A 'datasetdef' is a definition of which datatypes are in each dataset. E.g. a dataaset may contain two different hrtfs and one png per record. 
+A 'datasetdef' is a definition of which datatypes are in each dataset. E.g. a dataaset may contain two different hrtfs and one png per record.
+
+## Laravel
+
+### Filament
+
+Filament is a framework/stack with a panel, table and form builder. This may make it *much* easier to create interfaces to database tables.
