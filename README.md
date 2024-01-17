@@ -98,6 +98,9 @@ If you are pushing to a remote git repository, then a post-receive hook should r
 - [ ] Users: Add users to specific group on creation
 - [ ] Implement Sub menus
 - [ ] Test filament (https://filamentphp.com/docs) for database table views
+- [ ] PM: Provide examples to JS (Database/Dataset/Files, with links for visu and with cached visu results, and metadata [which?])
+- [ ] PM: provide a list of files to be processed to JS
+- [ ] PM: check which metadata will be stored in the database (=information quickly available without loading the dataset files)
 
 ## Place to push stuff when testing git deployment
 
