@@ -48,14 +48,13 @@ class MenuItemSeeder extends Seeder
         'authenticated' => 0,
        ]);
 
-			 /*
        MenuItem::create([
         'id' => '5',
         'title' => 'Admin',
-        'route' => 'admin',
+        'route' => 'filament.admin.pages.dashboard',
         'authenticated' => 2,
 			 ]);
-				
+			/*
       
        MenuItem::create([
         'id' => '6',
