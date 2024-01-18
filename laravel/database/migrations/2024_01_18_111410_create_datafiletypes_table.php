@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('datasetdefs', function (Blueprint $table) {
-					$table->id();
-          $table->integer('database_id')->unsigned();
-          $table->foreign('database_id')->references('id')->on('databases')->onDelete('cascade');
-          $table->timestamps();
+        Schema::create('datafiletypes', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
         });
     }
 
@@ -24,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('datasetdefs');
+        Schema::dropIfExists('datafiletypes');
     }
 };

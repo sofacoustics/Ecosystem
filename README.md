@@ -101,6 +101,7 @@ If you are pushing to a remote git repository, then a post-receive hook should r
 - [ ] PM: Provide examples to JS (Database/Dataset/Files, with links for visu and with cached visu results, and metadata [which?])
 - [ ] PM: provide a list of files to be processed to JS
 - [ ] PM: check which metadata will be stored in the database (=information quickly available without loading the dataset files)
+- [ ] JW: rename 'title' column to 'name' in Database table
 
 ## Place to push stuff when testing git deployment
 
