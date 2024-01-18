@@ -4,17 +4,16 @@ namespace App\Filament\Resources\DatasetResource\Pages;
 
 use App\Filament\Resources\DatasetResource;
 use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
+use Filament\Resources\Pages\ViewRecord;
 
-class EditDataset extends EditRecord
+class ViewDataset extends ViewRecord
 {
     protected static string $resource = DatasetResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\ViewAction::make(),
-            Actions\DeleteAction::make(),
+            Actions\EditAction::make(),
         ];
     }
 }

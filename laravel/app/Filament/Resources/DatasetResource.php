@@ -28,6 +28,8 @@ class DatasetResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('name')
                     ->required(),
+                Forms\Components\TextInput::make('description')
+                    ->required(),
             ]);
     }
 
@@ -39,6 +41,8 @@ class DatasetResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('description')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -53,6 +57,7 @@ class DatasetResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -65,7 +70,8 @@ class DatasetResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+					//
+					RelationManagers\DatafilesRelationManager::class,
         ];
     }
 
@@ -74,6 +80,7 @@ class DatasetResource extends Resource
         return [
             'index' => Pages\ListDatasets::route('/'),
             'create' => Pages\CreateDataset::route('/create'),
+            'view' => Pages\ViewDataset::route('/{record}'),
             'edit' => Pages\EditDataset::route('/{record}/edit'),
         ];
     }
