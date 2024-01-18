@@ -181,6 +181,10 @@ A 'datatype' is one of a predefined type of data which can be assigned to a data
 
 A 'datasetdef' is a definition of which datatypes are in each dataset. E.g. a dataaset may contain two different hrtfs and one png per record.
 
+### datafile
+
+A datafile associated with a dataset. E.g. one SOFA file or one PNG
+
 ## Laravel
 
 ### artisan
