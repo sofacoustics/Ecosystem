@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
 				$this->call([
 					DatasetSeeder::class,
 					DatafileSeeder::class,
+					DatafiletypeSeeder::class,
 					MenuItemSeeder::class,
 				]);
 
