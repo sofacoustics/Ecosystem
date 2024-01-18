@@ -26,7 +26,7 @@ class DatabaseResource extends Resource
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name')
                     ->required(),
-                Forms\Components\TextInput::make('title')
+                Forms\Components\TextInput::make('name')
                     ->required(),
                 Forms\Components\TextInput::make('description')
                     ->required(),
@@ -41,7 +41,7 @@ class DatabaseResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('title')
+                Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('description')
                     ->searchable(),
@@ -60,8 +60,8 @@ class DatabaseResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -72,17 +72,18 @@ class DatabaseResource extends Resource
 
     public static function getRelations(): array
     {
-			return [
-				RelationManagers\DatasetsRelationManager::class,
-			];
+        return [
+						//
+						RelationManagers\DatasetsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListDatabases::route('/'),
-						'create' => Pages\CreateDatabase::route('/create'),
-						'view' => Pages\ViewDatabase::route('/{record}'),
+            'create' => Pages\CreateDatabase::route('/create'),
+            'view' => Pages\ViewDatabase::route('/{record}'),
             'edit' => Pages\EditDatabase::route('/{record}/edit'),
         ];
     }
