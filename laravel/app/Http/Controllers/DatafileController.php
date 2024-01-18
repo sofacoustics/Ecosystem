@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\File;
+use App\Models\Datafile;
 use Illuminate\Http\Request;
 
-class FileController extends Controller
+class DatafileController extends Controller
 {
     public function __construct()
     {
@@ -20,8 +20,8 @@ class FileController extends Controller
     public function index()
     {
         //
-        $files = \App\Models\File::all();
-        return view('files\index', ['allFiles' => $files]);
+        $datafiles = \App\Models\Datafile::all();
+        return view('datafiles\index', ['allDatafiles' => $datafiles]);
 }
 
     /**
@@ -43,7 +43,7 @@ class FileController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(File $file)
+    public function show(Datafile $file)
     {
         //
     }
@@ -51,7 +51,7 @@ class FileController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(File $file)
+    public function edit(Datafile $file)
     {
         //
     }
@@ -59,7 +59,7 @@ class FileController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, File $file)
+    public function update(Request $request, Datafile $file)
     {
         //
     }
@@ -67,7 +67,7 @@ class FileController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(File $file)
+    public function destroy(Datafile $file)
     {
         //
     }

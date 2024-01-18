@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('files', function (Blueprint $table) {
+        Schema::create('datafiles', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->integer('dataset_id')->unsigned();
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('files');
+        Schema::dropIfExists('datafiles');
     }
 };

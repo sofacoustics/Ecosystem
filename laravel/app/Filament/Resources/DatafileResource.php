@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\FileResource\Pages;
-use App\Filament\Resources\FileResource\RelationManagers;
-use App\Models\File;
+use App\Filament\Resources\DatafileResource\Pages;
+use App\Filament\Resources\DatafileResource\RelationManagers;
+use App\Models\Datafile;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class FileResource extends Resource
+class DatafileResource extends Resource
 {
-    protected static ?string $model = File::class;
+    protected static ?string $model = Datafile::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -53,6 +53,7 @@ class FileResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -72,9 +73,10 @@ class FileResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListFiles::route('/'),
-            'create' => Pages\CreateFile::route('/create'),
-            'edit' => Pages\EditFile::route('/{record}/edit'),
+            'index' => Pages\ListDatafiles::route('/'),
+            'create' => Pages\CreateDatafile::route('/create'),
+            'view' => Pages\ViewDatafile::route('/{record}'),
+            'edit' => Pages\EditDatafile::route('/{record}/edit'),
         ];
     }
 }

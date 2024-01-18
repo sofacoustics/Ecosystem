@@ -4,16 +4,16 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\File;
+use App\Models\Datafile;
 
-class FileSeeder extends Seeder
+class DatafileSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        File::create(array('name' => 'file nr 1', 'dataset_id' => 1 ));
-        File::create(array('name' => 'file nr 2', 'dataset_id' => 1 ));
+        Datafile::create(array('name' => 'file nr 1', 'dataset_id' => 1 ));
+        Datafile::create(array('name' => 'file nr 2', 'dataset_id' => 1 ));
     }
 }

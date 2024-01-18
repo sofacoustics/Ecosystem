@@ -22,7 +22,7 @@ class Dataset extends Model
      */
     public function files(): HasMany
     {
-        return $this->hasMany(File::class);
+        return $this->hasMany(Datafile::class);
     }
 
 		//jw:note This creates the database->dataset relationship using standard column names

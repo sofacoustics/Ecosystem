@@ -14,14 +14,14 @@
         </div>
     @endif
 
-    <p>The following files are available</p>
+    <p>The following datafiles are available</p>
     <table class="table-auto">
         <tr class="text-left">
             <th>Title</th>
         </tr>
-    @foreach ($allFiles as $file)
+    @foreach ($allDatafiles as $datafile)
         <tr>
-            <td>{{ $file->name }}</td>
+            <td>{{ $datafile->name }}</td>
         </tr>
     @endforeach
     </table>
