@@ -20,7 +20,7 @@ class Dataset extends Model
      * 
      * https://laravel.com/docs/10.x/eloquent-relationships#one-to-many
      */
-    public function files(): HasMany
+    public function datafiles(): HasMany
     {
         return $this->hasMany(Datafile::class);
     }
