@@ -22,9 +22,9 @@ class AppPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        return $panel
+			return $panel
             ->id('app')
-            ->path('app')
+						->path('app')
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -35,8 +35,7 @@ class AppPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/App/Widgets'), for: 'App\\Filament\\App\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+							/*                Widgets\FilamentInfoWidget::class,*/
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -49,8 +48,7 @@ class AppPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-            ->authMiddleware([
-                Authenticate::class,
+						->authMiddleware([
             ]);
     }
 }
