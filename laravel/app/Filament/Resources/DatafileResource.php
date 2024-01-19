@@ -41,7 +41,7 @@ class DatafileResource extends Resource
                 Tables\Columns\TextColumn::make('dataset.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('datafiletype_id')
+                Tables\Columns\TextColumn::make('datafiletype.name')
                     ->numeric()
 										->sortable(),
                 Tables\Columns\TextColumn::make('name')
