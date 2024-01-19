@@ -13,7 +13,9 @@ class DatafileSeeder extends Seeder
      */
     public function run(): void
     {
-        Datafile::create(array('name' => 'A png file', 'dataset_id' => 1, 'datafiletype_id' => 1 ));
-        Datafile::create(array('name' => 'A jpg file', 'dataset_id' => 1, 'datafiletype_id' => 2 ));
+        Datafile::create(array('name' => 'hrtf las_nh4.sofa', 'dataset_id' => 1, 'datafiletype_id' => 3 ));
+        Datafile::create(array('name' => 'dtf las_nh4.sofa', 'dataset_id' => 1, 'datafiletype_id' => 5 ));
+        Datafile::create(array('name' => 'hrtf las_nh5.sofa', 'dataset_id' => 2, 'datafiletype_id' => 3 ));
+        Datafile::create(array('name' => 'dtf las_nh5.sofa', 'dataset_id' => 2, 'datafiletype_id' => 5 ));
     }
 }
