@@ -20,8 +20,8 @@ class Datafile extends Model
         return $this->belongsTo(Dataset::class);
 		}
 
-		public function datafiletype(): HasOne
+		public function datafiletype(): BelongsTo
 		{
-			return $this->hasOne(Datafiletype::class);
+			return $this->belongsTo(Datafiletype::class);
 		}
 }
