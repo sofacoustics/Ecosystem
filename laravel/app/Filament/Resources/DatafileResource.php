@@ -43,7 +43,7 @@ class DatafileResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('datafiletype_id')
                     ->numeric()
-                    ->sortable(),
+										->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
