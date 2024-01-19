@@ -21,7 +21,7 @@ class DatafileController extends Controller
     {
         //
         $datafiles = \App\Models\Datafile::all();
-        return view('datafiles\index', ['allDatafiles' => $datafiles]);
+        return view('datafiles.index', ['allDatafiles' => $datafiles]);
 }
 
     /**
