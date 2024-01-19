@@ -13,7 +13,7 @@ class DatafileSeeder extends Seeder
      */
     public function run(): void
     {
-        Datafile::create(array('name' => 'file nr 1', 'dataset_id' => 1 ));
-        Datafile::create(array('name' => 'file nr 2', 'dataset_id' => 1 ));
+        Datafile::create(array('name' => 'A png file', 'dataset_id' => 1, 'datafiletype_id' => 1 ));
+        Datafile::create(array('name' => 'A jpg file', 'dataset_id' => 1, 'datafiletype_id' => 2 ));
     }
 }

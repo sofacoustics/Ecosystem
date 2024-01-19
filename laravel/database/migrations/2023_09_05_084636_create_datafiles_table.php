@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('dataset_id')->unsigned();
+            $table->integer('datafiletype_id')->unsigned();
             $table->foreign('dataset_id')->references('id')->on('datasets')->onDelete('cascade');
+            $table->foreign('datafiletype_id')->references('id')->on('datafiletypes')->onDelete('cascade');
             $table->timestamps();
         });
     }

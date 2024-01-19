@@ -27,8 +27,8 @@ class DatabaseSeeder extends Seeder
         Database::create(array('name' => 'Jonnie\'s ARI SOFA test 2', 'description' => 'Nr. 2. \'Nuf said!', 'user_id' => 1, 'radar_id' => 'dEZxRRrxpiHSzbBZ'));
 				$this->call([
 					DatasetSeeder::class,
-					DatafileSeeder::class,
 					DatafiletypeSeeder::class,
+					DatafileSeeder::class,
 					MenuItemSeeder::class,
 				]);
 
