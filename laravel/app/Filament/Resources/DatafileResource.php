@@ -19,7 +19,9 @@ class DatafileResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+		protected static ?string $navigationGroup = 'Data';
+		
+		public static function form(Form $form): Form
     {
         return $form
             ->schema([

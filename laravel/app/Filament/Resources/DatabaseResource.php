@@ -18,6 +18,8 @@ class DatabaseResource extends Resource
     protected static ?string $model = Database::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+		
+		protected static ?string $navigationGroup = 'Data';
 
     public static function form(Form $form): Form
     {
