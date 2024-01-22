@@ -22,6 +22,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
 				$permission = Permission::create(['name' => 'add datafiletypes']);
 
+        $role = Role::create(['name' => 'curator']);
         $role = Role::create(['name' => 'admin']);
 				$role->givePermissionTo(Permission::all());
 
