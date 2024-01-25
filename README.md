@@ -205,3 +205,6 @@ Filament is a framework/stack with a panel, table and form builder. This may mak
 You can deploy to the test server <http://sonicom-test.kfs.oeaw.ac.at> which will do a composer install and artisan migrate:fresh --seed in the post-receive hook
 
 	git push sonicom-test
+
+
+jw:note
