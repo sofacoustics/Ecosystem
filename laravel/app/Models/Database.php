@@ -20,11 +20,16 @@ class Database extends Model
     public function datasets(): HasMany
     {
         return $this->hasMany(Dataset::class);
-		}
+	}
 
-		//jw:note Specifying this relationship connects the column user_id with the User table
-		public function user(): BelongsTo
-		{
-			return $this->belongsTo(User::class);
-		}
+    //jw:note Specifying this relationship connects the column user_id with the User table
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function datasetdefs(): HasMany
+    {
+        return $this->hasMany(Datasetdef::class);
+    }
 }
