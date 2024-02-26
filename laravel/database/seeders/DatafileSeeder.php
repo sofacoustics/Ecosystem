@@ -13,9 +13,16 @@ class DatafileSeeder extends Seeder
      */
     public function run(): void
     {
-        Datafile::create(array('name' => 'hrtf las_nh4.sofa', 'dataset_id' => 1, 'datafiletype_id' => 3 ));
-        Datafile::create(array('name' => 'dtf las_nh4.sofa', 'dataset_id' => 1, 'datafiletype_id' => 5 ));
-        Datafile::create(array('name' => 'hrtf las_nh5.sofa', 'dataset_id' => 2, 'datafiletype_id' => 3 ));
-        Datafile::create(array('name' => 'dtf las_nh5.sofa', 'dataset_id' => 2, 'datafiletype_id' => 5 ));
+        // ARI B
+        Datafile::create(array('name' => 'dtf b_nh4.sofa', 'dataset_id' => 1, 'datafiletype_id' => 3  ));
+        Datafile::create(array('name' => 'hrtf b_nh4.sofa', 'dataset_id' => 1, 'datafiletype_id' => 3 ));
+        Datafile::create(array('name' => 'ear right.JPG', 'dataset_id' => 1, 'datafiletype_id' => 1 ));
+        Datafile::create(array('name' => 'ear left.JPG', 'dataset_id' => 1, 'datafiletype_id' => 1 ));
+        Datafile::create(array('name' => 'dtf b_nh5.sofa', 'dataset_id' => 2, 'datafiletype_id' => 3 ));
+        Datafile::create(array('name' => 'hrtf b_nh5.sofa', 'dataset_id' => 2, 'datafiletype_id' => 3 ));
+        Datafile::create(array('name' => 'ear right.JPG', 'dataset_id' => 2, 'datafiletype_id' => 1 ));
+        Datafile::create(array('name' => 'ear left.JPG', 'dataset_id' => 2, 'datafiletype_id' => 1 ));
+         
+        
     }
 }
