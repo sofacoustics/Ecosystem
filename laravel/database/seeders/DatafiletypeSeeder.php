@@ -17,7 +17,5 @@ class DatafiletypeSeeder extends Seeder
        Datafiletype::create([ 'name' => 'jpg', 'description' => 'A jpg image file', ]);
        Datafiletype::create([ 'name' => 'png', 'description' => 'A png image file', ]);
        Datafiletype::create([ 'name' => 'HRTF.sofa', 'description' => 'A HRTF file in SOFA format', ]);
-       Datafiletype::create([ 'name' => 'BRIR.sofa', 'description' => 'A BRIR file in SOFA format', ]);
-       Datafiletype::create([ 'name' => 'DTF.sofa', 'description' => 'A DTF file in SOFA format', ]);
     }
 }
