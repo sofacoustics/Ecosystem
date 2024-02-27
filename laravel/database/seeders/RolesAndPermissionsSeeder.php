@@ -21,10 +21,19 @@ class RolesAndPermissionsSeeder extends Seeder
 
 
 				$permission = Permission::create(['name' => 'add datafiletypes']);
+				$permission = Permission::create(['name' => 'add datasetdefs']);
+				$permission = Permission::create(['name' => 'add databases']);
 
-        $role = Role::create(['name' => 'curator']);
-        $role = Role::create(['name' => 'admin']);
-				$role->givePermissionTo(Permission::all());
+        $contributor = Role::create(['name' => 'contributor']);
+        $contributor->givePermissionTo('add databases');
+        $contributor->givePermissionTo('add datasetdefs');
+        $contributor->givePermissionTo('add datafiletypes');
+        $curator = Role::create(['name' => 'curator']);
+        $curator->givePermissionTo('add databases');
+        $curator->givePermissionTo('add datasetdefs');
+        $curator->givePermissionTo('add datafiletypes');
+        $admin = Role::create(['name' => 'admin']);
+				$admin->givePermissionTo(Permission::all());
 
 
     }
