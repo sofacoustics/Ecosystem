@@ -14,6 +14,7 @@ class DatasetdefPolicy
     public function viewAny(User $user): bool
     {
         //
+        return true;
     }
 
     /**
@@ -29,7 +30,9 @@ class DatasetdefPolicy
      */
     public function create(User $user): bool
     {
-        //
+        if ($user->can('add datasetdefs'))
+			return true;
+        return false;
     }
 
     /**
@@ -37,7 +40,9 @@ class DatasetdefPolicy
      */
     public function update(User $user, Datasetdef $datasetdef): bool
     {
-        //
+        if ($user->can('add datasetdefs') && $user->id == $datasetdef->database->user_id)
+			return true;
+        return false;
     }
 
     /**
