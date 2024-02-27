@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Datasetdef;
+use App\Models\Database;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -23,6 +24,7 @@ class DatasetdefPolicy
     public function view(User $user, Datasetdef $datasetdef): bool
     {
         //
+        return true;
     }
 
     /**
@@ -50,7 +52,10 @@ class DatasetdefPolicy
      */
     public function delete(User $user, Datasetdef $datasetdef): bool
     {
-        //
+        $database = Database::find($datasetdef->database_id);
+        if($user->id == $database->user_id)
+            return true;
+        return false;
     }
 
     /**
