@@ -18,10 +18,15 @@ class Datafile extends Model
     public function dataset(): BelongsTo
     {
         return $this->belongsTo(Dataset::class);
-		}
+    }
 
-		public function datafiletype(): BelongsTo
-		{
-			return $this->belongsTo(Datafiletype::class);
-		}
+    public function datafiletype(): BelongsTo
+    {
+        return $this->belongsTo(Datafiletype::class);
+    }
+
+    public function path()
+    {
+        return $this->dataset->database()->get()->value('id')."/".$this->dataset()->get()->value('id')."/".$this->id;
+    }
 }
