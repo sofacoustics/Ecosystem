@@ -12,7 +12,7 @@ class Dataset extends Model
     use HasFactory;
     
     protected $fillable = [
-        'id', 'name', 'database_id'
+        'id', 'name', 'description', 'database_id'
     ];    
 
     /**
@@ -26,8 +26,8 @@ class Dataset extends Model
     }
 
 		//jw:note This creates the database->dataset relationship using standard column names
-		public function database(): BelongsTo
-		{
-			return $this->belongsTo(Database::class);
-		}
+    public function database(): BelongsTo
+    {
+        return $this->belongsTo(Database::class);
+    }
 }
