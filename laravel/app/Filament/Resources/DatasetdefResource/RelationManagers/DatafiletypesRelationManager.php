@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class DatafiletypesRelationManager extends RelationManager
 {
-    protected static string $relationship = 'datafiletypes';
+    protected static string $relationship = 'datafiletype';
 
     public function form(Form $form): Form
     {
