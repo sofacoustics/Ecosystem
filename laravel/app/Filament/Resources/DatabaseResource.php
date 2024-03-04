@@ -51,6 +51,7 @@ class DatabaseResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('radar_id')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('datasets_count')->counts('datasets'), /* https://filamentphp.com/docs/3.x/tables/columns/relationships#counting-relationships */
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
