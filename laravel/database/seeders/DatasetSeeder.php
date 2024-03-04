@@ -13,7 +13,8 @@ class DatasetSeeder extends Seeder
      */
     public function run(): void
     {
-        Dataset::create(array('name' => 'las_nh4', 'description' => 'las_nh4', 'database_id' => 1));
-        Dataset::create(array('name' => 'las_nh5', 'description' => 'las_nh5', 'database_id' => 1));
+        Dataset::create(array('name' => 'nh4', 'description' => 'nh4', 'database_id' => 1));
+        Dataset::create(array('name' => 'nh5', 'description' => 'nh5', 'database_id' => 1));
+        Dataset::create(array('name' => 'nh4', 'description' => 'nh4', 'database_id' => 2));
     }
 }
