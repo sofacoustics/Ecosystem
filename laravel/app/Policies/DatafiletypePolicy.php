@@ -53,6 +53,9 @@ class DatafiletypePolicy
     public function delete(User $user, Datafiletype $datafiletype): bool
     {
         //
+        if($user->can('delete datasettypes'))
+            return true;
+        return false;
     }
 
     /**
