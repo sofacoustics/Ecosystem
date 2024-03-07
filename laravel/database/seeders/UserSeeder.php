@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
 			// Possibly create a hashed password using php artisan tinker
 			// Then write echo Hash::make('somestring');
         $user = User::create([
-            'name' => 'Jonnie Stuefer',
+            'name' => 'Jonnie Admin',
             'email' => 'jonnie@floorspot.org',
             'password' => '$2y$10$eljLQEcv5TU/7sgcBQZCMupOVkHPKIrPPXOgKmSs/MKlI9i.Mnp66'
            ]);
@@ -29,7 +29,10 @@ class UserSeeder extends Seeder
             'password' => '$2y$10$0zi3Fac89IwJ4cMLkHENTuTCfrWHey1A2qsUPX1DnhK3TTKn1RPcq'
            ]);
            $user->assignRole('admin');
-
-
+        $user = User::create([
+            'name' => 'Jonnie User',
+            'email' => 'jonathan.stuefer@oeaw.ac.at',
+            'password' => '$2y$10$eljLQEcv5TU/7sgcBQZCMupOVkHPKIrPPXOgKmSs/MKlI9i.Mnp66'
+           ]);
     }
 }
