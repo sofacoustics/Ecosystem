@@ -46,10 +46,11 @@ class DatafileResource extends Resource
                     ->moveFiles()
                     ->directory(function (?Datafile $record) {
                         return $record->path();
+                        /*
                         return $record->dataset->database()->get()->value('id')."/".$record->dataset()->get()->value('id')."/".$record->id;
                         return $record->dataset->database()->get()->value('id');
                         return $record->dataset()->get()->value('id');
-                        return $record->id;
+                        return $record->id;*/
                     }) 
                     /*
                     ->directory(function (RelationManager $livewire): int {

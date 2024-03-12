@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\DatasetdefResource\Pages;
-use App\Filament\Resources\DatasetdefResource\RelationManagers;
-use App\Models\Datasetdef;
+use App\Filament\Resources\ToolResource\Pages;
+use App\Filament\Resources\ToolResource\RelationManagers;
+use App\Models\Tool;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,32 +13,24 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class DatasetdefResource extends Resource
+class ToolResource extends Resource
 {
-    protected static ?string $model = Datasetdef::class;
+    protected static ?string $model = Tool::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-	
-		protected static ?string $navigationGroup = 'Data';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('database_id')
-                    ->relationship('database', 'name')
-                    ->required(), 
-                Forms\Components\Select::make('datafiletype_id')
-                    ->relationship('datafiletype', 'name')
-                    ->required(),
-/*                Forms\Components\TextInput::make('tool_id')
-                    ->required()
-                    ->numeric(),*/
-                Forms\Components\Select::make('tool_id')
-                    ->relationship('tool', 'name')
-                    ->required(),                  
                 Forms\Components\TextInput::make('name')
                     ->required(),
+                Forms\Components\TextInput::make('description')
+                    ->required(),
+                Forms\Components\TextInput::make('scriptname'),
+                Forms\Components\TextInput::make('scriptpath'),
+                Forms\Components\TextInput::make('scriptparameters'),
+                Forms\Components\TextInput::make('externalurl'),
             ]);
     }
 
@@ -46,13 +38,17 @@ class DatasetdefResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('database.name')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('datafiletype.name')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('tool.name')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('description')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('scriptname')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('scriptpath')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('scriptparameters')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('externalurl')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -79,7 +75,6 @@ class DatasetdefResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\DatafiletypesRelationManager::class,
             //
         ];
     }
@@ -87,9 +82,9 @@ class DatasetdefResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListDatasetdefs::route('/'),
-            'create' => Pages\CreateDatasetdef::route('/create'),
-            'edit' => Pages\EditDatasetdef::route('/{record}/edit'),
+            'index' => Pages\ListTools::route('/'),
+            'create' => Pages\CreateTool::route('/create'),
+            'edit' => Pages\EditTool::route('/{record}/edit'),
         ];
     }
 }

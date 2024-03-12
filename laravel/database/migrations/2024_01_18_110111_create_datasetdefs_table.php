@@ -16,6 +16,7 @@ return new class extends Migration
           $table->integer('database_id')->unsigned();
           $table->string('name', 100);
           $table->integer('datafiletype_id')->unsigned();
+          $table->foreignId('tool_id')->nullable()->constrained();
           $table->foreign('database_id')->references('id')->on('databases')->onDelete('cascade');
           $table->foreign('datafiletype_id')->references('id')->on('datafiletypes')->onDelete('cascade');
           $table->timestamps();

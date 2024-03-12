@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Datafile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
 
 class DatafileController extends Controller
 {
@@ -46,6 +48,8 @@ class DatafileController extends Controller
     public function show(Datafile $file)
     {
         //
+        $contents = Storage::disk('public')->get('test.txt');
+        print_r($contents);
     }
 
     /**

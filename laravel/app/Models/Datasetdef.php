@@ -19,4 +19,8 @@ class Datasetdef extends Model
     {
         return $this->belongsTo(Datafiletype::class);
     }
+    public function tool(): BelongsTo
+    {
+        return $this->belongsTo(Tool::class);
+    }
 }
