@@ -2,11 +2,11 @@
 
 namespace App\Listeners;
 
-use App\Events\FileUploaded;
+use App\Events\DatafileUploaded;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class SendFileNotification
+class SendDatafileNotification
 {
     /**
      * Create the event listener.
@@ -19,7 +19,7 @@ class SendFileNotification
     /**
      * Handle the event.
      */
-    public function handle(FileUploaded $event): void
+    public function handle(DatafileUploaded $event): void
     {
         //
     }
