@@ -22,5 +22,7 @@ class SendDatafileNotification
     public function handle(DatafileUploaded $event): void
     {
         //
+        $path = $event->datafile->path();
+        echo $path;
     }
 }

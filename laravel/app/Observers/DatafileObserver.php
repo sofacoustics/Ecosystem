@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Datafile;
+use App\Events\DatafileUploaded;
 
 class DatafileObserver
 {
@@ -21,6 +22,7 @@ class DatafileObserver
     {
         //
         $path = $datafile->path();
+        DatafileUploaded::dispatch($datafile);
     }
 
     /**
