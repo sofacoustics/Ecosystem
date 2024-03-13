@@ -12,7 +12,7 @@ class Datafile extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id', 'name', 'dataset_id', 'datafiletype_id'
+        'id', 'name', 'location', 'dataset_id', 'datafiletype_id'
     ];
 
     public function dataset(): BelongsTo

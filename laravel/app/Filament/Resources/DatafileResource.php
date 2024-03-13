@@ -41,24 +41,14 @@ class DatafileResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('name')
                     ->required(),
-                FileUpload::make('attachment')
+                FileUpload::make('location') /* jw:note this is a database column! */
                     ->disk('public')
                     ->moveFiles()
+                    ->visibility('public')
+                    /*->previewable(false)*/
                     ->directory(function (?Datafile $record) {
                         return $record->path();
-                        /*
-                        return $record->dataset->database()->get()->value('id')."/".$record->dataset()->get()->value('id')."/".$record->id;
-                        return $record->dataset->database()->get()->value('id');
-                        return $record->dataset()->get()->value('id');
-                        return $record->id;*/
                     }) 
-                    /*
-                    ->directory(function (RelationManager $livewire): int {
-                        return $livewire->getOwnerRecords()->stores()
-                          ->value('id');
-                    })*/
-                    /*->directory(Datafile::where('id', Request::segments()[1])->get()->value('id'))*/
-/*                    ->directory(Database::where('id', 1)->get()->value('id')."/".Dataset::where('id',))*/
                     ->preserveFilenames(),
             ]);
     }
