@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('datafiles', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('location')->nullable();
             $table->integer('dataset_id')->unsigned();
             $table->integer('datafiletype_id')->unsigned();
             $table->foreign('dataset_id')->references('id')->on('datasets')->onDelete('cascade');
