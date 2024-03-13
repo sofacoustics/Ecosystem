@@ -35,7 +35,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $curator = Role::create(['name' => 'curator']);
         $curator->givePermissionTo('add databases');
         $curator->givePermissionTo('add datasetdefs');
-        $curator->givePermissionTo('add datafiletypes');*/
+        $curator->givePermissionTo('add datafiletypes');
         $curator->givePermissionTo('add tool');
         $curator->givePermissionTo('edit tool');
         $admin = Role::create(['name' => 'admin']);
