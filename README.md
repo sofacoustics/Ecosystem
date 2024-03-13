@@ -200,6 +200,15 @@ Drop all tables and reseed database with:
 
 Filament is a framework/stack with a panel, table and form builder. This may make it *much* easier to create interfaces to database tables.
 
+Create a resource for a table with
+
+	php artisan make:filament-resource Dataset --generate
+
+#### Nested Resources
+
+https://laraveldaily.com/post/filament-v3-nested-resources-trait-pages
+https://github.com/GuavaCZ/filament-nested-resources
+
 ## Deploy
 
 You can deploy to the test server <http://sonicom-test.kfs.oeaw.ac.at> which will do a composer install and artisan migrate:fresh --seed in the post-receive hook
