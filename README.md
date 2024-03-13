@@ -74,6 +74,27 @@ In visual studio code, start a 'Listen for xdebug' session.
 
 The same as for Linux
 
+### WSL
+
+Got xdebug working with the following php.ini configuration
+
+	[Xdebug]
+	zend_extension=xdebug
+	xdebug.remote_enable=on
+	xdebug.remote_autostart=1;
+	xdebug.log=/tmp/xdebug.log
+	xdebug.mode=debug
+	xdebug.start_with_request=yes
+
+And the default .launch Listen for debug
+
+	{
+		"name": "Listen for Xdebug",
+		"type": "php",
+		"request": "launch",
+		"port": 9003
+	},
+
 ## git
 
 If you are pushing to a remote git repository, then a post-receive hook should run:
