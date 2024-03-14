@@ -177,7 +177,7 @@ Modify /etc/octaverc on Ubuntu to add paths
 
 ## Terminology
 
-### database
+## database
 
 A 'database' is a collection of data in a specific collation of formats. E.g. a collection of HRTF data, where each database record contains one HRTF and one PNG.
 
@@ -216,6 +216,10 @@ A datafile associated with a dataset. E.g. one SOFA file or one PNG
 Drop all tables and reseed database with:
 
 	php artisan migrate:fresh --seed
+
+### events/listeners/observers
+
+It appears that if you want to, e.g., do something when an entry in the database is changed, you create an event for that model, and a listener for that event, and then an observer for that model. E.g. https://www.slingacademy.com/article/observers-and-event-listeners-in-laravel-a-practical-guide/#Setting_Up_Observers
 
 ### Filament
 
