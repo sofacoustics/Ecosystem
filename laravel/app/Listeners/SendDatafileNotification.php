@@ -23,6 +23,5 @@ class SendDatafileNotification
     {
         //
         $path = $event->datafile->path();
-        echo $path;
     }
 }
