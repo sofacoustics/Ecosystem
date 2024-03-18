@@ -229,6 +229,8 @@ Create a resource for a table with
 
 	php artisan make:filament-resource Dataset --generate
 
+Note that for the FileUpload, the upload_max_filesize php setting must be large enough!
+
 #### Nested Resources
 
 https://laraveldaily.com/post/filament-v3-nested-resources-trait-pages
