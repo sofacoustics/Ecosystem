@@ -22,6 +22,7 @@ class DatafileObserver
     {
         //
         $path = $datafile->path();
+        $location = $datafile->location;
         DatafileUploaded::dispatch($datafile);
     }
 
