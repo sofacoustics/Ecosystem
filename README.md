@@ -79,7 +79,7 @@ The same as for Linux
 Got xdebug working with the following php.ini configuration
 
 	[Xdebug]
-	zend_extension=xdebug
+	;zend_extension=xdebug
 	xdebug.remote_enable=on
 	xdebug.remote_autostart=1;
 	xdebug.log=/tmp/xdebug.log
@@ -118,11 +118,11 @@ If you are pushing to a remote git repository, then a post-receive hook should r
 - [ ] Start using github issues
 - [ ] Users: Add users to specific group on creation
 - [ ] Implement Sub menus
-- [ ] Test filament (https://filamentphp.com/docs) for database table views
+- [x] Test filament (https://filamentphp.com/docs) for database table views
 - [ ] PM: Provide examples to JS (Database/Dataset/Files, with links for visu and with cached visu results, and metadata [which?])
 - [ ] PM: provide a list of files to be processed to JS
 - [ ] PM: check which metadata will be stored in the database (=information quickly available without loading the dataset files)
-- [ ] JW: rename 'title' column to 'name' in Database table
+- [x] JW: rename 'title' column to 'name' in Database table
 
 ## Place to push stuff when testing git deployment
 
@@ -217,9 +217,12 @@ Drop all tables and reseed database with:
 
 	php artisan migrate:fresh --seed
 
-### events/listeners/observers
+### events/listeners/observers/jobs
 
 It appears that if you want to, e.g., do something when an entry in the database is changed, you create an event for that model, and a listener for that event, and then an observer for that model. E.g. https://www.slingacademy.com/article/observers-and-event-listeners-in-laravel-a-practical-guide/#Setting_Up_Observers
+
+If you want to *debug* a job in a queue, you need to use the 'sync' QUEUE_CONNECTION, since the php debugger won't stop in the event/listener/job code, if you use, e.g., 'database'
+
 
 ### Filament
 
