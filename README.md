@@ -219,10 +219,12 @@ Drop all tables and reseed database with:
 
 ### events/listeners/observers/jobs
 
-It appears that if you want to, e.g., do something when an entry in the database is changed, you create an event for that model, and a listener for that event, and then an observer for that model. E.g. https://www.slingacademy.com/article/observers-and-event-listeners-in-laravel-a-practical-guide/#Setting_Up_Observers
+You can observe for database changes in an 'Observer' and dispatch a Job from that observer.
+An alternative would be to use a 'listener' and an 'event'.
+
+<https://www.slingacademy.com/article/observers-and-event-listeners-in-laravel-a-practical-guide/#Setting_Up_Observers>
 
 If you want to *debug* a job in a queue, you need to use the 'sync' QUEUE_CONNECTION, since the php debugger won't stop in the event/listener/job code, if you use, e.g., 'database'
-
 
 ### Filament
 
