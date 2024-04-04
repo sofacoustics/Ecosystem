@@ -10,6 +10,7 @@ composer 2.2
 mailpit
 nodejs
 npm
+supervisor
 
 ## Install
 
