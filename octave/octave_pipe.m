@@ -1,5 +1,9 @@
 %
 %	Test pipe in Octave
+% 
+%	Usage: octave-cli octave_pipe.m
+%
+%	Exit by sending the word 'exit' to the pipe.
 %
 arg_list = argv ();
 printf("n args = %d\n", nargin);
@@ -94,5 +98,6 @@ while true
 endwhile
 
 fclose(fid);
+printf("Deleting %s\n", pipename);
 delete(pipename);
 
