@@ -35,14 +35,18 @@
         </tr>
     @endforeach
 		</table>
-		//jw:tmp testing relationships
-		//
+		//jw:tmp testing relationships<br>
+		
 		@foreach ($allDatabases as $database)
-			{{ $database->name }} <br>
-			{{--"{{ \App\Models\Dataset::where('database_id', $database->id)->first() }}" <br>--}}
-			{{ \App\Models\Dataset::all() }} <br>
+			Database: {{ $database->name }} <br>
+            @foreach ($database->datasets as $dataset)
+                - Dataset: {{ $dataset }} <br>
+                @foreach ($dataset->datafiles as $datafile)
+                - - Datafile: {{ $datafile }}<br>
+                - - - {{ $datafile->dataset->database->id }}<br>
+                @endforeach
 
-			{{ $database->relation }} <br>
+            @endforeach
 
-    @endforeach
+        @endforeach
 	</x-app-layout>

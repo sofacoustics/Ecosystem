@@ -21,7 +21,7 @@
         </tr>
     @foreach ($allDatafiles as $datafile)
         <tr>
-            <td>{{ $datafile->name }} ({{ $datafile->datafiletype->name }})</td>
+            <td>{{ $datafile->name }} (datasetdef: {{ $datafile->datasetdef->name }})</td>
         </tr>
     @endforeach
     </table>

@@ -36,8 +36,8 @@ class DatafileResource extends Resource
                 Forms\Components\Select::make('dataset_id')
                     ->relationship('dataset', 'name')
                     ->required(),
-                Forms\Components\Select::make('datafiletype_id')
-                    ->relationship('datafiletype', 'name')
+                Forms\Components\Select::make('datasetdef_id')
+                    ->relationship('datasetdef', 'name')
                     ->required(),
                 Forms\Components\TextInput::make('name')
                     ->required(),
@@ -60,9 +60,9 @@ class DatafileResource extends Resource
                 Tables\Columns\TextColumn::make('dataset.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('datafiletype.name')
+                Tables\Columns\TextColumn::make('datasetdef.name')
                     ->numeric()
-										->sortable(),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
