@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('scriptname')->nullable();
             $table->string('scriptpath')->nullable();
             $table->string('scriptparameters')->nullable();
+            $table->string('functionname')->nullable();
             $table->string('externalurl')->nullable();
             $table->timestamps();
         });

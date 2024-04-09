@@ -19,6 +19,7 @@ class ToolSeeder extends Seeder
         'scriptname' => 'CreateFigures.m',
         'scriptpath' => 'jw:todo',
         'scriptparameters' => 'jw:todo',
+        'functionname' => 'CreateFigures',
         'externalurl' => null
         ));
        Tool::create(array('name' => 'Octave BRIR', 
