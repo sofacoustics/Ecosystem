@@ -85,7 +85,21 @@ printf("Listening to pipe file %s\n", pipename);
 while true
 	  str = fgetl(fid);
 	  printf("'%s'\n", str);
-	  %jw:todo run code here
+	  len = length(str);
+	  n = index(str, ' ');
+	  if(n > 1)
+		  fname = strtrim(substr(str, 1, n)); % function name
+		  printf("function name = '%s'\n", fname);
+		  arguments = strtrim(substr(str, n));
+		  printf("arguments = '%s'\n", arguments);
+	  endif
+
+	  if(length(fname)>0)
+		%jw:todo run code here
+		feval(fname, arguments);
+	  endif
+
+	  
 		if(strncmp(str,"exit",4)==1)
 			printf("Exiting\n");
 			break;
