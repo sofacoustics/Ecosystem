@@ -15,6 +15,12 @@ class HRTFCreateFigures implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /*
+    public $pipefile;
+    public $function;
+    public $parameters;
+    */
+
     /**
      * Create a new job instance.
      */
@@ -27,12 +33,13 @@ class HRTFCreateFigures implements ShouldQueue
      */
     public function handle(): void
     {
+      app('log')->info('HRTFCreateFigures::handle()');
+      //app('log')->info('HRTFCreateFigures::handle() - $datafile->name = ' + $datafile->name);
+      app('log')->info('HRTFCreateFigures::handle() - $datafile->name = ' . $this->datafile->name);
 			//
-			$bla = 2; // do something here
-      $result = Process::run('octave-cli /home/jw/git/isf-sonicom-laravel/octave/octavetest.m');
-      // write to octave pipe file here
-      file_put_contents('/tmp/octave-pipe "text from laravel handle!"');
-			$bla = 3;
-			sleep(2);
+      //$result = Process::run('octave-cli /home/jw/git/isf-sonicom-laravel/octave/octavetest.m');
+      $name = $this->datafile->name; 
+      $scriptname = $this->datafile->tools->scriptname;
+      app('log')->info('HRTFCreateFigures::handle() - $datafile->tools-scriptname = ' . $scriptname);
     }
 }
