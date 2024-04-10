@@ -22,14 +22,16 @@ SOFAstart; % remove this optionally
 % warning('off','SOFA:load');
 % warning('off','SOFA:save');
 % warning('off','SOFA:save:API');
+warning('off'); %jw:note disable all warnings
 
 %jw:note Check if function called with parameter. If not, use command line parameter^M
 if(exist("SOFAfile"))
 	if(length(SOFAfile)==0)
-		disp('SOFAfile is empty');
+		disp('The SOFA file name SOFAfile is empty');
 	end
 else
-	disp("SOFAfile does not exist");
+	% Use command line parameter for SOFAfile
+	% disp("SOFAfile does not exist");
 	disp(argv);
 	arg_list = argv();
 	fn = arg_list{1};
