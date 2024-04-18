@@ -10,7 +10,7 @@ printf("n args = %d\n", nargin);
 if(nargin > 0)
 	pipename=arg_list{1};
 else
-	pipename="/tmp/sonicom-octave-pipe";
+	pipename="/var/run/sonicom-octave-pipe";
 endif
 for i = 1:nargin
 	  printf (" %s", arg_list{i});
@@ -25,11 +25,11 @@ if(exist(pipename)==2)
 endif
 
 printf("mkfifo\n");
-system(['mkfifo ' pipename]); % öffnet eine named pipe namens myfifo
+system(['mkfifo -m 666' pipename]); % öffnet eine named pipe namens myfifo
 printf("fopen\n");
 fid=fopen(pipename,'r'); % öffnet um zu lesen
 printf("Listening to pipe file %s\n", pipename);
-
+stat(pipename);
 
 
 %s=fgets(fid);
