@@ -36,14 +36,35 @@ class Datafile extends Model
         return $this->belongsTo(Datasetdef::class);
     }
 
-    public function path()
+    /*
+        Return the directory containing this file
+    */
+    public function directory()
     {
         return $this->dataset->database()->get()->value('id')."/".$this->dataset()->get()->value('id')."/".$this->id;
     }
 
+    public function path()
+    {
+        return $this->directory() . "/" . $this->name;
+    }
+
     public function localpath()
     {
-        $path = Storage::disk('local')->get($this->path() . '/' . $this->name);
+        $path = $this->path();
+        $name = $this->name;
+        $localpath = Storage::disk('local')->get($path . '/' . $this->name);
         return $path;
+    }
+
+    /*
+        Return the absolute path to the data file
+    */
+    public function absolutepath()
+    {
+        $path = $this->path();
+        $name = $this->name;
+        $absolutepath = Storage::path('public/'.$path."/".$name);
+        return $absolutepath;
     }
 }

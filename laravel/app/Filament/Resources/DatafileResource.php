@@ -47,7 +47,7 @@ class DatafileResource extends Resource
                     ->visibility('public')
                     /*->previewable(false)*/
                     ->directory(function (?Datafile $record) {
-                        return $record->path();
+                        return $record->directory();
                     }) 
                     ->preserveFilenames(),
             ]);

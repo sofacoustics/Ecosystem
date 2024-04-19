@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Jobs\HRTFCreateFigures;
+use App\Jobs\OctaveCli;
 use App\Jobs\OctavePipe;
 use App\Models\Datafile;
 use App\Events\DatafileUploaded;
@@ -29,7 +30,6 @@ class DatafileObserver
         $name = $datafile->name;
         $location = $datafile->location;
         $localpath = $datafile->localpath();
-        //HRTFCreateFigures::dispatch($datafile);
         // if location exists, then send to Octave job
         if($datafile->location != null) 
         {
@@ -54,7 +54,13 @@ class DatafileObserver
             app('log')->info('DatafileObserver::updated() - $tool->functionname = ' . $tool->functionname); 
             //jw:note If you want to debug a job, you *must* use the 'sync' queue, not the 'database' queue
             app('log')->info('DatafileObserver::updated() - name = ' . $datafile->name . ' location = ' . $datafile->location . ' path = ' . $datafile->path() . ' storage_path = ' . $storage_path . ' storage_disk_path = ' . $storage_disk_path);
-            OctavePipe::dispatch("/tmp/sonicom-octave-pipe", "$tool->functionname $storage_disk_path");
+            app('log')->info('DatafileObserver::updated() - $datafile->path() = ' . $datafile->path());
+            app('log')->info('DatafileObserver::updated() - $datafile->localpath() = ' . $datafile->localpath());
+            app('log')->info('DatafileObserver::updated() - $datafile->absolutepath() = ' . $datafile->absolutepath());
+
+            OctaveCli::dispatch($tool, $datafile);
+            //HRTFCreateFigures::dispatch($tool->scriptname, $storage_disk_path);
+            //OctavePipe::dispatch("/tmp/sonicom-octave-pipe", "$tool->functionname $storage_disk_path");
         }
         //DatafileUploaded::dispatch($datafile);
     }
