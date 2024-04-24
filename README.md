@@ -56,6 +56,10 @@ Other
 
 <https://tighten.com/insights/supercharge-your-laravel-tinker-workflow/>
 
+You can create objects on the command line: <https://medium.com/@miladev95/laravel-tinker-1035402993c3>
+
+You can dispatch jobs: <https://dev.to/jiteshdhamaniya/dispatch-a-job-from-tinker-in-laravel-13o7>
+
 ### Menus
 
 <https://coding-lesson.com/creating-dynamic-nested-menus-in-laravel-with-relationships/>
