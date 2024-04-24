@@ -22,6 +22,7 @@ class OctaveCli implements ShouldQueue
     public function __construct(
         public Tool $tool,
         public Datafile $datafile
+        //jw:todo maybe pass strings rather than objects here?
     ) {}
 
     /**
@@ -30,14 +31,21 @@ class OctaveCli implements ShouldQueue
     public function handle(): void
     {
         //
-        app('log')->info('OctaveCli::handle()');
+        app('log')->info('OctaveCli::handle() - START');
         app('log')->info('OctaveCli::handle() - $this->tool->id = ' . $this->tool->id);
         $toolpath=storage_path('app/tools/'.$this->tool->id);
         app('log')->info('OctaveCli::handle() - $toolpath = ' . $toolpath);
         app('log')->info('OctaveCli::handle() - $this->datafile->id = ' . $this->datafile->id);
+        app('log')->info('OctaveCli::handle() - $this->datafile->directory() = ' . $this->datafile->directory());
         app('log')->info('OctaveCli::handle() - $this->datafile->absolutepath = ' . $this->datafile->absolutepath());
-        $process = 'octave-cli ' . $this->tool->scriptname . " " . $this->datafile->absolutepath();
+        $process = 'octave-cli ' . $this->tool->scriptname . " \"" . $this->datafile->absolutepath() . "\"";
         app('log')->info('OctaveCli::handle() - $process = ' . $process);
-        $result = Process::path($toolpath)->run($process);
+        app('log')->info('OctaveCli::handle() - run process');
+        $result = Process::quietly()->path($toolpath)->run($process);
+        app('log')->info('OctaveCli::handle() - process finished');
+        //app('log')->info('OctaveCli::handle() - $result->output() = ' . $result->output());
+        //file_put_contents('/var/www/sonicom_dev_live/storage/logs/job-octavecli.log', $result->output());
+        app('log')->info('OctaveCli::handle() - END');
+
     }
 }
