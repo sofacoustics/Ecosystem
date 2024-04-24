@@ -53,7 +53,7 @@ class Datafile extends Model
     {
         $path = $this->path();
         $name = $this->name;
-        $localpath = Storage::disk('local')->get($path . '/' . $this->name);
+        $localpath = Storage::disk('local')->get($path);
         return $path;
     }
 
@@ -64,7 +64,7 @@ class Datafile extends Model
     {
         $path = $this->path();
         $name = $this->name;
-        $absolutepath = Storage::path('public/'.$path."/".$name);
+        $absolutepath = Storage::path('public/'.$path);
         return $absolutepath;
     }
 }
