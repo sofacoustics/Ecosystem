@@ -13,6 +13,12 @@ function CreateFigures(SOFAfile)
 % for debug purpose comment function row above, and uncomment this one:
 % SOFAfile= 'hrtf_nh4.sofa';
 
+%jw:tmp logfile
+logfile="/tmp/CreateFigures.log"
+fid = fopen(logfile, "w");
+s = pwd;
+disp(["pwd = " s]);
+
 %% Prologue: (un)comment here if you want to:
 % clc; % clean-up first
 close all; % clean-up first
@@ -38,32 +44,41 @@ else
 	disp(fn);
 	SOFAfile = fn;
 end
-disp(["SOFAfile = " SOFAfile]);
+%disp(["SOFAfile = " SOFAfile]);
 
 %% Load SOFA file
-disp(['Loading: ' SOFAfile]);
+%disp(['Loading: ' SOFAfile]);
 Obj=SOFAload(SOFAfile);
+
+fputs(fid, [ "About to plot\n"]);
 
 %% Plot a few figures
 switch Obj.GLOBAL_SOFAConventions
     % differ cases, depending on SOFA conventions
     case 'SimpleFreeFieldHRIR'
 
+        fputs(fid, [ "case SimpleFreeFieldHRIR\n"]);
         % plot ETC horizontal plane
         figure('Name',SOFAfile);
+        fputs(fid, [ "just done figure\n"]);
         SOFAplotHRTF(Obj,'ETCHorizontal',1);
+        fputs(fid, [ "just done SOFAplotHRTF\n"]);
         print ("-r600", [SOFAfile '_1.png']);
+        %print ("-r600", '/tmp/hrtf_1.png');
+        fputs(fid, [ "just done print" SOFAfile "_1.png\n"]);
+        
 
         % plot magnitude spectrum in the median plane, channel 2
         figure('Name',SOFAfile);
         SOFAplotHRTF(Obj,'MagMedian',2);
         print ("-r600", [SOFAfile '_2.png']);
+        fputs(fid, [ "just written " SOFAfile "_2.png\n"]);
 
         % plot non-normalized magnitude spectrum in the median plane, channel 1
         figure('Name',SOFAfile);
         SOFAplotHRTF(Obj,'MagMedian','nonormalization');
         print ("-r600", [SOFAfile '_3.png']);
-
+        fputs(fid, [ "just written " SOFAfile "_3.png\n"]);
         % plot geometry
       %  SOFAplotGeometry(Obj);
       %  title(['Geometry SimpleFreeFieldHRIR, ' num2str(Obj.API.M) ' position(s)'])
@@ -78,6 +93,7 @@ switch Obj.GLOBAL_SOFAConventions
       %  print ("-r600", [SOFAfile '_5.png']);
 
     case 'GeneralTF'
+        fputs(fid, [ "case GeneralTF\n"]);
         % plot magnitude spectrum in the median plane, channel 1
         figure('Name',SOFAfile);
         SOFAplotHRTF(Obj,'MagMedian',1,'conversion2ir');
@@ -86,8 +102,10 @@ switch Obj.GLOBAL_SOFAConventions
         figure('Name',mfilename);
         SOFAplotHRTF(Obj,'MagMedian',1,'noconversion2ir');
         print ("-r600", [SOFAfile '_2.png']);
+        
 
     case 'GeneralFIR'
+        fputs(fid, [ "case GeneralFIR\n"]);
         SOFAplotGeometry(Obj);
         title(['Geometry GeneralFIR, ' num2str(Obj.API.R) ' receiver(s), ' num2str(Obj.API.M) ' position(s)'])
         set(gcf, 'Name', mfilename);
@@ -101,4 +119,5 @@ end
 
 %% Epilogue: (un)comment if you want to:
 disp('DONE');
+fclose(fid);
 toc; % timer
