@@ -43,7 +43,7 @@
                 - Dataset: {{ $dataset }} <br>
                 @foreach ($dataset->datafiles as $datafile)
                 - - Datafile: {{ $datafile }}<br>
-                - - - {{ $datafile->dataset->database->id }}<br>
+                - - - {{ $datafile->dataset->database->id }} absolutepath = {{ $datafile->absolutepath() }}<br>
                 @endforeach
 
             @endforeach
