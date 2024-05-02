@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('datasetdefs', function (Blueprint $table) {
-		  $table->id();
-          $table->integer('database_id')->unsigned();
+	  $table->id();
+          $table->unsignedBigInteger('database_id');
           $table->string('name', 100);
-          $table->integer('datafiletype_id')->unsigned();
+          $table->unsignedBigInteger('datafiletype_id');
           $table->foreignId('tool_id')->nullable()->constrained();
           $table->foreign('database_id')->references('id')->on('databases')->onDelete('cascade');
           $table->foreign('datafiletype_id')->references('id')->on('datafiletypes')->onDelete('cascade');
