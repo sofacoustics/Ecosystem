@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('location')->nullable();
-            $table->integer('dataset_id')->unsigned();
-            $table->integer('datasetdef_id')->unsigned();
+            $table->unsignedBigInteger('dataset_id');
+            $table->unsignedBigInteger('datasetdef_id');
             $table->foreign('dataset_id')->references('id')->on('datasets')->onDelete('cascade');
             $table->foreign('datasetdef_id')->references('id')->on('datasetdefs')->onDelete('cascade');
             $table->timestamps();
