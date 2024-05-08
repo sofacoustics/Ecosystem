@@ -241,6 +241,10 @@ Create a resource for a table with
 
 Note that for the FileUpload, the upload_max_filesize php setting must be large enough!
 
+### Reverb
+
+<https://redberry.international/laravel-reverb-real-time-communication/>
+
 #### Nested Resources
 
 https://laraveldaily.com/post/filament-v3-nested-resources-trait-pages
