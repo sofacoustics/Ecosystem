@@ -244,6 +244,7 @@ Note that for the FileUpload, the upload_max_filesize php setting must be large 
 ### Reverb
 
 <https://redberry.international/laravel-reverb-real-time-communication/>
+<https://novu.co/blog/the-ultimate-guide-to-laravel-reverb/>
 
 #### Nested Resources
 
