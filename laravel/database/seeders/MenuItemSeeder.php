@@ -41,7 +41,14 @@ class MenuItemSeeder extends Seeder
         'authenticated' => 1,
        ]);
 
-			 MenuItem::create([
+       MenuItem::create([
+        'id' => '6',
+        'title' => 'Datasets',
+        'url' => '/datasets',
+        'authenticated' => 0,
+       ]);
+
+        MenuItem::create([
         'id' => '4',
         'title' => 'About SONICOM',
         'route' => 'about',

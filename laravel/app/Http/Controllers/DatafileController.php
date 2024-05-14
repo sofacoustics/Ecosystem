@@ -45,11 +45,14 @@ class DatafileController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Datafile $file)
+    public function show($id)
     {
         //
-        $contents = Storage::disk('public')->get('test.txt');
-        print_r($contents);
+        //$contents = Storage::disk('public')->get('test.txt');
+        //print_r($contents);
+        $datafile = \App\Models\Datafile::where('id', $id)->first();
+        //print_r($datafile);
+        return view('datafiles.show', ['datafile' => $datafile]);
     }
 
     /**

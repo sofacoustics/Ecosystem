@@ -13,7 +13,7 @@
         </div>
     @endif
     <p>The following local databases are available</p>
-    <table class="table-auto border border-slate-400">
+    <table class="table-auto border border-slate-399">
         <tr class="text-left">
             <th>Name</th>
             <th>Description</th>
@@ -40,7 +40,7 @@
 		@foreach ($allDatabases as $database)
 			Database: {{ $database->name }} <br>
             @foreach ($database->datasets as $dataset)
-                - Dataset: {{ $dataset }} <br>
+                - Dataset: $dataset <br>
                 @foreach ($dataset->datafiles as $datafile)
                 - - Datafile: {{ $datafile }}<br>
                 - - - {{ $datafile->dataset->database->id }} absolutepath = {{ $datafile->absolutepath() }}<br>

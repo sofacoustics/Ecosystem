@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('datasetdefs', function (Blueprint $table) {
-	  $table->id();
+          $table->id();
           $table->unsignedBigInteger('database_id');
           $table->string('name', 100);
           $table->unsignedBigInteger('datafiletype_id');

@@ -9,7 +9,7 @@
     <p>Datasets</p>
 
     @forelse($database->datasets as $dataset)
-        - {{ $dataset->name }}<br>
+        - <a href={{ route('datasets.show', $dataset->id) }}>{{ $dataset->name }}</a> <br>
     @empty
         <p>There are no datasets associated with this database</p>
     @endforelse

@@ -30,6 +30,10 @@
                 </header>
             @endif
 
+            {{-- <livewire:delivery-history /> --}}
+            {{-- <livewire:message-component /> --}}
+
+
             <!-- Page Content -->
             <main>
                 {{ $slot }}

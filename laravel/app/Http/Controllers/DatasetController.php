@@ -4,14 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\Database;
+
 class DatasetController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($databaseId = 0)
     {
         //
+        echo "databaseId = $databaseId<br>";
+        $database = \App\Models\Database::where('id', $databaseId)->first();
+        //print_r($database);
+        //echo $database->name;
+        //echo "name = " . $database->name() . "<br>";
+        return view('datasets.index', ['database' => $database]);
     }
 
     /**
@@ -35,8 +43,10 @@ class DatasetController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $dataset = \App\Models\Dataset::where('id', $id)->first();
+        return view('datasets.show', ['dataset' => $dataset]);
     }
+
 
     /**
      * Show the form for editing the specified resource.

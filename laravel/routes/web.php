@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\DatabaseController;
+use App\Http\Controllers\DatasetController;
 use App\Http\Controllers\DatafileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
@@ -38,6 +39,8 @@ Route::view('/about', 'pages.about')->name('about');
 */
 // DATABASE (auth specified in __construct())
 Route::resource('databases', DatabaseController::class);
+Route::resource('datasets', DatasetController::class);
+//Route::resource('databases.datasets', DatasetController::class);
 //Route::middleware('auth')->group(function () {
 //    Route::get('/database/create', [DatabaseController::class, 'create']);
 //    Route::get('/database', [DatabaseController::class, 'edit'])->name('database.edit');

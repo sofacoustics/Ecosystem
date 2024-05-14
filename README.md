@@ -1,4 +1,4 @@
-# SONICOM Ecosystem in Laravel
+G SONICOM Ecosystem in Laravel
 
 ## Requirements
 
@@ -246,10 +246,13 @@ Note that for the FileUpload, the upload_max_filesize php setting must be large 
 <https://redberry.international/laravel-reverb-real-time-communication/>
 <https://novu.co/blog/the-ultimate-guide-to-laravel-reverb/>
 
+Event classes appear to need to the 'implements ShouldBroadcast'.
+
 #### Nested Resources
 
 https://laraveldaily.com/post/filament-v3-nested-resources-trait-pages
 https://github.com/GuavaCZ/filament-nested-resources
+<https://laraveldaily.com/post/nested-resource-controllers-and-routes-laravel-crud-example>
 
 ## Deploy
 

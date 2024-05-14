@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Database extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'description', 'user_id'];
+    protected $fillable = ['name', 'description', 'user_id'];
 
     /**
      * Get the datasets for a database

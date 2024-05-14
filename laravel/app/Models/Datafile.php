@@ -67,4 +67,17 @@ class Datafile extends Model
         $absolutepath = Storage::path('public/'.$path);
         return $absolutepath;
     }
+
+    public function url()
+    {
+        return Storage::url($this->path());
+    }
+
+    /**
+     * Return the publicly available asset we can then use in HTML code.
+     */
+    public function asset()
+    {
+        return asset($this->url());
+    }
 }
