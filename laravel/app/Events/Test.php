@@ -20,7 +20,7 @@ class Test implements ShouldBroadcast
      * Create a new event instance.
      */
     public function __construct(
-        public User $user,
+        public string $message,
     ) {}
 
     /**
@@ -33,16 +33,17 @@ class Test implements ShouldBroadcast
         return [
             //new PrivateChannel('sonicom-ecosystem'),
             new Channel('sonicom-ecosystem'),
+            //new Channel('test'),
         ];
 
         //return new Channel('sonicom-ecosystem');
     }
 
     //jw:note This overrides the default broadcast name, which is the class name
-    /*
+    
     public function broadcastAs(): string
     {
         return 'test-event';
     }
-     */
+    
 }
