@@ -5,4 +5,5 @@
         </h2>
     </x-slot>
     <p>The SONICOM Ecosystem bla bla bla</p>
+    <livewire:channel-listener />
 </x-app-layout>
