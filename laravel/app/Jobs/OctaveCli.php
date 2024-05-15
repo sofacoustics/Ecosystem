@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Datafile;
 use App\Models\Tool;
+use App\Events\DatafileProcessed;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -45,6 +46,7 @@ class OctaveCli implements ShouldQueue
         app('log')->info('OctaveCli::handle() - process finished');
         //app('log')->info('OctaveCli::handle() - $result->output() = ' . $result->output());
         //file_put_contents('/var/www/sonicom_dev_live/storage/logs/job-octavecli.log', $result->output());
+        DatafileProcessed::dispatch($this->datafile->id);
         app('log')->info('OctaveCli::handle() - END');
 
     }

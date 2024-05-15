@@ -20,6 +20,7 @@ window.Echo.channel("sonicom-ecosystem")
 	    //console.log(event);
         //alert(event?.message)
 });
+window.Echo.channel("sonicom-ecosystem").listen(".datafile-processed", (event) => { console.log("sonicom-ecosystem:datafile-processed(id = " + event.id +")"); });
 
 /*
 window.Echo.channel("test").listen(".test-event", (event) => {
