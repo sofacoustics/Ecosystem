@@ -75,9 +75,16 @@ class Datafile extends Model
 
     /**
      * Return the publicly available asset we can then use in HTML code.
+     * 
+     * $suffix: A suffix to add to the asset (since this appears to be difficult to do in livewire syntax)
      */
-    public function asset()
+    public function asset($suffix = "")
     {
-        return asset($this->url());
+        $absolutepath = $this->absolutepath().$suffix;
+        // check asset exists
+        if(file_exists($this->absolutepath().$suffix))
+            return asset($this->url().$suffix);
+        else
+            return "";
     }
 }

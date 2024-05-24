@@ -10,20 +10,13 @@ use App\Models\Datafile;
 
 class img extends Component
 {
-    public string $asset;
     /**
      * Create a new component instance.
      */
     public function __construct(
-        public Datafile $datafile,
-    //public string $asset,
+        public string $asset,
     )
     {
-        if($datafile->datasetdef->datafiletype->name == "asdf")
-        {
-            if($asset == "")
-                $this->asset = $datafile->asset(); 
-        }
     }
 
     /**

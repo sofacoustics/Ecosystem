@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('datasetdefs', function (Blueprint $table) {
           $table->id();
-          $table->unsignedBigInteger('database_id');
           $table->string('name', 100);
+          $table->unsignedBigInteger('database_id');
           $table->unsignedBigInteger('datafiletype_id');
           $table->foreignId('tool_id')->nullable()->constrained();
           $table->foreign('database_id')->references('id')->on('databases')->onDelete('cascade');

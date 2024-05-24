@@ -5,5 +5,10 @@
         </h2>
     </x-slot>
     <p>The SONICOM Ecosystem bla bla bla</p>
-    <livewire:channel-listener />
+
+    {{-- xdebug_info(); --}}
+    {{-- var_dump(php_ini_loaded_file(), php_ini_scanned_files()); --}}
+    {{-- phpinfo(); --}}
+    {{-- <livewire:channel-listener />  --}}
+    {{-- <livewire:datafile-listener />  --}}
 </x-app-layout>
