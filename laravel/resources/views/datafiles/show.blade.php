@@ -9,11 +9,11 @@
 
     <p><a href="{{ asset($datafile->url()) }}">Download</a></p>
 
-    <p>jw:todo maybe just pass the $datafile and let the component decide if it is an image or not?</p>
+    {{-- <p>jw:todo maybe just pass the $datafile and let the component decide if it is an image or not?</p> --}}
 
     @livewire(DatafileListener::class, ['datafile' => $datafile])
 
     {{-- <x-img :datafile="$datafile" :asset="$datafile->asset()"/> --}}
 
-<p>jw:todo display stuff for this file. Via a component, so we can do it based on the file type?</p>
+{{-- <p>jw:todo display stuff for this file. Via a component, so we can do it based on the file type?</p> --}}
 </x-app-layout>

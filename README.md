@@ -75,6 +75,15 @@ Run
 
 In visual studio code, start a 'Listen for xdebug' session.
 
+You have to make sure that the xdebug module is loaded. check `php -m` to see if it is. You can possibly enable it by adding `zend_extension=xdebug` to e.g. /etc/php/8.2/cli/php.ini
+Add an [xdebug] section to /etc/php/8.2/cli/php.ini with at minimum the following:
+
+    xdebug]
+    xdebug.mode=debug
+    xdebug.start_with_request=yes
+
+You can check the xdebug information via the php command `xdebug_info()` (much like `php_info()`).
+
 ### Windows
 
 The same as for Linux
