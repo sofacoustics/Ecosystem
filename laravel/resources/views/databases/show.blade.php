@@ -4,7 +4,7 @@
             Local Database: {{ $database->title }}
         </h2>
     </x-slot>
-    <h1>Title: {{ $database->title }}</h1>
+    <h1>Name: {{ $database->name }}</h1>
     <h2>Description: {{ $database->description }}</h2>
     <p>Datasets</p>
 
@@ -19,6 +19,6 @@
     <p>Uploaded by: {{ $user->name }}<br>
     Created: {{ $database->created_at }}<br>
     Updated: {{ $database->updated_at }}</p>
-    {{ $database }}
+    {{-- $database --}}
 </div>
 </x-app-layout>

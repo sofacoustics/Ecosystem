@@ -35,7 +35,7 @@
         </tr>
     @endforeach
 		</table>
-		//jw:tmp testing relationships<br>
+{{-- 		//jw:tmp testing relationships<br>
 		
 		@foreach ($allDatabases as $database)
 			Database: {{ $database->name }} <br>
@@ -49,4 +49,5 @@
             @endforeach
 
         @endforeach
+        --}}
 	</x-app-layout>
