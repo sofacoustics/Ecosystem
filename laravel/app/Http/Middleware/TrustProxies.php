@@ -11,8 +11,13 @@ class TrustProxies extends Middleware
      * The trusted proxies for this application.
      *
      * @var array<int, string>|string|null
+     
+     * jw:note this is necessary for reverse proxy to work, otherwise urls are not rewritten!
+     *         https://www.iankumu.com/blog/laravel-nginx-reverse-proxy/
      */
-    protected $proxies;
+    protected $proxies = [
+        '193.171.195.10' 
+    ];
 
     /**
      * The headers that should be used to detect proxies.

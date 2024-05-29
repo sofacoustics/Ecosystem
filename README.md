@@ -142,6 +142,10 @@ If you are pushing to a remote git repository, then a post-receive hook should r
 
 ## Configuration
 
+### Reverse Proxy
+
+You must set the trusted proxies in app/Http/Middleware/TrustedProxies.php, otherwise URLs are not rewritten correctly
+
 ### Storage
 
 You must map the SONICOM-DATA share to storage/app/public/data
