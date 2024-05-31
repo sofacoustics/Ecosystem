@@ -22,9 +22,10 @@ class AppPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+            //jw:note /app/ used by websockets
 			return $panel
             ->id('app')
-						->path('app')
+			->path('testapp')
             ->colors([
                 'primary' => Color::Amber,
             ])
