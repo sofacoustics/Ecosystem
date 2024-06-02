@@ -30,6 +30,22 @@ return [
 
     'connections' => [
 
+	'reverb' => [
+		'driver' => 'reverb',
+		'key' => env('REVERB_APP_KEY'),
+		'secret' => env('REVERB_APP_SECRET'),
+		'app_id' => env('REVERB_APP_ID'),
+		'options' => [
+		    'host' => env('REVERB_SERVER_HOST'),
+		    'port' => env('REVERB_SERVER_PORT', 443),
+		    'scheme' => env('REVERB_SERVER_SCHEME', 'https'),
+		    'useTLS' => env('REVERB_SERVER_SCHEME', 'https') === 'https',
+		],
+		'client_options' => [
+			'verify' => false,
+		],
+        ],
+
         'pusher' => [
             'driver' => 'pusher',
             'key' => env('PUSHER_APP_KEY'),
