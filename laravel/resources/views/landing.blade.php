@@ -4,7 +4,7 @@
             SONICOM Ecosystem
         </h2>
     </x-slot>
-    <p>The SONICOM Ecosystem bla bla bla</p>
+    <p>The SONICOM Ecosystem</p>
 
     {{-- xdebug_info(); --}}
     {{-- var_dump(php_ini_loaded_file(), php_ini_scanned_files()); --}}

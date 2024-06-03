@@ -2,10 +2,10 @@
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Local Database: {{ $database->title }}
+    <h2>Name: {{ $database->name }}</h2>
+    <h2>Description: {{ $database->description }}</h2>
         </h2>
     </x-slot>
-    <h1>Name: {{ $database->name }}</h1>
-    <h2>Description: {{ $database->description }}</h2>
     <p>Datasets</p>
 
     @forelse($database->datasets as $dataset)
