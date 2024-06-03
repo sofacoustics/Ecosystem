@@ -54,7 +54,7 @@ class DatafileListener extends Component
         default:
             return view('livewire.datafile-listener');
         case 3:
-            return view('livewire.datafiles/3-1');
+            return view('livewire.datafiletypes/datafiletype-3-detail');
         }
         //return view('livewire.datafile-listener');
         //return view('livewire.datafile-listener');

@@ -87,4 +87,12 @@ class Datafile extends Model
         else
             return "";
     }
+
+    public function isImage()
+    {
+        if($this->datasetdef->datafiletype->id == 1)
+            return true;
+        return false;
+
+    }
 }
