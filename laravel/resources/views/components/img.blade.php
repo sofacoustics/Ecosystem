@@ -16,7 +16,7 @@
         {{-- <img class="{{ $class }}" src="{{ $asset }}" width="400px"/> --}}
 
         <figure>
-            <img src="{{ $asset }}" width="400px"/>
+            <img class="{{ $class }}" src="{{ $asset }}" width="400px"/>
             @if (isset($caption))
                 <figcaption>File: {{ $caption }}</figcaption>
             @endif
