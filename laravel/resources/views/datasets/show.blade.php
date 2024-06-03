@@ -18,7 +18,7 @@
         @foreach ($dataset->datafiles as $datafile)
             @if (!$datafile->isImage())
                 {{-- @livewire(DatafileListener::class, ['datafile' => $datafile]) --}}
-                File: {{ $datafile->name }}
+                <a href="{{ route('datafiles.show', $datafile->id) }}">File: {{ $datafile->name }}</a><br/>
                 <livewire:DatafileListener :datafile="$datafile" />
             @endif
         @endforeach
@@ -26,7 +26,7 @@
         <div class="flex flex-row">
         @foreach ($dataset->datafiles as $datafile)
             @if ($datafile->isImage())
-                <x-img caption="{{ $datafile->name }}" class="p-2" asset="{{ $datafile->asset() }}" />
+                <x-img caption="{{ $datafile->name }}" class="p-2 " asset="{{ $datafile->asset() }}" />
             @endif
         @endforeach
         </div>
