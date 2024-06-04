@@ -8,7 +8,7 @@
    version="1.1"
    id="svg5"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   sodipodi:docname="the-image-is-being-generated.svg"
+   sodipodi:docname="no-data-uploaded-yet.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -40,14 +40,14 @@
      id="layer1">
     <text
        xml:space="preserve"
-       style="font-size:9.1092px;fill:#ff0000;stroke:#ff0000;stroke-width:0.75908958;stroke-miterlimit:4;stroke-dasharray:none"
-       x="29.813702"
-       y="100.20779"
+       style="font-size:9.1092px;fill:#ff0000;stroke:#ff0000;stroke-width:0.75909;stroke-miterlimit:4;stroke-dasharray:none"
+       x="48.238365"
+       y="100.74291"
        id="text2409"><tspan
          sodipodi:role="line"
          id="tspan2407"
-         style="stroke:#3280ff;stroke-width:0.75908958;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-         x="29.813702"
-         y="100.20779">The image is being generated </tspan></text>
+         style="stroke:#3280ff;stroke-width:0.75909;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         x="48.238365"
+         y="100.74291">No data uploaded yet</tspan></text>
   </g>
 </svg>

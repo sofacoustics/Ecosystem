@@ -4,7 +4,9 @@
             Datafile: {{ $datafile->name }}
         </h2>
         Dataset: <a href="{{ route('datasets.show', $datafile->dataset->id) }}">{{ $datafile->dataset->name }}</a><br>
-        Database: <a href="{{ route('databases.show', $datafile->dataset->database->id) }}">{{ $datafile->dataset->database->name }}</a>
+        Database: <a href="{{ route('databases.show', $datafile->dataset->database->id) }}">{{ $datafile->dataset->database->name }}</a><br>
+        Datafiletype: {{ $datafile->datasetdef->datafiletype->name }}<br>
+        Tool: {{ $datafile->datasetdef->tool->name }}
     </x-slot>
 
 

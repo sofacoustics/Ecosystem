@@ -22,14 +22,14 @@
                 <livewire:DatafileListener :datafile="$datafile" />
             @endif
         @endforeach
-    
-        <div class="flex flex-row">
+
+        <!-- ear left, ear right -->
         @foreach ($dataset->datafiles as $datafile)
             @if ($datafile->isImage())
-                <x-img caption="{{ $datafile->name }}" class="p-2 " asset="{{ $datafile->asset() }}" />
+                <a href="{{ route('datafiles.show', $datafile->id) }}">File: {{ $datafile->name }}</a><br/>
+                <x-img class="p-2 " asset="{{ $datafile->asset() }}" />
             @endif
         @endforeach
-        </div>
     </div>
     {{-- jw:note do *not* use a livewire inside a livewire if possible --}}
     {{-- @livewire(DatasetListener::class, ['dataset' => $dataset]) --}}
