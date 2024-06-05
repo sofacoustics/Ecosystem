@@ -33,6 +33,9 @@ Route::resource('data', DataController::class)
 	->only(['index']);
 /// ABOUT
 Route::view('/about', 'pages.about')->name('about');
+Route::view('/terms-of-use', 'pages.terms-of-use')->name('terms-of-use');
+
+
 /*Route::get('about', function() {
 	return view('pages.about');
 });

@@ -18,7 +18,7 @@
     </head>
     <body class="font-sans antialiased">
         <!-- https://tailwindcss.com/docs/customizing-colors -->
-        <div class="min-h-screen">
+        <div class="min-h-screen flex flex-col">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
@@ -30,15 +30,12 @@
                 </header>
             @endif
 
-            {{-- <livewire:delivery-history /> --}}
-            {{-- <livewire:message-component /> --}}
-
-
             <!-- Page Content -->
-            <main>
+            <main class="grow">
                 {{ $slot }}
             </main>
-	</div>
-	@livewireScripts
+            @include('layouts.footer')
+        </div>
+        @livewireScripts
     </body>
 </html>
