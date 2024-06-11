@@ -1,10 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Local Database: {{ $database->title }}
-    <h2>Name: {{ $database->name }}</h2>
-    <h2>Description: {{ $database->description }}</h2>
+            Database: {{ $database->name }}<br>
         </h2>
+        Description: {{ $database->description }}
     </x-slot>
     <p>Datasets</p>
 
