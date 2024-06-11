@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use Illuminate\Support\Facades\View;
+
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -36,27 +38,25 @@ class DatafileListener extends Component
 	public function onDatafileProcessed($event)
 	{
 		$this->id = $event['id'];
-        app('log')->info('DatafileListener::onDatafileProcessed()');
+        app('log')->info("DatafileListener::onDatafileProcessed(".$event['id'].")");
 	}
 
     public function render()
     {
         if($this->id == "undefined")
-            return view('livewire.datafile-listener');
+            return view('livewire.datafiletype-generic');
         else{
             $this->datasetdef = $this->datafile->datasetdef;
             $this->datafiletype = $this->datasetdef->datafiletype;
         }
-        //dd($this->datafile);
-        switch($this->datafile->datasetdef->datafiletype->id) {
-        case 0:
-        case 1:
-        default:
-            return view('livewire.datafile-listener');
-        case 3:
-            return view('livewire.datafiletypes/datafiletype-3-detail');
+        //jw:todo do these really need to be livewire views?
+        //jw:note This does not neccessarily have to be a livewire view.
+        $view = 'livewire.datafiletypes.datafiletype-'.$this->datafiletype->id;
+        //$view = 'datafiletypes.datafiletype-'.$this->datafiletype->id;
+        if(!isset($this->datafile) || !View::exists($view))
+        {
+            $view = 'livewire.datafiletypes.datafiletype-generic';
         }
-        //return view('livewire.datafile-listener');
-        //return view('livewire.datafile-listener');
+        return view($view);
     }
 }
