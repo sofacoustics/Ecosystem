@@ -80,10 +80,11 @@ class Datafile extends Model
      */
     public function asset($suffix = "")
     {
-        $absolutepath = $this->absolutepath().$suffix;
-        // check asset exists
-        if(file_exists($this->absolutepath().$suffix))
-            return asset($this->url().$suffix);
+        $pathwithsuffix = $this->absolutepath().$suffix;
+        // check asset exists and return.
+        // Add a file time modification query string to force reload, if file has changed
+        if(file_exists($pathwithsuffix))
+            return asset($this->url().$suffix.'?'.filemtime($pathwithsuffix));
         else
             return "";
     }
