@@ -3,6 +3,11 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+/*
+ * This *was* necessary to get livewire to upload files. However, it turns
+ * out that simply setting the X-Forwarded-Proto header to https fixes *everything*!
+ use Illuminate\Support\Facades\URL;
+ */
 
 use App\Models\Datafile;
 use App\Observers\DatafileObserver;
@@ -24,5 +29,14 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Datafile::observe(DatafileObserver::class);
+	/*
+	 * This *was* necessary to get livewire to upload files. However, it turns
+	 * out that simply setting the X-Forwarded-Proto header to https fixes *everything*!
+	# https://stackoverflow.com/questions/29912997/laravel-routes-behind-reverse-proxy
+        $proxy_scheme = getenv('PROXY_SCHEME');
+        if(!empty($proxy_scheme)) {
+            URL::forceScheme($proxy_scheme);
+	}
+	 */
     }
 }
