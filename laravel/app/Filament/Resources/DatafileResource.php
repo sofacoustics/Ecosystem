@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Forms\Components\FileUpload; 
 
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+
 class DatafileResource extends Resource
 {
     protected static ?string $model = Datafile::class;
@@ -48,8 +50,10 @@ class DatafileResource extends Resource
                     /*->previewable(false)*/
                     ->directory(function (?Datafile $record) {
                         return $record->directory();
-                    }) 
-                    ->preserveFilenames(),
+                    })
+                    ->getUploadedFileNameForStorageUsing(
+                        fn (TemporaryUploadedFile $file, ?Datafile $record): string => (string) str($record->name)
+                    ),
             ]);
     }
 
