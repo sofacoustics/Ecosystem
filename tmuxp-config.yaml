@@ -10,16 +10,28 @@ windows:
   - window_name: logs 
     layout: even-vertical
     panes:
-      - tail -F laravel/storage/logs/laravel.log
-      - tail -F laravel/storage/logs/reverb.log
+      - "tail -F laravel/storage/logs/laravel.log"
+      - "tail -F laravel/storage/logs/reverb.log"
       - shell_command:
         - tmux set -w pane-border-status top
         - tmux select-pane -T laravel.log -t logs.0
         - tmux select-pane -T reverb.log -t logs.1
         - tmux select-pane -T worker.log -t logs.2
-        - tail -F laravel/storage/logs/worker.log
+        - "tail -F laravel/storage/logs/worker.log"
   - window_name: services 
     layout: even-vertical
     panes:
       - sudo supervisorctl status
+  - window_name: storage
+    layout: even-vertical
+    panes:
+      - shell_command:
+        - tmux select-pane -T public -t storage.0
+        - cd laravel/storage/app/public
+  - window_name: artisan 
+    layout: even-vertical
+    panes:
+      - shell_command:
+        - tmux select-pane -T artisan -t artisan.0
+        - cd laravel
 
