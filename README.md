@@ -64,6 +64,10 @@ You can dispatch jobs: <https://dev.to/jiteshdhamaniya/dispatch-a-job-from-tinke
 
 <https://coding-lesson.com/creating-dynamic-nested-menus-in-laravel-with-relationships/>
 
+## Ansible
+
+There is an Ansible role 'sonicom-ecosystem' which can be used to set up the proxy and the backend web servers. This is currently in the ISF SVN repository svn-scripts
+
 ## Debugging
 
 ### Linux
@@ -195,7 +199,7 @@ Modify /etc/octaverc on Ubuntu to add paths
 
 ## Terminology
 
-## database
+### database
 
 A 'database' is a collection of data in a specific collation of formats. E.g. a collection of HRTF data, where each database record contains one HRTF and one PNG.
 
