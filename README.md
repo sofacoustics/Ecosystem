@@ -1,4 +1,4 @@
-G SONICOM Ecosystem in Laravel
+# SONICOM Ecosystem in Laravel
 
 ## Requirements
 
@@ -231,6 +231,14 @@ A datafile associated with a dataset. E.g. one SOFA file or one PNG
 
 ## Laravel
 
+### Logs
+
+Log files are found in laravel/storage/logs
+
+- reverb.log
+- worker.log
+- laravel.log
+
 ### artisan
 
 #### database
@@ -270,6 +278,15 @@ Event classes appear to need to the 'implements ShouldBroadcast'.
 https://laraveldaily.com/post/filament-v3-nested-resources-trait-pages
 https://github.com/GuavaCZ/filament-nested-resources
 <https://laraveldaily.com/post/nested-resource-controllers-and-routes-laravel-crud-example>
+
+
+## Services
+
+These services must run for everything to work:
+
+### Reverb
+
+The reverb server should be running via supervisorctl
 
 ## Deploy
 
