@@ -1,29 +1,35 @@
 # https://github.com/tmux-python/tmuxp/issues/739
+# https://tmuxp.git-pull.com/
 session_name: sonicom
 windows:
-  - window_name: git 
-    panes:
-      - shell_command:
-        - tmux set -w pane-border-status bottom
-        - tmux select-pane -T git git.0
-        - git status
   - window_name: logs 
     layout: even-vertical
+    suppress_history: false
+    start_directory: laravel/storage/logs
     panes:
-      - "tail -F laravel/storage/logs/laravel.log"
-      - "tail -F laravel/storage/logs/reverb.log"
+      - "tail -F laravel.log"
+      - "tail -F reverb.log"
       - shell_command:
         - tmux set -w pane-border-status bottom
         - tmux select-pane -T laravel.log -t logs.0
         - tmux select-pane -T reverb.log -t logs.1
         - tmux select-pane -T worker.log -t logs.2
-        - "tail -F laravel/storage/logs/worker.log"
+        - "tail -F worker.log"
+  - window_name: git 
+    suppress_history: false
+    panes:
+      - shell_command:
+        - tmux set -w pane-border-status top
+        - tmux select-pane -T git git.0
+        - git status
   - window_name: services 
     layout: even-vertical
+    suppress_history: false
     panes:
       - sudo supervisorctl status
   - window_name: storage
     layout: even-vertical
+    suppress_history: false
     panes:
       - shell_command:
         - tmux set -w pane-border-status bottom
@@ -31,9 +37,15 @@ windows:
         - cd laravel/storage/app/public
   - window_name: artisan 
     layout: even-vertical
+    suppress_history: false
     panes:
       - shell_command:
         - tmux set -w pane-border-status bottom
         - tmux select-pane -T artisan -t artisan.0
         - cd laravel
+  - window_name: octave 
+    layout: even-vertical
+    panes:
+      - shell_command:
+        - tmux select-pane -T octave -t octave.0
 
