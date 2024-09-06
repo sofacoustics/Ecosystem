@@ -49,5 +49,7 @@
             @endforeach
 
         @endforeach
-        --}}
-	</x-app-layout>
+--}}
+
+<livewire:create-database />
+</x-app-layout>
