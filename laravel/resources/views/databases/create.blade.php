@@ -19,8 +19,8 @@
     
         <form action="{{ route('databases.store') }}" method="POST">
             @csrf
-            <label for="title">Title</label>
-            <input type="text" name="title" id="title">
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name">
             <label for="description">Description</label>
             <input type="text" name="description" id="description">
             {{--<input type="hidden" name="user_id" value="{{ Auth::id() }}">--}}
