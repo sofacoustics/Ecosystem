@@ -7,13 +7,16 @@
 
 namespace App\Livewire;
 
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 use App\Models\Database;
 use Auth;
 
 class CreateDatabase extends Component
 {
+    #[Validate('required')]
     public $name = "";
+    #[Validate('required')]
     public $description = "";
     public $user_id = " ";
 
@@ -24,6 +27,8 @@ class CreateDatabase extends Component
 
     public function save()
     {
+        $this->validate();
+
         Database::create(
             $this->only(['name', 'description', 'user_id'])
         );
