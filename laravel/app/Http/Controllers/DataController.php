@@ -11,20 +11,31 @@ use Illuminate\Support\Facades\Storage;
 class DataController extends Controller
 {
     var $access_token; // the access token for accessing RADAR
-    var $workspace;
+
+    //var $workspace = "RDJBmjTacaxKwSGW"; // Karlsruhe
+    //var $baseurl = 'https://test.radar-service.eu'; // Karlsruhe
+    var $workspace = "aIoFEMniUZoLoDyh"; // OEAW
+    var $baseurl = 'https://datathektest.oeaw.ac.at'; // OEAW
 
     public function __construct()
     {
-        $this->workspace = "RDJBmjTacaxKwSGW";
     
         // Get valid access token
-        $url = 'https://test.radar-service.eu/radar/api/tokens';
-        $response = Http::post($url, [
-            'clientId'        => 'institut-fuer-schallforschung',
-            'clientSecret'    => '7yb§cwEtfb',
-            'userName'        => 'jonathanstuefer',
-            'userPassword'    => 'ZtbI2ljoVKzL1yWDfK8Z',
-            'redirectUrl'     => 'https://www.oeaw.ac.at/isf'
+//        $response = Http::post("$this->baseurl/radar/api/tokens", [
+//            'clientId'        => 'institut-fuer-schallforschung',
+//            'clientSecret'    => '7yb§cwEtfb',
+//            'userName'        => 'jonathanstuefer',
+//            'userPassword'    => 'ZtbI2ljoVKzL1yWDfK8Z',
+//            'redirectUrl'     => 'https://www.oeaw.ac.at/isf'
+//        ]);
+        
+        // Store RADAR credentials in the .env file
+        $response = Http::post($this->baseurl."/radar/api/tokens", [
+            'clientId'        => env("RADAR_CLIENTID"),
+            'clientSecret'    => env("RADAR_CLIENTSECRET"),
+            'userName'        => env("RADAR_USERNAME"),
+            'userPassword'    => env("RADAR_USERPASSWORD"),
+            'redirectUrl'     => env("RADAR_REDIRECTURL"),
         ]);
 
         $response->throw(); // Throw an exception if a client or server error occurred...
@@ -37,11 +48,10 @@ class DataController extends Controller
 	*/
     public function index() : View
     {
-        $url = "https://test.radar-service.eu/radar/api/datasets/?query=parentId:$this->workspace";
         $response = Http::withOptions([
             'debug' => false,
         ])->withToken($this->access_token)
-        ->get($url);
+        ->get("$this->baseurl/radar/api/datasets/?query=parentId:$this->workspace");
 
         $response->throw(); // Throw an exception if a client or server error occurred...
 
