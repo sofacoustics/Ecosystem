@@ -296,5 +296,7 @@ You can deploy to the test server <http://sonicom-test.kfs.oeaw.ac.at> which wil
 
 	git push sonicom-test
 
+## RADAR
 
-jw:note a b
+XML Schema: <https://www.radar-service.eu/schemas/descriptive/radar/v09/radar-elements>
+
