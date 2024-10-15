@@ -2,10 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use Carbon;
+
 use App\Models\User;
 use App\Models\Database;
+use App\Models\Radardatasetresourcetype;
+
 use App\Http\Requests\StoreDatabaseRequest;
 use App\Http\Requests\UpdateDatabaseRequest;
+
+use App\Data\RadardatasetData;
+use App\Data\RadarcreatorData;
+use App\Data\RadarpublisherData;
+use App\Data\RadarsubjectareaData;
+use App\Data\RadarresourcetypeData;
 
 class DatabaseController extends Controller
 {
@@ -24,6 +34,50 @@ class DatabaseController extends Controller
     public function index()
     {
         $databases = \App\Models\Database::all();
+
+        //        //jw:tmp
+        $datasetdata = new RadardatasetData(title: 'title',
+            creators: [
+                new RadarcreatorData(
+                    givenName: 'Jonathan', 
+                    familyName: 'Stuefer',
+                    creatorAffiliation: 'Austrian Academy of Sciences',
+                ),
+                new RadarcreatorData(
+                    givenName: 'Piotr', 
+                    familyName: 'Majdak',
+                    nameIdentifier: '0000-0003-1511-6164',
+                    creatorAffiliation: 'Austrian Academy of Sciences',
+                ),
+            ],
+            publishers: [
+                new RadarpublisherData(
+                    name: 'Piotr Majdak', 
+                    orcidid: '0000-0003-1511-6164'
+                )
+            ],
+            productionYear: '2024',
+            subjectAreas: [
+                new RadarsubjectareaData(
+                    controlledSubjectAreaName: 'Other',
+                    additionalSubjectAreaName: 'Acoustics',
+                ),
+            ],
+            resource: new RadarresourcetypeData(
+                resourceType: 'Other',
+                value: 'Acoustics',
+                createdAt: Carbon\CarbonImmutable::now(),
+                updatedAt: Carbon\CarbonImmutable::now(),
+                ),
+
+        ); //print_r($datasetdata);
+        //dd($datasetdata);
+        //
+        // Test Model -> Data
+        $resource_type = RadarresourcetypeData::from(Radardatasetresourcetype::find(1));
+        dd($resource_type);
+
+
         return view('databases.index', ['allDatabases' => $databases]);
     }
 

@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             DatasetdefSeeder::class,
             DatafileSeeder::class,
             MenuItemSeeder::class,
+            RadardatasetresourcetypeSeeder::class,
         ]);
 
     }

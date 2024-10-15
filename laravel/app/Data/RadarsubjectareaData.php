@@ -1,0 +1,20 @@
+<?php
+/*
+ *
+ * laravel-data object for RADAR 'subjectArea'
+ *
+ * See https://radar.products.fiz-karlsruhe.de/de/radarfeatures/radar-api
+ */
+namespace App\Data;
+
+use Spatie\LaravelData\Data;
+
+class RadarsubjectareaData extends Data
+{
+    public function __construct(
+        // mandatory fields
+        public string $controlledSubjectAreaName,
+        // optional fields
+        public ?string $additionalSubjectAreaName = null,
+    ) {}
+}
