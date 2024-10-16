@@ -18,12 +18,12 @@ class DatabaseSeeder extends Seeder
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',
-        //     'email' => 'test@example.com', 
+        //     'email' => 'test@example.com',
         // ]);
         $this->call(RolesAndPermissionsSeeder::class);
         $this->call(UserSeeder::class);
         Database::create(array('name' => 'ARI B', 'description' => 'Specialty: hrtfs, dtfs, and photos of the ears', 'user_id' => 1));
-        Database::create(array('name' => 'ARI BezierPPM', 'description' => 'Specialty: csv, dtfs and hrtfs', 'user_id' => 1));
+        Database::create(array('name' => 'ARI BezierPPM', 'description' => 'Specialty: csv, dtfs and hrtfs', 'user_id' => 1, ));
         //Database::create(array('name' => 'Jonnie\'s ARI SOFA test 2', 'description' => 'Nr. 2. \'Nuf said!', 'user_id' => 1, 'radar_id' => 'dEZxRRrxpiHSzbBZ'));
         $this->call([
             DatasetSeeder::class,
@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
             DatafileSeeder::class,
             MenuItemSeeder::class,
             RadardatasetresourcetypeSeeder::class,
+            RadardatasetsubjectareaSeeder::class,
+            RadardatasetSeeder::class,
         ]);
 
     }

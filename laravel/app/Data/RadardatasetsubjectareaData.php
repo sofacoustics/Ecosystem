@@ -9,8 +9,9 @@ namespace App\Data;
 
 use Spatie\LaravelData\Data;
 
-class RadarsubjectareaData extends Data
+class RadardatasetsubjectareaData extends Data
 {
+    #[MapInputName(SnakeCaseMapper::class)]
     public function __construct(
         // mandatory fields
         public string $controlledSubjectAreaName,

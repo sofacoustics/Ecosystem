@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Database extends Model
 {
@@ -14,7 +15,7 @@ class Database extends Model
 
     /**
      * Get the datasets for a database
-     * 
+     *
      * https://laravel.com/docs/10.x/eloquent-relationships#one-to-many
      */
     public function datasets(): HasMany
@@ -32,4 +33,10 @@ class Database extends Model
     {
         return $this->hasMany(Datasetdef::class);
     }
+
+    public function radardataset(): HasOne
+    {
+        return $this->hasOne(Radardataset::class);
+    }
+
 }

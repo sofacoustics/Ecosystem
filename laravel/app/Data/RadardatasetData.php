@@ -8,24 +8,43 @@
 namespace App\Data;
 
 use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Attributes\LoadRelation;
+use Spatie\LaravelData\Attributes\MapInputName;
+use Spatie\LaravelData\Mappers\SnakeCaseMapper;
+
 use App\Data\RadarcreatorData;
 use App\Data\RadarpublisherData;
-use App\Data\RadarsubjectareaData;
-use App\Data\RadarresourcetypeData;
+use App\Data\RadardatasetsubjectareaData;
+use App\Data\RadardatasetresourcetypeData;
+
+use App\Models\Radardataset;
 
 class RadardatasetData extends Data
 {
-    public function __construct(
+        //jw:note Don't specify variables in the constructor, otherwise
+        //jw:note instantiating from a model doesn't work (wrong parameter count).
         // mandatory fields
-        public string $title,
+        public string $title;
         /** @var RadarcreatorData[] */
-        public array $creators,
+        //public array $creators,
         /** @var RadarpublisherData[] */
-        public array $publishers,
-        public string $productionYear,
-        /** @var RadarsubjectareaData[] */
-        public array $subjectAreas,
-        public RadarresourcetypeData $resource
+        //public array $publishers,
+        //public string $productionYear,
+        /** @var RadardatasetsubjectareaData[] */
+        #[LoadRelation]
+        #[MapInputName(SnakeCaseMapper::class)]
+        public array $subjectAreas;
+        #[MapInputName(SnakeCaseMapper::class)]
+        #[LoadRelation]
+        public RadardatasetresourcetypeData $resource;
         // optional fields
-    ) {}
+//    public function __construct(
+ //   ) {}
+
+    /*
+    public static function fromModel(Radardataset $radardataset): self
+    {
+        return new self("$radardataset->title", "$radardataset->radardatasetsubjectarea", "$radardataset->radardatasetresearchtype" );
+    }
+     */
 }

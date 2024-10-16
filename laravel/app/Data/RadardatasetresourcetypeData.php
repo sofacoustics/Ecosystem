@@ -17,7 +17,7 @@ use Spatie\LaravelData\Data;
 
 use Carbon;
 
-class RadarresourcetypeData extends Data
+class RadardatasetresourcetypeData extends Data
 {
     // https://spatie.be/docs/laravel-data/v4/as-a-data-transfer-object/model-to-data-object
     #[MapInputName(SnakeCaseMapper::class)]

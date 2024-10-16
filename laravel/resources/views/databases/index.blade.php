@@ -51,5 +51,23 @@
         @endforeach
 --}}
 
+{{-- START: Testing RADAR dataset --}}
+		@foreach ($allDatabases as $database)
+			<div>Database: {{ $database->name }}
+            <ul class="list-disc list-inside">
+            <li>RADAR Dataset: {{ $database->radardataset }}</li>
+            <li>RADAR Dataset Resource: {{ $database->radardataset->radardatasetresourcetype }}</li>
+            <li>RADAR Dataset Subject Area: {{ $database->radardataset->radardatasetsubjectarea }}</li>
+            <li>RADAR Dataset Subject Areas:
+                <ul class="list-disc list-inside">
+                @foreach ($database->radardataset->radardatasetsubjectareas as $radardatasetsubjectarea)
+                    <li>{{ $radardatasetsubjectarea  }}</li>
+                @endforeach
+                </ul>
+            </ul>
+            </div/
+        @endforeach
+{{-- END: Testing RADAR dataset --}}
+
 <livewire:create-database />
 </x-app-layout>

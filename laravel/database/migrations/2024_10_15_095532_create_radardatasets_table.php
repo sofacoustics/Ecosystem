@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('radardatasetresourcetypes', function (Blueprint $table) {
+        Schema::create('radardatasets', function (Blueprint $table) {
             $table->id();
-            $table->string('resource_type'); // as defined by RADAR. If 'OTHER', then fill out 'value'.
-            $table->string('value')->nullable();
-            $table->foreignId('radardataset_id');
+            $table->string('title');
+            $table->foreignId('database_id');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('radardatasetresourcetypes');
+        Schema::dropIfExists('radardatasets');
     }
 };

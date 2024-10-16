@@ -16,6 +16,7 @@ class RadardatasetresourcetypeSeeder extends Seeder
     public function run(): void
     {
         // Hard-coded possible values will be defined elsewhere - maybe in view?
-        Radardatasetresourcetype::create(array('resource_type' => 'Other', 'value' => 'Acoustics', 'created_at' => Carbon\CarbonImmutable::now(), 'updated_at' => Carbon\CarbonImmutable::now()));
+        Radardatasetresourcetype::create(array('resource_type' => 'Other', 'value' => 'Acoustics', 'radardataset_id' => 1, 'created_at' => Carbon\CarbonImmutable::now(), 'updated_at' => Carbon\CarbonImmutable::now()));
+        Radardatasetresourcetype::create(array('resource_type' => 'Other', 'value' => 'Acoustics', 'radardataset_id' => 2, 'created_at' => Carbon\CarbonImmutable::now(), 'updated_at' => Carbon\CarbonImmutable::now()));
     }
 }
