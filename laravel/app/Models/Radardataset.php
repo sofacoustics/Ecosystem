@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+use App\Data\RadardatasetData;
 
 /*
  * A RADAR dataset is what we in SONICOM call a 'database'
@@ -18,6 +19,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Radardataset extends Model
 {
     use HasFactory;
+
+    //
+    // ATTRIBUTES
+    //
+
+    //
+    // RELATIONSHIPS
+    //
 
     public function database(): BelongsTo
     {
@@ -51,5 +60,13 @@ class Radardataset extends Model
         return $this->hasMany(Radardatasetsubjectarea::class);
     }
 
+    //
+    // FUNCTIONS
+    //
+
+    public function json(): string
+    {
+        return RadardatasetData::from($this)->toJson();
+    }
 
 }

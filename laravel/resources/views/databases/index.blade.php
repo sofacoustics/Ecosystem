@@ -65,7 +65,8 @@
                 @endforeach
                 </ul>
             </ul>
-            </div/
+            JSON: {{ $database->radardataset->json() }}
+            </div>
         @endforeach
 {{-- END: Testing RADAR dataset --}}
 
