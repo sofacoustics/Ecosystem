@@ -300,3 +300,10 @@ You can deploy to the test server <http://sonicom-test.kfs.oeaw.ac.at> which wil
 
 XML Schema: <https://www.radar-service.eu/schemas/descriptive/radar/v09/radar-elements>
 
+### RADAR models
+
+Create a model with it's migration and seeder with the following command:
+
+    ./artisan make:model -m -s <modelname>
+
+
