@@ -304,6 +304,6 @@ XML Schema: <https://www.radar-service.eu/schemas/descriptive/radar/v09/radar-el
 
 Create a model with it's migration and seeder with the following command:
 
-    ./artisan make:model -m -s <modelname>
+    ./artisan make:model -m -s <modelname-in-the-singular>
 
 
