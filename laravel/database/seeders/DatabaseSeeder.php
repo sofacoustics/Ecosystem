@@ -94,6 +94,14 @@ class DatabaseSeeder extends Seeder
                             "additionalSubjectAreaName": "The second free text subject area"
                         }
                     ]
+                },
+                "resource": {
+                    "value": "Acoustics",
+                    "resourceType": "AUDIOVISUAL"
+                },
+                "rights": {
+                    "controlledRights": "CC_BY_4_0_ATTRIBUTION",
+                    "additionalRights": null
                 }
             }'),
             'user_id' => 1));
@@ -164,6 +172,14 @@ class DatabaseSeeder extends Seeder
                             "additionalSubjectAreaName": "The second free text subject area"
                         }
                     ]
+                },
+                "resource": {
+                    "value": "Acoustics",
+                    "resourceType": "AUDIOVISUAL"
+                },
+                "rights": {
+                    "controlledRights": "CC_BY_4_0_ATTRIBUTION",
+                    "additionalRights": null
                 }
             }'),
             'user_id' => 1, ));

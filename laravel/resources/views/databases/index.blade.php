@@ -59,7 +59,8 @@
             Creator: {{ $database->radardataset->creators->creator[0]['creatorName'] }}
             @foreach ($database->radardataset->creators->creator as $creator)
                 <p>creatorName: {{ $creator['creatorName'] }}</p>
-                @if(!is_null($creator['creatorAffiliation']))
+                {{-- @if(!is_null($creator['creatorAffiliation'])) --}}
+                @if(array_key_exists('creatorAffiliation', $creator) && !is_null($creator['creatorAffiliation']))
                     <p>creatorAffiliation: {{ $creator['creatorAffiliation']['value'] }}</p>
                 @else
                     <p>No affiliation</pj
@@ -72,6 +73,7 @@
                     <p>additionalSubjectAreaName: {{ $subjectArea['additionalSubjectAreaName']}}</p>
                 @endif
             @endforeach
+            Resource: {{ $database->radardataset->resource->value }}
 
             @php
                 var_dump($database->radardataset->creators->creator[0]);

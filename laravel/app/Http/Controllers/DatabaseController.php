@@ -90,7 +90,7 @@ class DatabaseController extends Controller
         //dd($dataset);
         //
         //$dataset = RadardatasetData::from(Radardataset::find(1));
-        $test = RadardatasetData::from(Radardataset::find(1));
+        //$test = RadardatasetData::from(Radardataset::find(1));
         //dd($test);
         //$test->toJson();
 
@@ -239,10 +239,15 @@ class DatabaseController extends Controller
         }    */
 
         //dd($request);
-        //jw:tmp test updating radar value 
+        $radardataset = RadardatasetpureData::from($request);
+        //dd($radardataset);
+        //jw:tmp test updating radar value
         //$database->radardataset->title = 4
+        //
+        //$request->merge(['radardataset' => $radardataset]);
 
-        $database->update($request->except('_method', '_token', 'submit'));
+        $database->update(['radardataset' => $radardataset]);
+        //$database->update($request->except('_method', '_token', 'submit'));
         return redirect('databases')->with('success', 'Database successfully updated!');
     }
 

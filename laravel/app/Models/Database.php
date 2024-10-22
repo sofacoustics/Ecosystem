@@ -13,7 +13,9 @@ use App\Data\RadardatasetpureData;
 class Database extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'description', 'radardataset', 'user_id', '_token', '_method', 'submit'];
+    protected $fillable = ['title', 'description', 'radardataset', 
+        'productionYear', 'resource', 'rights', 'subjectAreas', 'publishers', 'creators',
+        'user_id', '_token', '_method', 'submit'];
 
     // https://spatie.be/docs/laravel-data/v4/advanced-usage/eloquent-casting
     protected $casts = [
