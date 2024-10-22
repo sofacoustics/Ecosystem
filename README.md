@@ -268,6 +268,11 @@ Create a resource for a table with
 
 Note that for the FileUpload, the upload_max_filesize php setting must be large enough!
 
+### Laravel Blade Components
+
+<https://dev.to/jump24/laravel-blade-components-3hbh>
+
+
 ### Reverb
 
 <https://redberry.international/laravel-reverb-real-time-communication/>

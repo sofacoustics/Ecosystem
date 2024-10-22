@@ -27,49 +27,145 @@ class DatabaseSeeder extends Seeder
         // ]);
         $this->call(RolesAndPermissionsSeeder::class);
         $this->call(UserSeeder::class);
-        Database::create(array('title' => 'ARI B', 
+        Database::create(array('title' => 'ARI B',
             'description' => 'Specialty: hrtfs, dtfs, and photos of the ears', 
             'radardataset' => RadardatasetpureData::from('{
-                        "title": "ARI B RADAR dataset",
-                                        "publishers": {
-                                                        "publisher": [
-                                                                                {
-                                                                                                            "value": "OEAW",
-                                                                                                                                        "nameIdentifierScheme": "OTHER",
-                                                                                                                                                                "schemeURI": null,
-                                                                                                                                                                                        "nameIdentifier": null
-                                                                                                                                                                                                            },
-                                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                                                                "value": "TU Wien",
-                                                                                                                                                                                                                                                                                            "nameIdentifierScheme": "OTHER",
-                                                                                                                                                                                                                                                                                                                    "schemeURI": null,
-                                                                                                                                                                                                                                                                                                                                            "nameIdentifier": null
-                                                                                                                                                                                                                                                                                                                                                                }
+                "title": "ARI B",
+                "productionYear": "2024",
+                "publishers": {
+                    "publisher": [
+                        {
+                            "value": "Acoustics Research Institute",
+                            "nameIdentifierScheme": "OTHER",
+                            "schemeURI": null,
+                            "nameIdentifier": null
+                        },
+                        {
+                            "value": "Austrian Academy of Sciences",
+                            "nameIdentifierScheme": "ROR",
+                            "schemeURI": "https://ror.org/",
+                            "nameIdentifier": "https://ror.org/03anc3s24"
+                        }
                     ]
-                                        }
-        }'),
+                },
+                "creators": {
+                    "creator": [
+                        {
+                            "creatorName": "Stuefer, Jonathan",
+                            "givenName": null,
+                            "familyName": null,
+                            "nameIdentifier": [
+                                {
+                                    "value": "https://ror.org/0387prb75",
+                                    "schemeURI": "https://ror.org/",
+                                    "nameIdentifierScheme": "ROR"
+                                }
+                            ],
+                            "creatorAffiliation": null
+                        },
+                        {
+                            "creatorName": "Majdak, Piotr",
+                            "givenName": "Piotr",
+                            "familyName": "Majdak",
+                            "nameIdentifier": [
+                                {
+                                    "value": "0000-0003-1511-6164",
+                                    "schemeURI": "http://orcid.org/",
+                                    "nameIdentifierScheme": "ORCID"
+                                }
+                            ],
+                            "creatorAffiliation": {
+                                "value": "Austrian Academy of Sciences",
+                                "schemeURI": "https://ror.org/",
+                                "affiliationIdentifierScheme": "ROR",
+                                "affiliationIdentifier": "https://ror.org/03anc3s24"
+                            }
+                        }
+                    ]
+                },
+                "subjectAreas": {
+                    "subjectArea": [
+                        {
+                            "controlledSubjectAreaName": "COMPUTER_SCIENCE",
+                            "additionalSubjectAreaName": null
+                        },
+                        {
+                            "controlledSubjectAreaName": "OTHER",
+                            "additionalSubjectAreaName": "The second free text subject area"
+                        }
+                    ]
+                }
+            }'),
             'user_id' => 1));
-        Database::create(array('title' => 'ARI BezierPPM', 
-            'description' => 'Specialty: csv, dtfs and hrtfs', 
+        Database::create(array('title' => 'ARI BezierPPM',
+            'description' => 'Specialty: csv, dtfs and hrtfs',
             'radardataset' => RadardatasetpureData::from('{
-                        "title": "ARI B RADAR dataset",
-                                        "publishers": {
-                                                        "publisher": [
-                                                                                {
-                                                                                                            "value": "OEAW",
-                                                                                                                                        "nameIdentifierScheme": "OTHER",
-                                                                                                                                                                "schemeURI": null,
-                                                                                                                                                                                        "nameIdentifier": null
-                                                                                                                                                                                                            },
-                                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                                                                "value": "TU Wien",
-                                                                                                                                                                                                                                                                                            "nameIdentifierScheme": "OTHER",
-                                                                                                                                                                                                                                                                                                                    "schemeURI": null,
-                                                                                                                                                                                                                                                                                                                                            "nameIdentifier": null
-                                                                                                                                                                                                                                                                                                                                                                }
+                "title": "ARI BezierPPM",
+                "productionYear": "2024",
+                "publishers": {
+                    "publisher": [
+                        {
+                            "value": "Acoustics Research Institute",
+                            "nameIdentifierScheme": "OTHER",
+                            "schemeURI": null,
+                            "nameIdentifier": null
+                        },
+                        {
+                            "value": "Austrian Academy of Sciences",
+                            "nameIdentifierScheme": "ROR",
+                            "schemeURI": "https://ror.org/",
+                            "nameIdentifier": "https://ror.org/03anc3s24"
+                        }
                     ]
-                                        }
-        }'),
+                },
+                "creators": {
+                    "creator": [
+                        {
+                            "creatorName": "Stuefer, Jonathan",
+                            "givenName": null,
+                            "familyName": null,
+                            "nameIdentifier": [
+                                {
+                                    "value": "https://ror.org/0387prb75",
+                                    "schemeURI": "https://ror.org/",
+                                    "nameIdentifierScheme": "ROR"
+                                }
+                            ],
+                            "creatorAffiliation": null
+                        },
+                        {
+                            "creatorName": "Majdak, Piotr",
+                            "givenName": "Piotr",
+                            "familyName": "Majdak",
+                            "nameIdentifier": [
+                                {
+                                    "value": "0000-0003-1511-6164",
+                                    "schemeURI": "http://orcid.org/",
+                                    "nameIdentifierScheme": "ORCID"
+                                }
+                            ],
+                            "creatorAffiliation": {
+                                "value": "Austrian Academy of Sciences",
+                                "schemeURI": "https://ror.org/",
+                                "affiliationIdentifierScheme": "ROR",
+                                "affiliationIdentifier": "https://ror.org/03anc3s24"
+                            }
+                        }
+                    ]
+                },
+                "subjectAreas": {
+                    "subjectArea": [
+                        {
+                            "controlledSubjectAreaName": "COMPUTER_SCIENCE",
+                            "additionalSubjectAreaName": null
+                        },
+                        {
+                            "controlledSubjectAreaName": "OTHER",
+                            "additionalSubjectAreaName": "The second free text subject area"
+                        }
+                    ]
+                }
+            }'),
             'user_id' => 1, ));
         //Database::create(array('name' => 'Jonnie\'s ARI SOFA test 2', 'description' => 'Nr. 2. \'Nuf said!', 'user_id' => 1, 'radar_id' => 'dEZxRRrxpiHSzbBZ'));
         $this->call([

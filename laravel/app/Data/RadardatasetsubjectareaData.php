@@ -11,11 +11,11 @@ use Spatie\LaravelData\Data;
 
 class RadardatasetsubjectareaData extends Data
 {
-    #[MapInputName(SnakeCaseMapper::class)]
+    // mandatory fields
+    public string $controlledSubjectAreaName;
+    // optional fields
+    public ?string $additionalSubjectAreaName = null;
+
     public function __construct(
-        // mandatory fields
-        public string $controlledSubjectAreaName,
-        // optional fields
-        public ?string $additionalSubjectAreaName = null,
-    ) {}
+        ) {}
 }

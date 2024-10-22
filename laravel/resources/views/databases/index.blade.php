@@ -54,10 +54,27 @@
 {{-- START: Testing RADAR dataset --}}
 		@foreach ($allDatabases as $database)
 			<div>Database: {{ $database->title }}
-            <p>Pure JSON output of JSON field 'radardataset'</p>
+            <p>Pure JSON output of JSON field 'radardataset' using the RadardatsetpureData laravel-data class</p>
             <pre>{{ $database->radardataset->toJson(JSON_PRETTY_PRINT) }}</pre>
+            Creator: {{ $database->radardataset->creators->creator[0]['creatorName'] }}
+            @foreach ($database->radardataset->creators->creator as $creator)
+                <p>creatorName: {{ $creator['creatorName'] }}</p>
+                @if(!is_null($creator['creatorAffiliation']))
+                    <p>creatorAffiliation: {{ $creator['creatorAffiliation']['value'] }}</p>
+                @else
+                    <p>No affiliation</pj
+                @endif
+            @endforeach
+            Subject Areas:
+            @foreach ($database->radardataset->subjectAreas->subjectArea as $subjectArea)
+                <p>controlledSubjectAreaName: {{ $subjectArea['controlledSubjectAreaName'] }}</p>
+                @if(!empty($subjectArea['additionalSubjectAreaName']))
+                    <p>additionalSubjectAreaName: {{ $subjectArea['additionalSubjectAreaName']}}</p>
+                @endif
+            @endforeach
+
             @php
-               //     var_dump($database->radardataset);
+                var_dump($database->radardataset->creators->creator[0]);
                 //    var_dump($database->radardataset['publishers']);
             @endphp
             <ul class="list-disc list-inside">

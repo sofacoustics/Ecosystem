@@ -14,10 +14,12 @@ use Spatie\LaravelData\Attributes\LoadRelation;
 use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
-use App\Data\RadarcreatorData;
+/*use App\Data\RadarcreatorData;
+use App\Data\RadardatasetcreatorsData;
 use App\Data\RadardatasetpublisherData;
 use App\Data\RadardatasetsubjectareaData;
 use App\Data\RadardatasetresourcetypeData;
+ */
 
 use App\Models\Radardataset;
 
@@ -25,10 +27,19 @@ class RadardatasetpureData extends Data
 {
         //jw:note Don't specify variables in the constructor, otherwise
         //jw:note instantiating from a model doesn't work (wrong parameter count).
+
+        //
         // mandatory fields
+        //
         public string $title;
+        public string $productionYear;
         /** @var RadardatasetpublishersData[] */
         public RadardatasetpublishersData $publishers;
+        /** @var RadardatasetcreatorsData[] */
+        public RadardatasetcreatorsData $creators;
+        /** @var RadardatasetsubjectareasData[] */
+        public RadardatasetsubjectareasData $subjectAreas;
+
         /** @var RadarcreatorData[] */
         //public array $creators,
         /** @var RadarpublisherData[] */
@@ -38,6 +49,8 @@ class RadardatasetpureData extends Data
         /** @var RadardatasetsubjectareaData[] */
         //public array $subjectAreas;
         //public RadardatasetresourcetypeData $resource;
+
+        //
         // optional fields
         //
         //public RadardatasetpublishersData $publishers;
