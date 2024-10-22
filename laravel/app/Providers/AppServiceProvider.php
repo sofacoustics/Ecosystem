@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
  * out that simply setting the X-Forwarded-Proto header to https fixes *everything*!
  use Illuminate\Support\Facades\URL;
  */
+use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Datafile;
 use App\Observers\DatafileObserver;
@@ -29,6 +30,9 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Datafile::observe(DatafileObserver::class);
+
+        //jw:note throw excption if attemptinng to fill and unfillable attribute (https://laravel.com/docs/11.x/eloquent#mass-assignment-json-columns) for local development (production should still ignore silently).
+        Model::preventSilentlyDiscardingAttributes($this->app->isLocal());
 	/*
 	 * This *was* necessary to get livewire to upload files. However, it turns
 	 * out that simply setting the X-Forwarded-Proto header to https fixes *everything*!

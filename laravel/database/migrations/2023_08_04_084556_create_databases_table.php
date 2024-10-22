@@ -15,8 +15,9 @@ return new class extends Migration
     {
         Schema::create('databases', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('title');
             $table->string('description');
+            $table->json('radardataset')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->string('radar_id')->nullable(); // Save the RADAR id (e.g. iqcCQbvmGzYxYUne) here
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

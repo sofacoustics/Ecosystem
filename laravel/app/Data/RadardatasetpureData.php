@@ -3,6 +3,8 @@
  *
  * laravel-data object for RADAR 'Dataset'
  *
+ * THIS ONE IS TO BE SAVED IN A JSON FIELD IN THE DATABASE
+ *
  * See https://radar.products.fiz-karlsruhe.de/de/radarfeatures/radar-api
  */
 namespace App\Data;
@@ -13,33 +15,32 @@ use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
 use App\Data\RadarcreatorData;
-use App\Data\RadarpublisherData;
+use App\Data\RadardatasetpublisherData;
 use App\Data\RadardatasetsubjectareaData;
 use App\Data\RadardatasetresourcetypeData;
 
 use App\Models\Radardataset;
 
-class RadardatasetData extends Data
+class RadardatasetpureData extends Data
 {
         //jw:note Don't specify variables in the constructor, otherwise
         //jw:note instantiating from a model doesn't work (wrong parameter count).
         // mandatory fields
         public string $title;
+        /** @var RadardatasetpublishersData[] */
+        public RadardatasetpublishersData $publishers;
         /** @var RadarcreatorData[] */
         //public array $creators,
         /** @var RadarpublisherData[] */
         //public array $publishers,
+
         //public string $productionYear,
         /** @var RadardatasetsubjectareaData[] */
-        #[LoadRelation]
-        #[MapInputName(SnakeCaseMapper::class)]
-        public array $subjectAreas;
-        #[MapInputName(SnakeCaseMapper::class)]
-        #[LoadRelation]
-        public RadardatasetresourcetypeData $resource;
+        //public array $subjectAreas;
+        //public RadardatasetresourcetypeData $resource;
         // optional fields
         //
-        public RadardatasetpublishersData $publishers;
+        //public RadardatasetpublishersData $publishers;
 //    public function __construct(
  //   ) {}
 
@@ -49,4 +50,11 @@ class RadardatasetData extends Data
         return new self("$radardataset->title", "$radardataset->radardatasetsubjectarea", "$radardataset->radardatasetresearchtype" );
     }
      */
+
+/*    public static function normalizers(): array
+    {
+        return [
+            Spatie\LaravelData\Normalizers\JsonNormalizer::class,
+        ];
+}*/
 }

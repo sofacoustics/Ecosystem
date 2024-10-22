@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('radardatasets', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->json('publishers')->nullable();
             $table->foreignId('database_id');
             $table->timestamps();
         });

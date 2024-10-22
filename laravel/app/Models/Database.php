@@ -8,11 +8,30 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+use App\Data\RadardatasetpureData;
+
 class Database extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'description', 'user_id'];
+    protected $fillable = ['title', 'description', 'radardataset', 'user_id', '_token', '_method', 'submit'];
 
+    // https://spatie.be/docs/laravel-data/v4/advanced-usage/eloquent-casting
+    protected $casts = [
+        'radardataset' => RadardatasetpureData::class,
+    ];
+
+
+    protected static function booted()
+    {
+        // Update RADAR 'title' when database title updated.
+        static::updating(function ($database) {
+            $database->radardataset->title = $database->title;
+        });
+    }
+
+    //
+    // RELATIONSHIPS
+    //
     /**
      * Get the datasets for a database
      *

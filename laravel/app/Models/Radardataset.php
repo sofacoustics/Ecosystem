@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use App\Data\RadardatasetData;
+use App\Data\RadardatasetpublishersData;
 
 /*
  * A RADAR dataset is what we in SONICOM call a 'database'
@@ -19,6 +20,16 @@ use App\Data\RadardatasetData;
 class Radardataset extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['title', 'database_id'];
+
+    //
+    // CASTS
+    //
+    protected $casts = [
+        'publishers' => RadardatasetpublishersData::class,
+    ];
+
 
     //
     // ATTRIBUTES
@@ -55,6 +66,11 @@ class Radardataset extends Model
         return $this->hasOne(Radardatasetsubjectarea::class);
     }
 
+    public function radardatasetrightsholders(): HasMany
+    {
+        return $this->hasMany(Radardatasetrightsholder::class);
+    }
+
     public function radardatasetsubjectareas(): HasMany
     {
         return $this->hasMany(Radardatasetsubjectarea::class);
@@ -68,5 +84,19 @@ class Radardataset extends Model
     {
         return RadardatasetData::from($this)->toJson();
     }
+
+
+    /**
+     * Define the json format of the model
+     */
+    public function jsonSerialize():Array
+    {
+        // see https://dev.to/gbhorwood/laravel-powerful-json-with-jsonserialize-4fmh
+        return [
+            'title' => $this->title,
+            'publishers' =>  (object) [ 'publisher' => $this->radardatasetrightsholders ],
+            'rightsHolders' => (object) ['rightsHolder' => $this->radardatasetrightsholders ],
+        ];
+    } // jsonSerialize    
 
 }

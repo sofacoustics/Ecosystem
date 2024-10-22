@@ -22,6 +22,7 @@
         @method('PUT')
         <label for="title">Title</label>
         <input type="text" name="title" id="title" value="{{ $database->title }}">
+        <input type="text" name="radardataset" id="radardataset" value="{{ $database->radardataset->title }}">
         <input type="text" name="description" id="title" value="{{ $database->description }}">
         <input type="submit" name="submit" value="Submit">
     </form>

@@ -13,6 +13,7 @@ use App\Http\Requests\StoreDatabaseRequest;
 use App\Http\Requests\UpdateDatabaseRequest;
 
 use App\Data\RadardatasetData;
+use App\Data\RadardatasetpureData;
 use App\Data\RadardatasetresourcetypeData;
 use App\Data\RadardatasetsubjectareaData;
 use App\Data\RadarcreatorData;
@@ -79,7 +80,7 @@ class DatabaseController extends Controller
         ); //print_r($datasetdata);
          */
         //dd($datasetdata);
-        
+
         // Test Model -> Data
         //$resource_type = RadarresourcetypeData::from(Radardatasetresourcetype::find(1));
         //dd($resource_type);
@@ -91,7 +92,91 @@ class DatabaseController extends Controller
         //$dataset = RadardatasetData::from(Radardataset::find(1));
         $test = RadardatasetData::from(Radardataset::find(1));
         //dd($test);
+        //$test->toJson();
 
+        //jw:tmp test creating database from JSON
+        $databaseJSON='{"title": "ARI B RADAR dataset","publishers": {
+        "publisher": [
+            {
+                "id": 1,
+                "value": "Stuefer",
+                "name_identifier_scheme": "OTHER",
+                "scheme_URI": null,
+                "name_identifier": null,
+                "radardataset_id": 1,
+                "created_at": "2024-10-18T10:27:12.000000Z",
+                "updated_at": "2024-10-18T10:27:12.000000Z"
+            },
+            {
+                "id": 2,
+                "value": "Majdak",
+                "name_identifier_scheme": "OTHER",
+                "scheme_URI": null,
+                "name_identifier": null,
+                "radardataset_id": 1,
+                "created_at": "2024-10-18T10:27:12.000000Z",
+                "updated_at": "2024-10-18T10:27:12.000000Z"
+            }
+        ]
+    },
+    "rightsHolders": {
+        "rightsHolder": [
+            {
+                "id": 1,
+                "value": "Stuefer",
+                "name_identifier_scheme": "OTHER",
+                "scheme_URI": null,
+                "name_identifier": null,
+                "radardataset_id": 1,
+                "created_at": "2024-10-18T10:27:12.000000Z",
+                "updated_at": "2024-10-18T10:27:12.000000Z"
+            },
+            {
+                "id": 2,
+                "value": "Majdak",
+                "name_identifier_scheme": "OTHER",
+                "scheme_URI": null,
+                "name_identifier": null,
+                "radardataset_id": 1,
+                "created_at": "2024-10-18T10:27:12.000000Z",
+                "updated_at": "2024-10-18T10:27:12.000000Z"
+            }
+        ]
+    }
+}';
+        $databaseArray = json_decode($databaseJSON, true);
+        $databaseArray['database_id'] = 1;
+        $databaseArray['id'] = 1;
+        //dd($databaseArray);
+        //$testdatabase = Radardataset::updateOrCreate($databaseArray);
+
+      
+        $radardatasetpureJSON = '{
+            "title": "ARI B RADAR dataset",
+            "publishers": {
+                "publisher": [
+                    {
+                        "value": "OEAW",
+                        "nameIdentifierScheme": "OTHER",
+                        "schemeURI": null,
+                        "nameIdentifier": null
+                    },
+                    {
+                        "value": "TU Wien",
+                        "nameIdentifierScheme": "OTHER",
+                        "schemeURI": null,
+                        "nameIdentifier": null
+                    }
+                ]
+                }
+        }';
+
+        if(json_validate($radardatasetpureJSON)) {
+            $radardatasetpureArray = json_decode($radardatasetpureJSON, true);
+            //dd($radardatasetpureArray);
+            $radardatasetpureData = RadardatasetpureData::from($radardatasetpureJSON);
+            //dd($radardatasetpureData);
+        }
 
 
         return view('databases.index', ['allDatabases' => $databases]);
@@ -112,6 +197,8 @@ class DatabaseController extends Controller
      */
     public function store(StoreDatabaseRequest $request)
     {
+        // An alternative - where rules are in the model: https://medium.com/@konafets/a-better-place-for-your-validation-rules-in-laravel-f5e3f5b7cc
+
         Database::create($request->validated()); // https://dev.to/secmohammed/laravel-form-request-tips-tricks-2p12
 
         return redirect('databases')->with('success', "Database $request->title successfully created!");
@@ -150,7 +237,12 @@ class DatabaseController extends Controller
         /*if($request->user()->cannot('update', $database)) {
             abort(403);
         }    */
-        $database->update($request->all());
+
+        //dd($request);
+        //jw:tmp test updating radar value 
+        //$database->radardataset->title = 4
+
+        $database->update($request->except('_method', '_token', 'submit'));
         return redirect('databases')->with('success', 'Database successfully updated!');
     }
 
