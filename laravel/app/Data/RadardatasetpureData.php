@@ -22,16 +22,8 @@ class RadardatasetpureData extends Data
         //
         // mandatory fields
         //
-        public string $title;
-        public string $productionYear;
-        /** @var RadardatasetpublishersData[] */
-        public RadardatasetpublishersData $publishers;
-        /** @var RadardatasetcreatorsData[] */
-        public RadardatasetcreatorsData $creators;
-        /** @var RadardatasetsubjectareasData[] */
-        public RadardatasetsubjectareasData $subjectAreas;
-        public RadardatasetresourceData $resource;
-        public RadardatasetrightsData $rights;
+        public RadardatasetdescriptivemetadataData $descriptiveMetadata;
+
 
         /** @var RadarcreatorData[] */
         //public array $creators,
@@ -46,6 +38,8 @@ class RadardatasetpureData extends Data
         // optional fields
         //
         //public RadardatasetpublishersData $publishers;
+        public ?string $id;
+        public ?string $parentId;
 //    public function __construct(
  //   ) {}
 

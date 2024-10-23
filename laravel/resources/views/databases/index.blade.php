@@ -5,7 +5,6 @@
         </h2>
     </x-slot>
 
-
     @if ($message = Session::get('success'))
         <div class="alert alert-success alert-block">
             <button type="button" class="close" data-dismiss="alert">×</button>
@@ -36,7 +35,7 @@
     @endforeach
 		</table>
 {{-- 		//jw:tmp testing relationships<br>
-		
+
 		@foreach ($allDatabases as $database)
 			Database: {{ $database->title }} <br>
             @foreach ($database->datasets as $dataset)
@@ -52,12 +51,14 @@
 --}}
 
 {{-- START: Testing RADAR dataset --}}
+@env('local')
+    {{-- in "local" or "staging" environment --}}
+
 		@foreach ($allDatabases as $database)
 			<div>Database: {{ $database->title }}
-            <p>Pure JSON output of JSON field 'radardataset' using the RadardatsetpureData laravel-data class</p>
-            <pre>{{ $database->radardataset->toJson(JSON_PRETTY_PRINT) }}</pre>
-            Creator: {{ $database->radardataset->creators->creator[0]['creatorName'] }}
-            @foreach ($database->radardataset->creators->creator as $creator)
+             <p>RADAR dataset<p>
+                     <p>Creator: {{ $database->radardataset->descriptiveMetadata->creators->creator[0]['creatorName'] }}</p>
+            @foreach ($database->radardataset->descriptiveMetadata->creators->creator as $creator)
                 <p>creatorName: {{ $creator['creatorName'] }}</p>
                 {{-- @if(!is_null($creator['creatorAffiliation'])) --}}
                 @if(array_key_exists('creatorAffiliation', $creator) && !is_null($creator['creatorAffiliation']))
@@ -67,16 +68,16 @@
                 @endif
             @endforeach
             Subject Areas:
-            @foreach ($database->radardataset->subjectAreas->subjectArea as $subjectArea)
+            @foreach ($database->radardataset->descriptiveMetadata->subjectAreas->subjectArea as $subjectArea)
                 <p>controlledSubjectAreaName: {{ $subjectArea['controlledSubjectAreaName'] }}</p>
                 @if(!empty($subjectArea['additionalSubjectAreaName']))
                     <p>additionalSubjectAreaName: {{ $subjectArea['additionalSubjectAreaName']}}</p>
                 @endif
             @endforeach
-            Resource: {{ $database->radardataset->resource->value }}
+            Resource: {{ $database->radardataset->descriptiveMetadata->resource->value }}
 
             @php
-                var_dump($database->radardataset->creators->creator[0]);
+                //var_dump($database->radardataset->creators->creator[0]);
                 //    var_dump($database->radardataset['publishers']);
             @endphp
             <ul class="list-disc list-inside">
@@ -91,20 +92,24 @@
                         <li>{{ $radardatasetsubjectarea  }}</li>
                     @endforeach
                     </ul>
-                <li>RADAR Dataset Publishers: {{-- $database->radardataset->publishers->toJson() --}}</li>
+                <li>RADAR Dataset Publishers: {{-- $database->radardataset->publishers->toJson() </li>
                 <p>Publishers</p>
                 @php
                     //var_dump($database->radardataset->publishers->toArray());
                     //var_dump(json_decode($database->radardataset->publishers->toJson()));
                 @endphp
                 Radardatset Model->toJson()
-                <pre>{{-- $database->radardataset->toJson(JSON_PRETTY_PRINT) --}}</pre>
+                <pre> $database->radardataset->toJson(JSON_PRETTY_PRINT) </pre> --}k
             </u>
             --}}
             {{-- JSON: {{ $database->radardataset->json() }} --}}
             </div>
+            <p>Pure JSON output of JSON field 'radardataset' using the RadardatsetpureData laravel-data class</p>
+             <pre>{{ $database->radardataset->toJson(JSON_PRETTY_PRINT) }}</pre>
+
         @endforeach
 {{-- END: Testing RADAR dataset --}}
+@endenv
 
-<livewire:create-database />
+{{-- <livewire:create-database /> --}}
 </x-app-layout>

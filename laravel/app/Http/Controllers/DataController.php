@@ -41,7 +41,7 @@ class DataController extends Controller
         $response->throw(); // Throw an exception if a client or server error occurred...
         $body = json_decode($response->body(),true);
         $this->access_token = $body['access_token'];
-    } 
+    }
 
 	/*
 	* List all datasets

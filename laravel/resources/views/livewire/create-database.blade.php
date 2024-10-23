@@ -2,9 +2,9 @@
 @auth
     {{-- If you look to others for fulfillment, you will never truly be fulfilled. --}}
     <form wire:submit="save">
-        <input type="text" wire:model="name">
+        <input type="text" wire:model="title">
         <div>
-            @error('name') <span class="error">{{ $message }}</span> @enderror
+            @error('title') <span class="error">{{ $message }}</span> @enderror
         </div>
         <input type="text" wire:model="description">
         <div>

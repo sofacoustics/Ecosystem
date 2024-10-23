@@ -23,7 +23,7 @@ class StoreDatabaseRequest extends FormRequest
     {
         return [
             //jw:todo add for rules here
-            'name' => 'required|unique:databases,name|max:255',
+            'title' => 'required|unique:databases,title|max:255',
             'description' => 'required|max:255',
             'user_id' => '',
         ];
