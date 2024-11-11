@@ -48,4 +48,10 @@ windows:
     panes:
       - shell_command:
         - tmux select-pane -T octave -t octave.0
+  - window_name: vi
+    layout: even-vertical
+    start_directory: laravel
+    panes:
+      - shell_command:
+        - tmux select-pane -T vi -t vi.0
 
