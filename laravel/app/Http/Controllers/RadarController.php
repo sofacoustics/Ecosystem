@@ -11,15 +11,12 @@ use Illuminate\Support\Facades\Storage;
 class RadarController extends Controller
 {
     var $access_token; // the access token for accessing RADAR
-
-    //var $workspace = "RDJBmjTacaxKwSGW"; // Karlsruhe
-    //var $baseurl = 'https://test.radar-service.eu'; // Karlsruhe
-    var $workspace = "aIoFEMniUZoLoDyh"; // OEAW
-    var $baseurl = 'https://datathektest.oeaw.ac.at'; // OEAW
+    var $workspace;
+    var $baseurl;
 
     public function __construct()
     {
-    
+
         // Get valid access token
 //        $response = Http::post("$this->baseurl/radar/api/tokens", [
 //            'clientId'        => 'institut-fuer-schallforschung',
@@ -28,7 +25,12 @@ class RadarController extends Controller
 //            'userPassword'    => 'ZtbI2ljoVKzL1yWDfK8Z',
 //            'redirectUrl'     => 'https://www.oeaw.ac.at/isf'
 //        ]);
-        
+
+        //var $workspace = "RDJBmjTacaxKwSGW"; // Karlsruhe
+        //var $baseurl = 'https://test.radar-service.eu'; // Karlsruhe
+        $this->workspace = env("RADAR_WORKSPACE");
+        $this->baseurl = env("RADAR_BASEURL");
+
         // Store RADAR credentials in the .env file
         $response = Http::post($this->baseurl."/radar/api/tokens", [
             'clientId'        => env("RADAR_CLIENTID"),
