@@ -51,7 +51,7 @@
 --}}
 
 {{-- START: Testing RADAR dataset --}}
-@env('local')
+@env('ignore')
     {{-- in "local" or "staging" environment --}}
 
 		@foreach ($allDatabases as $database)
