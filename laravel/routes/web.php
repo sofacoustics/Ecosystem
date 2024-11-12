@@ -1,11 +1,11 @@
 <?php
 
-use App\Http\Controllers\DataController;
-use App\Http\Controllers\DatabaseController;
-use App\Http\Controllers\DatasetController;
-use App\Http\Controllers\DatafileController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DatabaseController;
+use App\Http\Controllers\DatafileController;
+use App\Http\Controllers\DatasetController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RadarController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,7 +29,7 @@ Route::get('/dashboard', function () {
 
 // SONICOM
 /// DATA
-Route::resource('data', DataController::class)
+Route::resource('radar', RadarController::class)
 	->only(['index']);
 /// ABOUT
 Route::view('/about', 'pages.about')->name('about');

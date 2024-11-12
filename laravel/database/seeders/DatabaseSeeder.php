@@ -245,10 +245,12 @@ class DatabaseSeeder extends Seeder
             DatasetdefSeeder::class,
             DatafileSeeder::class,
             MenuItemSeeder::class,
+            /*
             RadardatasetresourcetypeSeeder::class,
             RadardatasetsubjectareaSeeder::class,
             RadardatasetrightsholderSeeder::class,
             RadardatasetSeeder::class,
+             */
         ]);
 
     }

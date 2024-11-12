@@ -22,8 +22,8 @@ class MenuItemSeeder extends Seeder
 
        MenuItem::create([
         'id' => '1',
-        'title' => 'Data',
-        'url' => '/data',
+        'title' => 'RADAR',
+        'url' => '/radar',
         'authenticated' => 0,
        ]);
 
@@ -34,12 +34,14 @@ class MenuItemSeeder extends Seeder
         'authenticated' => 0,
        ]);
 
+       /*
        MenuItem::create([
         'id' => '3',
         'title' => 'Create Database',
         'url' => '/databases/create',
         'authenticated' => 1,
        ]);
+        */
 
        MenuItem::create([
         'id' => '6',

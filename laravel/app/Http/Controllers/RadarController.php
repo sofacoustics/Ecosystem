@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Http; // guzzle
 use Illuminate\Support\Facades\Storage;
 
 
-class DataController extends Controller
+class RadarController extends Controller
 {
     var $access_token; // the access token for accessing RADAR
 
