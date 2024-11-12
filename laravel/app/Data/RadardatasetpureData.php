@@ -37,11 +37,10 @@ class RadardatasetpureData extends Data
         //
         // optional fields
         //
-        //public RadardatasetpublishersData $publishers;
         public ?string $id;
         public ?string $parentId;
-//    public function __construct(
- //   ) {}
+//      public function __construct(
+//      ) {}
 
     /*
     public static function fromModel(Radardataset $radardataset): self
