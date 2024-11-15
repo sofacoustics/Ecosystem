@@ -24,6 +24,16 @@
     {{-- in "local" or "staging" environment --}}
     <h3>RADAR dataset</h3>
 
+    {{--
+    <form method="post" action="http://sonicom-jw-local.local/api/radar/datasets/f3dxp4vswdc2xe7z">
+            <input class="rounded-full bg-amber-200 p-2" type="submit" value="send">
+    </form> --}}
+
+    <x-button method="post" action="http://sonicom-jw-local.local/api/radar/datasets/{{ $database->id }}">
+        Upload metadata to RADAR
+    </x-button>
+
+
     <x-radar.dataset :dataset="$database->radardataset">
         A radar.div component with a dataset parameter
     </x-radar.dataset>

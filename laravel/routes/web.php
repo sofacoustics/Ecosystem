@@ -28,9 +28,11 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // SONICOM
-/// DATA
-Route::resource('radar', RadarController::class)
-	->only(['index']);
+/// RADAR
+Route::get('/radar', [RadarController::class, 'index']);
+Route::get('/radar/dataset/{id}', [RadarController::class, 'dataset']);
+Route::get('/radar/get/{id}', [RadarController::class, 'get']);
+
 /// ABOUT
 Route::view('/about', 'pages.about')->name('about');
 Route::view('/terms-of-use', 'pages.terms-of-use')->name('terms-of-use');

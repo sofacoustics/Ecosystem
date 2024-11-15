@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Resources\DatabaseCollection;
 use App\Http\Resources\DatabaseResource;
 use App\Models\Database;
+
+use App\Http\Controllers\Api\Radar\DatasetController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -27,3 +29,12 @@ Route::get('/databases', function () {
 Route::get('/databases/{id}', function (string $id) {
     return new DatabaseResource(Database::findOrFail($id));
 });
+
+
+////////////////////////////////////////////////////////////////////////////////
+// RADAR API
+////////////////////////////////////////////////////////////////////////////////
+//  /datasets
+Route::get('/radar/datasets', [ App\Http\Controllers\Api\Radar\DatasetController::class, 'index' ]);
+Route::get('/radar/datasets/{id}', [ App\Http\Controllers\Api\Radar\DatasetController::class, 'show' ]);
+Route::post('/radar/datasets/{id}', [ App\Http\Controllers\Api\Radar\DatasetController::class, 'testupdate' ]);
