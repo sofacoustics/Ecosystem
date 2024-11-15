@@ -29,9 +29,11 @@
             <input class="rounded-full bg-amber-200 p-2" type="submit" value="send">
     </form> --}}
 
-    <x-button method="post" action="http://sonicom-jw-local.local/api/radar/datasets/{{ $database->id }}">
+{{--    <x-button method="post" action="http://sonicom-jw-local.local/api/radar/datasets/{{ $database->id }}">
         Upload metadata to RADAR
-    </x-button>
+    </x-button> --}}
+
+    <livewire:radar.dataset :database="$database" />
 
 
     <x-radar.dataset :dataset="$database->radardataset">

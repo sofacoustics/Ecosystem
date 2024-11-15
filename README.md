@@ -312,4 +312,6 @@ Create a model with it's migration and seeder with the following command:
 
     ./artisan make:model -m -s <modelname-in-the-singular>
 
+## Livewire
 
+You can create a Livewire form and component (https://fly.io/laravel-bytes/livewire-3-forms/) so you can submit the form without leaving the page.
