@@ -15,9 +15,9 @@ class RadardatasetdescriptivemetadataData extends Data implements Wireable
     public string $title;
     public string $productionYear;
     /** @var RadardatasetpublishersData[] */
-//    public RadardatasetpublishersData $publishers;
-//    /** @var RadardatasetcreatorsData[] */
-//    public RadardatasetcreatorsData $creators;
+    public RadardatasetpublishersData $publishers;
+    /** @var RadardatasetcreatorsData[] */
+    public RadardatasetcreatorsData $creators;
 //    /** @var RadardatasetsubjectareasData[] */
 //    public RadardatasetsubjectareasData $subjectAreas;
 //    public RadardatasetresourceData $resource;
