@@ -33,12 +33,14 @@
         Upload metadata to RADAR
     </x-button> --}}
 
-    <livewire:radar.dataset :database="$database" />
+    @auth
+        <livewire:radar.dataset :database="$database" />
+    @else
+        <x-radar.dataset :dataset="$database->radardataset">
+            A radar.div component with a dataset parameter
+        </x-radar.dataset>
+    @endauth
 
-
-    <x-radar.dataset :dataset="$database->radardataset">
-        A radar.div component with a dataset parameter
-    </x-radar.dataset>
 
     @php
         //var_dump($database->radardataset->creators->creator[0]);

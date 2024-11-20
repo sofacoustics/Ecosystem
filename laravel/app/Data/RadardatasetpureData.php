@@ -9,16 +9,25 @@
  */
 namespace App\Data;
 
+use App\Traits\Radar\Rules\Dataset as Radardatasetrules;
+
+
+use Livewire\Wireable;
+
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Attributes\LoadRelation;
 use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
+use Spatie\LaravelData\Concerns\WireableData;
 
-class RadardatasetpureData extends Data
+class RadardatasetpureData extends Data implements Wireable
 {
         //jw:note Don't specify variables in the constructor, otherwise
         //jw:note instantiating from a model doesn't work (wrong parameter count).
 
+        use WireableData;
+
+        use Radardatasetrules;
         //
         // mandatory fields
         //
@@ -55,4 +64,13 @@ class RadardatasetpureData extends Data
             Spatie\LaravelData\Normalizers\JsonNormalizer::class,
         ];
 }*/
+
+/*        public static function rules(): array
+        {
+            return [
+                'id' => 'min:3',
+                'descriptiveMetadata.title' => 'min:8',
+            ];
+}*/
+
 }

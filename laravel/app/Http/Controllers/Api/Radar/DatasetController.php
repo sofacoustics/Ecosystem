@@ -58,6 +58,7 @@ class DatasetController extends RadarController
         $json = $database->radardataset->toJson(); // RADAR dataset json
         $dataset_id = $database->radardataset->id;
         //dd($dataset_id);
+        dd($database->radardataset->descriptiveMetadata->title);
         //dd(url()->previous());
 
         $body = $this->put("/datasets/$dataset_id", $json);

@@ -13,10 +13,10 @@ class Dataset extends Form
     #[Validate('required|min:5')]
     public $title = '';
 
+    //jw:todo implement RADAR heirarchy here
+
     #[Validate('required|min:5')]
     public $content = '';
-
-
 
     public function setDataset(\App\Data\RadardatasetpureData $dataset)
     {

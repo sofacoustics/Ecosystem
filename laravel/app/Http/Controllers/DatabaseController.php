@@ -38,11 +38,113 @@ class DatabaseController extends Controller
         $databases = \App\Models\Database::all();
 
         //        //jw:tmp
-        /*
-        $datasetdata = new RadardatasetData(title: 'title',
+        $testjson = '{
+                "id": "f3dxp4vswdc2xe7z",
+                "parentId": "aIoFEMniUZoLoDyh",
+                "descriptiveMetadata": {
+                    "title": "ARI B",
+                    "productionYear": "2024",
+                    "publishers": {
+                        "publisher": [
+                            {
+                                "value": "Acoustics Research Institute",
+                                "nameIdentifierScheme": "OTHER",
+                                "schemeURI": null,
+                                "nameIdentifier": null
+                            },
+                            {
+                                "value": "Austrian Academy of Sciences",
+                                "nameIdentifierScheme": "ROR",
+                                "schemeURI": "https://ror.org/",
+                                "nameIdentifier": "https://ror.org/03anc3s24"
+                            }
+                        ]
+                    },
+                    "creators": {
+                        "creator": [
+                            {
+                                "creatorName": "Stuefer, Jonathan",
+                                "givenName": null,
+                                "familyName": null,
+                                "nameIdentifier": [
+                                    {
+                                        "value": "https://ror.org/0387prb75",
+                                        "schemeURI": "https://ror.org/",
+                                        "nameIdentifierScheme": "ROR"
+                                    }
+                                ],
+                                "creatorAffiliation": null
+                            },
+                            {
+                                "creatorName": "Majdak, Piotr",
+                                "givenName": "Piotr",
+                                "familyName": "Majdak",
+                                "nameIdentifier": [
+                                    {
+                                        "value": "0000-0003-1511-6164",
+                                        "schemeURI": "http://orcid.org/",
+                                        "nameIdentifierScheme": "ORCID"
+                                    }
+                                ],
+                                "creatorAffiliation": {
+                                    "value": "Austrian Academy of Sciences",
+                                    "schemeURI": "https://ror.org/",
+                                    "affiliationIdentifierScheme": "ROR",
+                                    "affiliationIdentifier": "https://ror.org/03anc3s24"
+                                }
+                            }
+                        ]
+                    },
+                    "subjectAreas": {
+                        "subjectArea": [
+                            {
+                                "controlledSubjectAreaName": "COMPUTER_SCIENCE",
+                                "additionalSubjectAreaName": null
+                            },
+                            {
+                                "controlledSubjectAreaName": "OTHER",
+                                "additionalSubjectAreaName": "The second free text subject area"
+                            }
+                        ]
+                    },
+                    "resource": {
+                        "value": "Acoustics",
+                        "resourceType": "AUDIOVISUAL"
+                    },
+                    "rights": {
+                        "controlledRights": "CC_BY_4_0_ATTRIBUTION",
+                        "additionalRights": null
+                    },
+                    "rightsHolders": {
+                        "rightsHolder": [
+                            {
+                                "value": "Stuefer",
+                                "nameIdentifierScheme": "OTHER",
+                                "schemeURI": null,
+                                "nameIdentifier": null
+                            },
+                            {
+                                "value": "Majdak",
+                                "nameIdentifierScheme": "OTHER",
+                                "schemeURI": null,
+                                "nameIdentifier": null
+                            },
+                            {
+                                "value": "Austrian Academy of Sciences",
+                                "nameIdentifierScheme": "ROR",
+                                "schemeURI": "https://ror.org/",
+                                "nameIdentifier": "https://ror.org/03anc3s24"
+                            }
+                        ]
+                    }
+                }';
+
+
+        /* 
+        $datasetdata = new RadardatasetpureData(title: 'title',
             creators: [
                 new RadarcreatorData(
-                    givenName: 'Jonathan', 
+                    givenName: 'Jonathan',
                     familyName: 'Stuefer',
                     creatorAffiliation: 'Austrian Academy of Sciences',
                 ),
@@ -79,6 +181,10 @@ class DatabaseController extends Controller
 
         ); //print_r($datasetdata);
          */
+
+        //$datasetdata = RadardatasetpureData::from('{"id":"f3dxp4vswdc2xe7z","parentId":"aIoFEMniUZoLoDyh","createdDate":"2024-10-10T08:54:51.490311157Z","lastModifiedDate":"2024-11-19T12:27:25.428109229Z","state":"PENDING","oaiUrl":null,"uploadUrl":"https://datathektest.oeaw.ac.at/radar-ingest/upload/f3dxp4vswdc2xe7z/file","ingestUrl":"https://datathektest.oeaw.ac.at/radar-ingest/upload/f3dxp4vswdc2xe7z/ingest","technicalMetadata":{"retentionPeriod":0,"archiveDate":null,"archiveCreator":null,"responsibleEmail":null,"embargoEndingDate":null,"numberOfPendingNotificationMailsSent":1,"reviewToken":null,"size":0,"access":null,"blocked":false,"blockMessage":null,"schema":{"key":"RDDM","version":"9.1"},"oaiUrl":null,"uploadToken":null,"uploadFolder":null},"descriptiveMetadata":{"identifier":null,"alternateIdentifiers":null,"relatedIdentifiers":null,"creators":{"creator":[{"creatorName":"Stuefer, Jonathan","givenName":null,"familyName":null,"nameIdentifier":[{"value":"https://ror.org/0387prb75","schemeURI":"https://ror.org/","nameIdentifierScheme":"ROR"}],"creatorAffiliation":null},{"creatorName":"Majdak, Piotr","givenName":"Piotr","familyName":"Majdak","nameIdentifier":[{"value":"0000-0003-1511-6164","schemeURI":"http://orcid.org/","nameIdentifierScheme":"ORCID"}],"creatorAffiliation":{"value":"Austrian Academy of Sciences","schemeURI":"https://ror.org/","affiliationIdentifierScheme":"ROR","affiliationIdentifier":"https://ror.org/03anc3s24"}}]},"contributors":null,"title":"ARI B mod","additionalTitles":null,"descriptions":null,"keywords":null,"publishers":{"publisher":[{"value":"Acoustics Research Institute","nameIdentifierScheme":"OTHER","schemeURI":null,"nameIdentifier":null},{"value":"Austrian Academy of Sciences","nameIdentifierScheme":"ROR","schemeURI":"https://ror.org/","nameIdentifier":"https://ror.org/03anc3s24"}]},"productionYear":"2024","publicationYear":null,"language":null,"subjectAreas":{"subjectArea":[{"controlledSubjectAreaName":"COMPUTER_SCIENCE","additionalSubjectAreaName":null},{"controlledSubjectAreaName":"OTHER","additionalSubjectAreaName":"The second free text subject area"}]},"resource":{"value":"Acoustics","resourceType":"AUDIOVISUAL"},"geoLocations":null,"dataSources":null,"software":null,"processing":null,"rights":{"controlledRights":"CC_BY_4_0_ATTRIBUTION","additionalRights":null},"rightsHolders":{"rightsHolder":[{"value":"Stuefer","nameIdentifierScheme":"OTHER","schemeURI":null,"nameIdentifier":null},{"value":"Majdak","nameIdentifierScheme":"OTHER","schemeURI":null,"nameIdentifier":null},{"value":"Austrian Academy of Sciences","nameIdentifierScheme":"ROR","schemeURI":"https://ror.org/","nameIdentifier":"https://ror.org/03anc3s24"}]},"relatedInformations":null,"fundingReferences":null},"descriptiveMetadataCorrection":null,"archive":null}');
+        $brokenJSON = '{"id":"f3dxp4vswdc2xe7z","parentId":"aIoFEMniUZoLoDyh","createdDate":"2024-10-10T08:54:51.490311157Z","lastModifiedDate":"2024-11-19T12:27:25.428109229Z","state":"PENDING","oaiUrl":null,"uploadUrl":"https://datathektest.oeaw.ac.at/radar-ingest/upload/f3dxp4vswdc2xe7z/file","ingestUrl":"https://datathektest.oeaw.ac.at/radar-ingest/upload/f3dxp4vswdc2xe7z/ingest","technicalMetadata":{"retentionPeriod":0,"archiveDate":null,"archiveCreator":null,"responsibleEmail":null,"embargoEndingDate":null,"numberOfPendingNotificationMailsSent":1,"reviewToken":null,"size":0,"access":null,"blocked":false,"blockMessage":null,"schema":{"key":"RDDM","version":"9.1"},"oaiUrl":null,"uploadToken":null,"uploadFolder":null},"descriptiveMetadata":{"identifier":null,"alternateIdentifiers":null,"relatedIdentifiers":null,"creators":{"creator":[{"creatorName":"Stuefer, Jonathan","givenName":null,"familyName":null,"nameIdentifier":[{"value":"https://ror.org/0387prb75","schemeURI":"https://ror.org/","nameIdentifierScheme":"ROR"}],"creatorAffiliation":null},{"creatorName":"Majdak, Piotr","givenName":"Piotr","familyName":"Majdak","nameIdentifier":[{"value":"0000-0003-1511-6164","schemeURI":"http://orcid.org/","nameIdentifierScheme":"ORCID"}],"creatorAffiliation":{"value":"Austrian Academy of Sciences","schemeURI":"https://ror.org/","affiliationIdentifierScheme":"ROR","affiliationIdentifier":"https://ror.org/03anc3s24"}}]},"contributors":null,"title":"ARI B mod","additionalTitles":null,"descriptions":null,"keywords":null,"publishers":{"publisher":[{"value":"Acoustics Research Institute","nameIdentifierScheme":"OTHER","schemeURI":null,"nameIdentifier":null},{"value":"Austrian Academy of Sciences","nameIdentifierScheme":"ROR","schemeURI":"https://ror.org/","nameIdentifier":"https://ror.org/03anc3s24"}]},"productionYear":"2024","publicationYear":null,"language":null,"subjectAreas":{"subjectArea":[{"controlledSubjectAreaName":"COMPUTER_SCIENCE","additionalSubjectAreaName":null},{"controlledSubjectAreaName":"OTHER","additionalSubjectAreaName":"The second free text subject area"}]},"resource":{"value":"Acoustics","resourceType":"AUDIOVISUAL"},"geoLocations":null,"dataSources":null,"software":null,"processing":null,"rights":{"controlledRights":"CC_BY_4_0_ATTRIBUTION","additionalRights":null},"rightsHolders":{"rightsHolder":[{"value":"Stuefer","nameIdentifierScheme":"OTHER","schemeURI":null,"nameIdentifier":null},{"value":"Majdak","nameIdentifierScheme":"OTHER","schemeURI":null,"nameIdentifier":null},{"value":"Austrian Academy of Sciences","nameIdentifierScheme":"ROR","schemeURI":"https://ror.org/","nameIdentifier":"https://ror.org/03anc3s24"}]},"relatedInformations":null,"fundingReferences":null},"descriptiveMetadataCorrection":null,"archive":null}';
+        RadardatasetpureData::validate(json_decode($brokenJSON, true));
         //dd($datasetdata);
 
         // Test Model -> Data
@@ -209,6 +315,11 @@ class DatabaseController extends Controller
      */
     public function show(Database $database)
     {
+        //jw:tmp
+        //dd($database->radardataset->rules());
+        //dd($database->radardataset);
+        //$database->radardataset::validate(null, $database->radardataset, $database->radardataset->rules());
+        //jw:tmp:end
         $user = \App\Models\User::where('id', $database->user_id)->first();
         return view('databases.show',[ 'database' => $database, 'user' => $user ]);
     }
