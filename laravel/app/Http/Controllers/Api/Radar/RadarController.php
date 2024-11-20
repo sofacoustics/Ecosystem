@@ -86,24 +86,6 @@ class RadarController extends Controller
             'debug' => false,
         ])->withToken($this->access_token)
           ->put("$url", json_decode($json,true));
-        $body = json_decode($response->body(),true);
-//        if($response['statusCode'] == 400)
-        //print_r($response);
-        if($response->status() != 200)
-        {
-            //dd(false);
-            //dd($response->body());
-            if(array_key_exists("exception", $body))
-            {
-                //jw:todo do something
-                //abort(404, $body['exception']);
-                //dd($body['exception']);
-                return back()->withError($body['exception'])->withInput();
-            }
-            //dd(json_decode($response->body(),true));
-        }
-
-
         //dd($json);
         //$response = Http::withHeaders([
         //                'Authorization' => 'Bearer ' . $token

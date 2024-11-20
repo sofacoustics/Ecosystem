@@ -63,9 +63,6 @@ class DatasetController extends RadarController
 
         $body = $this->put("/datasets/$dataset_id", $json);
 
-        $aBody = json_decode($body, true);
-        dd($aBody);
-        dd($body);
         //echo "$body";
         return redirect()->back();
         //return redirect($redirect);
