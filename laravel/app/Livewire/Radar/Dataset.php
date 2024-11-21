@@ -53,11 +53,14 @@ class Dataset extends Component
     public function mount(\App\Models\Database $database)
     {
         $this->database = $database;
-        $this->radardataset = RadardatasetpureData::from($database->radardataset); //SongData::from(Song::findOrFail($id));
+        //$this->radardataset = RadardatasetpureData::from($database->radardataset); //SongData::from(Song::findOrFail($id));
+        $this->radardataset = $database->radardataset; //SongData::from(Song::findOrFail($id));
     }
 
     public function save()
     {
+        //dd($this->rules());
+        //dd($this->radardataset);
         $this->validate();
 
         // update our database->radardataset values
@@ -70,7 +73,7 @@ class Dataset extends Component
 
         $radar = new RadardatasetController;
         $body = $radar->put("/datasets/$dataset_id", $newjson);
-        dd($body);
+        //dd($body);
     }
 
     public function render()

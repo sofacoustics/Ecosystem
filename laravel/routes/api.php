@@ -37,4 +37,4 @@ Route::get('/databases/{id}', function (string $id) {
 //  /datasets
 Route::get('/radar/datasets', [ App\Http\Controllers\Api\Radar\DatasetController::class, 'index' ]);
 Route::get('/radar/datasets/{id}', [ App\Http\Controllers\Api\Radar\DatasetController::class, 'show' ]);
-Route::post('/radar/datasets/{id}', [ App\Http\Controllers\Api\Radar\DatasetController::class, 'testupdate' ]);
+//Route::post('/radar/datasets/{id}', [ App\Http\Controllers\Api\Radar\DatasetController::class, 'testupdate' ]);
