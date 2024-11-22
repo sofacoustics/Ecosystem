@@ -55,8 +55,13 @@ class Dataset extends Component
         $this->database = $database;
         //$this->radardataset = RadardatasetpureData::from($database->radardataset); //SongData::from(Song::findOrFail($id));
         $this->radardataset = $database->radardataset; //SongData::from(Song::findOrFail($id));
+
+        //dd($this->radardataset);
     }
 
+    /*
+     * Save the form data and upload to RADAR
+     */
     public function save()
     {
         //dd($this->rules());
@@ -73,6 +78,8 @@ class Dataset extends Component
 
         $radar = new RadardatasetController;
         $body = $radar->put("/datasets/$dataset_id", $newjson);
+
+        session()->flash('status', 'RADAR successfully updated');
         //dd($body);
     }
 

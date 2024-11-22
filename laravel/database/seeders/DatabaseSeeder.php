@@ -10,7 +10,7 @@ use App\Data\RadardatasetpureData;
 use App\Models\MenuItem;
 use App\Models\Database;
 use App\Models\Radardatasetrightsholder;
-
+use App\Models\Radar\Metadataschema;
 
 class DatabaseSeeder extends Seeder
 {
@@ -56,15 +56,9 @@ class DatabaseSeeder extends Seeder
                         "creator": [
                             {
                                 "creatorName": "Stuefer, Jonathan",
-                                "givenName": null,
-                                "familyName": null,
-                                "nameIdentifier": [
-                                    {
-                                        "value": "https://ror.org/0387prb75",
-                                        "schemeURI": "https://ror.org/",
-                                        "nameIdentifierScheme": "ROR"
-                                    }
-                                ],
+                                "givenName": "Jonathan",
+                                "familyName": "Stuefer",
+                                "nameIdentifier": [],
                                 "creatorAffiliation": null
                             },
                             {
@@ -245,6 +239,7 @@ class DatabaseSeeder extends Seeder
             DatasetdefSeeder::class,
             DatafileSeeder::class,
             MenuItemSeeder::class,
+            MetadataschemaSeeder::class,
             /*
             RadardatasetresourcetypeSeeder::class,
             RadardatasetsubjectareaSeeder::class,

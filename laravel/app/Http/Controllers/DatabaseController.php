@@ -183,80 +183,19 @@ class DatabaseController extends Controller
          */
 
         //$datasetdata = RadardatasetpureData::from('{"id":"f3dxp4vswdc2xe7z","parentId":"aIoFEMniUZoLoDyh","createdDate":"2024-10-10T08:54:51.490311157Z","lastModifiedDate":"2024-11-19T12:27:25.428109229Z","state":"PENDING","oaiUrl":null,"uploadUrl":"https://datathektest.oeaw.ac.at/radar-ingest/upload/f3dxp4vswdc2xe7z/file","ingestUrl":"https://datathektest.oeaw.ac.at/radar-ingest/upload/f3dxp4vswdc2xe7z/ingest","technicalMetadata":{"retentionPeriod":0,"archiveDate":null,"archiveCreator":null,"responsibleEmail":null,"embargoEndingDate":null,"numberOfPendingNotificationMailsSent":1,"reviewToken":null,"size":0,"access":null,"blocked":false,"blockMessage":null,"schema":{"key":"RDDM","version":"9.1"},"oaiUrl":null,"uploadToken":null,"uploadFolder":null},"descriptiveMetadata":{"identifier":null,"alternateIdentifiers":null,"relatedIdentifiers":null,"creators":{"creator":[{"creatorName":"Stuefer, Jonathan","givenName":null,"familyName":null,"nameIdentifier":[{"value":"https://ror.org/0387prb75","schemeURI":"https://ror.org/","nameIdentifierScheme":"ROR"}],"creatorAffiliation":null},{"creatorName":"Majdak, Piotr","givenName":"Piotr","familyName":"Majdak","nameIdentifier":[{"value":"0000-0003-1511-6164","schemeURI":"http://orcid.org/","nameIdentifierScheme":"ORCID"}],"creatorAffiliation":{"value":"Austrian Academy of Sciences","schemeURI":"https://ror.org/","affiliationIdentifierScheme":"ROR","affiliationIdentifier":"https://ror.org/03anc3s24"}}]},"contributors":null,"title":"ARI B mod","additionalTitles":null,"descriptions":null,"keywords":null,"publishers":{"publisher":[{"value":"Acoustics Research Institute","nameIdentifierScheme":"OTHER","schemeURI":null,"nameIdentifier":null},{"value":"Austrian Academy of Sciences","nameIdentifierScheme":"ROR","schemeURI":"https://ror.org/","nameIdentifier":"https://ror.org/03anc3s24"}]},"productionYear":"2024","publicationYear":null,"language":null,"subjectAreas":{"subjectArea":[{"controlledSubjectAreaName":"COMPUTER_SCIENCE","additionalSubjectAreaName":null},{"controlledSubjectAreaName":"OTHER","additionalSubjectAreaName":"The second free text subject area"}]},"resource":{"value":"Acoustics","resourceType":"AUDIOVISUAL"},"geoLocations":null,"dataSources":null,"software":null,"processing":null,"rights":{"controlledRights":"CC_BY_4_0_ATTRIBUTION","additionalRights":null},"rightsHolders":{"rightsHolder":[{"value":"Stuefer","nameIdentifierScheme":"OTHER","schemeURI":null,"nameIdentifier":null},{"value":"Majdak","nameIdentifierScheme":"OTHER","schemeURI":null,"nameIdentifier":null},{"value":"Austrian Academy of Sciences","nameIdentifierScheme":"ROR","schemeURI":"https://ror.org/","nameIdentifier":"https://ror.org/03anc3s24"}]},"relatedInformations":null,"fundingReferences":null},"descriptiveMetadataCorrection":null,"archive":null}');
-        $brokenJSON = '{"id":"f3dxp4vswdc2xe7z","parentId":"aIoFEMniUZoLoDyh","createdDate":"2024-10-10T08:54:51.490311157Z","lastModifiedDate":"2024-11-19T12:27:25.428109229Z","state":"PENDING","oaiUrl":null,"uploadUrl":"https://datathektest.oeaw.ac.at/radar-ingest/upload/f3dxp4vswdc2xe7z/file","ingestUrl":"https://datathektest.oeaw.ac.at/radar-ingest/upload/f3dxp4vswdc2xe7z/ingest","technicalMetadata":{"retentionPeriod":0,"archiveDate":null,"archiveCreator":null,"responsibleEmail":null,"embargoEndingDate":null,"numberOfPendingNotificationMailsSent":1,"reviewToken":null,"size":0,"access":null,"blocked":false,"blockMessage":null,"schema":{"key":"RDDM","version":"9.1"},"oaiUrl":null,"uploadToken":null,"uploadFolder":null},"descriptiveMetadata":{"identifier":null,"alternateIdentifiers":null,"relatedIdentifiers":null,"creators":{"creator":[{"creatorName":"Stuefer, Jonathan","givenName":"Jonathan","familyName":"Stuefer","nameIdentifier":[{"value":"https://ror.org/0387prb75","schemeURI":"https://ror.org/","nameIdentifierScheme":"ROR"}],"creatorAffiliation":null},{"creatorName":"Majdak, Piotr","givenName":"Piotr","familyName":"Majdak","nameIdentifier":[{"value":"0000-0003-1511-6164","schemeURI":"http://orcid.org/","nameIdentifierScheme":"ORCID"}],"creatorAffiliation":{"value":"Austrian Academy of Sciences","schemeURI":"https://ror.org/","affiliationIdentifierScheme":"ROR","affiliationIdentifier":"https://ror.org/03anc3s24"}}]},"contributors":null,"title":"ARI B mod","additionalTitles":null,"descriptions":null,"keywords":null,"publishers":{"publisher":[{"value":"Acoustics Research Institute","nameIdentifierScheme":"OTHER","schemeURI":null,"nameIdentifier":null},{"value":"Austrian Academy of Sciences","nameIdentifierScheme":"ROR","schemeURI":"https://ror.org/","nameIdentifier":"https://ror.org/03anc3s24"}]},"productionYear":"2024","publicationYear":null,"language":null,"subjectAreas":{"subjectArea":[{"controlledSubjectAreaName":"COMPUTER_SCIENCE","additionalSubjectAreaName":null},{"controlledSubjectAreaName":"OTHER","additionalSubjectAreaName":"The second free text subject area"}]},"resource":{"value":"Acoustics","resourceType":"AUDIOVISUAL"},"geoLocations":null,"dataSources":null,"software":null,"processing":null,"rights":{"controlledRights":"CC_BY_4_0_ATTRIBUTION","additionalRights":null},"rightsHolders":{"rightsHolder":[{"value":"Stuefer","nameIdentifierScheme":"OTHER","schemeURI":null,"nameIdentifier":null},{"value":"Majdak","nameIdentifierScheme":"OTHER","schemeURI":null,"nameIdentifier":null},{"value":"Austrian Academy of Sciences","nameIdentifierScheme":"ROR","schemeURI":"https://ror.org/","nameIdentifier":"https://ror.org/03anc3s24"}]},"relatedInformations":null,"fundingReferences":null},"descriptiveMetadataCorrection":null,"archive":null}';
-        RadardatasetpureData::validate(json_decode($brokenJSON, true));
+        //$brokenJSON = '{"id":"f3dxp4vswdc2xe7z","parentId":"aIoFEMniUZoLoDyh","createdDate":"2024-10-10T08:54:51.490311157Z","lastModifiedDate":"2024-11-19T12:27:25.428109229Z","state":"PENDING","oaiUrl":null,"uploadUrl":"https://datathektest.oeaw.ac.at/radar-ingest/upload/f3dxp4vswdc2xe7z/file","ingestUrl":"https://datathektest.oeaw.ac.at/radar-ingest/upload/f3dxp4vswdc2xe7z/ingest","technicalMetadata":{"retentionPeriod":0,"archiveDate":null,"archiveCreator":null,"responsibleEmail":null,"embargoEndingDate":null,"numberOfPendingNotificationMailsSent":1,"reviewToken":null,"size":0,"access":null,"blocked":false,"blockMessage":null,"schema":{"key":"RDDM","version":"9.1"},"oaiUrl":null,"uploadToken":null,"uploadFolder":null},"descriptiveMetadata":{"identifier":null,"alternateIdentifiers":null,"relatedIdentifiers":null,"creators":{"creator":[{"creatorName":"Stuefer, Jonathan","givenName":"Jonathan","familyName":"Stuefer","nameIdentifier":[{"value":"https://ror.org/0387prb75","schemeURI":"https://ror.org/","nameIdentifierScheme":"ROR"}],"creatorAffiliation":null},{"creatorName":"Majdak, Piotr","givenName":"Piotr","familyName":"Majdak","nameIdentifier":[{"value":"0000-0003-1511-6164","schemeURI":"http://orcid.org/","nameIdentifierScheme":"ORCID"}],"creatorAffiliation":{"value":"Austrian Academy of Sciences","schemeURI":"https://ror.org/","affiliationIdentifierScheme":"ROR","affiliationIdentifier":"https://ror.org/03anc3s24"}}]},"contributors":null,"title":"ARI B mod","additionalTitles":null,"descriptions":null,"keywords":null,"publishers":{"publisher":[{"value":"Acoustics Research Institute","nameIdentifierScheme":"OTHER","schemeURI":null,"nameIdentifier":null},{"value":"Austrian Academy of Sciences","nameIdentifierScheme":"ROR","schemeURI":"https://ror.org/","nameIdentifier":"https://ror.org/03anc3s24"}]},"productionYear":"2024","publicationYear":null,"language":null,"subjectAreas":{"subjectArea":[{"controlledSubjectAreaName":"COMPUTER_SCIENCE","additionalSubjectAreaName":null},{"controlledSubjectAreaName":"OTHER","additionalSubjectAreaName":"The second free text subject area"}]},"resource":{"value":"Acoustics","resourceType":"AUDIOVISUAL"},"geoLocations":null,"dataSources":null,"software":null,"processing":null,"rights":{"controlledRights":"CC_BY_4_0_ATTRIBUTION","additionalRights":null},"rightsHolders":{"rightsHolder":[{"value":"Stuefer","nameIdentifierScheme":"OTHER","schemeURI":null,"nameIdentifier":null},{"value":"Majdak","nameIdentifierScheme":"OTHER","schemeURI":null,"nameIdentifier":null},{"value":"Austrian Academy of Sciences","nameIdentifierScheme":"ROR","schemeURI":"https://ror.org/","nameIdentifier":"https://ror.org/03anc3s24"}]},"relatedInformations":null,"fundingReferences":null},"descriptiveMetadataCorrection":null,"archive":null}';
+        //RadardatasetpureData::validate(json_decode($brokenJSON, true));
         //dd($datasetdata);
 
-        // Test Model -> Data
-        //$resource_type = RadarresourcetypeData::from(Radardatasetresourcetype::find(1));
-        //dd($resource_type);
-        //$dataset = RadardatasetData::from(Radardataset::find(1));
-        //dd($dataset);
-        //$dataset = Radardataset::find(1);
-        //dd($dataset);
-        //
-        //$dataset = RadardatasetData::from(Radardataset::find(1));
-        //$test = RadardatasetData::from(Radardataset::find(1));
-        //dd($test);
-        //$test->toJson();
 
-        //jw:tmp test creating database from JSON
-        $databaseJSON='{"title": "ARI B RADAR dataset","publishers": {
-        "publisher": [
-            {
-                "id": 1,
-                "value": "Stuefer",
-                "name_identifier_scheme": "OTHER",
-                "scheme_URI": null,
-                "name_identifier": null,
-                "radardataset_id": 1,
-                "created_at": "2024-10-18T10:27:12.000000Z",
-                "updated_at": "2024-10-18T10:27:12.000000Z"
-            },
-            {
-                "id": 2,
-                "value": "Majdak",
-                "name_identifier_scheme": "OTHER",
-                "scheme_URI": null,
-                "name_identifier": null,
-                "radardataset_id": 1,
-                "created_at": "2024-10-18T10:27:12.000000Z",
-                "updated_at": "2024-10-18T10:27:12.000000Z"
-            }
-        ]
-    },
-    "rightsHolders": {
-        "rightsHolder": [
-            {
-                "id": 1,
-                "value": "Stuefer",
-                "name_identifier_scheme": "OTHER",
-                "scheme_URI": null,
-                "name_identifier": null,
-                "radardataset_id": 1,
-                "created_at": "2024-10-18T10:27:12.000000Z",
-                "updated_at": "2024-10-18T10:27:12.000000Z"
-            },
-            {
-                "id": 2,
-                "value": "Majdak",
-                "name_identifier_scheme": "OTHER",
-                "scheme_URI": null,
-                "name_identifier": null,
-                "radardataset_id": 1,
-                "created_at": "2024-10-18T10:27:12.000000Z",
-                "updated_at": "2024-10-18T10:27:12.000000Z"
-            }
-        ]
-    }
-}';
+/*
         $databaseArray = json_decode($databaseJSON, true);
         $databaseArray['database_id'] = 1;
         $databaseArray['id'] = 1;
         //dd($databaseArray);
         //$testdatabase = Radardataset::updateOrCreate($databaseArray);
 
-      
+
         $radardatasetpureJSON = '{
             "title": "ARI B RADAR dataset",
             "publishers": {
@@ -283,6 +222,7 @@ class DatabaseController extends Controller
             $radardatasetpureData = RadardatasetpureData::from($radardatasetpureJSON);
             //dd($radardatasetpureData);
         }
+ */
 
 
         return view('databases.index', ['allDatabases' => $databases]);

@@ -20,7 +20,7 @@ use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 use Spatie\LaravelData\Concerns\WireableData;
 
-class RadardatasetpureData extends Data implements Wireable
+class RadardatasetpureData extends RadarData implements Wireable
 {
         //jw:note Don't specify variables in the constructor, otherwise
         //jw:note instantiating from a model doesn't work (wrong parameter count).

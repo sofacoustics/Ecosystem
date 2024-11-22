@@ -15,7 +15,7 @@ namespace App\Data;
 
 use Spatie\LaravelData\Data;
 
-class RadardatasetresourceData extends Data
+class RadardatasetresourceData extends RadarData
 {
     // mandatory fields
     public string $resourceType;
