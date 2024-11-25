@@ -6,7 +6,7 @@ use Spatie\LaravelData\Data;
 
 use App\Data\RadardatasetpublisherData;
 
-class RadardatasetpublishersData extends Data
+class RadardatasetpublishersData extends RadarData
 {
 
     /** @var \App\Data\Radardatasetpublisher[] */

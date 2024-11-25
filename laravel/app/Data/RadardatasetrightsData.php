@@ -4,7 +4,7 @@ namespace App\Data;
 
 use Spatie\LaravelData\Data;
 
-class RadardatasetrightsData extends Data
+class RadardatasetrightsData extends RadarData
 {
     // mandatory
     public string $controlledRights;

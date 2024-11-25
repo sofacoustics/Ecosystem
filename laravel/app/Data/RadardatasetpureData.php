@@ -11,21 +11,15 @@ namespace App\Data;
 
 use App\Traits\Radar\Rules\Dataset as Radardatasetrules;
 
-
-use Livewire\Wireable;
-
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Attributes\LoadRelation;
 use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
-use Spatie\LaravelData\Concerns\WireableData;
 
-class RadardatasetpureData extends RadarData implements Wireable
+class RadardatasetpureData extends RadarData
 {
         //jw:note Don't specify variables in the constructor, otherwise
         //jw:note instantiating from a model doesn't work (wrong parameter count).
-
-        use WireableData;
 
         use Radardatasetrules;
         //

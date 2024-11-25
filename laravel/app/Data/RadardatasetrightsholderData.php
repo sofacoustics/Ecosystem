@@ -4,7 +4,7 @@ namespace App\Data;
 
 use Spatie\LaravelData\Data;
 
-class RadardatasetrightsholderData extends Data
+class RadardatasetrightsholderData extends RadarData
 {
     public string $value;
     public string $schemeURI;

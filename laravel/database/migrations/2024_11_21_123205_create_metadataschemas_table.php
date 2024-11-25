@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('type');
             $table->string('name');
             $table->string('value');
+            $table->string('display'); // the value to display, if different from 'value'
             $table->timestamps();
         });
     }

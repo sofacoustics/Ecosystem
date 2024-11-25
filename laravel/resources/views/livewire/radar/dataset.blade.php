@@ -77,7 +77,7 @@
                                         Value: <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.value' type="text" />
                                     </label>
                                     <label>
-                                         schemeURI: <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.schemeURI' type="text" />
+                                        schemeURI: <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.schemeURI' type="text" />
                                     </label>
                                     <label>
                                         affiliationIdentifier: <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.affiliationIdentifier' type="text" />
@@ -87,45 +87,8 @@
                                     </label>
                                 </fieldset>
                             @endif
-
                         @endif
-                        {{--
-                        @if(is_array($creatorfieldvalue))
-                            <p>{{ $creatorfieldkey }} value is array</p>
-                            @foreach($creatorfieldvalue as $ck => $cv)
-                                @if(is_array($cv))
-                                    <p>is another array</p>
-                                    @foreach($cv as $ak => $av)
-                                        <p>{{ $ak }} => {{ $av }}</p>
-                                    @endforeach
-                                @else
-                                    <p>{{ $ck }} => {{ $cv }}</p>
-                                @endif
-                            @endforeach
-                        @endif
-                        --}}
                     @endforeach
-                        {{--
-                        @if($creatorfieldkey == "nameIdentifier")
-                            <fieldset class="bg-pink-100 ml-2 mb-2">
-                                <legend>Name Identifier</legend>
-                                <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.nameIdentifier.0.value' type="text" />
-                                <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.nameIdentifier.0.schemeURI' type="text" />
-                                <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.nameIdentifier.0.nameIdentifierScheme' type="text" />
-                            </fieldset>
-                        @endif
-                        @if($creatorfieldkey == "creatorAffiliation")
-                             <fieldset class="bg-yellow-100 ml-2 mb-2">
-                                <legend>Creator Affiliation</legend>
-                                <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.value' type="text" />
-                                <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.schemeURI' type="text" />
-                                <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.nameIdentifier' type="text" />
-                                <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.nameIdentifierScheme' type="text" />
-                                </fieldset>
-                        @endif
-
-                    @endforeach
-                --}}
                 </fieldset>
             @endforeach
         </fieldset>
@@ -144,11 +107,36 @@
                 </select> --}}
                 {{-- https://livewire.laravel.com/docs/wire-model#select-dropdowns --}}
                 <select wire:model='radardataset.descriptiveMetadata.resource.resourceType'>
-                    <option>Audiovisual</option>
-                    <option>Collection</option>
-                    <option>Dataset</option>
+                    @foreach(\App\Models\Radar\Metadataschema::where('name','resourceType')->get() as $r)
+                        <option value="{{ $r->value }}">{{ $r->display }}</option>
+                    @endforeach
                 </select>
+
+                {{-- nested items are a little bit tricky, I believe
+                <livewire:radar.schema.resourcetype /> --}}
             </label>
+        </fieldset>
+        <fieldset class="bg-red-100">
+            <legend>Subject Areas</legend>
+            @foreach ($radardataset->descriptiveMetadata->subjectAreas->subjectArea as $key => $subjectArea)
+                <fieldset class="bg-blue-100 ml-2 mb-2">
+                    <legend>SubjectArea</legend>
+                    <label for="controlledSubjectArea">
+                        <select wire:model='radardataset.descriptiveMetadata.subjectAreas.subjectArea.{{ $key }}.controlledSubjectAreaName'>
+                            @foreach(\App\Models\Radar\Metadataschema::where('name','subjectArea')->get() as $r)
+                                <option value="{{ $r->value }}">{{ $r->display }}</option>
+                            @endforeach
+                        </select>
+                    </label>
+                    <label for="additionalSubjectAreaName">
+                        Additional Subject Area Name: <input wire:model='radardataset.descriptiveMetadata.subjectAreas.subjectArea.{{ $key }}.additionalSubjectAreaName' type="text" />
+                        <div>
+                            @error("radardataset.descriptiveMetadata.subjectAreas.subjectArea.$key.additionalSubjectAreaName") <span class="error">{{ $message }}</span> @enderror
+                        </div>
+                    </label>
+                </fieldset>
+            @endforeach
+
         </fieldset>
 {{--        <input type="text" wire:model="form.title">
         <div>

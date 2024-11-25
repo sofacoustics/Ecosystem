@@ -2,15 +2,10 @@
 
 namespace App\Data;
 
-use Livewire\Wireable;
-
 use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Concerns\WireableData;
 
-class RadardatasetcreatoraffiliationData extends RadarData implements Wireable
+class RadardatasetcreatoraffiliationData extends RadarData
 {
-    use WireableData;
-
     public string $value;
     public string $schemeURI;
     public string $affiliationIdentifier;

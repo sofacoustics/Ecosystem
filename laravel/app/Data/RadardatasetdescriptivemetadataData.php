@@ -2,15 +2,10 @@
 
 namespace App\Data;
 
-use Livewire\Wireable;
-
 use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Concerns\WireableData;
 
-class RadardatasetdescriptivemetadataData extends Data implements Wireable
+class RadardatasetdescriptivemetadataData extends RadarData
 {
-    use WireableData;
-
     #[Min(10)]
     public string $title;
     public string $productionYear;
@@ -18,8 +13,8 @@ class RadardatasetdescriptivemetadataData extends Data implements Wireable
     public RadardatasetpublishersData $publishers;
     /** @var RadardatasetcreatorsData[] */
     public RadardatasetcreatorsData $creators;
-//    /** @var RadardatasetsubjectareasData[] */
-//    public RadardatasetsubjectareasData $subjectAreas;
+    /** @var RadardatasetsubjectareasData[] */
+    public RadardatasetsubjectareasData $subjectAreas;
     public RadardatasetresourceData $resource;
 //    public RadardatasetrightsData $rights;
 //    public RadardatasetrightsholdersData $rightsHolders;
