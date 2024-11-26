@@ -13,7 +13,6 @@ class RadardatasetsubjectareaData extends RadarData
 {
     // mandatory fields
     public string $controlledSubjectAreaName;
-    //public string $additionalSubjectAreaName;
     // optional fields
     public ?string $additionalSubjectAreaName = null;
 

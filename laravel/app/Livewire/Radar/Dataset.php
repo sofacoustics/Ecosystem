@@ -88,4 +88,26 @@ class Dataset extends Component
         //dd($this->radardataset);
         return view('livewire.radar.dataset');
     }
+
+    // https://livewire.laravel.com/docs/lifecycle-hooks#update
+    public function updated($property)
+    {
+        /*
+         * Set additonalSubjectAreaName to "" if controlledSubjectAreaname is not 'OTHER'
+         */
+        if (preg_match('/radardataset\.descriptiveMetadata\.subjectAreas\.subjectArea\.(.*)/', $property))// === 'radardataset.descriptiveMetadata.subjectAreas.subjectArea.1.controlledSubjectAreaName')
+        {
+            // parse property
+            $a = explode('.', $property);
+            if($this->radardataset->descriptiveMetadata->subjectAreas->subjectArea[$a[4]]['controlledSubjectAreaName'] != 'OTHER')
+            {
+                $this->radardataset->descriptiveMetadata->subjectAreas->subjectArea[$a[4]]['additionalSubjectAreaName'] = '';
+            }
+        }
+    }
+
+    public function testOnChange($parameter)
+    {
+        dd($parameter);
+    }
 }

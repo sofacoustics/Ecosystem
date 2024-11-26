@@ -122,18 +122,20 @@
                 <fieldset class="bg-blue-100 ml-2 mb-2">
                     <legend>SubjectArea</legend>
                     <label for="controlledSubjectArea">
-                        <select wire:model='radardataset.descriptiveMetadata.subjectAreas.subjectArea.{{ $key }}.controlledSubjectAreaName'>
+                        <select wire:model.live='radardataset.descriptiveMetadata.subjectAreas.subjectArea.{{ $key }}.controlledSubjectAreaName' >
                             @foreach(\App\Models\Radar\Metadataschema::where('name','subjectArea')->get() as $r)
                                 <option value="{{ $r->value }}">{{ $r->display }}</option>
                             @endforeach
                         </select>
                     </label>
-                    <label for="additionalSubjectAreaName">
-                        Additional Subject Area Name: <input wire:model='radardataset.descriptiveMetadata.subjectAreas.subjectArea.{{ $key }}.additionalSubjectAreaName' type="text" />
-                        <div>
-                            @error("radardataset.descriptiveMetadata.subjectAreas.subjectArea.$key.additionalSubjectAreaName") <span class="error">{{ $message }}</span> @enderror
-                        </div>
-                    </label>
+                    @if($subjectArea['controlledSubjectAreaName'] === 'OTHER')
+                        <label for="additionalSubjectAreaName">
+                            Additional Subject Area Name: <input wire:model='radardataset.descriptiveMetadata.subjectAreas.subjectArea.{{ $key }}.additionalSubjectAreaName' type="text" placeholder="Free text description of the subject area" />
+                            <div>
+                                @error("radardataset.descriptiveMetadata.subjectAreas.subjectArea.$key.additionalSubjectAreaName") <span class="error">{{ $message }}</span> @enderror
+                            </div>
+                        </label>
+                    @endif
                 </fieldset>
             @endforeach
 
@@ -152,7 +154,8 @@
             <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
 
-        <button type="submit">Save</button>
+        {{--<button type="submit">Save</button>--}}
+        <x-button-without-form>Save to RADAR</x-button-without-form>
         @if (session('status'))
             {{-- https://laracasts.com/discuss/channels/javascript/hiding-element-after-x-seconds-with-alpine?page=1&replyId=643299 --}}
             <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">

@@ -144,6 +144,7 @@ If you are pushing to a remote git repository, then a post-receive hook should r
 - [x] JW: Add RADAR credentials to ansible role env creation.
 - [x] JW: Put RADAR URL and workspace in .env file (and ansible)
 - [ ] JW: Implement dataset definition mask and dataset upload
+- [ ] JW: Add additional subjectAreas with button
 - [ ] JW: Implement ORCID and ROR schemes
 
 ## Place to push stuff when testing git deployment
