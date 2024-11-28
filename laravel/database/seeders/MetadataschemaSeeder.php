@@ -82,8 +82,29 @@ class MetadataschemaSeeder extends Seeder
         Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'subjectArea', 'value' => 'THEOLOGY', 'display' => 'Theology'));
         Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'subjectArea', 'value' => 'VETERINARY_MEDICINE', 'display' => 'Veterinary Medicine'));
         Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'subjectArea', 'value' => 'OTHER', 'display' => 'Other'));
-
-
+        // controlledRights
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'CC_BY_4_0_ATTRIBUTION', 'display' => 'C BY 4.0 Attribution'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'CC_BY_ND_4_0_ATTRIBUTION_NO_DERIVS', 'display' => 'CC BY-ND 4.0 Attribution-NoDerivs'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'CC_BY_NC_ND_4_0_ATTRIBUTION_NON_COMMERCIAL_NO_DERIVS', 'display' => 'CC BY-NC-ND 4.0 Attribution- N on Commercial -NoDerivs'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'CC_BY_SA_4_0_ATTRIBUTION_SHARE_ALIKE', 'display' => 'CC BY-SA 4.0 Attribution-ShareAlike'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'CC_BY_NC_4_0_ATTRIBUTION_NON_COMMERCIAL', 'display' => 'CC BY-NC 4.0 Attribution- NonCommercial'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'CC_BY_NC_SA_4_0_ATTRIBUTION_NON_COMMERCIAL_SHARE_ALIKE', 'display' => 'CC BY-NC-SA 4.0 Attribution- NonCommercial-ShareAlike'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'CC_0_1_0_UNIVERSAL_PUBLIC_DOMAIN_DEDICATION', 'display' => 'CC0 1.0 Universal Public Domain Dedication'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'PUBLIC_DOMAIN_MARK_1_0', 'display' => 'Public Domain Mark 1.0'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'ATTRIBUTION_LICENSE_ODC_BY', 'display' => 'Attribution License (ODC-By)'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'OPEN_DATABASE_LICENSE_ODC_O_DB_L', 'display' => 'Open Database License (ODC-ODbL)'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'PUBLIC_DOMAIN_DEDICATION_AND_LICENSE_PDDL', 'display' => 'Public Domain Dedication and License (PDDL)'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'APACHE_LICENSE_2_0', 'display' => 'Apache License 2.0'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'COMMON_DEVELOPMENT_AND_DISTRIBUTION_LICENSE_1_0', 'display' => 'Common Development and Distribution License 1.0'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'ECLIPSE_PUBLIC_LICENSE_1_0', 'display' => 'Eclipse Public License 1.0'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'ECLIPSE_PUBLIC_LICENSE_2_0', 'display' => 'Eclipse Public License 2.0'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'GNU_GENERAL_PUBLIC_LICENSE_V_3_0_ONLY', 'display' => 'GNU General Public License v3.0 only'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'GNU_LESSER_GENERAL_PUBLIC_LICENSE_V_3_0_ONLY', 'display' => 'GNU Lesser General Public License v3.0 only'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'BSD_2_CLAUSE_SIMPLIFIED_LICENSE', 'display' => 'BSD 2-Clause Simplified License'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'BSD_3_CLAUSE_NEW_OR_REVISED_LICENSE', 'display' => 'BSD 3-Clause New or Revised License'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'MIT_LICENSE', 'display' => 'MIT License'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'ALL_RIGHTS_RESERVED', 'display' => 'All rights reserved'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'OTHER', 'display' => 'Other'));
 
     }
 }

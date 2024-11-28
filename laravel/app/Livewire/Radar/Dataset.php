@@ -5,6 +5,7 @@ namespace App\Livewire\Radar;
 use App\Livewire\Forms\Radar\Dataset as DatasetForm;
 
 use \App\Data\RadardatasetpureData;
+use \App\Data\RadardatasetsubjectareaData;
 use \App\Http\Controllers\Api\Radar\DatasetController as RadardatasetController;
 use \App\Models\Database;
 
@@ -80,6 +81,7 @@ class Dataset extends Component
         $body = $radar->put("/datasets/$dataset_id", $newjson);
 
         session()->flash('status', 'RADAR successfully updated');
+
         //dd($body);
     }
 
@@ -110,4 +112,23 @@ class Dataset extends Component
     {
         dd($parameter);
     }
+
+    public function addSubjectArea()
+    {
+        $subjectArea = RadardatasetsubjectareaData::from(['controlledSubjectAreaName' => 'AGRICULTURE']);
+        //dd($subjectArea);
+        $this->radardataset->descriptiveMetadata->subjectAreas->subjectArea[] = $subjectArea->toArray();
+        //dd($this->radardataset);
+    }
+
+    public function removeSubjectArea($index)
+    {
+        //dd($index);
+        $subjectArea = new RadardatasetsubjectareaData;
+
+        //unset($this->radardataset->descriptiveMetadata->subjectAreas->subjectArea[$index]);
+        array_splice($this->radardataset->descriptiveMetadata->subjectAreas->subjectArea, $index, 1);
+        //dd($this->radardataset);
+    }
+
 }

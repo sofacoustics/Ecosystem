@@ -22,11 +22,12 @@ windows:
         - tmux set -w pane-border-status top
         - tmux select-pane -T git git.0
         - git status
-  - window_name: services 
+  - window_name: services
     layout: even-vertical
     suppress_history: false
     panes:
       - sudo supervisorctl status
+      - cd laravel && npm run dev
   - window_name: storage
     layout: even-vertical
     suppress_history: false

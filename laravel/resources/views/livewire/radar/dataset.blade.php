@@ -131,14 +131,33 @@
                     @if($subjectArea['controlledSubjectAreaName'] === 'OTHER')
                         <label for="additionalSubjectAreaName">
                             Additional Subject Area Name: <input wire:model='radardataset.descriptiveMetadata.subjectAreas.subjectArea.{{ $key }}.additionalSubjectAreaName' type="text" placeholder="Free text description of the subject area" />
-                            <div>
                                 @error("radardataset.descriptiveMetadata.subjectAreas.subjectArea.$key.additionalSubjectAreaName") <span class="error">{{ $message }}</span> @enderror
-                            </div>
                         </label>
                     @endif
+                    <x-button-without-form wire:click="removeSubjectArea({{ $key }})" title="Remove this subject area" >Delete</x-button-without-form>
                 </fieldset>
             @endforeach
+            <x-button-without-form wire:click="addSubjectArea" title="Add new subject area" >Add</x-button-without-form>
 
+            <pre>{{ $radardataset->descriptiveMetadata->subjectAreas->toJson(JSON_PRETTY_PRINT) }}</pre>
+
+
+        </fieldset>
+        <fieldset class="bg-red-300">
+            <legend>Rights</legend>
+            <label>
+                Controlled Rights:
+                <select wire:model.live='radardataset.descriptiveMetadata.rights.controlledRights' >
+                    @foreach(\App\Models\Radar\Metadataschema::where('name','rights')->get() as $r)
+                        <option value="{{ $r->value }}">{{ $r->display }}</option>
+                    @endforeach
+                </select>
+                @if($radardataset->descriptiveMetadata->rights->controlledRights === 'OTHER')
+                    <label for="additionalRights">
+                        Additional Rights: <input wire:model='radardataset.descriptiveMetadata.rights.additionalRights' type="text" />
+                        @error("radardataset.descriptiveMetadata.rights.additionalRights") <span class="error">{{ $message }}</span> @enderror
+                    </label>
+                @endif
         </fieldset>
 {{--        <input type="text" wire:model="form.title">
         <div>

@@ -16,7 +16,7 @@ class RadardatasetdescriptivemetadataData extends RadarData
     /** @var RadardatasetsubjectareasData[] */
     public RadardatasetsubjectareasData $subjectAreas;
     public RadardatasetresourceData $resource;
-//    public RadardatasetrightsData $rights;
+    public RadardatasetrightsData $rights;
 //    public RadardatasetrightsholdersData $rightsHolders;
 
     public function __construct(

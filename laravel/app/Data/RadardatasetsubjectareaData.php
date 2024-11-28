@@ -12,7 +12,7 @@ use Spatie\LaravelData\Data;
 class RadardatasetsubjectareaData extends RadarData
 {
     // mandatory fields
-    public string $controlledSubjectAreaName;
+    public string $controlledSubjectAreaName = "";
     // optional fields
     public ?string $additionalSubjectAreaName = null;
 
