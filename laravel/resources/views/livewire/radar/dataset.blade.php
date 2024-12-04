@@ -7,7 +7,8 @@
     <p>title: {{ $radardataset->descriptiveMetadata->title }}</p>
     <p>productionYear: {{ $radardataset->descriptiveMetadata->productionYear }}</p>
 
-    <form wire:submit="save">
+	<!-- https://v1.tailwindcss.com/components/forms -->
+    <form wire:submit="save" class="w-full max-w-fit">
         <label>
             Title: <input type="text" wire:model="radardataset.descriptiveMetadata.title">
             <div>
@@ -16,9 +17,7 @@
         </label>
         <p>Production Year</p>
         <input type="text" wire:model="radardataset.descriptiveMetadata.productionYear">
-        <div>
-            @error('radardataset.descriptiveMetadata.productionYear') <span class="error">{{ $message }}</span> @enderror
-        </div>
+        <x-fielderror attribute='radardataset.descriptiveMetadata.productionYear' />
         <fieldset class="bg-green-100">
             <legend>Publishers</legend>
             {{-- https://forum.laravel-livewire.com/t/set-array-of-values-to-a-component-from-array-of-inputs-usingsame-wire-model/421 --}}
@@ -128,7 +127,7 @@
                             @endforeach
                         </select>
                     </label>
-                    @if($subjectArea['controlledSubjectAreaName'] === 'OTHER')
+                    @if($subjectArea->controlledSubjectAreaName === 'OTHER')
                         <label for="additionalSubjectAreaName">
                             Additional Subject Area Name: <input wire:model='radardataset.descriptiveMetadata.subjectAreas.subjectArea.{{ $key }}.additionalSubjectAreaName' type="text" placeholder="Free text description of the subject area" />
                                 @error("radardataset.descriptiveMetadata.subjectAreas.subjectArea.$key.additionalSubjectAreaName") <span class="error">{{ $message }}</span> @enderror
@@ -139,7 +138,7 @@
             @endforeach
             <x-button-without-form wire:click="addSubjectArea" title="Add new subject area" >Add</x-button-without-form>
 
-            <pre>{{ $radardataset->descriptiveMetadata->subjectAreas->toJson(JSON_PRETTY_PRINT) }}</pre>
+            {{--<pre>{{ $radardataset->descriptiveMetadata->subjectAreas->toJson(JSON_PRETTY_PRINT) }}</pre> --}}
 
 
         </fieldset>
@@ -159,6 +158,50 @@
                     </label>
                 @endif
         </fieldset>
+
+        <fieldset class="bg-green-100">
+            <legend>Rights Holders</legend>
+            {{-- https://forum.laravel-livewire.com/t/set-array-of-values-to-a-component-from-array-of-inputs-usingsame-wire-model/421 --}}
+            @foreach ($radardataset->descriptiveMetadata->rightsHolders->rightsHolder as $rightsHolderKey => $rightsHolder)
+                <fieldset class="bg-blue-100 ml-2 mb-2">
+                    <legend>Rights Holder</legend>
+					 <div class="relative flex flex-wrap -mx-3 mb-6">
+					  <!-- another possibility would be https://codebyrj.com/laravel-livewire/creating-a-searchable-select-box-component-with-livewire-3-alpine-js-and-tailwindcss -->
+                      <input type="text" class="form-input" placeholder="Search ROR for institution..." wire:model.live="radardataset.descriptiveMetadata.rightsHolders.rightsHolder.{{ $rightsHolderKey }}.value" wire:keydown.escape="rorReset" wire:keydown.tab="rorReset" wire:keydown.arrow-up="decrementHighlight" wire:keydown.arrow-down="incrementHighlight" wire:keydown.enter="rorSelectEntry" x-on:blur="$wire.rorReset()" />
+					  <div id="rorResults" class="absolute top-full z-40 bg-white">
+					    @if(!empty($rorResults) && $currentRightsHolder == $rightsHolderKey)
+						  <!-- followed these instructions: https://laracasts.com/discuss/channels/livewire/autocomplete-using-livewire -->
+						  <ul id="rorResults">
+							@foreach($rorResults->items as $key => $item)
+								@foreach($item->names as $name)
+									@if($name->lang === "en")
+										<li class="hover:bg-violet-100"><a href='#' wire:click.prevent='rorSet("{{ $rightsHolderKey }}", "{{ $item->id }}", "{{ $name->value }}")'>{{ $name->value }}</a></li>
+									@endif
+								@endforeach
+							@endforeach
+						  </ul>
+  					@endif
+				  </div>
+					{{--	<x-wire-input label="value" attribute="radardataset.descriptiveMetadata.rightsHolders.rightsHolder.{{ $rightsHolderKey }}.value" class="w-full md:w-1/4 px-3 mb-6 md:mb-0" /> --}}
+						{{-- <x-wire-input label="nameIdentifierScheme" attribute="radardataset.descriptiveMetadata.rightsHolders.rightsHolder.{{ $rightsHolderKey }}.nameIdentifierScheme" class="w-full md:w-1/4 px-3 mb-6 md:mb-0" />p --}}
+						<div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+							<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" >nameIdentifierScheme</label>
+							<select wire:model.live='radardataset.descriptiveMetadata.rightsHolders.rightsHolder.{{ $rightsHolderKey }}.nameIdentifierScheme' class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+								@foreach(\App\Models\Radar\Metadataschema::where('name','nameIdentifierScheme')->get() as $r)
+									<option value="{{ $r->value }}">{{ $r->display }}</option>
+								@endforeach
+							</select>
+						</div>
+					  </div>
+                      <div> schemeURI:  {{ $radardataset->descriptiveMetadata->rightsHolders->rightsHolder[$rightsHolderKey]->schemeURI }} </div>
+                      <div> nameIdentifier:  {{ $radardataset->descriptiveMetadata->rightsHolders->rightsHolder[$rightsHolderKey]->nameIdentifier }} </div>
+						{{-- <x-wire-input readonly label="schemeURI" attribute="radardataset.descriptiveMetadata.rightsHolders.rightsHolder.{{ $rightsHolderKey }}.schemeURI" class="w-full md:w-1/4 px-3 mb-6 md:mb-0" /> 
+						<x-wire-input label="nameIdentifier" attribute="radardataset.descriptiveMetadata.rightsHolders.rightsHolder.{{ $rightsHolderKey }}.nameIdentifier" class="w-full md:w-1/4 px-3 mb-6 md:mb-0" /> --}}
+
+               </fieldset>
+            @endforeach
+        </fieldset>
+
 {{--        <input type="text" wire:model="form.title">
         <div>
             @error('form.title') <span class="error">{{ $message }}</span> @enderror

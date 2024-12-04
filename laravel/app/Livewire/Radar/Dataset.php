@@ -5,11 +5,16 @@ namespace App\Livewire\Radar;
 use App\Livewire\Forms\Radar\Dataset as DatasetForm;
 
 use \App\Data\RadardatasetpureData;
+use \App\Data\RadardatasetrightsholderData;
 use \App\Data\RadardatasetsubjectareaData;
+use \App\Data\RORData;
 use \App\Http\Controllers\Api\Radar\DatasetController as RadardatasetController;
 use \App\Models\Database;
 
 use App\Traits\Radar\Rules\Dataset as Radardatasetrules;
+
+use Illuminate\Support\Facades\Http; // guzzle
+use Illuminate\Log\LogManage;
 
 use Livewire\Component;
 
@@ -19,6 +24,18 @@ class Dataset extends Component
     public \App\Models\Database $database; // our database so we can update it.
     // https://spatie.be/docs/laravel-data/v4/advanced-usage/use-with-livewire
     public RadardatasetpureData $radardataset;
+
+    // ROR type ahead (https://owenconti.com/posts/building-a-search-drop-down-component-with-laravel-livewire)
+    public $rorQuery = []; // each rightsHolder has it's own query!
+	public $rorResult;
+    public RORData $rorResults;
+	public $rorid; // the resulting id to save
+	public $rorname; // the resulting name to save
+	public $currentRightsHolder = '';
+    public $query;
+    public $contacts;
+    public $highlightIndex;
+
 
     /*
      * Use rules from Radardatasetrules, but modify so they work here
@@ -53,6 +70,7 @@ class Dataset extends Component
      */
     public function mount(\App\Models\Database $database)
     {
+		$this->rorReset(); // reset ROR stuff
         $this->database = $database;
         //$this->radardataset = RadardatasetpureData::from($database->radardataset); //SongData::from(Song::findOrFail($id));
         $this->radardataset = $database->radardataset; //SongData::from(Song::findOrFail($id));
@@ -65,6 +83,10 @@ class Dataset extends Component
      */
     public function save()
     {
+
+		//jw:todo Authorize!
+		$this->authorize('update', $this->database);
+
         //dd($this->rules());
         //dd($this->radardataset);
         $this->validate();
@@ -91,6 +113,11 @@ class Dataset extends Component
         return view('livewire.radar.dataset');
     }
 
+	public function updating($property)
+	{
+	}
+
+
     // https://livewire.laravel.com/docs/lifecycle-hooks#update
     public function updated($property)
     {
@@ -101,11 +128,56 @@ class Dataset extends Component
         {
             // parse property
             $a = explode('.', $property);
-            if($this->radardataset->descriptiveMetadata->subjectAreas->subjectArea[$a[4]]['controlledSubjectAreaName'] != 'OTHER')
+            if($this->radardataset->descriptiveMetadata->subjectAreas->subjectArea[$a[4]]->controlledSubjectAreaName != 'OTHER')
             {
-                $this->radardataset->descriptiveMetadata->subjectAreas->subjectArea[$a[4]]['additionalSubjectAreaName'] = '';
+                $this->radardataset->descriptiveMetadata->subjectAreas->subjectArea[$a[4]]->additionalSubjectAreaName = '';
             }
         }
+        else if (preg_match('/radardataset\.descriptiveMetadata\.rightsHolders\.rightsHolder\.(.*).value/', $property))// === 'radardataset.descriptiveMetadata.subjectAreas.subjectArea.1.controlledSubjectAreaName')
+		{
+            $a = explode('.', $property);
+			$key = $a[4];
+			$value =$this->radardataset->descriptiveMetadata->rightsHolders->rightsHolder[$key]->value;
+			$this->js("console.log(\"updated value: $value \")");
+			$this->currentRightsHolder = $key;
+			$response = $this->rorSearch($this->radardataset->descriptiveMetadata->rightsHolders->rightsHolder[$key]->value);
+		}
+	}
+
+    public function updatingRorquery($array)
+    {
+		if(is_array($array) && array_key_exists('value', $array))
+		{
+			$string = $array['value'];
+		}
+		else
+			$string = "you wont find this institution here";
+
+		dd($this->rorQuery);
+
+		//dd($string);
+        // do ROR search
+        //$url = "https://api.ror.org/organizations?query=%22$string%22";
+        $url = "https://api.ror.org/v2/organizations?query=%22$string%22"; // returns different structure with more levels than url below
+        $url = htmlspecialchars($url);
+        $response = Http::withOptions([
+            'debug' => false,
+        ])->get("$url");
+
+		//$this->rorResults = json_decode($response->body(),true);
+		//$this->rorResults = json_decode($response->body(),true);
+		//dd($response->body());
+
+		$this->rorResults = RORData::from($response->body());
+        //$this->rorResults = json_decode($response->body(),true);
+
+        //dd($body);
+    }
+
+
+    public function updatedRorquery()
+    {
+        //dd($this->rorQuery);
     }
 
     public function testOnChange($parameter)
@@ -130,5 +202,89 @@ class Dataset extends Component
         array_splice($this->radardataset->descriptiveMetadata->subjectAreas->subjectArea, $index, 1);
         //dd($this->radardataset);
     }
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // ROR type ahead
+
+ 	function rorReset()
+    {
+		//$this->rorQuery = '';
+		$this->currentRightsHolder = '';
+		$this->rorResult = 'uninitialised';
+		unset($this->rorResults);
+        $this->contacts = [];
+        $this->highlightIndex = 0;
+    }
+
+    public function rorIncrementHighlight()
+    {
+        if ($this->highlightIndex === count($this->contacts) - 1) {
+            $this->highlightIndex = 0;
+            return;
+        }
+        $this->highlightIndex++;
+    }
+
+    public function rorDecrementHighlight()
+    {
+        if ($this->highlightIndex === 0) {
+            $this->highlightIndex = count($this->contacts) - 1;
+            return;
+        }
+        $this->highlightIndex--;
+    }
+
+    public function rorSelectEntry()
+    {
+        $contact = $this->contacts[$this->highlightIndex] ?? null;
+        if ($contact) {
+            $this->redirect(route('show-contact', $contact['id']));
+        }
+    }
+
+	//public function rorSet($name, $id)
+	public function rorSet($rightsHolderKey, $id, $name)
+	{
+		//dd($this->radardataset->descriptiveMetadata->rightsHolders->rightsHolder);
+		$this->radardataset->descriptiveMetadata->rightsHolders->rightsHolder[$rightsHolderKey] = RadardatasetrightsholderData::from(['value' => "$name", 'schemeURI' => 'https://ror.org', 'nameIdentifier' => "$id", 'nameIdentifierScheme' => 'ROR']);
+		//$this->radardataset->descriptiveMetadata->rightsHolders->rightsHolder[$rightsHolderKey] = ['value' => "$name", 'schemeURI' => 'https://ror.org', 'nameIdentifier' => "$id", 'nameIdentifierScheme' => 'ROR'];
+		//dd($this->radardataset->descriptiveMetadata->rightsHolders->rightsHolder[$rightsHolderKey]);
+		// logging: https://medium.com/@zacktrobertson/using-console-log-in-laravel-livewire-389b5be4ffae
+		$this->js("console.log(\"rightsHolderKey: $rightsHolderKey\")");
+		$this->rorReset();
+	}
+
+    public function updatedQuery()
+    {
+        $this->contacts = Contact::where('name', 'like', '%' . $this->query . '%')
+            ->get()
+            ->toArray();
+    }
+
+	private function rorSearch($string)
+	{
+        $url = "https://api.ror.org/v2/organizations?query=".rawurlencode("\"$string\""); // returns different structure with more levels than url below
+        //$url = htmlspecialchars($url);
+        //$url = rawurlencode($url);
+		$this->js("console.log(\"url: $url\")");
+        $response = Http::withOptions([
+            'debug' => false,
+        ])->get("$url");
+
+		if($response->status() == 200)
+		{
+			//dd($response);
+			$status = $response->status();
+
+			$this->rorResults = RORData::from($response->body());
+			$nresults = $this->rorResults->number_of_results;
+			//$this->js("console.log(\"rorSearch('$string'\) response status = $status number_of_results: '".$this->rorResults->number_of_results."'\"\)");
+			$this->js("console.log(\"string: $string url: $url nresults: $nresults\")");
+			return $response;
+		}
+		else
+			$this->js("console.log(\"Failed to get ROR response ($response->status())\")");
+	}
 
 }

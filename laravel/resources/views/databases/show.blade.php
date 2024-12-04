@@ -46,8 +46,10 @@
         //var_dump($database->radardataset->creators->creator[0]);
         //    var_dump($database->radardataset['publishers']);
     @endphp
+    {{--
     <p>Pure JSON output of JSON field 'radardataset' using the RadardatsetpureData laravel-data class</p>
      <pre>{{ $database->radardataset->toJson(JSON_PRETTY_PRINT) }}</pre>
+     --}}
     <ul class="list-disc list-inside">
     {{--
         <li>RADAR Dataset: {{ $database->radardataset }}</li>

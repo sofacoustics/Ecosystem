@@ -105,6 +105,10 @@ class MetadataschemaSeeder extends Seeder
         Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'MIT_LICENSE', 'display' => 'MIT License'));
         Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'ALL_RIGHTS_RESERVED', 'display' => 'All rights reserved'));
         Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'rights', 'value'=> 'OTHER', 'display' => 'Other'));
+        
+		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'nameIdentifierScheme', 'value'=> 'OTHER', 'display' => 'Other'));
+		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'nameIdentifierScheme', 'value'=> 'ROR', 'display' => 'Research Organization Registry'));
+		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'nameIdentifierScheme', 'value'=> 'ORCID', 'display' => 'Orcid'));
 
     }
 }

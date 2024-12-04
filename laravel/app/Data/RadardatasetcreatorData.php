@@ -9,10 +9,12 @@ use App\Data\RadardatasetcreatoraffiliationData;
 
 class RadardatasetcreatorData extends RadarData
 {
-    public string $givenName,
-    public string $familyName,
-    public ?RadardatasetnameidentifierData $nameIdentifier = null,
-    public ?RadardatasetcreatoraffiliationData $creatorAffiliation = null,
+    // mandatory
+    public string $givenName;
+    public string $familyName;
+    // optional
+    public ?RadardatasetnameidentifierData $nameIdentifier = null;
+    public ?RadardatasetcreatoraffiliationData $creatorAffiliation = null;
 
     public function __construct(
       //

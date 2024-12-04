@@ -8,8 +8,7 @@ use App\Data\RadardatasetpublisherData;
 
 class RadardatasetpublishersData extends RadarData
 {
-
-    /** @var \App\Data\Radardatasetpublisher[] */
+    /** @var \App\Data\RadardatasetpublisherData[] */
     public array $publisher;
 
     public function __construct(

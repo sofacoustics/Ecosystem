@@ -6,10 +6,12 @@ use Spatie\LaravelData\Data;
 
 class RadardatasetpublisherData extends RadarData
 {
+    // mandatory
     public string $value;
-    public string $schemeURI;
-    public string $nameIdentifier;
     public string $nameIdentifierScheme;
+    // optional
+    public ?string $schemeURI;
+    public ?string $nameIdentifier;
 
     public function __construct(
       //
