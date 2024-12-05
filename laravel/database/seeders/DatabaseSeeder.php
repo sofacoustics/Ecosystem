@@ -154,8 +154,6 @@ class DatabaseSeeder extends Seeder
                         "creator": [
                             {
                                 "creatorName": "Stuefer, Jonathan",
-                                "givenName": null,
-                                "familyName": null,
                                 "nameIdentifier": [
                                     {
                                         "value": "https://ror.org/0387prb75",

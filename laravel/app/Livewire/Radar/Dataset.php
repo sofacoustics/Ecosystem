@@ -89,6 +89,7 @@ class Dataset extends Component
 
         //dd($this->rules());
         //dd($this->radardataset);
+        // validate using App\Traits\Radar\Rules
         $this->validate();
 
         // update our database->radardataset values
