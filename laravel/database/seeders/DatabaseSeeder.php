@@ -53,9 +53,22 @@ class DatabaseSeeder extends Seeder
                         ]
                     },
                     "creators": {
-                        "creator": [
+                    "creator": [
                             {
-                                "creatorName": "Stuefer, Jonathan",
+							    "creatorName": "Austrian Academy of Sciences",
+								"givenName": null,
+								"familyName": null,
+								"nameIdentifier": [
+									{
+										"value": "https://ror.org/03anc3s24",
+										"schemeURI": "https://ror.org/",
+										"nameIdentifierScheme": "ROR"
+									}
+								],
+								"creatorAffiliation": null
+							},
+							{            
+								"creatorName": "Stuefer, Jonathan",
                                 "givenName": "Jonathan",
                                 "familyName": "Stuefer",
                                 "nameIdentifier": [],
