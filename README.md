@@ -275,6 +275,9 @@ Note that for the FileUpload, the upload_max_filesize php setting must be large 
 
 <https://dev.to/jump24/laravel-blade-components-3hbh>
 
+You can format blade templates using the following tool: <https://github.com/shufo/blade-formatter>
+
+e.g. `node_modules/.bin/blade-formatter --write resources/views/livewire/radar/dataset.blade.php`
 
 ### Reverb
 

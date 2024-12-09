@@ -8,19 +8,18 @@
         <p>Creators:</p>
         @foreach ($dataset->descriptiveMetadata->creators->creator as $creator)
             <p>creatorName: {{ $creator->creatorName }}</p>
-            {{-- @if(!is_null($creator['creatorAffiliation'])) --}}
-            @if(!is_null($creator->creatorAffiliation))
+            {{-- @if (!is_null($creator['creatorAffiliation'])) --}}
+            @if (!is_null($creator->creatorAffiliation))
                 <p>creatorAffiliation: {{ $creator->creatorAffiliation->value }}</p>
             @else
-                <p>No affiliation</pj
-            @endif
-        @endforeach
+                <p>No affiliation</pj @endif
+            @endforeach
     </x-radar.div>
     <x-radar.div>
         <p>Subject Areas:</p>
         @foreach ($dataset->descriptiveMetadata->subjectAreas->subjectArea as $subjectArea)
             <p>controlledSubjectAreaName: {{ $subjectArea->controlledSubjectAreaName }}</p>
-            @if(!empty($subjectArea->additionalSubjectAreaName))
+            @if (!empty($subjectArea->additionalSubjectAreaName))
                 <p>additionalSubjectAreaName: {{ $subjectArea->additionalSubjectAreaName }}</p>
             @endif
         @endforeach

@@ -14,7 +14,7 @@ class RadardatasetcreatorsData extends RadarData
     public function __construct(
       //
     ) {
-    
+
         $this->creator[] = new RadardatasetcreatorData;
     }
 

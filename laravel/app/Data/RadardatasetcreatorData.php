@@ -14,7 +14,9 @@ class RadardatasetcreatorData extends RadarData
     // optional
     public ?string $givenName;
     public ?string $familyName;
-    public ?RadardatasetnameidentifierData $nameIdentifier = null;
+
+    /** @var \App\Data\RadardatasetnameidentifierData[] */
+    public ?array $nameIdentifier = [];
     public ?RadardatasetcreatoraffiliationData $creatorAffiliation = null;
 
     public function __construct(
@@ -22,7 +24,5 @@ class RadardatasetcreatorData extends RadarData
     )
     {
         $creatorName = "";
-        $givenName = "";
-        $familyName = "";
     }
 }

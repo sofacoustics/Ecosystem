@@ -7,12 +7,14 @@
     <p>title: {{ $radardataset->descriptiveMetadata->title }}</p>
     <p>productionYear: {{ $radardataset->descriptiveMetadata->productionYear }}</p>
 
-	<!-- https://v1.tailwindcss.com/components/forms -->
+    <!-- https://v1.tailwindcss.com/components/forms -->
     <form wire:submit="save" class="w-full max-w-fit">
         <label>
             Title: <input type="text" wire:model="radardataset.descriptiveMetadata.title">
             <div>
-                @error('radardataset.descriptiveMetadata.title') <span class="error">{{ $message }}</span> @enderror
+                @error('radardataset.descriptiveMetadata.title')
+                    <span class="error">{{ $message }}</span>
+                @enderror
             </div>
         </label>
         <p>Production Year</p>
@@ -24,15 +26,28 @@
             @foreach ($radardataset->descriptiveMetadata->publishers->publisher as $key => $item)
                 <fieldset class="bg-blue-100 ml-2 mb-2">
                     <legend>Publisher</legend>
-                    <input wire:model='radardataset.descriptiveMetadata.publishers.publisher.{{ $key }}.value' type="text" />
-                    <input wire:model='radardataset.descriptiveMetadata.publishers.publisher.{{ $key }}.schemeURI' type="text" />
-                    <input wire:model='radardataset.descriptiveMetadata.publishers.publisher.{{ $key }}.nameIdentifier' type="text" />
-                    <input wire:model='radardataset.descriptiveMetadata.publishers.publisher.{{ $key }}.nameIdentifierScheme' type="text" />
+                    <div class="relative flex flex-row">
+                        <x-wire-input label="value"
+                            attribute="radardataset.descriptiveMetadata.publishers.publisher.{{ $key }}.value"
+                            class="md:w-1/4" />
+                        <x-wire-select label="nameIdentifierScheme"
+                            attribute='radardataset.descriptiveMetadata.publishers.publisher.{{ $key }}.nameIdentifierScheme'
+                            model="\App\Models\Radar\Metadataschema" field="name" searchterm="nameIdentifierScheme"
+                            class="md:w-1/4" />
+                        <x-wire-input label='schemeURI' readonly
+                            attribute='radardataset.descriptiveMetadata.publishers.publisher.{{ $key }}.schemeURI'
+                            class="md:w-1/4" />
+                        <x-wire-input label='nameIdentifier' readonly
+                            attribute='radardataset.descriptiveMetadata.publishers.publisher.{{ $key }}.nameIdentifier'
+                            class="md:w-1/4" />
+                    </div>
                 </fieldset>
             @endforeach
 
             <div>
-                @error('radardataset.descriptiveMetadata.productionYear') <span class="error">{{ $message }}</span> @enderror
+                @error('radardataset.descriptiveMetadata.productionYear')
+                    <span class="error">{{ $message }}</span>
+                @enderror
             </div>
         </fieldset>
         <fieldset class="bg-green-100">
@@ -41,48 +56,71 @@
             @foreach ($radardataset->descriptiveMetadata->creators->creator as $key => $creator)
                 <fieldset class="bg-blue-100 ml-2 mb-2">
                     <legend>Creator</legend>
-                    <label for="givenName">
-                        Given Name: <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.givenName' type="text" />
-                    </label>
-                    <div>
-                        @error("radardataset.descriptiveMetadata.creators.creator.$key.givenName") <span class="error">{{ $message }}</span> @enderror
+
+                    <div class="relative flex flex-row">
+                        <x-wire-input label="givenName"
+                            attribute="radardataset.descriptiveMetadata.creators.creator.{{ $key }}.givenName"
+                            class="md:w-1/3" />
+                        <x-wire-input label="familyName"
+                            attribute="radardataset.descriptiveMetadata.creators.creator.{{ $key }}.familyName"
+                            class="md:w-1/3" />
+                        <x-wire-input label="ORCID ID"
+                            attribute="radardataset.descriptiveMetadata.creators.creator.{{ $key }}.nameIdentifier.0.value"
+                            class="md:w-1/3" />
+                        {{--<x-wire-input label="creatorName"
+                            attribute="radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorName"
+                            class="md:w-1/3" /> --}}
                     </div>
-                    <label for="familyName">
-                        Family Name: <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.familyName' type="text" />
-                        <div>
-                            @error("radardataset.descriptiveMetadata.creators.creator.$key.familyName") <span class="error">{{ $message }}</span> @enderror
-                        </div>
-                    </label>
-                    <label for="creatorName">
-                        Creator Name: <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorName' type="text" />
-                        <div>
-                            @error("radardataset.descriptiveMetadata.creators.creator.$key.creatorName") <span class="error">{{ $message }}</span> @enderror
-                        </div>
-                    </label>
-                    @foreach($creator as $creatorfieldkey => $creatorfieldvalue)
-                        @if($creatorfieldkey == "nameIdentifier")
+                    {{--
+                    <div class="relative flex flex-row">
+                        <x-wire-input label="givenName"
+                            attribute="radardataset.descriptiveMetadata.creators.creator.{{ $key }}.givenName"
+                            class="md:w-1/3" />
+                        <x-wire-input label="familyName"
+                            attribute="radardataset.descriptiveMetadata.creators.creator.{{ $key }}.familyName"
+                            class="md:w-1/3" /> 
+                        <x-wire-input label="ORCID ID"
+                            attribute="radardataset.descriptiveMetadata.creators.creator.{{ $key }}.nameIdentifier.0.value"
+                            class="md:w-1/3" />
+                        <x-wire-input label="creatorName"
+                            attribute="radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorName"
+                            class="md:w-1/3" />
+
+                    </div> --}}
+                    @foreach ($creator as $creatorfieldkey => $creatorfieldvalue)
+                        @if ($creatorfieldkey == 'nameIdentifier')
                             <fieldset class="bg-pink-100 ml-2 mb-2">
                                 <legend>Name Identifier</legend>
-                                <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.nameIdentifier.0.value' type="text" />
-                                <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.nameIdentifier.0.schemeURI' type="text" />
-                                <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.nameIdentifier.0.nameIdentifierScheme' type="text" />
+                                {{--
+                                <x-radar.nameidentifier
+                                    attribute='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.nameIdentifier.0'
+                                    radardataset={{ $radardataset }}/>
+                                    --}}
                             </fieldset>
                         @endif
-                        @if($creatorfieldkey == "creatorAffiliation")
-                            @if(is_array($creatorfieldvalue))
+                        @if ($creatorfieldkey == 'creatorAffiliation')
+                            @if (is_array($creatorfieldvalue))
                                 <fieldset class="bg-yellow-100 ml-2 mb-2">
                                     <legend>Creator Affiliation</legend>
                                     <label>
-                                        Value: <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.value' type="text" />
+                                        Value: <input
+                                            wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.value'
+                                            type="text" />
                                     </label>
                                     <label>
-                                        schemeURI: <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.schemeURI' type="text" />
+                                        schemeURI: <input
+                                            wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.schemeURI'
+                                            type="text" />
                                     </label>
                                     <label>
-                                        affiliationIdentifier: <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.affiliationIdentifier' type="text" />
+                                        affiliationIdentifier: <input
+                                            wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.affiliationIdentifier'
+                                            type="text" />
                                     </label>
                                     <label>
-                                        affiliationIdentifierScheme: <input wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.affiliationIdentifierScheme' type="text" />
+                                        affiliationIdentifierScheme: <input
+                                            wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.affiliationIdentifierScheme'
+                                            type="text" />
                                     </label>
                                 </fieldset>
                             @endif
@@ -90,6 +128,7 @@
                     @endforeach
                 </fieldset>
             @endforeach
+            <x-button-without-form wire:click="addCreator" title="Add new creator">Add</x-button-without-form>
         </fieldset>
         <fieldset class="bg-purple-100">
             <legend>Resource</legend>
@@ -106,7 +145,7 @@
                 </select> --}}
                 {{-- https://livewire.laravel.com/docs/wire-model#select-dropdowns --}}
                 <select wire:model='radardataset.descriptiveMetadata.resource.resourceType'>
-                    @foreach(\App\Models\Radar\Metadataschema::where('name','resourceType')->get() as $r)
+                    @foreach (\App\Models\Radar\Metadataschema::where('name', 'resourceType')->get() as $r)
                         <option value="{{ $r->value }}">{{ $r->display }}</option>
                     @endforeach
                 </select>
@@ -121,24 +160,30 @@
                 <fieldset class="bg-blue-100 ml-2 mb-2">
                     <legend>SubjectArea</legend>
                     <label for="controlledSubjectArea">
-                        <select wire:model.live='radardataset.descriptiveMetadata.subjectAreas.subjectArea.{{ $key }}.controlledSubjectAreaName' >
-                            @foreach(\App\Models\Radar\Metadataschema::where('name','subjectArea')->get() as $r)
+                        <select
+                            wire:model.live='radardataset.descriptiveMetadata.subjectAreas.subjectArea.{{ $key }}.controlledSubjectAreaName'>
+                            @foreach (\App\Models\Radar\Metadataschema::where('name', 'subjectArea')->get() as $r)
                                 <option value="{{ $r->value }}">{{ $r->display }}</option>
                             @endforeach
                         </select>
                     </label>
-                    @if($subjectArea->controlledSubjectAreaName === 'OTHER')
+                    @if ($subjectArea->controlledSubjectAreaName === 'OTHER')
                         <label for="additionalSubjectAreaName">
-                            Additional Subject Area Name: <input wire:model='radardataset.descriptiveMetadata.subjectAreas.subjectArea.{{ $key }}.additionalSubjectAreaName' type="text" placeholder="Free text description of the subject area" />
-                                @error("radardataset.descriptiveMetadata.subjectAreas.subjectArea.$key.additionalSubjectAreaName") <span class="error">{{ $message }}</span> @enderror
+                            Additional Subject Area Name: <input
+                                wire:model='radardataset.descriptiveMetadata.subjectAreas.subjectArea.{{ $key }}.additionalSubjectAreaName'
+                                type="text" placeholder="Free text description of the subject area" />
+                            @error("radardataset.descriptiveMetadata.subjectAreas.subjectArea.$key.additionalSubjectAreaName")
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </label>
                     @endif
-                    <x-button-without-form wire:click="removeSubjectArea({{ $key }})" title="Remove this subject area" >Delete</x-button-without-form>
+                    <x-button-without-form wire:click="removeSubjectArea({{ $key }})"
+                        title="Remove this subject area">Delete</x-button-without-form>
                 </fieldset>
             @endforeach
-            <x-button-without-form wire:click="addSubjectArea" title="Add new subject area" >Add</x-button-without-form>
+            <x-button-without-form wire:click="addSubjectArea" title="Add new subject area">Add</x-button-without-form>
 
-            {{--<pre>{{ $radardataset->descriptiveMetadata->subjectAreas->toJson(JSON_PRETTY_PRINT) }}</pre> --}}
+            {{-- <pre>{{ $radardataset->descriptiveMetadata->subjectAreas->toJson(JSON_PRETTY_PRINT) }}</pre> --}}
 
 
         </fieldset>
@@ -146,15 +191,18 @@
             <legend>Rights</legend>
             <label>
                 Controlled Rights:
-                <select wire:model.live='radardataset.descriptiveMetadata.rights.controlledRights' >
-                    @foreach(\App\Models\Radar\Metadataschema::where('name','rights')->get() as $r)
+                <select wire:model.live='radardataset.descriptiveMetadata.rights.controlledRights'>
+                    @foreach (\App\Models\Radar\Metadataschema::where('name', 'rights')->get() as $r)
                         <option value="{{ $r->value }}">{{ $r->display }}</option>
                     @endforeach
                 </select>
-                @if($radardataset->descriptiveMetadata->rights->controlledRights === 'OTHER')
+                @if ($radardataset->descriptiveMetadata->rights->controlledRights === 'OTHER')
                     <label for="additionalRights">
-                        Additional Rights: <input wire:model='radardataset.descriptiveMetadata.rights.additionalRights' type="text" />
-                        @error("radardataset.descriptiveMetadata.rights.additionalRights") <span class="error">{{ $message }}</span> @enderror
+                        Additional Rights: <input wire:model='radardataset.descriptiveMetadata.rights.additionalRights'
+                            type="text" />
+                        @error('radardataset.descriptiveMetadata.rights.additionalRights')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
                     </label>
                 @endif
         </fieldset>
@@ -165,44 +213,46 @@
             @foreach ($radardataset->descriptiveMetadata->rightsHolders->rightsHolder as $rightsHolderKey => $rightsHolder)
                 <fieldset class="bg-blue-100 ml-2 mb-2">
                     <legend>Rights Holder</legend>
-					 <div class="relative flex flex-wrap -mx-3 mb-6">
-					  <!-- another possibility would be https://codebyrj.com/laravel-livewire/creating-a-searchable-select-box-component-with-livewire-3-alpine-js-and-tailwindcss -->
-                      <input type="text" class="form-input" placeholder="Search ROR for institution..." wire:model.live="radardataset.descriptiveMetadata.rightsHolders.rightsHolder.{{ $rightsHolderKey }}.value" wire:keydown.escape="rorReset" wire:keydown.tab="rorReset" wire:keydown.arrow-up="decrementHighlight" wire:keydown.arrow-down="incrementHighlight" wire:keydown.enter="rorSelectEntry" x-on:blur="$wire.rorReset()" />
-					  <div id="rorResults" class="absolute top-full z-40 bg-white">
-					    @if(!empty($rorResults) && $currentRightsHolder == $rightsHolderKey)
-						  <!-- followed these instructions: https://laracasts.com/discuss/channels/livewire/autocomplete-using-livewire -->
-						  <ul id="rorResults">
-							@foreach($rorResults->items as $key => $item)
-								@foreach($item->names as $name)
-									@if($name->lang === "en")
-										<li class="hover:bg-violet-100"><a href='#' wire:click.prevent='rorSet("{{ $rightsHolderKey }}", "{{ $item->id }}", "{{ $name->value }}")'>{{ $name->value }}</a></li>
-									@endif
-								@endforeach
-							@endforeach
-						  </ul>
-  					@endif
-				  </div>
-					{{--	<x-wire-input label="value" attribute="radardataset.descriptiveMetadata.rightsHolders.rightsHolder.{{ $rightsHolderKey }}.value" class="w-full md:w-1/4 px-3 mb-6 md:mb-0" /> --}}
-						{{-- <x-wire-input label="nameIdentifierScheme" attribute="radardataset.descriptiveMetadata.rightsHolders.rightsHolder.{{ $rightsHolderKey }}.nameIdentifierScheme" class="w-full md:w-1/4 px-3 mb-6 md:mb-0" />p --}}
-						<div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-							<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" >nameIdentifierScheme</label>
-							<select wire:model.live='radardataset.descriptiveMetadata.rightsHolders.rightsHolder.{{ $rightsHolderKey }}.nameIdentifierScheme' class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-								@foreach(\App\Models\Radar\Metadataschema::where('name','nameIdentifierScheme')->get() as $r)
-									<option value="{{ $r->value }}">{{ $r->display }}</option>
-								@endforeach
-							</select>
-						</div>
-					  </div>
-                      <div> schemeURI:  {{ $radardataset->descriptiveMetadata->rightsHolders->rightsHolder[$rightsHolderKey]->schemeURI }} </div>
-                      <div> nameIdentifier:  {{ $radardataset->descriptiveMetadata->rightsHolders->rightsHolder[$rightsHolderKey]->nameIdentifier }} </div>
-						{{-- <x-wire-input readonly label="schemeURI" attribute="radardataset.descriptiveMetadata.rightsHolders.rightsHolder.{{ $rightsHolderKey }}.schemeURI" class="w-full md:w-1/4 px-3 mb-6 md:mb-0" /> 
-						<x-wire-input label="nameIdentifier" attribute="radardataset.descriptiveMetadata.rightsHolders.rightsHolder.{{ $rightsHolderKey }}.nameIdentifier" class="w-full md:w-1/4 px-3 mb-6 md:mb-0" /> --}}
+                    <div class="relative flex flex-wrap -mx-3 mb-6">
+                        <!-- another possibility would be https://codebyrj.com/laravel-livewire/creating-a-searchable-select-box-component-with-livewire-3-alpine-js-and-tailwindcss -->
+                        <input type="text" class="form-input" placeholder="Search ROR for institution..."
+                            wire:model.live="radardataset.descriptiveMetadata.rightsHolders.rightsHolder.{{ $rightsHolderKey }}.value"
+                            wire:keydown.escape="rorReset" wire:keydown.tab="rorReset"
+                            wire:keydown.arrow-up="decrementHighlight" wire:keydown.arrow-down="incrementHighlight"
+                            wire:keydown.enter="rorSelectEntry" x-on:blur="$wire.rorReset()" />
+                        <div id="rorResults" class="absolute top-full z-40 bg-white">
+                            @if (!empty($rorResults) && $currentRightsHolder == $rightsHolderKey)
+                                <!-- followed these instructions: https://laracasts.com/discuss/channels/livewire/autocomplete-using-livewire -->
+                                <ul id="rorResults">
+                                    @foreach ($rorResults->items as $key => $item)
+                                        @foreach ($item->names as $name)
+                                            @if ($name->lang === 'en')
+                                                <li class="hover:bg-violet-100"><a href='#'
+                                                        wire:click.prevent='rorSet("{{ $rightsHolderKey }}", "{{ $item->id }}", "{{ $name->value }}")'>{{ $name->value }}</a>
+                                                </li>
+                                            @endif
+                                        @endforeach
+                                    @endforeach
+                                </ul>
+                            @endif
+                        </div>
+                        <x-wire-select label="nameIdentifierScheme"
+                            attribute='radardataset.descriptiveMetadata.rightsHolders.rightsHolder.{{ $rightsHolderKey }}.nameIdentifierScheme'
+                            model="\App\Models\Radar\Metadataschema" field="name" searchterm="nameIdentifierScheme"
+                            class="md:w-1/4" />
+                        <x-wire-input label="schemeURI" readonly
+                            attribute="radardataset.descriptiveMetadata.rightsHolders.rightsHolder.{{ $rightsHolderKey }}.schemeURI"
+                            class="md:w-1/4" />
+                        <x-wire-input label="nameIdentifier" readonly
+                            attribute="radardataset.descriptiveMetadata.rightsHolders.rightsHolder.{{ $rightsHolderKey }}.nameIdentifier"
+                            class="md:w-1/4" />
+                    </div>
 
-               </fieldset>
+                </fieldset>
             @endforeach
         </fieldset>
 
-{{--        <input type="text" wire:model="form.title">
+        {{--        <input type="text" wire:model="form.title">
         <div>
             @error('form.title') <span class="error">{{ $message }}</span> @enderror
         </div>
@@ -216,7 +266,7 @@
             <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
 
-        {{--<button type="submit">Save</button>--}}
+        {{-- <button type="submit">Save</button> --}}
         <x-button-without-form>Save to RADAR</x-button-without-form>
         @if (session('status'))
             {{-- https://laracasts.com/discuss/channels/javascript/hiding-element-after-x-seconds-with-alpine?page=1&replyId=643299 --}}

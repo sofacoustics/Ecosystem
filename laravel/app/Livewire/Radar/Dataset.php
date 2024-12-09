@@ -4,6 +4,7 @@ namespace App\Livewire\Radar;
 
 use App\Livewire\Forms\Radar\Dataset as DatasetForm;
 
+use \App\Data\RadardatasetcreatorData;
 use \App\Data\RadardatasetpureData;
 use \App\Data\RadardatasetrightsholderData;
 use \App\Data\RadardatasetsubjectareaData;
@@ -84,12 +85,14 @@ class Dataset extends Component
     public function save()
     {
 
+        //dd($this->radardataset);
 		//jw:todo Authorize!
 		$this->authorize('update', $this->database);
 
         //dd($this->rules());
         //dd($this->radardataset);
         // validate using App\Traits\Radar\Rules
+
         $this->validate();
 
         // update our database->radardataset values
@@ -115,7 +118,8 @@ class Dataset extends Component
     }
 
 	public function updating($property)
-	{
+    {
+
 	}
 
 
@@ -142,7 +146,33 @@ class Dataset extends Component
 			$this->js("console.log(\"updated value: $value \")");
 			$this->currentRightsHolder = $key;
 			$response = $this->rorSearch($this->radardataset->descriptiveMetadata->rightsHolders->rightsHolder[$key]->value);
-		}
+        }
+        else if (preg_match('/radardataset\.descriptiveMetadata\.creators\.creator\.(.*).nameIdentifier.0.nameIdentifierScheme/', $property))// === 'radardataset.descriptiveMetadata.subjectAreas.subjectArea.1.controlledSubjectAreaName')
+        {
+            // modify schemeURI and nameIdentifier based on value
+            $a = explode('.', $property);
+            $key = $a[4];
+            //dd($this->radardataset->descriptiveMetadata->creators->creator[$key]->nameIdentifier[0]);
+            $nameIdentifierScheme = $this->radardataset->descriptiveMetadata->creators->creator[$key]->nameIdentifier[0]->nameIdentifierScheme;
+            //dd($nameIdentifierScheme);
+            if("$nameIdentifierScheme" === "ROR")
+            {
+                $this->radardataset->descriptiveMetadata->creators->creator[$key]->nameIdentifier[0]->schemeURI = "https://ror.org/";
+                $this->radardataset->descriptiveMetadata->creators->creator[$key]->nameIdentifier[0]->value = "";
+
+            }
+            else if("$nameIdentifierScheme" === "ORCID")
+            {
+                $this->radardataset->descriptiveMetadata->creators->creator[$key]->nameIdentifier[0]->schemeURI = "http://orcid.org/";
+                $this->radardataset->descriptiveMetadata->creators->creator[$key]->nameIdentifier[0]->value = "";
+            }
+            else
+            {
+                // OTHER
+                $this->radardataset->descriptiveMetadata->creators->creator[$key]->nameIdentifier[0]->schemeURI = "";
+                $this->radardataset->descriptiveMetadata->creators->creator[$key]->nameIdentifier[0]->value = "";
+            }
+        }
 	}
 
     public function updatingRorquery($array)
@@ -186,11 +216,24 @@ class Dataset extends Component
         dd($parameter);
     }
 
+    ////////////////////////////////////////////////////////////////////////////////
+    // creator
+    //
+    public function addCreator()
+    {
+        $creator = RadardatasetcreatorData::from(['creatorName' => '']);
+        $this->radardataset->descriptiveMetadata->creators->creator[] = $creator;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // subjectArea
+    //
     public function addSubjectArea()
     {
         $subjectArea = RadardatasetsubjectareaData::from(['controlledSubjectAreaName' => 'AGRICULTURE']);
         //dd($subjectArea);
-        $this->radardataset->descriptiveMetadata->subjectAreas->subjectArea[] = $subjectArea->toArray();
+        //dd($this->radardataset);
+        $this->radardataset->descriptiveMetadata->subjectAreas->subjectArea[] = $subjectArea;
         //dd($this->radardataset);
     }
 
