@@ -3,6 +3,6 @@
 
 @error("$attribute")
     <div>
-        <span class="error">{{ $message }}</span>
+        <span class="bg-red-500 error">{{ $message }}</span>
     </div>
 @enderror

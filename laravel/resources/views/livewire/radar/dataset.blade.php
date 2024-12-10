@@ -54,9 +54,12 @@
             <legend>Creators</legend>
             {{-- https://forum.laravel-livewire.com/t/set-array-of-values-to-a-component-from-array-of-inputs-usingsame-wire-model/421 --}}
             @foreach ($radardataset->descriptiveMetadata->creators->creator as $key => $creator)
+                <x-radar.creator index="{{ $key }}" :data=$creator
+                    model="radardataset.descriptiveMetadata.creators.creator.{{ $key }}" />
                 <fieldset class="bg-blue-100 ml-2 mb-2">
                     <legend>Creator</legend>
 
+                    {{--
                     <div class="relative flex flex-row">
                         <x-wire-input label="givenName"
                             attribute="radardataset.descriptiveMetadata.creators.creator.{{ $key }}.givenName"
@@ -67,10 +70,11 @@
                         <x-wire-input label="ORCID ID"
                             attribute="radardataset.descriptiveMetadata.creators.creator.{{ $key }}.nameIdentifier.0.value"
                             class="md:w-1/3" />
-                        {{--<x-wire-input label="creatorName"
+                        <x-wire-input label="creatorName"
                             attribute="radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorName"
-                            class="md:w-1/3" /> --}}
+                            class="md:w-1/3" />
                     </div>
+                    --}}
                     {{--
                     <div class="relative flex flex-row">
                         <x-wire-input label="givenName"
@@ -268,6 +272,10 @@
 
         {{-- <button type="submit">Save</button> --}}
         <x-button-without-form>Save to RADAR</x-button-without-form>
+            @foreach ($errors->all() as $error)
+                <div>{{ $error }}</div>
+            @endforeach
+
         @if (session('status'))
             {{-- https://laracasts.com/discuss/channels/javascript/hiding-element-after-x-seconds-with-alpine?page=1&replyId=643299 --}}
             <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">

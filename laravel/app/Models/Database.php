@@ -13,7 +13,7 @@ use App\Data\RadardatasetpureData;
 class Database extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'description', 'radardataset', 
+    protected $fillable = ['title', 'description', 'radardataset',
         'productionYear', 'resource', 'rights', 'subjectAreas', 'publishers', 'creators',
         'user_id', '_token', '_method', 'submit'];
 

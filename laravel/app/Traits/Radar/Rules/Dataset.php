@@ -15,7 +15,7 @@ trait Dataset
     {
         return [
             'id' => ['required', 'min:3'],
-            'descriptiveMetadata.creators.creator.*.givenName' => ['required'],
+            'descriptiveMetadata.creators.creator.*.creatorName' => ['required'],
             'descriptiveMetadata.productionYear' => 'required|date_format:Y|digits:4',
             'descriptiveMetadata.title' => ['required','min:2'],
         ];
@@ -24,7 +24,7 @@ trait Dataset
     public static function messages()
     {
         return [
-            'descriptiveMetadata.creators.creator.*.givenName' => "The given name is required.",
+            'descriptiveMetadata.creators.creator.*.creatorName' => "You must enter a valid name.",
             'descriptiveMetadata.productionYear.date_format' => "You must specify a 4 digit year.",
             'descriptiveMetadata.productionYear.digits' => "TRAIT: You must specify a 4 digit year.",
             'descriptiveMetadata.title.min' => "You must specify a title with a minimum of 2 characters.",

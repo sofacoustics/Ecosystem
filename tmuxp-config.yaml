@@ -1,6 +1,7 @@
 # https://github.com/tmux-python/tmuxp/issues/739
 # https://tmuxp.git-pull.com/
 session_name: sonicom
+start_directory: /home/jw/git/isf-sonicom-laravel
 windows:
   - window_name: logs 
     layout: even-vertical

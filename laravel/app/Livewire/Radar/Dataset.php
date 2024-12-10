@@ -11,6 +11,7 @@ use \App\Data\RadardatasetsubjectareaData;
 use \App\Data\RORData;
 use \App\Http\Controllers\Api\Radar\DatasetController as RadardatasetController;
 use \App\Models\Database;
+use \App\Models\Radar\Dataset as DatasetModel;
 
 use App\Traits\Radar\Rules\Dataset as Radardatasetrules;
 
@@ -25,6 +26,8 @@ class Dataset extends Component
     public \App\Models\Database $database; // our database so we can update it.
     // https://spatie.be/docs/laravel-data/v4/advanced-usage/use-with-livewire
     public RadardatasetpureData $radardataset;
+    public \App\Models\Radar\Dataset $dataset; // class to manipulate the $radardataset
+
 
     // ROR type ahead (https://owenconti.com/posts/building-a-search-drop-down-component-with-laravel-livewire)
     public $rorQuery = []; // each rightsHolder has it's own query!
@@ -76,6 +79,14 @@ class Dataset extends Component
         //$this->radardataset = RadardatasetpureData::from($database->radardataset); //SongData::from(Song::findOrFail($id));
         $this->radardataset = $database->radardataset; //SongData::from(Song::findOrFail($id));
 
+
+        //$this->dataset = new \App\Models\Radar\Dataset($this->radardataset);//DatasetModel;
+
+        //$this->radardataset->id = "asdf";
+        //$dataset->setCreatorType(0, "person");
+        //$dataset->setCreatorType(0, "institution");
+
+
         //dd($this->radardataset);
     }
 
@@ -85,7 +96,6 @@ class Dataset extends Component
     public function save()
     {
 
-        //dd($this->radardataset);
 		//jw:todo Authorize!
 		$this->authorize('update', $this->database);
 
@@ -223,6 +233,19 @@ class Dataset extends Component
     {
         $creator = RadardatasetcreatorData::from(['creatorName' => '']);
         $this->radardataset->descriptiveMetadata->creators->creator[] = $creator;
+    }
+
+    public function removeCreator($index)
+    {
+        array_splice($this->radardataset->descriptiveMetadata->creators->creator, $index, 1);
+    }
+
+    public function setCreatorType($key, $type)
+    {
+        $creator = new \App\Models\Radar\Dataset\Creator($this->radardataset->descriptiveMetadata->creators->creator[$key]);//DatasetModel;
+        $creator->setCreatorType($type);
+
+        //dd($this->radardataset->descriptiveMetadata->creators->creator[$key]);//DatasetModel;
     }
 
     ////////////////////////////////////////////////////////////////////////////////
