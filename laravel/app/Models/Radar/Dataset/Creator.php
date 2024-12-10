@@ -24,13 +24,11 @@ class Creator
             return "person";
     }
 
-
-    ////////////////////////////////////////////////////////////////////////////////
-    // creator
-    //
     public function setCreatorType($type)
     {
         $creator = $this->data;
+        if($this->type() == "$type")
+            return; // don't reset if we're already this type
         $creator->creatorName = "";
         if("$type" === "person")
         {

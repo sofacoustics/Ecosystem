@@ -25,9 +25,22 @@ class Creator extends Component
     {
         $this->creator = new CreatorModel($data);
         if($this->creator->type() == "person")
+        {
             $this->class = "md:w-1/3";
+        }
         else if($this->creator->type() == "institution")
+        {
             $this->class = "md:w-1/3";
+        }
+    }
+
+    public function getButtonClass($type): string
+    {
+        $class = "rounded m-2 p-2";
+        if($this->creator->type() == "$type")
+            return "$class order-first"; // active type color
+        else
+            return "$class bg-green-500";
     }
 
 

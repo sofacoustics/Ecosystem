@@ -272,9 +272,9 @@
 
         {{-- <button type="submit">Save</button> --}}
         <x-button-without-form>Save to RADAR</x-button-without-form>
-            @foreach ($errors->all() as $error)
-                <div>{{ $error }}</div>
-            @endforeach
+        @foreach ($errors->all() as $error)
+            <div>{{ $error }}</div>
+        @endforeach
 
         @if (session('status'))
             {{-- https://laracasts.com/discuss/channels/javascript/hiding-element-after-x-seconds-with-alpine?page=1&replyId=643299 --}}
