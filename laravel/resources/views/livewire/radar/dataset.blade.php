@@ -50,56 +50,23 @@
                 @enderror
             </div>
         </fieldset>
-        <fieldset class="bg-green-100">
-            <legend>Creators</legend>
-            {{-- https://forum.laravel-livewire.com/t/set-array-of-values-to-a-component-from-array-of-inputs-usingsame-wire-model/421 --}}
-            @foreach ($radardataset->descriptiveMetadata->creators->creator as $key => $creator)
-                <x-radar.creator index="{{ $key }}" :data=$creator
-                    model="radardataset.descriptiveMetadata.creators.creator.{{ $key }}" />
+            <fieldset class="bg-green-200">
+                <legend>Creators</legend>
+                {{-- https://forum.laravel-livewire.com/t/set-array-of-values-to-a-component-from-array-of-inputs-usingsame-wire-model/421 --}}
+                @foreach ($radardataset->descriptiveMetadata->creators->creator as $key => $creator)
+                    <x-radar.creator index="{{ $key }}" :data=$creator
+                        model="radardataset.descriptiveMetadata.creators.creator.{{ $key }}" />
+                    {{--
                 <fieldset class="bg-blue-100 ml-2 mb-2">
                     <legend>Creator</legend>
 
-                    {{--
-                    <div class="relative flex flex-row">
-                        <x-wire-input label="givenName"
-                            attribute="radardataset.descriptiveMetadata.creators.creator.{{ $key }}.givenName"
-                            class="md:w-1/3" />
-                        <x-wire-input label="familyName"
-                            attribute="radardataset.descriptiveMetadata.creators.creator.{{ $key }}.familyName"
-                            class="md:w-1/3" />
-                        <x-wire-input label="ORCID ID"
-                            attribute="radardataset.descriptiveMetadata.creators.creator.{{ $key }}.nameIdentifier.0.value"
-                            class="md:w-1/3" />
-                        <x-wire-input label="creatorName"
-                            attribute="radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorName"
-                            class="md:w-1/3" />
-                    </div>
-                    --}}
-                    {{--
-                    <div class="relative flex flex-row">
-                        <x-wire-input label="givenName"
-                            attribute="radardataset.descriptiveMetadata.creators.creator.{{ $key }}.givenName"
-                            class="md:w-1/3" />
-                        <x-wire-input label="familyName"
-                            attribute="radardataset.descriptiveMetadata.creators.creator.{{ $key }}.familyName"
-                            class="md:w-1/3" /> 
-                        <x-wire-input label="ORCID ID"
-                            attribute="radardataset.descriptiveMetadata.creators.creator.{{ $key }}.nameIdentifier.0.value"
-                            class="md:w-1/3" />
-                        <x-wire-input label="creatorName"
-                            attribute="radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorName"
-                            class="md:w-1/3" />
-
-                    </div> --}}
                     @foreach ($creator as $creatorfieldkey => $creatorfieldvalue)
                         @if ($creatorfieldkey == 'nameIdentifier')
                             <fieldset class="bg-pink-100 ml-2 mb-2">
                                 <legend>Name Identifier</legend>
-                                {{--
                                 <x-radar.nameidentifier
                                     attribute='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.nameIdentifier.0'
                                     radardataset={{ $radardataset }}/>
-                                    --}}
                             </fieldset>
                         @endif
                         @if ($creatorfieldkey == 'creatorAffiliation')
@@ -131,9 +98,10 @@
                         @endif
                     @endforeach
                 </fieldset>
-            @endforeach
-            <x-button-without-form wire:click="addCreator" title="Add new creator">Add</x-button-without-form>
-        </fieldset>
+                --}}
+                @endforeach
+                <x-button-without-form wire:click="addCreator" title="Add new creator">Add</x-button-without-form>
+            </fieldset>
         <fieldset class="bg-purple-100">
             <legend>Resource</legend>
             <label>
@@ -271,7 +239,7 @@
         @endif
 
         {{-- <button type="submit">Save</button> --}}
-        <x-button-without-form>Save to RADAR</x-button-without-form>
+        <x-button-without-form type="submit">Save to RADAR</x-button-without-form>
         @foreach ($errors->all() as $error)
             <div>{{ $error }}</div>
         @endforeach

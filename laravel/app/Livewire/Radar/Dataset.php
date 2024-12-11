@@ -40,6 +40,8 @@ class Dataset extends Component
     public $contacts;
     public $highlightIndex;
 
+    public $needsSaving = false; // set to 'true' if you want to activate the 'Save to RADAR' button.
+
 
     /*
      * Use rules from Radardatasetrules, but modify so they work here
@@ -95,7 +97,6 @@ class Dataset extends Component
      */
     public function save()
     {
-
 		//jw:todo Authorize!
 		$this->authorize('update', $this->database);
 
@@ -118,6 +119,8 @@ class Dataset extends Component
 
         session()->flash('status', 'RADAR successfully updated');
 
+        $this->needsSaving = false;
+
         //dd($body);
     }
 
@@ -130,12 +133,14 @@ class Dataset extends Component
 	public function updating($property)
     {
 
+        $this->needsSaving = true;
 	}
 
 
     // https://livewire.laravel.com/docs/lifecycle-hooks#update
     public function updated($property)
     {
+        $this->needsSaving = true;
         /*
          * Set additonalSubjectAreaName to "" if controlledSubjectAreaname is not 'OTHER'
          */
@@ -231,8 +236,9 @@ class Dataset extends Component
     //
     public function addCreator()
     {
-        $creator = RadardatasetcreatorData::from(['creatorName' => '']);
-        $this->radardataset->descriptiveMetadata->creators->creator[] = $creator;
+        $this->radardataset->descriptiveMetadata->creators->creator[] = new RadardatasetcreatorData();
+        //$this->radardataset->descriptiveMetadata->creators->creator->push(new RadardatasetcreatorData());
+        //$this->skipRender();
     }
 
     public function removeCreator($index)
@@ -246,6 +252,16 @@ class Dataset extends Component
         $creator->setCreatorType($type);
 
         //dd($this->radardataset->descriptiveMetadata->creators->creator[$key]);//DatasetModel;
+    }
+
+    public function rendering($view, $data)
+    {
+        // Runs BEFORE the provided view is rendered...
+        //         //
+        //                 // $view: The view about to be rendered
+        //                         // $data: The data provided to the view
+        //dd($data);
+        //                         dd
     }
 
     ////////////////////////////////////////////////////////////////////////////////

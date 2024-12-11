@@ -40,7 +40,7 @@ class Creator extends Component
         if($this->creator->type() == "$type")
             return "$class order-first"; // active type color
         else
-            return "$class bg-green-500";
+            return "$class bg-green-100";
     }
 
 
