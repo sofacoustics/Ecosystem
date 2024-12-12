@@ -6,6 +6,7 @@
 namespace App\Models\Radar\Dataset;
 
 use \App\Data\RadardatasetpureData;
+use \App\Data\RadardatasetnameidentifierData;
 
 class Creator
 {
@@ -34,6 +35,8 @@ class Creator
         {
             $creator->givenName = "";
             $creator->familyName = "";
+			//$creator->nameIdentifier[0] = RadardatasetnameidentifierData::from(['value' => 'testValue','schemeURI' => 'http://orcid.org/','nameIdentifierScheme' => 'ORCID']);
+			$creator->nameIdentifier[0] = RadardatasetnameidentifierData::from(['value' => null,'schemeURI' => null, 'nameIdentifierScheme' => null]); // when being saved to RADAR, null values will be deleted
         }
         else if("$type" === "institution")
         {

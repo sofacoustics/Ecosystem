@@ -6,6 +6,7 @@ use App\Livewire\Forms\Radar\Dataset as DatasetForm;
 
 use \App\Data\RadardatasetcreatorData;
 use \App\Data\RadardatasetcreatoraffiliationData;
+use \App\Data\RadardatasetnameidentifierData;
 use \App\Data\RadardatasetpureData;
 use \App\Data\RadardatasetrightsholderData;
 use \App\Data\RadardatasetsubjectareaData;
@@ -165,9 +166,18 @@ class Dataset extends Component
         return view('livewire.radar.dataset');
     }
 
-	public function updating($property)
+	public function updating($property, $value)
     {
-
+        if (preg_match('/radardataset\.descriptiveMetadata\.creators\.creator\.(.*).nameIdentifier.0/', $property))
+		{
+				// add name identifier
+				$nameIdentifier =RadardatasetnameidentifierData::from(['value' => 'testValue','schemeURI' => 'http://orcid.org/','nameIdentifierScheme' => 'ORCID']);
+				//dd($nameIdentifier);
+				//$this->radardataset->descriptiveMetadata->creators->creator[0]->nameIdentifier[0] = $nameIdentifier;
+				//dd($this->radardataset->descriptiveMetadata->creators->creator[0]);
+				//$this->radardataset->descriptiveMetadata->creators->creator[0].nameIdentifier[0] =  RadardatasetnameidentifierData::from(['value' => 'testValue']);
+				//dd($property, $value);
+		}
         $this->needsSaving = true;
 	}
 
@@ -197,7 +207,24 @@ class Dataset extends Component
 			$this->currentRightsHolder = $key;
 			$response = $this->rorSearch($this->radardataset->descriptiveMetadata->rightsHolders->rightsHolder[$key]->value);
         }
-        else if (preg_match('/radardataset\.descriptiveMetadata\.creators\.creator\.(.*).nameIdentifier.0.nameIdentifierScheme/', $property))// === 'radardataset.descriptiveMetadata.subjectAreas.subjectArea.1.controlledSubjectAreaName')
+        else if (preg_match('/radardataset\.descriptiveMetadata\.creators\.creator\.(.*).nameIdentifier.0.value/', $property))// === 'radardataset.descriptiveMetadata.subjectAreas.subjectArea.1.controlledSubjectAreaName')
+		{
+			// if empty, set to null, otherwise fill out other stuff
+			$a = explode('.', $property);
+			$key = $a[4];
+			$nameIdentifier = $this->radardataset->descriptiveMetadata->creators->creator[$key]->nameIdentifier[0];
+			if($nameIdentifier->value == "")
+			{
+				$this->radardataset->descriptiveMetadata->creators->creator[$key]->nameIdentifier[0] = RadardatasetnameidentifierData::from(['value' => null,'schemeURI' => null,'nameIdentifierScheme' => null]); // reset
+			}
+			else
+			{
+				$this->radardataset->descriptiveMetadata->creators->creator[$key]->nameIdentifier[0] = RadardatasetnameidentifierData::from(['value' => "$nameIdentifier->value",'schemeURI' => 'http://orcid.org/','nameIdentifierScheme' => 'ORCID']);
+			}
+			//dd($property);
+			//dd($this->radardataset->descriptiveMetadata->creators->creator[$key]->nameIdentifier[0]);
+		}
+		else if (preg_match('/radardataset\.descriptiveMetadata\.creators\.creator\.(.*).nameIdentifier.0.nameIdentifierScheme/', $property))// === 'radardataset.descriptiveMetadata.subjectAreas.subjectArea.1.controlledSubjectAreaName')
         {
             // modify schemeURI and nameIdentifier based on value
             $a = explode('.', $property);
@@ -232,6 +259,7 @@ class Dataset extends Component
 			$creatorModel = new CreatorModel($creatorData);
 			$creatorModel->updateCreatorName();
 		}
+		$this->resetValidation(); // reset validation errors after update
 	}
 
     public function updatingRorquery($array)
@@ -270,6 +298,7 @@ class Dataset extends Component
         //dd($this->rorQuery);
     }
 
+
     public function testOnChange($parameter)
     {
         dd($parameter);
@@ -294,6 +323,7 @@ class Dataset extends Component
     public function removeCreator($index)
     {
         array_splice($this->radardataset->descriptiveMetadata->creators->creator, $index, 1);
+		$this->resetValidation();
     }
 
     public function setCreatorType($key, $type)
