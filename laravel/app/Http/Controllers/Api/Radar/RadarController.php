@@ -88,7 +88,7 @@ class RadarController extends Controller
           ->put("$url", json_decode($json,true));
         $body = json_decode($response->body(),true);
 //        if($response['statusCode'] == 400)
-        //print_r($response);
+        //print_r($response); // note that this will write to the 'response'!!!
         if($response->status() != 200)
         {
             //dd(false);

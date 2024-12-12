@@ -5,6 +5,7 @@ namespace App\Livewire\Radar;
 use App\Livewire\Forms\Radar\Dataset as DatasetForm;
 
 use \App\Data\RadardatasetcreatorData;
+use \App\Data\RadardatasetcreatoraffiliationData;
 use \App\Data\RadardatasetpureData;
 use \App\Data\RadardatasetrightsholderData;
 use \App\Data\RadardatasetsubjectareaData;
@@ -12,6 +13,7 @@ use \App\Data\RORData;
 use \App\Http\Controllers\Api\Radar\DatasetController as RadardatasetController;
 use \App\Models\Database;
 use \App\Models\Radar\Dataset as DatasetModel;
+use \App\Models\Radar\Dataset\Creator as CreatorModel;
 
 use App\Traits\Radar\Rules\Dataset as Radardatasetrules;
 
@@ -44,6 +46,8 @@ class Dataset extends Component
 
 
     /*
+	 * See app/Traits/Radar/Rules/Dataset.php for rules
+     *
      * Use rules from Radardatasetrules, but modify so they work here
      * by prepending 'radardataset.' to each key.
      */
@@ -71,6 +75,35 @@ class Dataset extends Component
         return $messages;
     }
 
+	public function boot()
+	{
+		$this->withValidator(function ($validator) 
+		{
+            $validator->after(function ($validator)
+			{
+				foreach($this->radardataset->descriptiveMetadata->creators->creator as $key => $creator)
+				{
+					// if this is a person, then givenName and familyName must be set
+					// It's an institution if givenName and familyName are null
+					//jw:note it would be possible to put additional validation logic here.
+					$creatorModel = new CreatorModel($creator);
+					if($creatorModel->type() == "person")
+					{
+						if(strlen($creatorModel->data->familyName)<1)
+							$validator->errors()->add("radardataset.descriptiveMetadata.creators.creator.$key.familyName", "You must specify a family name.");
+						if(strlen($creatorModel->data->givenName)<1)
+							$validator->errors()->add("radardataset.descriptiveMetadata.creators.creator.$key.givenName", "You must specify a given name.");
+					}
+
+
+				}
+/*                if (str($this->radatadataset->descriptiveMetadata->creators->creator title)->startsWith('"'))
+				{
+                    $validator->errors()->add('title', 'Titles cannot start with quotations');
+                }*/
+            });
+        });
+	}
     /*
      * Fill the local data structure with data from the model
      */
@@ -97,6 +130,7 @@ class Dataset extends Component
      */
     public function save()
     {
+
 		//jw:todo Authorize!
 		$this->authorize('update', $this->database);
 
@@ -113,6 +147,7 @@ class Dataset extends Component
         // upload to RADAR
         $dataset_id = $this->radardataset->id;
         $newjson = $this->radardataset->toJson();
+		//dd($newjson);
 
         $radar = new RadardatasetController;
         $body = $radar->put("/datasets/$dataset_id", $newjson);
@@ -188,6 +223,15 @@ class Dataset extends Component
                 $this->radardataset->descriptiveMetadata->creators->creator[$key]->nameIdentifier[0]->value = "";
             }
         }
+        else if (preg_match('/radardataset\.descriptiveMetadata\.creators\.creator\.(.*).(givenName|familyName)/', $property))// === 'radardataset.descriptiveMetadata.subjectAreas.subjectArea.1.controlledSubjectAreaName')
+		{
+			// update creatorName based on familyName and givenName for 'person'
+            $a = explode('.', $property);
+            $key = $a[4];
+            $creatorData = $this->radardataset->descriptiveMetadata->creators->creator[$key];
+			$creatorModel = new CreatorModel($creatorData);
+			$creatorModel->updateCreatorName();
+		}
 	}
 
     public function updatingRorquery($array)
@@ -241,6 +285,12 @@ class Dataset extends Component
         //$this->skipRender();
     }
 
+    public function addCreatorAffiliation($index)
+    {
+        $this->radardataset->descriptiveMetadata->creators->creator[$index]->creatorAffiliation = new RadardatasetcreatoraffiliationData();
+        //dd($this->radardataset->descriptiveMetadata->creators->creator[$index]);
+    }
+
     public function removeCreator($index)
     {
         array_splice($this->radardataset->descriptiveMetadata->creators->creator, $index, 1);
@@ -250,6 +300,7 @@ class Dataset extends Component
     {
         $creator = new \App\Models\Radar\Dataset\Creator($this->radardataset->descriptiveMetadata->creators->creator[$key]);//DatasetModel;
         $creator->setCreatorType($type);
+		//dd($creator);
 
         //dd($this->radardataset->descriptiveMetadata->creators->creator[$key]);//DatasetModel;
     }

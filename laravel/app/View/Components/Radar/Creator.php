@@ -26,11 +26,11 @@ class Creator extends Component
         $this->creator = new CreatorModel($data);
         if($this->creator->type() == "person")
         {
-            $this->class = "md:w-1/3";
+            $this->class = "md:w-1/4";
         }
         else if($this->creator->type() == "institution")
         {
-            $this->class = "md:w-1/3";
+            $this->class = "md:w-1/4";
         }
     }
 

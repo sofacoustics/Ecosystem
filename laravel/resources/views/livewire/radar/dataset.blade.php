@@ -50,58 +50,6 @@
                 @enderror
             </div>
         </fieldset>
-            <fieldset class="bg-green-200">
-                <legend>Creators</legend>
-                {{-- https://forum.laravel-livewire.com/t/set-array-of-values-to-a-component-from-array-of-inputs-usingsame-wire-model/421 --}}
-                @foreach ($radardataset->descriptiveMetadata->creators->creator as $key => $creator)
-                    <x-radar.creator index="{{ $key }}" :data=$creator
-                        model="radardataset.descriptiveMetadata.creators.creator.{{ $key }}" />
-                    {{--
-                <fieldset class="bg-blue-100 ml-2 mb-2">
-                    <legend>Creator</legend>
-
-                    @foreach ($creator as $creatorfieldkey => $creatorfieldvalue)
-                        @if ($creatorfieldkey == 'nameIdentifier')
-                            <fieldset class="bg-pink-100 ml-2 mb-2">
-                                <legend>Name Identifier</legend>
-                                <x-radar.nameidentifier
-                                    attribute='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.nameIdentifier.0'
-                                    radardataset={{ $radardataset }}/>
-                            </fieldset>
-                        @endif
-                        @if ($creatorfieldkey == 'creatorAffiliation')
-                            @if (is_array($creatorfieldvalue))
-                                <fieldset class="bg-yellow-100 ml-2 mb-2">
-                                    <legend>Creator Affiliation</legend>
-                                    <label>
-                                        Value: <input
-                                            wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.value'
-                                            type="text" />
-                                    </label>
-                                    <label>
-                                        schemeURI: <input
-                                            wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.schemeURI'
-                                            type="text" />
-                                    </label>
-                                    <label>
-                                        affiliationIdentifier: <input
-                                            wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.affiliationIdentifier'
-                                            type="text" />
-                                    </label>
-                                    <label>
-                                        affiliationIdentifierScheme: <input
-                                            wire:model='radardataset.descriptiveMetadata.creators.creator.{{ $key }}.creatorAffiliation.affiliationIdentifierScheme'
-                                            type="text" />
-                                    </label>
-                                </fieldset>
-                            @endif
-                        @endif
-                    @endforeach
-                </fieldset>
-                --}}
-                @endforeach
-                <x-button-without-form wire:click="addCreator" title="Add new creator">Add</x-button-without-form>
-            </fieldset>
         <fieldset class="bg-purple-100">
             <legend>Resource</legend>
             <label>
@@ -223,6 +171,15 @@
                 </fieldset>
             @endforeach
         </fieldset>
+        <fieldset class="bg-green-200">
+            <legend>Creators</legend>
+            {{-- https://forum.laravel-livewire.com/t/set-array-of-values-to-a-component-from-array-of-inputs-usingsame-wire-model/421 --}}
+            @foreach ($radardataset->descriptiveMetadata->creators->creator as $key => $creator)
+                <x-radar.creator index="{{ $key }}" :data=$creator
+                    model="radardataset.descriptiveMetadata.creators.creator.{{ $key }}" />
+            @endforeach
+            <x-button-without-form wire:click="addCreator" title="Add new creator">Add</x-button-without-form>
+        </fieldset>
 
         {{--        <input type="text" wire:model="form.title">
         <div>
@@ -240,9 +197,16 @@
 
         {{-- <button type="submit">Save</button> --}}
         <x-button-without-form type="submit">Save to RADAR</x-button-without-form>
-        @foreach ($errors->all() as $error)
-            <div>{{ $error }}</div>
-        @endforeach
+        <div wire:loading>Saving...</div>
+		@if ($errors->any())
+			<div class="alert alert-danger">
+				<ul>
+					@foreach ($errors->all() as $error)
+						<li>{{ $error }}</li>
+					@endforeach
+				</ul>
+			</div>
+		@endif
 
         @if (session('status'))
             {{-- https://laracasts.com/discuss/channels/javascript/hiding-element-after-x-seconds-with-alpine?page=1&replyId=643299 --}}

@@ -41,4 +41,33 @@ class Creator
             $creator->familyName = null;
         }
     }
+
+    public function hasAffiliation() : bool
+    {
+        if($this->data->creatorAffiliation != null)
+            return true;
+        else
+            return false;
+    }
+
+	// since we're not showing 'creatorName' for people, we have to set it here ourselves.
+	public function updateCreatorName()
+	{
+		if($this->type() == "person")
+		{
+			$this->data->creatorName = $this->data->familyName . ", " . $this->data->givenName;
+		}
+		else
+		{
+			$this->data->familyName = null;
+			$this->data->givenName = null;
+		}
+	}
+
+/*
+    public function addAffiliation($value)
+    {
+        $this->data->creatorAffiliation = \App\Data\RadardatasetcreatoraffiliationData:from(['value' => "$value");
+    }
+ */
 }
