@@ -45,6 +45,19 @@ class Creator
         }
     }
 
+	public function addNameIdentifier()
+	{
+		$creatorData = &$this->data;
+		if(count($creatorData->nameIdentifier)==0)
+		{
+			$creatorData->nameIdentifier[0] = RadardatasetnameidentifierData::from(['value' => null,'schemeURI' => null, 'nameIdentifierScheme' => null]); // when being saved to RADAR, null values will be deleted
+			//dd($creatorData);
+		}
+		else
+		{
+		}
+	}
+
     public function hasAffiliation() : bool
     {
         if($this->data->creatorAffiliation != null)

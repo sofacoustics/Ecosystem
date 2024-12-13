@@ -94,6 +94,13 @@ class Dataset extends Component
 							$validator->errors()->add("radardataset.descriptiveMetadata.creators.creator.$key.familyName", "You must specify a family name.");
 						if(strlen($creatorModel->data->givenName)<1)
 							$validator->errors()->add("radardataset.descriptiveMetadata.creators.creator.$key.givenName", "You must specify a given name.");
+						if(is_array($creatorModel->data->nameIdentifier) && array_key_exists(0, $creatorModel->data->nameIdentifier) && $creatorModel->data->nameIdentifier[0]->value != null)
+						{
+							if(strlen($creatorModel->data->nameIdentifier[0]->value) != 19)
+							{
+								$validator->errors()->add("radardataset.descriptiveMetadata.creators.creator.$key.nameIdentifier.0.value", "This must be a valid ORCID id.");
+							}
+						}
 					}
 
 
@@ -170,12 +177,21 @@ class Dataset extends Component
     {
         if (preg_match('/radardataset\.descriptiveMetadata\.creators\.creator\.(.*).nameIdentifier.0/', $property))
 		{
+				$a = explode('.', $property);
+				$key = $a[4];
 				// add name identifier
-				$nameIdentifier =RadardatasetnameidentifierData::from(['value' => 'testValue','schemeURI' => 'http://orcid.org/','nameIdentifierScheme' => 'ORCID']);
+				//$nameIdentifier =RadardatasetnameidentifierData::from(['value' => 'testValue','schemeURI' => 'http://orcid.org/','nameIdentifierScheme' => 'ORCID']);
 				//dd($nameIdentifier);
 				//$this->radardataset->descriptiveMetadata->creators->creator[0]->nameIdentifier[0] = $nameIdentifier;
-				//dd($this->radardataset->descriptiveMetadata->creators->creator[0]);
-				//$this->radardataset->descriptiveMetadata->creators->creator[0].nameIdentifier[0] =  RadardatasetnameidentifierData::from(['value' => 'testValue']);
+				//dd($this->radardataset->descriptiveMetadata->creators->creator[$key]);
+				$creatorModel = new \App\Models\Radar\Dataset\Creator($this->radardataset->descriptiveMetadata->creators->creator[$key]);
+				$creatorModel->addNameIdentifier();
+				//dd($creatorModel);
+//				if(!is_array($this->radardataset->descriptiveMetadata->creators->creator[$key]->nameIdentifier)
+//				{
+//						$this->radardataset->descriptiveMetadata->creators->creator[0].nameIdentifier[0] =  RadardatasetnameidentifierData::from(['value' => 'testValue']);
+//				}
+						//$this->radardataset->descriptiveMetadata->creators->creator[0].nameIdentifier[0] =  RadardatasetnameidentifierData::from(['value' => 'testValue']);
 				//dd($property, $value);
 		}
         $this->needsSaving = true;
