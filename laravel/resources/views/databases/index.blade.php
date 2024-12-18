@@ -24,11 +24,14 @@
             @if ($database->user_id == Auth::id())
             <td class="border p-2">
                 (<a class="btn btn-primary" href="{{ route('databases.edit', $database->id) }}">Edit</a>,&nbsp
+                <a class="btn btn-primary" href="{{ route('databases.destroy', $database->id) }}">Delete</a>,&nbsp)
+                {{--
                 <form class="inline" method="POST" id="delete-database" action="{{ route('databases.destroy', $database->id) }}">
                     @csrf
                     @method('DELETE')
                     <input type="submit" class="btn btn-primary" value="Delete">
                 </form>)
+                --}}
             </td>
             @endif
         </tr>
