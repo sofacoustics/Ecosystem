@@ -64,6 +64,16 @@ You can dispatch jobs: <https://dev.to/jiteshdhamaniya/dispatch-a-job-from-tinke
 
 <https://coding-lesson.com/creating-dynamic-nested-menus-in-laravel-with-relationships/>
 
+## certbot
+
+Managed to generate a certificate for a :80 site using the following:
+
+    certbot certonly --webroot -w /var/www/sonicom.amtoolbox.org -d sonicom.amtoolbox.org
+
+Test renewal:
+
+    certbot renew --dry-run
+
 ## Ansible
 
 There is an Ansible role 'sonicom-ecosystem' which can be used to set up the proxy and the backend web servers. This is currently in the ISF SVN repository svn-scripts
@@ -146,6 +156,9 @@ If you are pushing to a remote git repository, then a post-receive hook should r
 - [ ] JW: Implement dataset definition mask and dataset upload
 - [ ] JW: Add additional subjectAreas with button
 - [ ] JW: Implement ORCID and ROR schemes
+- [ ] JW: Check that reverb / supervisorctl tasks work for multiple sites on the same machine
+- [ ] JW: Add git revision / branch to about.
+- [ ] JW: Add supervisorctl for npm run dev (https://stackoverflow.com/questions/28108728/how-to-npm-start-with-supervisord)
 
 ## Place to push stuff when testing git deployment
 
@@ -320,3 +333,11 @@ Create a model with it's migration and seeder with the following command:
 ## Livewire
 
 You can create a Livewire form and component (https://fly.io/laravel-bytes/livewire-3-forms/) so you can submit the form without leaving the page.
+
+## Sites
+
+### Piotr's test server
+
+URL: <https://sonicom-dev-piotr.intranet.kfs.oeaw.ac.at>
+Host: ubuntu-vm-2.kfs.oeaw.ac.at
+
