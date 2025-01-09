@@ -336,8 +336,7 @@ You can create a Livewire form and component (https://fly.io/laravel-bytes/livew
 
 ## Sites
 
-### Piotr's test server
+### Development Server
 
-URL: <https://sonicom-dev-piotr.intranet.kfs.oeaw.ac.at>
-Host: ubuntu-vm-2.kfs.oeaw.ac.at
-
+URL: <https://sonicom.amtoolbox.org>
+Host: ubuntu-vm-1.kfs.oeaw.ac.at
