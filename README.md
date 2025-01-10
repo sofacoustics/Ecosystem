@@ -341,3 +341,44 @@ You can create a Livewire form and component (https://fly.io/laravel-bytes/livew
 URL: <https://sonicom.amtoolbox.org>
 Host: ubuntu-vm-1.kfs.oeaw.ac.at
 
+
+## Firewall
+
+The following ports should be open:
+
+
+Note: these ports were open on ubuntu-vm-1 before debugging with Gerhard Bauer:
+
+root@ubuntu-vm-1:~# ufw status
+Status: active
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     LIMIT       193.171.195.0/25           # Ansible role linux-defaults ISF SSH (default)
+22/tcp                     LIMIT       10.4.245.0/25              # Ansible role linux-defaults ISF SSH (default)
+22/tcp                     LIMIT       10.4.21.0/24               # Ansible role linux-defaults ISF SSH (default)
+80/tcp                     ALLOW       Anywhere                   # Ansible role apache2 HTTP
+443/tcp                    ALLOW       Anywhere                   # Ansible role apache2 HTTPS
+3389                       ALLOW       10.4.21.0/24               # Ansible role linux-defaults RDP (ubuntu-vm-1)
+3389                       ALLOW       10.4.245.0/25              # Ansible role linux-defaults RDP (ubuntu-vm-1)
+3389                       ALLOW       193.171.195.0/25           # Ansible role linux-defaults RDP (ubuntu-vm-1)
+1022                       ALLOW       Anywhere
+8000                       ALLOW       Anywhere
+5173                       ALLOW       Anywhere
+2049                       ALLOW       Anywhere
+111                        ALLOW       Anywhere
+8080                       ALLOW       Anywhere
+8081                       ALLOW       Anywhere
+1433                       ALLOW       Anywhere
+80/tcp (v6)                ALLOW       Anywhere (v6)              # Ansible role apache2 HTTP
+443/tcp (v6)               ALLOW       Anywhere (v6)              # Ansible role apache2 HTTPS
+1022 (v6)                  ALLOW       Anywhere (v6)
+8000 (v6)                  ALLOW       Anywhere (v6)
+5173 (v6)                  ALLOW       Anywhere (v6)
+2049 (v6)                  ALLOW       Anywhere (v6)
+111 (v6)                   ALLOW       Anywhere (v6)
+8080 (v6)                  ALLOW       Anywhere (v6)
+8081 (v6)                  ALLOW       Anywhere (v6)
+1433 (v6)                  ALLOW       Anywhere (v6)
+
+
