@@ -1,33 +1,22 @@
 <div>
     {{-- This is called by the Livewire component Radar/Dataset.php --}}
 
-    <p>jw:tmp resource/views/livewire/radar/dataset.blade.php</p>
-
     <p>id: {{ $radardataset->id }}</p>
-    <p>title: {{ $radardataset->descriptiveMetadata->title }}</p>
-    <p>productionYear: {{ $radardataset->descriptiveMetadata->productionYear }}</p>
 
     <!-- https://v1.tailwindcss.com/components/forms -->
     <form wire:submit="save" class="w-full max-w-fit">
-        <label>
-            Title: <input type="text" wire:model="radardataset.descriptiveMetadata.title">
-            <div>
-                @error('radardataset.descriptiveMetadata.title')
-                    <span class="error">{{ $message }}</span>
-                @enderror
-            </div>
-        </label>
-        <p>Production Year</p>
-        <input type="text" wire:model="radardataset.descriptiveMetadata.productionYear">
-        <x-fielderror attribute='radardataset.descriptiveMetadata.productionYear' />
+        <x-wire-input label="title" attribute="radardataset.descriptiveMetadata.title" class="md:w-1/4" />
+        <x-wire-input label="productionYear" attribute="radardataset.descriptiveMetadata.productionYear"
+            class="md:w-1/4" />
         <fieldset class="bg-green-100">
             <legend>Publishers</legend>
             {{-- https://forum.laravel-livewire.com/t/set-array-of-values-to-a-component-from-array-of-inputs-usingsame-wire-model/421 --}}
             @foreach ($radardataset->descriptiveMetadata->publishers->publisher as $key => $item)
-                <fieldset class="bg-blue-100 ml-2 mb-2">
+                <fieldset class="bg-green-100 ml-2 mb-2">
                     <legend>Publisher</legend>
                     <div class="relative flex flex-row">
                         <x-wire-input label="value"
+                            placeholder="familyName, givenName"
                             attribute="radardataset.descriptiveMetadata.publishers.publisher.{{ $key }}.value"
                             class="md:w-1/4" />
                         <x-wire-select label="nameIdentifierScheme"
@@ -43,36 +32,16 @@
                     </div>
                 </fieldset>
             @endforeach
-
-            <div>
-                @error('radardataset.descriptiveMetadata.productionYear')
-                    <span class="error">{{ $message }}</span>
-                @enderror
-            </div>
         </fieldset>
         <fieldset class="bg-purple-100">
             <legend>Resource</legend>
-            <label>
-                Value: <input wire:model='radardataset.descriptiveMetadata.resource.value' type="text" />
-            </label>
-            <label>
-                {{--
-                resourceType: <input wire:model='radardataset.descriptiveMetadata.resource.resourceType' type="text" />
-                <select name="resourceType">
-                    <option value="none" selected disabled hidden>Select a value</option>
-                    <option value="Audiovisual">Audiovisual</option>
-                    <option value="Collection">Collection</option>
-                </select> --}}
-                {{-- https://livewire.laravel.com/docs/wire-model#select-dropdowns --}}
-                <select wire:model='radardataset.descriptiveMetadata.resource.resourceType'>
-                    @foreach (\App\Models\Radar\Metadataschema::where('name', 'resourceType')->get() as $r)
-                        <option value="{{ $r->value }}">{{ $r->display }}</option>
-                    @endforeach
-                </select>
-
-                {{-- nested items are a little bit tricky, I believe
-                <livewire:radar.schema.resourcetype /> --}}
-            </label>
+            <div class="relative flex flex-wrap -mx-3 mb-6">
+                <x-wire-input label="value" attribute="radardataset.descriptiveMetadata.resource.value"
+                    class="md:w-1/4" />
+                <x-wire-select label="resourceType" attribute='radardataset.descriptiveMetadata.resource.resourceType'
+                    model="\App\Models\Radar\Metadataschema" field="name" searchterm="resourceType"
+                    class="md:w-1/4" />
+            </div>
         </fieldset>
         <fieldset class="bg-red-100">
             <legend>Subject Areas</legend>
@@ -198,15 +167,15 @@
         {{-- <button type="submit">Save</button> --}}
         <x-button-without-form type="submit">Save to RADAR</x-button-without-form>
         <div wire:loading>Saving...</div>
-		@if ($errors->any())
-			<div class="alert alert-danger">
-				<ul>
-					@foreach ($errors->all() as $error)
-						<li>{{ $error }}</li>
-					@endforeach
-				</ul>
-			</div>
-		@endif
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         @if (session('status'))
             {{-- https://laracasts.com/discuss/channels/javascript/hiding-element-after-x-seconds-with-alpine?page=1&replyId=643299 --}}

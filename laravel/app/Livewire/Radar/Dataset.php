@@ -15,6 +15,7 @@ use \App\Http\Controllers\Api\Radar\DatasetController as RadardatasetController;
 use \App\Models\Database;
 use \App\Models\Radar\Dataset as DatasetModel;
 use \App\Models\Radar\Dataset\Creator as CreatorModel;
+use \App\Models\Radar\Dataset\Publisher as PublisherModel;
 
 use App\Traits\Radar\Rules\Dataset as Radardatasetrules;
 
@@ -122,6 +123,7 @@ class Dataset extends Component
         //$this->radardataset = RadardatasetpureData::from($database->radardataset); //SongData::from(Song::findOrFail($id));
         $this->radardataset = $database->radardataset; //SongData::from(Song::findOrFail($id));
 
+        //dd($this->radardataset);
 
         //$this->dataset = new \App\Models\Radar\Dataset($this->radardataset);//DatasetModel;
 
@@ -193,7 +195,8 @@ class Dataset extends Component
 //				}
 						//$this->radardataset->descriptiveMetadata->creators->creator[0].nameIdentifier[0] =  RadardatasetnameidentifierData::from(['value' => 'testValue']);
 				//dd($property, $value);
-		}
+        }
+
         $this->needsSaving = true;
 	}
 
@@ -275,7 +278,24 @@ class Dataset extends Component
 			$creatorModel = new CreatorModel($creatorData);
 			$creatorModel->updateCreatorName();
 		}
-		$this->resetValidation(); // reset validation errors after update
+	    else if (preg_match('/radardataset\.descriptiveMetadata\.publishers\.publisher\.(.*)/', $property))// === 'radardataset.descriptiveMetadata.subjectAreas.subjectArea.1.controlledSubjectAreaName')
+		{
+			// publisher nameIdentifierScheme has changed, so resetting all values
+            $a = explode('.', $property);
+            $key = $a[4];
+            //dd($property);
+            //dd("publisher updated");
+            $publisherData = $this->radardataset->descriptiveMetadata->publishers->publisher[$key];
+            //dd($publisherData);
+			$publisherModel = new PublisherModel($publisherData);
+			$publisherModel->setNameIdentifierScheme($publisherData->nameIdentifierScheme);
+			$publisherData->setNameIdentifierScheme($publisherData->nameIdentifierScheme);
+            //dd($publisherData);
+            //
+
+			//$publisherModel = PublisherModel::from($publisherData);
+        }
+	$this->resetValidation(); // reset validation errors after update
 	}
 
     public function updatingRorquery($array)

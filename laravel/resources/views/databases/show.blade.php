@@ -1,15 +1,16 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Database: {{ $database->title }}<br>
+            Database: {{ $database->title }}
+            @if( Auth::user()->id  == $database->user_id)
+                (<a class="btn btn-primary" href="{{ route('databases.edit', $database->id) }}">Edit</a>)
+            @endif
         </h2>
         User: {{ \App\Models\User::find($database->user_id)->name }}
         @auth
-        @if( Auth::user()->id  == $database->user_id)
-            (<a class="btn btn-primary" href="{{ route('databases.edit', $database->id) }}">Edit</a>)
-        @endif
         @endauth<br>
-        Description: {{ $database->description }}
+        Description: {{ $database->description }}<br>
+        <a class="btn btn-primary" href="{{ route("databases.radar", $database->id) }}">RADAR Metadata</a>
     </x-slot>
     <h3>Datasets</h3>
 
@@ -22,7 +23,7 @@
 
 @env('local')
     {{-- in "local" or "staging" environment --}}
-    <h3>RADAR dataset</h3>
+    {{--<h3>RADAR dataset</h3>--}}
 
     {{--
     <form method="post" action="http://sonicom-jw-local.local/api/radar/datasets/f3dxp4vswdc2xe7z">
@@ -33,6 +34,7 @@
         Upload metadata to RADAR
     </x-button> --}}
 
+    {{--
     @auth
         <livewire:radar.dataset :database="$database" />
     @else
@@ -40,6 +42,7 @@
             A radar.div component with a dataset parameter
         </x-radar.dataset>
     @endauth
+    --}}
 
 
     @php

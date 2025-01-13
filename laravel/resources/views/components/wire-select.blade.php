@@ -1,4 +1,4 @@
-<!--
+{{--
     a component to use in a Livewire component without being a 'nested' Livewire component
 
     'attribute'     the Livewire component attribute to get data from / write data to
@@ -7,7 +7,13 @@
     'field'         the field in the model to extract values from
     'searchterm'    the search string to retrieve rows from the model with
 
--->
+    E.g.:
+
+        <x-wire-select label="nameIdentifierScheme"
+            attribute='radardataset.descriptiveMetadata.rightsHolders.rightsHolder.{{ $rightsHolderKey }}.nameIdentifierScheme'
+            model="\App\Models\Radar\Metadataschema" field="name" searchterm="nameIdentifierScheme"
+            class="md:w-1/4" />
+--}}
 @props([
     'attribute',
     'label' => '',

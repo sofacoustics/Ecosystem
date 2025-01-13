@@ -16,4 +16,9 @@ class RadardatasetpublisherData extends RadarData
     public function __construct(
       //
     ) {}
+
+    public function setNameIdentifierScheme($scheme)
+    {
+        dd("ok");
+    }
 }

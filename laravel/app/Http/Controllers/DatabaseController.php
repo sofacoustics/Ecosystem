@@ -244,7 +244,6 @@ class DatabaseController extends Controller
     public function store(StoreDatabaseRequest $request)
     {
         // An alternative - where rules are in the model: https://medium.com/@konafets/a-better-place-for-your-validation-rules-in-laravel-f5e3f5b7cc
-
         Database::create($request->validated()); // https://dev.to/secmohammed/laravel-form-request-tips-tricks-2p12
 
         return redirect('databases')->with('success', "Database $request->title successfully created!");
@@ -290,15 +289,16 @@ class DatabaseController extends Controller
         }    */
 
         //dd($request);
-        $radardataset = RadardatasetpureData::from($request);
+        //$radardataset = RadardatasetpureData::from($request);
+        //dd(radardataset);
         //dd($radardataset);
         //jw:tmp test updating radar value
         //$database->radardataset->title = 4
         //
         //$request->merge(['radardataset' => $radardataset]);
 
-        $database->update(['radardataset' => $radardataset]);
-        //$database->update($request->except('_method', '_token', 'submit'));
+        //$database->update(['radardataset' => $radardataset]);
+        $database->update($request->except('_method', '_token', 'submit'));
         return redirect('databases')->with('success', 'Database successfully updated!');
     }
 
@@ -312,5 +312,22 @@ class DatabaseController extends Controller
         // will be deleted too!
         $database->delete();
         return redirect()->route('databases.index')->with('success', 'Database deleted successfully');
+    }
+
+
+    public function radarShow(Database $database)
+    {
+        //dd($database);
+        return view('databases.radar.show',[
+           'database' => $database
+        ]);
+    }
+
+    public function radarEdit(Database $database)
+    {
+        //dd($database);
+        return view('databases.radar.edit',[
+           'database' => $database
+        ]);
     }
 }

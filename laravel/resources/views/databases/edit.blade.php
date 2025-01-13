@@ -1,10 +1,10 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Local Database
+            Database:  {{ $database->title }}
         </h2>
+        {{ $database->description }}
     </x-slot>
-    <h1>Title: {{ $database->title }}</h1>
     @if (count($errors) > 0)
         <div class="alert alert-danger">
             <ul>
@@ -20,7 +20,7 @@
         @csrf
         @method('PUT')
         <fieldset>
-            <legend>SONICOM Database</legend>
+            <legend>SONICOM fields</legend>
         <label for="title">Title
             <input type="text" name="title" id="title" value="{{ $database->title }}">
         </label><br>
@@ -28,14 +28,30 @@
             <input type="text" name="description" id="description_id" value="{{ $database->description }}">
         </label>
         </fieldset>
+
+        <input type="submit" name="submit" value="Submit">
+        <a type="submit" href="{{url()->previous()}}" class="btn btn-default">Cancel</a>
+    </form>
+    {{--
+    <fieldset>
+        <legend>RADAR fields</legend>
+        @auth
+            <livewire:radar.dataset :database="$database" />
+        @else
+            <x-radar.dataset :dataset="$database->radardataset">
+                A radar.div component with a dataset parameter
+            </x-radar.dataset>
+        @endauth
+    </fieldset>
+    --}}
+
+    {{--
         <fieldset>
             <legend>RADAR Dataset</legend>
-        {{-- 'title' will be used by RadardatasetpureData as well --}}
         <label for="productionYear">Production Year
             <input type="text" name="productionYear" id="productionYear" value="{{ $database->radardataset?->descriptiveMetadata->productionYear }}">
         </label><br/>
         <label for="resource">Resource Type
-            {{-- use resource[value] *not* resource['value'] --}}
             <input type="text" name="resource[value]" id="resourcevalue" value="{{ $database->radardataset?->descriptiveMetadata->resource->value }}">
             <input type="text" name="resource[resourceType] id="resourcetype" value="{{ $database->radardataset?->descriptiveMetadata->resource->resourceType }}">
         </label><br/>
@@ -54,8 +70,7 @@
             <input type="text" name="creators[creator][0]->creatorName" value="{{ $database->radardataset?->descriptiveMetadata->creators->creator[0]->creatorName }}">
         </label><br/>
         </fieldset>
-        <input type="submit" name="submit" value="Submit">
-    </form>
+    --}}
     @else
         <p>BUG: You may not edit this database! You should not be able to access this page. Please report this to the webmaster.</p>
     @endcan
@@ -64,5 +79,4 @@
     @endguest
 
 
-    {{ $database }}
 </x-app-layout>

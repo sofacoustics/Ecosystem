@@ -42,8 +42,17 @@ Route::view('/terms-of-use', 'pages.terms-of-use')->name('terms-of-use');
 	return view('pages.about');
 });
 */
+//
 // DATABASE (auth specified in __construct())
+//
+//jw:note If you specify 'database' where the id is in the URL, then it will be used to get model data for the controller method
+//jw:note 'implicit binding' https://laravel.com/docs/11.x/routing#implicit-binding
+Route::get('/databases/{database}/radar', [DatabaseController::class, 'radarShow'])->name('databases.radar');
+Route::get('/databases/{database}/radar/edit', [DatabaseController::class, 'radarEdit'])->name('databases.radar.edit');
 Route::resource('databases', DatabaseController::class);
+//
+// DATASET
+//
 Route::resource('datasets', DatasetController::class);
 //Route::resource('databases.datasets', DatasetController::class);
 //Route::middleware('auth')->group(function () {
