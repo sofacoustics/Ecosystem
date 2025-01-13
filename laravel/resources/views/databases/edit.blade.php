@@ -44,14 +44,14 @@
             <input type="text" name="rights[additionalRights] value="{{ $database->radardataset?->descriptiveMetadata->rights->additionalRights}}">
         </label><br/>
         <label>Subject Areas
-            <input type="text" name="subjectAreas[subjectArea][0][controlledSubjectAreaName]" value="{{ $database->radardataset?->descriptiveMetadata->subjectAreas->subjectArea[0]['controlledSubjectAreaName'] }}">
-            <input type="text" name="subjectAreas[subjectArea][0][additionalSubjectAreaName]" value="{{ $database->radardataset?->descriptiveMetadata->subjectAreas->subjectArea[0]['additionalSubjectAreaName'] }}">
+            <input type="text" name="subjectAreas[subjectArea][0]->controlledSubjectAreaName" value="{{ $database->radardataset?->descriptiveMetadata->subjectAreas->subjectArea[0]->controlledSubjectAreaName }}">
+            <input type="text" name="subjectAreas[subjectArea][0]->additionalSubjectAreaName" value="{{ $database->radardataset?->descriptiveMetadata->subjectAreas->subjectArea[0]->additionalSubjectAreaName }}">
         </label><br/>
         <label>Publishers
-            <input type="text" name="publishers[publisher][0][value]" value="{{ $database->radardataset?->descriptiveMetadata->publishers->publisher[0]['value'] }}">
+            <input type="text" name="publishers[publisher][0]->value" value="{{ $database->radardataset?->descriptiveMetadata->publishers->publisher[0]->value }}">
         </label><br/>
         <label>Creators
-            <input type="text" name="creators[creator][0][creatorName]" value="{{ $database->radardataset?->descriptiveMetadata->creators->creator[0]['creatorName'] }}">
+            <input type="text" name="creators[creator][0]->creatorName" value="{{ $database->radardataset?->descriptiveMetadata->creators->creator[0]->creatorName }}">
         </label><br/>
         </fieldset>
         <input type="submit" name="submit" value="Submit">
