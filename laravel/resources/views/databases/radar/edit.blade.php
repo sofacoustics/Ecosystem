@@ -12,7 +12,6 @@
     @auth
         <livewire:radar.dataset :database="$database" />
     @endauth
-
-        <a type="submit" href="{{url()->previous()}}" class="btn btn-default">Cancel</a>
+    <a type="submit" href="{{url()->previous()}}" class="btn btn-default">Cancel</a>
 </x-app-layout>
 

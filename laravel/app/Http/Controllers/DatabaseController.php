@@ -27,7 +27,7 @@ class DatabaseController extends Controller
         //$this->middleware('auth', ['only' => ['create', 'edit']]);
         // Users must be authenticated for all functions except index and show.
         // Guests will be redirected to login page
-        $this->middleware('auth', ['except' => ['index', 'show']]);
+        $this->middleware('auth', ['except' => ['index', 'show', 'datasetdefs', 'radarShow']]);
     }
 
     /**
@@ -328,6 +328,14 @@ class DatabaseController extends Controller
         //dd($database);
         return view('databases.radar.edit',[
            'database' => $database
+        ]);
+    }
+
+    public function datasetdefs(Database $database)
+    {
+
+        return view('databases.datasetdefs.index', [
+            'database' => $database
         ]);
     }
 }

@@ -8,12 +8,18 @@ use App\Models\Datasetdef;
 
 class DatasetdefController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth', ['except' => ['index', 'show']]);
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         //
+        return view('datasetdefs.index');
     }
 
     /**
@@ -37,7 +43,7 @@ class DatasetdefController extends Controller
      */
     public function show(Datasetdef $datasetdef)
     {
-        //
+        return view('datasetdefs.show',[ 'datasetdef' => $datasetdef]);
     }
 
     /**

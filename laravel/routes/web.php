@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\DatafileController;
 use App\Http\Controllers\DatasetController;
+use App\Http\Controllers\DatasetdefController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RadarController;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +50,7 @@ Route::view('/terms-of-use', 'pages.terms-of-use')->name('terms-of-use');
 //jw:note 'implicit binding' https://laravel.com/docs/11.x/routing#implicit-binding
 Route::get('/databases/{database}/radar', [DatabaseController::class, 'radarShow'])->name('databases.radar');
 Route::get('/databases/{database}/radar/edit', [DatabaseController::class, 'radarEdit'])->name('databases.radar.edit');
+Route::get('/databases/{database}/datasetdefs', [DatabaseController::class, 'datasetdefs'])->name('databases.datasetdefs');
 Route::resource('databases', DatabaseController::class);
 //
 // DATASET
@@ -69,6 +71,7 @@ Route::resource('datasets', DatasetController::class);
 //Route::post('/database/create','ProjectController@store');
 
 Route::resource('datafiles', DatafileController::class);
+Route::resource('datasetdefs', DatasetdefController::class);
 
 /// ADMIN
 //jw:note currently using filament 'admin' panel
