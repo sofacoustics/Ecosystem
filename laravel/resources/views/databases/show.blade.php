@@ -11,6 +11,10 @@
         @endauth<br>
         Description: {{ $database->description }}<br>
         <a class="btn btn-primary" href="{{ route("databases.radar", $database->id) }}">RADAR Metadata</a>
+        @if( Auth::user()->id  == $database->user_id)
+            (<a class="btn btn-primary" href="{{ route('databases.radar.edit', $database->id) }}">Edit</a>)
+        @endif
+
     </x-slot>
     <h3>Datasets</h3>
 
