@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
         $user = User::create([
             'name' => 'Piotr Admin',
             'email' => 'piotr.majdak@oeaw.ac.at',
-            'password' => '$2y$10$6Md8ig2DhX7VUTVfM0Ib1OiQZseEU/auy5tGUZUyFMGvpgdZzge12'
+            'password' => '$2y$10$0cANSNliDXf8DGq2wSX4x..DT2jHwMmsuBx.Q05KcJ2vy8OW.NSIO'
            ]);
            $user->assignRole('admin');
         $user = User::create([
