@@ -12,6 +12,7 @@
         @auth
         @endauth<br>
         Description: {{ $database->description }}<br>
+        <a class="btn btn-primary" href="{{ route("databases.show", $database->id) }}">Datasets</a>
         <a class="btn btn-primary" href="{{ route("databases.radar", $database->id) }}">RADAR Metadata</a>
         @auth
             @if( Auth::user()->id  == $database->user_id)
