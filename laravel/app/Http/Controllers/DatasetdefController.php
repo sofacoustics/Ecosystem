@@ -19,7 +19,8 @@ class DatasetdefController extends Controller
     public function index()
     {
         //
-        return view('datasetdefs.index');
+        $datasetdefs = \App\Models\Datasetdef::all();
+        return view('datasetdefs.index', ['allDatasetdefs' => $datasetdefs]);
     }
 
     /**
