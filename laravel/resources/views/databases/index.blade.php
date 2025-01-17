@@ -11,7 +11,7 @@
             <strong>{{ $message }}</strong>
         </div>
     @endif
-    <p>The following local databases are available</p>
+    <p>The SONICOM Ecosystem contains the following databases:</p>
     <table class="table-auto border border-slate-399">
         <tr class="text-left">
             <th>Name</th>
