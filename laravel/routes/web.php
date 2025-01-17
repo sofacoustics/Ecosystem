@@ -38,7 +38,6 @@ Route::get('/radar/get/{id}', [RadarController::class, 'get']);
 Route::view('/about', 'pages.about')->name('about');
 Route::view('/terms-of-use', 'pages.terms-of-use')->name('terms-of-use');
 
-
 /*Route::get('about', function() {
 	return view('pages.about');
 });
@@ -69,8 +68,13 @@ Route::resource('datasets', DatasetController::class);
 //Route::resource('database.edit', DatabaseController::class)->middleware('auth');
 //Route::resource('/database/create', DatabaseController::class)->middleware('auth');
 //Route::post('/database/create','ProjectController@store');
-
+//
+// DATAFILES
+//
 Route::resource('datafiles', DatafileController::class);
+//
+// DATASETDEFS
+//
 Route::resource('datasetdefs', DatasetdefController::class);
 
 /// ADMIN
