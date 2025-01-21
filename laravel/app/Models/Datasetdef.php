@@ -11,6 +11,8 @@ class Datasetdef extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name'];
+
     public function database(): BelongsTo
     {
         return $this->belongsTo(Database::class);
