@@ -1,8 +1,12 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Local Databases
+            Databases
         </h2>
+        @auth
+            {{-- <x-button primary label="New" href="{{ route('databases.create') }}"/> --}}
+                <a href="{{ url('/databases/create') }}">New</a>
+        @endauth
     </x-slot>
 
     @if ($message = Session::get('success'))
@@ -24,7 +28,10 @@
             @if ($database->user_id == Auth::id())
             <td class="border p-2">
                 (<a class="btn btn-primary" href="{{ route('databases.edit', $database->id) }}">Edit</a>,&nbsp
-                <a class="btn btn-primary" href="{{ route('databases.destroy', $database->id) }}">Delete</a>,&nbsp)
+                <form class="bg-red-100 inline" method="POST" action="{{ route('databases.destroy', [$database]) }}">
+                        @csrf @method('DELETE')
+                        (<button type="submit" class="btn btn-danger btn-sm">Delete</button>)
+                </form>
                 {{--
                 <form class="inline" method="POST" id="delete-database" action="{{ route('databases.destroy', $database->id) }}">
                     @csrf
