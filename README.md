@@ -159,6 +159,8 @@ If you are pushing to a remote git repository, then a post-receive hook should r
 - [ ] JW: Check that reverb / supervisorctl tasks work for multiple sites on the same machine
 - [ ] JW: Add git revision / branch to about.
 - [ ] JW: Add supervisorctl for npm run dev (https://stackoverflow.com/questions/28108728/how-to-npm-start-with-supervisord)
+- [ ] JW: Allow a tool to be restricted to specific datafiletypes (need additional table?)
+- [ ] JW: Remove 'datatype', since we're using 'datafiletype'
 
 ## Place to push stuff when testing git deployment
 

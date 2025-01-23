@@ -32,6 +32,8 @@ class DatasetdefPolicy
      */
     public function create(User $user): bool
     {
+        //jw:note this appears to work, if you use "@can('create', App\Models\Datasetdef::class)"
+        //jw:note in a blade template
         if ($user->can('add datasetdefs'))
 			return true;
         return false;

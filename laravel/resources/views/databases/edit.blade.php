@@ -16,6 +16,7 @@
     @endif
 
     @can('update', $database)
+	{{--
     <form action="{{ route('databases.update', $database->id) }}" method="POST">
         @csrf
         @method('PUT')
@@ -32,6 +33,9 @@
         <input type="submit" name="submit" value="Submit">
         <a type="submit" href="{{url()->previous()}}" class="btn btn-default">Cancel</a>
     </form>
+	--}}
+
+	<livewire:database-form :database=$database />
     {{--
     <fieldset>
         <legend>RADAR fields</legend>

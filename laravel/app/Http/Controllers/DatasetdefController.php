@@ -53,6 +53,7 @@ class DatasetdefController extends Controller
     public function edit(Datasetdef $datasetdef)
     {
         //
+		return view('datasetdefs.edit', [ 'datasetdef' => $datasetdef]);
     }
 
     /**
@@ -68,6 +69,10 @@ class DatasetdefController extends Controller
      */
     public function destroy(Datasetdef $datasetdef)
     {
-        //
+        //$this->authorize('destroy', $datasetdef);
+        //jw:note See DatasetdefPolicy for authorized user access
+        //if(auth()->id() == $datasetdef->database->user_id)
+        $datasetdef->delete();
+        return redirect()->back();
     }
 }

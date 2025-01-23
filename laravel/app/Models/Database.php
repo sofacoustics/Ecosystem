@@ -25,10 +25,19 @@ class Database extends Model
 
     protected static function booted()
     {
-        // Update RADAR 'title' when database title updated.
-        static::updating(function ($database) {
-            $database->radardataset->title = $database->title;
+        /*
+        static::creating(function ($database) {
+            $database->radardataset = new RadardatasetpureData;
         });
+        // Update RADAR 'title' when database title updated.
+		//jw:note This was causing a "Indirect modification of overloaded property App\Models\Database::$radardataset has no effect" exception, when modifying the database via a livewire component.
+        static::updating(function ($database) {
+            dd($database->radardataset);// = $database->title;
+            $database->radardataset->descriptiveMetadata->title = $database->title;
+            dd($database->radardataset);// = $database->title;
+        });
+         */
+
     }
 
     //
