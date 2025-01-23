@@ -29,4 +29,11 @@ class ToolController extends Controller
 
         return view('tools.index', ['allTools' => $tools]);
     }		
+    /**
+     * Display the specified resource.
+     */
+    public function show(Tool $tool)
+    {
+        return view('tools.show',[ 'tool' => $tool]);
+    }
 }

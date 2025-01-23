@@ -1,15 +1,14 @@
 <x-app-layout>
-    <x-slot name="header">
-        <x-tool.header :tool=$tool />
-    </x-slot>
-    <h3>Tools</h3>
+<x-slot name="header">
+        <x-tools.header :tool=$tool />
+</x-slot>
+    <h3>{{ $tool->name }}</h3>
 
-    @forelse($tool->datasets as $dataset)
-        - <a href={{ route('datasets.show', $dataset->id) }}>{{ $dataset->name }}</a> <br>
-    @empty
-        <p>There are no datasets associated with this database</p>
-    @endforelse
-
+    <p><b>Description:</b> {{ $tool->description }}</p>
+		<p><b>Script Name:</b> {{ $tool->scriptname }}</p>		
+		<p><b>Script Path:</b> {{ $tool->scriptpath }}</p>
+		<p><b>Script Parameters:</b> {{ $tool->scriptparameters }}</p>
+		<p><b>Function Name:</b> {{ $tool->functionname }}</p>
 
 @env('local')
 
