@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         Database::create(array(
             'title' => 'ARI B',
+						'subtype' => 'Spatial acoustics',
             'description' => 'Specialty: hrtfs, dtfs, and photos of the ears',
             'radardataset' => RadardatasetpureData::from('{
                 "id": "f3dxp4vswdc2xe7z",
@@ -140,6 +141,7 @@ class DatabaseSeeder extends Seeder
             }'),
             'user_id' => 1));
         Database::create(array('title' => 'ARI BezierPPM',
+						'subtype' => 'Geometries',
             'description' => 'Specialty: csv, dtfs and hrtfs',
             'radardataset' => RadardatasetpureData::from('{
                 "id": null,
