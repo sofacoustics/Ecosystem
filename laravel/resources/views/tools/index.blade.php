@@ -19,12 +19,9 @@
         </tr>
     @foreach ($allTools as $tool)
         <tr class="border">
-            <td class="border p-2"><a class="btn btn-primary" href="">{{ $tool->name }}</a></td>
-            <td class="border p-2"><a class="btn btn-primary" href="">{{ $tool->description}}</a></td>
-						<td class="border p-2"><a class="btn btn-primary" href="">{{ $tool->scriptname}}</a></td>            
-							{{--           <td class="border p-2"><a class="btn btn-primary" href="{{ route('tool.show', $tool->id) }}">{{ $tool->name }}</a></td>
-            <td class="border p-2"><a class="btn btn-primary" href="{{ route('tool.show', $tool->id) }}">{{ $tool->description}}</a></td>
-							<td class="border p-2"><a class="btn btn-primary" href="{{ route('tool.show', $tool->id) }}">{{ $tool->scriptname}}</a></td>            --}}
+						<td class="border p-2"><a class="btn btn-primary" href="{{ route('tools.show', $tool->id) }}">{{ $tool->name }}</a></td>
+            <td class="border p-2"><a class="btn btn-primary" href="{{ route('tools.show', $tool->id) }}">{{ $tool->description}}</a></td>
+						<td class="border p-2"><a class="btn btn-primary" href="{{ route('tools.show', $tool->id) }}">{{ $tool->scriptname}}</a></td>
         </tr>
     @endforeach
 		</table>
