@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ToolController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\DatafileController;
@@ -79,7 +79,7 @@ Route::resource('datafiles', DatafileController::class);
 Route::resource('datasetdefs', DatasetdefController::class);
 
 /// TOOLS
-Route::resource('tools', Controller::class);
+Route::resource('tools', ToolController::class);
 /// ADMIN
 //jw:note currently using filament 'admin' panel
 #Route::group(['middleware' => ['role:admin']], function() {
