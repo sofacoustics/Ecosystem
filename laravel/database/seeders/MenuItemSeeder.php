@@ -13,12 +13,6 @@ class MenuItemSeeder extends Seeder
      */
     public function run(): void
 		{
-			 /*
-       MenuItem::create([
-        'title' => 'Home',
-        'url' => '/',
-			 ]);
-			 */
 
        MenuItem::create([
         'id' => '1',
@@ -63,10 +57,19 @@ class MenuItemSeeder extends Seeder
         'route' => 'filament.admin.pages.dashboard',
         'authenticated' => 2,
 			 ]);
+			 
+			MenuItem::create([
+        'id' => '7',
+        'title' => 'Tools',
+        'url' => '/tools',
+        // 'route' => 'tools',
+        'authenticated' => 0,
+			 ]);
+			 
 			/*
       
        MenuItem::create([
-        'id' => '6',
+        'id' => '7',
         'title' => 'Databases',
         'route' => 'databases.index',
         'parent_id' => '5',
