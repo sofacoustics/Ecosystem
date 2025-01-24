@@ -12,4 +12,9 @@ class Tool extends Model
     protected $fillable = [
         'id', 'name', 'description'
     ];
+		
+		public function creators(): HasMany
+    {
+        return $this->hasMany(Creator::class);
+    }
 }
