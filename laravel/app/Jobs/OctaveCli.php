@@ -35,7 +35,7 @@ class OctaveCli implements ShouldQueue
         app('log')->info('OctaveCli::handle() - START');
         app('log')->info('OctaveCli::handle() - $this->widget->id = ' . $this->widget->id);
         $widgetpath=storage_path('app/widgets/'.$this->widget->id);
-        app('log')->info('OctaveCli::handle() - $widgetpath = ' . $toolpath);
+        app('log')->info('OctaveCli::handle() - $widgetpath = ' . $widgetpath);
         app('log')->info('OctaveCli::handle() - $this->datafile->id = ' . $this->datafile->id);
         app('log')->info('OctaveCli::handle() - $this->datafile->directory() = ' . $this->datafile->directory());
         app('log')->info('OctaveCli::handle() - $this->datafile->absolutepath = ' . $this->datafile->absolutepath());
