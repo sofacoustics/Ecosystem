@@ -8,6 +8,7 @@ use App\Http\Controllers\DatasetController;
 use App\Http\Controllers\DatasetdefController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RadarController;
+use App\Http\Controllers\ToolController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -39,11 +40,6 @@ Route::view('/scenarios', 'pages.scenarios')->name('scenarios');
 Route::view('/challenges', 'pages.challenges')->name('challenges');
 Route::view('/terms-of-use', 'pages.terms-of-use')->name('terms-of-use');
 
-/*Route::get('about', function() {
-	return view('pages.about');
-});
-*/
-//
 // DATABASE (auth specified in __construct())
 //
 //jw:note If you specify 'database' where the id is in the URL, then it will be used to get model data for the controller method
@@ -55,23 +51,8 @@ Route::resource('databases', DatabaseController::class);
 //
 // DATASET
 //
-//jw:note Not all database.datasets calls to the DatasetController will work, since there are two parameters.
-//jw:note I'm not sure how to simplify this. Maybe: https://www.youtube.com/watch?v=MF0jFKvS4SI (Cruddy by Design)?
 Route::resource('databases.datasets', DatasetController::class); // /databases/{{database}}/datasets (https://davecalnan.blog/laravel-routing-gotchas)
 Route::resource('datasets', DatasetController::class);
-//Route::resource('databases.datasets', DatasetController::class);
-//Route::middleware('auth')->group(function () {
-//    Route::get('/database/create', [DatabaseController::class, 'create']);
-//    Route::get('/database', [DatabaseController::class, 'edit'])->name('database.edit');
-//});
-//Route::resource('database.create', DatabaseController::class)->middleware('auth');
-//Route::resource('database', DatabaseController::class)->middleware('auth')->only([
-//    'edit', 'create'
-//]);
-// To nest the resource controllers, you may use "dot" notation in your route declaration (https://laravel.com/docs/10.x/controllers#restful-partial-resource-routes)
-//Route::resource('database.edit', DatabaseController::class)->middleware('auth');
-//Route::resource('/database/create', DatabaseController::class)->middleware('auth');
-//Route::post('/database/create','ProjectController@store');
 //
 // DATAFILES
 //
@@ -83,8 +64,11 @@ Route::resource('datasetdefs', DatasetdefController::class);
 
 /// WIDGETs
 Route::resource('widgets', WidgetController::class);
-/// ADMIN
-//jw:note currently using filament 'admin' panel
+/// Tools
+Route::resource('tools', ToolController::class);
+
+
+/// Backend (Filament)
 #Route::group(['middleware' => ['role:admin']], function() {
 #    Route::get('/admin', [AdminController::class, 'index'])->name('admin'); // named route: https://laravel.com/docs/10.x/routing#named-routes
 #});

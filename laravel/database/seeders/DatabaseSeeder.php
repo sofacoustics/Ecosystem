@@ -253,6 +253,7 @@ class DatabaseSeeder extends Seeder
             DatafileSeeder::class,
             MenuItemSeeder::class,
             MetadataschemaSeeder::class,
+						ToolSeeder::class,
             /*
             RadardatasetresourcetypeSeeder::class,
             RadardatasetsubjectareaSeeder::class,
