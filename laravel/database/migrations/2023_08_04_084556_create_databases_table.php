@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('databases', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-						$table->string('subtype');
+						$table->string('subtype')->nullable();
             $table->string('description');
             $table->json('radardataset')->nullable();
             $table->unsignedBigInteger('user_id');
