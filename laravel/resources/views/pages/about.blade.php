@@ -1,12 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            About SONICOM-Ecosystem
+            SONICOM: Transforming Auditory-Based Social Interaction and Communication in AR/VR
         </h2>
     </x-slot>
-		<p>SONICOM: Transforming Auditory-Based Social Interaction and Communication in AR/VR</p>
 		<p>Immersive audio is our everyday experience of being able to hear and interact with sounds around us. Simulating spatially located sounds in virtual or augmented reality (VR/AR) must be done in a unique way for each individual and currently requires expensive, time-consuming individual measurements, making it commercially unfeasible. The impact of immersive audio beyond perceptual metrics such as presence and localisation is still an unexplored area of research, specifically when related with social interaction, entering the behavioural and cognitive realms.</p>
-        <h3>Terminology</h3>
+        <h3>Ecosystem terminology:</h3>
         <dl>
             <dt>Database</dt>
             <dd>A 'database' is a collection of data in a specific collation of formats. E.g. a collection of HRTF data, where each database record contains one HRTF and one PNG.</dd>
@@ -17,6 +16,7 @@
             <dt>Datasetdef</dt>
             <dd>A 'datasetdef' is a definition of which datatypes are in each dataset. E.g. a dataset may contain two different hrtfs and one png per record.</dd>
         </dl>
+        <h3>Permissions:</h3>
         @role('admin')
         <p>You have the 'admin' role</p>
         @else

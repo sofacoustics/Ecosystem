@@ -33,8 +33,10 @@ Route::get('/radar', [RadarController::class, 'index'])->name('radar');
 Route::get('/radar/dataset/{id}', [RadarController::class, 'dataset']);
 Route::get('/radar/get/{id}', [RadarController::class, 'get']);
 
-/// ABOUT
+/// ABOUT etc
 Route::view('/about', 'pages.about')->name('about');
+Route::view('/scenarios', 'pages.scenarios')->name('scenarios');
+Route::view('/challenges', 'pages.challenges')->name('challenges');
 Route::view('/terms-of-use', 'pages.terms-of-use')->name('terms-of-use');
 
 /*Route::get('about', function() {

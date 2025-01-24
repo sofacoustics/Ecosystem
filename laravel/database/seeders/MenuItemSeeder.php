@@ -15,90 +15,30 @@ class MenuItemSeeder extends Seeder
 		{
 
        MenuItem::create([
-        'id' => '1',
-        'title' => 'RADAR',
-        'url' => '/radar',
-        'authenticated' => 0,
-       ]);
-
-       MenuItem::create([
-        'id' => '2',
-        'title' => 'Databases',
-        'url' => '/databases',
-        'authenticated' => 0,
-       ]);
-
-       /*
-       MenuItem::create([
-        'id' => '3',
-        'title' => 'Create Database',
-        'url' => '/databases/create',
-        'authenticated' => 1,
-       ]);
-        */
-
-       MenuItem::create([
-        'id' => '6',
-        'title' => 'Datasets',
-        'url' => '/datasets',
-        'authenticated' => 0,
-       ]);
+        'id' => '1', 'title' => 'Data', 'url' => '/databases', 'authenticated' => 0, ]);
 
         MenuItem::create([
-        'id' => '4',
-        'title' => 'About SONICOM',
-        'route' => 'about',
-        'authenticated' => 0,
-       ]);
+        'id' => '2', 'title' => 'Tools', 'url' => '/tools', 'authenticated' => 0, ]);
+
+        MenuItem::create([
+        'id' => '3', 'title' => 'Scenarios', 'route' => 'scenarios', 'authenticated' => 0, ]);
+
+        MenuItem::create([
+        'id' => '4', 'title' => 'Challenges', 'route' => 'challenges', 'authenticated' => 0, ]);
+
+        MenuItem::create([
+        'id' => '5', 'title' => 'About', 'route' => 'about', 'authenticated' => 0, ]);
 
        MenuItem::create([
-        'id' => '5',
-        'title' => 'Admin',
-        'route' => 'filament.admin.pages.dashboard',
-        'authenticated' => 2,
-			 ]);
+        'id' => '6', 'title' => 'Backend', 'route' => 'filament.admin.pages.dashboard', 'authenticated' => 2, ]);
+
+       MenuItem::create([
+        'id' => '7', 'title' => 'Datasets', 'url' => '/datasets', 'authenticated' => 2, ]);
 			 
 			MenuItem::create([
-        'id' => '7',
-        'title' => 'Widgets',
-        'url' => '/widgets',
-        'authenticated' => 2,
-			 ]);
+        'id' => '8', 'title' => 'Widgets', 'url' => '/widgets', 'authenticated' => 2, ]);
 			 
-			/*
-      
        MenuItem::create([
-        'id' => '7',
-        'title' => 'Databases',
-        'route' => 'databases.index',
-        'parent_id' => '5',
-        'authenticated' => 2,
-       ]);
-				*/
-
-
-/*
-       $services = MenuItem::create([
-        'title' => 'Services',
-        'url' => '/services',
-       ]);
-
-       MenuItem::create([
-        'title' => 'Web Development',
-        'url' => '/services/web-development',
-        'parent_id' => $services->id,
-       ]);
-        MenuItem::create([
-            'title' => 'Mobile Development',
-            'url' => '/services/mobile-development',
-            'parent_id' => $services->id,
-        ]);
- */
-			  /*
-        MenuItem::create([
-            'title' => 'Contact Us',
-            'url' => '/contact-us',
-				]);
-			  */
+        'id' => '9', 'title' => 'RADAR', 'url' => '/radar', 'authenticated' => 2, ]);
 		}
 }
