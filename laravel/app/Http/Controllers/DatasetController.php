@@ -5,33 +5,39 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\Database;
+use App\Models\Dataset;
+
 
 class DatasetController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index($databaseId = 0)
+    public function index()
     {
         //
+        /*
         echo "databaseId = $databaseId<br>";
         $database = \App\Models\Database::where('id', $databaseId)->first();
+         */
+        //dd($database->datasets);
 
-
+        $datasets = \App\Models\Dataset::all();
         //
         //
         //print_r($database);
         //echo $database->name;
         //echo "name = " . $database->name() . "<br>";
-        return view('datasets.index', ['database' => $database]);
+        return view('datasets.index', ['datasets' => $datasets]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Database $database)
     {
-        //
+        //dd($database);
+        return view('datasets.create', ['database' => $database]);
     }
 
     /**
@@ -45,9 +51,10 @@ class DatasetController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    //public function show(string $id)
+    public function show(Dataset $dataset)
     {
-        $dataset = \App\Models\Dataset::where('id', $id)->first();
+        //$dataset = \App\Models\Dataset::where('id', $id)->first();
         return view('datasets.show', ['dataset' => $dataset]);
     }
 

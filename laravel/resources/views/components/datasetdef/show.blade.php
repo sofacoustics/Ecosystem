@@ -10,6 +10,7 @@
     @if($datasetdef->tool)Tool: {{ $datasetdef->tool->name }} @endif
     @auth
         @if( Auth::user()->id  == $datasetdef->database->user_id)
+            ID: {{ $datasetdef->id }}
             @if(count($datasetdef->database->datasets) == 0)
                 <form class="bg-red-100 inline" method="POST" action="{{ route('datasetdefs.destroy', [$datasetdef]) }}">
                         @csrf @method('DELETE')

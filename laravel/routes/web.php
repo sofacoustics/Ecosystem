@@ -21,9 +21,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('landing');
-});
+Route::get('/', function () { return view('landing'); })->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -31,7 +29,7 @@ Route::get('/dashboard', function () {
 
 // SONICOM
 /// RADAR
-Route::get('/radar', [RadarController::class, 'index']);
+Route::get('/radar', [RadarController::class, 'index'])->name('radar');
 Route::get('/radar/dataset/{id}', [RadarController::class, 'dataset']);
 Route::get('/radar/get/{id}', [RadarController::class, 'get']);
 
@@ -55,6 +53,9 @@ Route::resource('databases', DatabaseController::class);
 //
 // DATASET
 //
+//jw:note Not all database.datasets calls to the DatasetController will work, since there are two parameters.
+//jw:note I'm not sure how to simplify this. Maybe: https://www.youtube.com/watch?v=MF0jFKvS4SI (Cruddy by Design)?
+Route::resource('databases.datasets', DatasetController::class); // /databases/{{database}}/datasets (https://davecalnan.blog/laravel-routing-gotchas)
 Route::resource('datasets', DatasetController::class);
 //Route::resource('databases.datasets', DatasetController::class);
 //Route::middleware('auth')->group(function () {

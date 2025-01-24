@@ -1,5 +1,5 @@
 {{--
-    An overview component for a datasetdef
+    An list component for a datasetdef
 
     Parameters:
 
@@ -13,3 +13,4 @@ Name: {{ $datasetdef->name }}, Database: {{ $datasetdef->database->title }}, Typ
 @else
     Tool: none specified
 @endif
+

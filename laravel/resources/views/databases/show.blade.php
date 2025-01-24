@@ -2,14 +2,25 @@
     <x-slot name="header">
         <x-database.header :database=$database />
     </x-slot>
-    <h3>Datasets</h3>
+    <h3>Datasets
+        @auth
+            {{-- If we own this database --}}
+            @if ($database->user_id == Auth::id())
+                {{-- If there's a datasetdef, then we can create a dataset --}}
+                @if(count($database->datasetdefs))
+                    <a href="{{ route('databases.datasets.create', $database->id) }}">(New)</a><br>
+                @endif
+            @endif
+        @endauth
+    </h3>
 
+    <ul class="list-disc list-inside">
     @forelse($database->datasets as $dataset)
-        - <a href={{ route('datasets.show', $dataset->id) }}>{{ $dataset->name }}</a> <br>
+        <li><x-dataset.list link='true' :dataset="$dataset"/></li>
     @empty
         <p>There are no datasets associated with this database</p>
     @endforelse
-
+    </ul>
 
 @env('local')
     {{-- in "local" or "staging" environment --}}

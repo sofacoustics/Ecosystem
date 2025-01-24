@@ -1,19 +1,10 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Database: <a href="{{ route('databases.show', $dataset->database->id) }}">{{ $dataset->database->title }}</a>
-        </h2>
-        Dataset: {{ $dataset->name }}
+        <x-database.header :dataset="$dataset" />
     </x-slot>
-    <p>This dataset contains {{ count($dataset->datafiles) }} datafiles</p>
-    {{--
-    <div class="flex flex-row">
-        @forelse ($dataset->datafiles as $datafile)
-            <a class="px-5" href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a><br/>
-        @empty
-            <p>There are no datasets associated with this datafile.</p>
-        @endforelse
-    </div> --}}
+    <h2>Dataset: {{ $dataset->name }}</h2>
+    <h3>Files</h3>
+    <p>This dataset contains {{ count($dataset->datafiles) }} files</p>
     <div>
         @foreach ($dataset->datafiles as $datafile)
             @if (!$datafile->isImage())
@@ -31,6 +22,15 @@
             @endif
         @endforeach
     </div>
+    @if(count($dataset->datafiles) < count($dataset->database->datasetdefs))
+        <p>According to the dataset definition, there must be {{ count($dataset->database->datasetdefs) }} files. The following files are missing:</p>
+        <ul class="list-disc list-inside">
+        @foreach($dataset->missing_datafiles() as $missing)
+            <li><x-datasetdef.list :datasetdef="$missing" /></li>
+        @endforeach
+        </ul>
+    @endif
+
     {{-- jw:note do *not* use a livewire inside a livewire if possible --}}
     {{-- @livewire(DatasetListener::class, ['dataset' => $dataset]) --}}
     {{--    <livewire:DatasetListener :dataset="$dataset" /> --}}

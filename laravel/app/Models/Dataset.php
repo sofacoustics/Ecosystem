@@ -30,4 +30,13 @@ class Dataset extends Model
     {
         return $this->belongsTo(Database::class);
     }
+
+
+    public function missing_datafiles()
+    {
+        $requiredDatasetdefs = $this->database->datasetdefs()->pluck('id');
+        $existingDatasetdefs = $this->datafiles->pluck('datasetdef_id');
+        $missingDatasetdefs = Datasetdef::whereIn('id', $requiredDatasetdefs->diff($existingDatasetdefs))->get();
+        return $missingDatasetdefs;
+    }
 }
