@@ -31,11 +31,11 @@ class DatasetdefResource extends Resource
                 Forms\Components\Select::make('datafiletype_id')
                     ->relationship('datafiletype', 'name')
                     ->required(),
-/*                Forms\Components\TextInput::make('tool_id')
+/*                Forms\Components\TextInput::make('widget_id')
                     ->required()
                     ->numeric(),*/
-                Forms\Components\Select::make('tool_id')
-                    ->relationship('tool', 'name')
+                Forms\Components\Select::make('widget_id')
+                    ->relationship('widget', 'name')
                     ->required(),                  
                 Forms\Components\TextInput::make('name')
                     ->required(),
@@ -50,7 +50,7 @@ class DatasetdefResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('datafiletype.name')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('tool.name')
+                Tables\Columns\TextColumn::make('widget_id.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),

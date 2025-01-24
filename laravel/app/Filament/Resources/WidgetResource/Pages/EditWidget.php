@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\ToolResource\Pages;
+namespace App\Filament\Resources\WidgetResource\Pages;
 
-use App\Filament\Resources\ToolResource;
+use App\Filament\Resources\WidgetResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditTool extends EditRecord
+class EditWidget extends EditRecord
 {
-    protected static string $resource = ToolResource::class;
+    protected static string $resource = WidgetResource::class;
 
     protected function getHeaderActions(): array
     {

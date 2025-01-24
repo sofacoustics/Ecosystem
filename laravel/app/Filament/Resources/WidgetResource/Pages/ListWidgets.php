@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\ToolResource\Pages;
+namespace App\Filament\Resources\WidgetResource\Pages;
 
-use App\Filament\Resources\ToolResource;
+use App\Filament\Resources\WidgetResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
-class ListTools extends ListRecords
+class ListWidgets extends ListRecords
 {
-    protected static string $resource = ToolResource::class;
+    protected static string $resource = WidgetResource::class;
 
     protected function getHeaderActions(): array
     {

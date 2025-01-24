@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ToolResource\Pages;
-use App\Filament\Resources\ToolResource\RelationManagers;
-use App\Models\Tool;
+use App\Filament\Resources\WidgetResource\Pages;
+use App\Filament\Resources\WidgetResource\RelationManagers;
+use App\Models\Widget;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ToolResource extends Resource
+class WidgetResource extends Resource
 {
-    protected static ?string $model = Tool::class;
+    protected static ?string $model = Widget::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -82,9 +82,9 @@ class ToolResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTools::route('/'),
-            'create' => Pages\CreateTool::route('/create'),
-            'edit' => Pages\EditTool::route('/{record}/edit'),
+            'index' => Pages\ListWidgets::route('/'),
+            'create' => Pages\CreateWidget::route('/create'),
+            'edit' => Pages\EditWidget::route('/{record}/edit'),
         ];
     }
 }
