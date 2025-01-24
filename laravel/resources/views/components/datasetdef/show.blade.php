@@ -7,7 +7,7 @@
 --}}
 <div class="ml-5">
     Name: {{ $datasetdef->name }}. Datafiletype: {{ $datasetdef->datafiletype->name }}
-    @if($datasetdef->tool)Tool: {{ $datasetdef->tool->name }} @endif
+    @if($datasetdef->widget)Widget: {{ $datasetdef->widget->name }} @endif
     @auth
         @if( Auth::user()->id  == $datasetdef->database->user_id)
             ID: {{ $datasetdef->id }}

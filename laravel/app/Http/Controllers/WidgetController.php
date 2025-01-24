@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
-use App\Models\Tool;
+use App\Models\Widget;
 
-class ToolController extends Controller
+class WidgetController extends Controller
 {
     use AuthorizesRequests, ValidatesRequests;
 		
@@ -25,15 +25,15 @@ class ToolController extends Controller
      */
     public function index()
     {
-        $tools = \App\Models\Tool::all();
+        $widgets = \App\Models\Widget::all();
 
-        return view('tools.index', ['allTools' => $tools]);
+        return view('widgets.index', ['allWidgets' => $widgets]);
     }		
     /**
      * Display the specified resource.
      */
-    public function show(Tool $tool)
+    public function show(Widget $widget)
     {
-        return view('tools.show',[ 'tool' => $tool]);
+        return view('widgets.show',[ 'widget' => $widget]);
     }
 }

@@ -6,7 +6,7 @@
         Dataset: <a href="{{ route('datasets.show', $datafile->dataset->id) }}">{{ $datafile->dataset->name }}</a><br>
         Database: <a href="{{ route('databases.show', $datafile->dataset->database->id) }}">{{ $datafile->dataset->database->name }}</a><br>
         Datafiletype: {{ $datafile->datasetdef->datafiletype->name }}<br>
-        {{--_Tool: {{ $datafile->datasetdef->tool->name }} --}}
+        {{--_Widget: {{ $datafile->datasetdef->widget->name }} --}}
     </x-slot>
 
 

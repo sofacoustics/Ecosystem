@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Datafile;
-use App\Models\Tool;
+use App\Models\Widget;
 use App\Events\DatafileProcessed;
 
 use Illuminate\Bus\Queueable;
@@ -21,7 +21,7 @@ class OctaveCli implements ShouldQueue
      * Create a new job instance.
      */
     public function __construct(
-        public Tool $tool,
+        public Widget $widget,
         public Datafile $datafile
         //jw:todo maybe pass strings rather than objects here?
     ) {}
@@ -33,16 +33,16 @@ class OctaveCli implements ShouldQueue
     {
         //
         app('log')->info('OctaveCli::handle() - START');
-        app('log')->info('OctaveCli::handle() - $this->tool->id = ' . $this->tool->id);
-        $toolpath=storage_path('app/tools/'.$this->tool->id);
-        app('log')->info('OctaveCli::handle() - $toolpath = ' . $toolpath);
+        app('log')->info('OctaveCli::handle() - $this->widget->id = ' . $this->widget->id);
+        $widgetpath=storage_path('app/widgets/'.$this->widget->id);
+        app('log')->info('OctaveCli::handle() - $widgetpath = ' . $toolpath);
         app('log')->info('OctaveCli::handle() - $this->datafile->id = ' . $this->datafile->id);
         app('log')->info('OctaveCli::handle() - $this->datafile->directory() = ' . $this->datafile->directory());
         app('log')->info('OctaveCli::handle() - $this->datafile->absolutepath = ' . $this->datafile->absolutepath());
-        $process = 'octave-cli ' . $this->tool->scriptname . " \"" . $this->datafile->absolutepath() . "\"";
+        $process = 'octave-cli ' . $this->widget->scriptname . " \"" . $this->datafile->absolutepath() . "\"";
         app('log')->info('OctaveCli::handle() - $process = ' . $process);
         app('log')->info('OctaveCli::handle() - run process');
-        $result = Process::quietly()->path($toolpath)->run($process);
+        $result = Process::quietly()->path($widgetpath)->run($process);
         app('log')->info('OctaveCli::handle() - process finished');
         //app('log')->info('OctaveCli::handle() - $result->output() = ' . $result->output());
         //file_put_contents('/var/www/sonicom_dev_live/storage/logs/job-octavecli.log', $result->output());

@@ -37,14 +37,14 @@
                     @enderror
                 </div>
                 <div>
-                    <label class="{{ $labelClass }}" for="tool">Tool</label>
-                    <select class="{{ $selectClass }}" id="tool" wire:model="tool_id">
-                        <option value="">Select a tool</option>
-                        @foreach ($tools as $tool)
-                            <option value="{{ $tool->id }}">{{ $tool->name }}</option>
+                    <label class="{{ $labelClass }}" for="widget">Widget</label>
+                    <select class="{{ $selectClass }}" id="widget" wire:model="widget_id">
+                        <option value="">Select a widget</option>
+                        @foreach ($widgets as $widget)
+                            <option value="{{ $widget->id }}">{{ $widget->name }}</option>
                         @endforeach
                     </select>
-                    @error('tool_id')
+                    @error('widget_id')
                         <span class="text-red-500">{{ $message }}</span>
                     @enderror
                 </div>

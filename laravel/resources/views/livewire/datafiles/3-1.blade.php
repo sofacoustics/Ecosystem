@@ -1,7 +1,7 @@
 <div>
     {{--
     <p>datafiletype: 3</p>
-    <p>tool: 1</p> --}}
+    <p>widget: 1</p> --}}
     <p>HRTF rendered with images created by CreateFigures</p>
     {{-- <p>name: {{ $datafile->name }}</p>
     <p>png1: {{$datafile->name.'_1.png'}}</p>

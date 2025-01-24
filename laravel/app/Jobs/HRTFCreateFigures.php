@@ -39,7 +39,7 @@ class HRTFCreateFigures implements ShouldQueue
 			//
       //$result = Process::run('octave-cli /home/jw/git/isf-sonicom-laravel/octave/octavetest.m');
       $name = $this->datafile->name; 
-      $scriptname = $this->datafile->tools->scriptname;
-      app('log')->info('HRTFCreateFigures::handle() - $datafile->tools-scriptname = ' . $scriptname);
+      $scriptname = $this->datafile->widgets->scriptname;
+      app('log')->info('HRTFCreateFigures::handle() - $datafile->widgets-scriptname = ' . $scriptname);
     }
 }

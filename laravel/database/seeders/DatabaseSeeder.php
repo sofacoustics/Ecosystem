@@ -248,7 +248,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             DatasetSeeder::class,
             DatafiletypeSeeder::class,
-            ToolSeeder::class,
+            WidgetSeeder::class,
             DatasetdefSeeder::class,
             DatafileSeeder::class,
             MenuItemSeeder::class,

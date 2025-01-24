@@ -8,9 +8,9 @@
 --}}
 
 Name: {{ $datasetdef->name }}, Database: {{ $datasetdef->database->title }}, Type: {{ $datasetdef->datafiletype->name }},
-@if($datasetdef->tool)
-    Tool: {{ $datasetdef->tool->name }}
+@if($datasetdef->widget)
+    Widget: {{ $datasetdef->widget->name }}
 @else
-    Tool: none specified
+    Widget: none specified
 @endif
 

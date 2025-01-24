@@ -14,12 +14,12 @@ class DatasetdefSeeder extends Seeder
      */
     public function run(): void
     {
-        Datasetdef::create([ 'database_id' => 1, 'name' => 'dtf b', 'datafiletype_id' => 3, 'tool_id' => 1 ]);
-        Datasetdef::create([ 'database_id' => 1, 'name' => 'hrtf b', 'datafiletype_id' => 3, 'tool_id' => 1 ]);
+        Datasetdef::create([ 'database_id' => 1, 'name' => 'dtf b', 'datafiletype_id' => 3, 'widget_id' => 1 ]);
+        Datasetdef::create([ 'database_id' => 1, 'name' => 'hrtf b', 'datafiletype_id' => 3, 'widget_id' => 1 ]);
         Datasetdef::create([ 'database_id' => 1, 'name' => 'ear left', 'datafiletype_id' => 1 ]);
         Datasetdef::create([ 'database_id' => 1, 'name' => 'ear right', 'datafiletype_id' => 1 ]);
         Datasetdef::create([ 'database_id' => 2, 'name' => 'BezierPPM', 'datafiletype_id' => 4 ]);
-        Datasetdef::create([ 'database_id' => 2, 'name' => 'dtf b', 'datafiletype_id' => 3, 'tool_id' => 1 ]);
-        Datasetdef::create([ 'database_id' => 2, 'name' => 'hrtf b', 'datafiletype_id' => 3, 'tool_id' => 1 ]);
+        Datasetdef::create([ 'database_id' => 2, 'name' => 'dtf b', 'datafiletype_id' => 3, 'widget_id' => 1 ]);
+        Datasetdef::create([ 'database_id' => 2, 'name' => 'hrtf b', 'datafiletype_id' => 3, 'widget_id' => 1 ]);
     }
 }

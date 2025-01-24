@@ -60,10 +60,9 @@ class MenuItemSeeder extends Seeder
 			 
 			MenuItem::create([
         'id' => '7',
-        'title' => 'Tools',
-        'url' => '/tools',
-        // 'route' => 'tools',
-        'authenticated' => 0,
+        'title' => 'Widgets',
+        'url' => '/widgets',
+        'authenticated' => 2,
 			 ]);
 			 
 			/*
