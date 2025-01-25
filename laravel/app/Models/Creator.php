@@ -10,13 +10,17 @@ class Creator extends Model
     use HasFactory;
 		
 		protected $fillable = [
-        'id',
-        'category', 
+        'id', 'database_id', 'creatorName', 'givenName',
     ];
 
     // Define the possible categories (optional)
-    public const nameIdentifierScheme = [
+    public const nameIdentifierSchemeCategories = [
         'ORCID',
         'ROR',
     ];
+		
+		public function database()
+    {
+        return $this->belongsTo(Database::class); 
+    }
 }
