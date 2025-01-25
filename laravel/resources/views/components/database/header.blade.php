@@ -32,4 +32,5 @@ Description: {{ $database->description }}<br>
 @endauth
 --}}
 <a class="btn btn-primary" href="{{ route("databases.datasetdefs", $database->id) }}">Datasetdef</a>
+<a class="btn btn-primary" href="{{ route("databases.creators", $database->id) }}">Creators</a>
 

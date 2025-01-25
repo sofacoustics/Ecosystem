@@ -338,4 +338,12 @@ class DatabaseController extends Controller
             'database' => $database
         ]);
     }
+
+    public function creators(Database $database)
+    {
+
+        return view('databases.creators.index', [
+            'database' => $database
+        ]);
+    }
 }

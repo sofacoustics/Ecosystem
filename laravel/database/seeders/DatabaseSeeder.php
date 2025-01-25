@@ -139,7 +139,7 @@ class DatabaseSeeder extends Seeder
                     }
                 }
             }'),
-            'user_id' => 1));
+            'user_id' => 2));
         Database::create(array('title' => 'ARI BezierPPM',
 						'subtype' => 'Geometries',
             'description' => 'Specialty: csv, dtfs and hrtfs',
