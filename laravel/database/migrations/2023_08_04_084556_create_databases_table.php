@@ -15,9 +15,24 @@ return new class extends Migration
     {
         Schema::create('databases', function (Blueprint $table) {
             $table->id();
+						// creators --> Table creators
             $table->string('title');
-						$table->string('subtype')->nullable();
-            $table->string('description');
+						$table->string('additionaltitle')->nullable();
+            $table->string('description')->nullable();
+						// keywords --> Table keywords
+						// publishers --> Table publishers
+						$table->string('productionyear')->nullable();
+						$table->string('language')->nullable();
+						// subjectAreas --> Table subjectareas
+						$table->string('resource')->nullable();
+						// geolocations --> Table geolocations
+						$table->string('datasources')->nullable();
+						$table->string('software')->nullable();
+						$table->string('processing')->nullable();
+						// rightsholders --> Table rightholders
+						$table->string('relatedinformation')->nullable();
+						$table->string('rights')->nullable();
+						// fundingreferences --> Table fundingreferences
             $table->json('radardataset')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->string('radar_id')->nullable(); // Save the RADAR id (e.g. iqcCQbvmGzYxYUne) here

@@ -2,12 +2,10 @@
     <x-slot name="header">
         <x-database.header :database=$database />
     </x-slot>
-    <h3>Datasetdef</h3>
-    <p>The following {{ count($database->datasetdefs) }} dataset definitions exist for the database "{{ $database->title }}"</p>
-
+    <h3>Definition of a Dataset:</h3>
     <ul class="list-disc list-inside">
         @foreach($database->datasetdefs as $datasetdef)
-            <x-datasetdef.show :datasetdef=$datasetdef />
+            <li class="list-disc list-inside"><x-datasetdef.show :datasetdef=$datasetdef /></li>
         @endforeach
     </ul>
     {{-- include a form to create a new datasetdef --}}
@@ -15,7 +13,7 @@
         @if(count($database->datasets) == 0)
             <livewire:datasetdef-form :database=$database />
         @else
-            <p>Since there are datasets in this database, the dataset definitions may not be altered.</p>
+            <p>The dataset definition is locked because the database contains datasets.</p>
         @endif
     @endcan
 </x-app-layout>

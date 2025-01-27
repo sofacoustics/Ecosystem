@@ -5,7 +5,7 @@
         </h2>
         @auth
             {{-- <x-button primary label="New" href="{{ route('databases.create') }}"/> --}}
-                <a href="{{ url('/databases/create') }}">New</a>
+                <a class="bg-green-100 inline" href="{{ url('/databases/create') }}">New</a>
         @endauth
     </x-slot>
 
@@ -18,47 +18,28 @@
     <p>The SONICOM Ecosystem contains the following databases:</p>
     <table class="table-auto border border-slate-399">
         <tr class="text-left">
-            <th>Name</th>
-            <th>Description</th>
+            <th class="border p-2">Name</th>
+            <th class="border p-2">Description</th>
+						<th class="border p-2">Commands</th>
         </tr>
     @foreach ($allDatabases as $database)
         <tr class="border">
             <td class="border p-2"><a class="btn btn-primary" href="{{ route('databases.show', $database->id) }}">{{ $database->title }}</a></td>
-            <td class="border p-2"><a class="btn btn-primary" href="{{ route('databases.show', $database->id) }}">{{ $database->description}}</a></td>
-            @if ($database->user_id == Auth::id())
+            <td class="border p-2">{{ $database->description}}</td>
             <td class="border p-2">
-                (<a class="btn btn-primary" href="{{ route('databases.edit', $database->id) }}">Edit</a>,&nbsp
+							<a class="bg-green-100 inline" href="{{ route('databases.show', $database->id) }}">Show</a>&nbsp
+							@if ($database->user_id == Auth::id())
+								<a class="bg-green-100 inline" href="{{ route('databases.edit', $database->id) }}">Edit Metadata</a>&nbsp
                 <form class="bg-red-100 inline" method="POST" action="{{ route('databases.destroy', [$database]) }}">
-                        @csrf @method('DELETE')
-                        (<button type="submit" class="btn btn-danger btn-sm">Delete</button>)
+									@csrf @method('DELETE')
+                  <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                 </form>
-                {{--
-                <form class="inline" method="POST" id="delete-database" action="{{ route('databases.destroy', $database->id) }}">
-                    @csrf
-                    @method('DELETE')
-                    <input type="submit" class="btn btn-primary" value="Delete">
-                </form>)
-                --}}
             </td>
             @endif
         </tr>
     @endforeach
 		</table>
-{{-- 		//jw:tmp testing relationships<br>
 
-		@foreach ($allDatabases as $database)
-			Database: {{ $database->title }} <br>
-            @foreach ($database->datasets as $dataset)
-                - Dataset: $dataset <br>
-                @foreach ($dataset->datafiles as $datafile)
-                - - Datafile: {{ $datafile }}<br>
-                - - - {{ $datafile->dataset->database->id }} absolutepath = {{ $datafile->absolutepath() }}<br>
-                @endforeach
-
-            @endforeach
-
-        @endforeach
---}}
 
 {{-- START: Testing RADAR dataset --}}
 @env('ignore')

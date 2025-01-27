@@ -29,220 +29,30 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         Database::create(array(
             'title' => 'ARI B',
-						'subtype' => 'Spatial acoustics',
+						'additionaltitle' => 'Additional Title',
             'description' => 'Specialty: hrtfs, dtfs, and photos of the ears',
-            'radardataset' => RadardatasetpureData::from('{
-                "id": "f3dxp4vswdc2xe7z",
-                "parentId": "aIoFEMniUZoLoDyh",
-                "descriptiveMetadata": {
-                    "title": "ARI B",
-                    "productionYear": "2024",
-                    "publishers": {
-                        "publisher": [
-                            {
-                                "value": "Acoustics Research Institute",
-                                "nameIdentifierScheme": "OTHER",
-                                "schemeURI": null,
-                                "nameIdentifier": null
-                            },
-                            {
-                                "value": "Austrian Academy of Sciences",
-                                "nameIdentifierScheme": "ROR",
-                                "schemeURI": "https://ror.org/",
-                                "nameIdentifier": "https://ror.org/03anc3s24"
-                            }
-                        ]
-                    },
-                    "creators": {
-                    "creator": [
-                            {
-							    "creatorName": "Austrian Academy of Sciences",
-								"givenName": null,
-								"familyName": null,
-								"nameIdentifier": [
-									{
-										"value": "https://ror.org/03anc3s24",
-										"schemeURI": "https://ror.org/",
-										"nameIdentifierScheme": "ROR"
-									}
-								],
-								"creatorAffiliation": null
-							},
-							{            
-								"creatorName": "Stuefer, Jonathan",
-                                "givenName": "Jonathan",
-                                "familyName": "Stuefer",
-                                "nameIdentifier": [],
-                                "creatorAffiliation": null
-                            },
-                            {
-                                "creatorName": "Majdak, Piotr",
-                                "givenName": "Piotr",
-                                "familyName": "Majdak",
-                                "nameIdentifier": [
-                                    {
-                                        "value": "0000-0003-1511-6164",
-                                        "schemeURI": "http://orcid.org/",
-                                        "nameIdentifierScheme": "ORCID"
-                                    }
-                                ],
-                                "creatorAffiliation": {
-                                    "value": "Austrian Academy of Sciences",
-                                    "schemeURI": "https://ror.org/",
-                                    "affiliationIdentifierScheme": "ROR",
-                                    "affiliationIdentifier": "https://ror.org/03anc3s24"
-                                }
-                            }
-                        ]
-                    },
-                    "subjectAreas": {
-                        "subjectArea": [
-                            {
-                                "controlledSubjectAreaName": "COMPUTER_SCIENCE",
-                                "additionalSubjectAreaName": null
-                            },
-                            {
-                                "controlledSubjectAreaName": "OTHER",
-                                "additionalSubjectAreaName": "The second free text subject area"
-                            }
-                        ]
-                    },
-                    "resource": {
-                        "value": "Acoustics",
-                        "resourceType": "AUDIOVISUAL"
-                    },
-                    "rights": {
-                        "controlledRights": "CC_BY_4_0_ATTRIBUTION",
-                        "additionalRights": null
-                    },
-                    "rightsHolders": {
-                        "rightsHolder": [
-                            {
-                                "value": "Stuefer",
-                                "nameIdentifierScheme": "OTHER",
-                                "schemeURI": null,
-                                "nameIdentifier": null
-                            },
-                            {
-                                "value": "Majdak",
-                                "nameIdentifierScheme": "OTHER",
-                                "schemeURI": null,
-                                "nameIdentifier": null
-                            },
-                            {
-                                "value": "Austrian Academy of Sciences",
-                                "nameIdentifierScheme": "ROR",
-                                "schemeURI": "https://ror.org/",
-                                "nameIdentifier": "https://ror.org/03anc3s24"
-                            }
-                        ]
-                    }
-                }
-            }'),
+						'productionyear' => '2024-2025',
+						'language' => 'eng',
+						'resource' => 'General information on the content of the resource.',
+						'datasources' => 'Origin of the data contained in the resource.',
+						'software' => 'Software version e.g. 1.3',
+						'processing' => 'Instructions used for processing the data in the digital resource (e.g. statistics).',
+						'relatedinformation' => 'Related information on the sample used to produce the digital data in the resource (e. g. Database ID, registry number, GenBank, IntEnz, PubChem, MedGen, PMID, PDB, molecular formula).',
+						'rights' => 'CC BY-NC 4.0 Attribution-NonCommercial',
+            'radardataset' => null,
             'user_id' => 2));
         Database::create(array('title' => 'ARI BezierPPM',
-						'subtype' => 'Geometries',
+						'additionaltitle' => null,
             'description' => 'Specialty: csv, dtfs and hrtfs',
-            'radardataset' => RadardatasetpureData::from('{
-                "id": null,
-                "parentId": "aIoFEMniUZoLoDyh",
-                "descriptiveMetadata": {
-                    "title": "ARI BezierPPM",
-                    "productionYear": "2024",
-                    "publishers": {
-                        "publisher": [
-                            {
-                                "value": "Acoustics Research Institute",
-                                "nameIdentifierScheme": "OTHER",
-                                "schemeURI": null,
-                                "nameIdentifier": null
-                            },
-                            {
-                                "value": "Austrian Academy of Sciences",
-                                "nameIdentifierScheme": "ROR",
-                                "schemeURI": "https://ror.org/",
-                                "nameIdentifier": "https://ror.org/03anc3s24"
-                            }
-                        ]
-                    },
-                    "creators": {
-                        "creator": [
-                            {
-                                "creatorName": "Stuefer, Jonathan",
-                                "nameIdentifier": [
-                                    {
-                                        "value": "https://ror.org/0387prb75",
-                                        "schemeURI": "https://ror.org/",
-                                        "nameIdentifierScheme": "ROR"
-                                    }
-                                ],
-                                "creatorAffiliation": null
-                            },
-                            {
-                                "creatorName": "Majdak, Piotr",
-                                "givenName": "Piotr",
-                                "familyName": "Majdak",
-                                "nameIdentifier": [
-                                    {
-                                        "value": "0000-0003-1511-6164",
-                                        "schemeURI": "http://orcid.org/",
-                                        "nameIdentifierScheme": "ORCID"
-                                    }
-                                ],
-                                "creatorAffiliation": {
-                                    "value": "Austrian Academy of Sciences",
-                                    "schemeURI": "https://ror.org/",
-                                    "affiliationIdentifierScheme": "ROR",
-                                    "affiliationIdentifier": "https://ror.org/03anc3s24"
-                                }
-                            }
-                        ]
-                    },
-                    "subjectAreas": {
-                        "subjectArea": [
-                            {
-                                "controlledSubjectAreaName": "COMPUTER_SCIENCE",
-                                "additionalSubjectAreaName": null
-                            },
-                            {
-                                "controlledSubjectAreaName": "OTHER",
-                                "additionalSubjectAreaName": "The second free text subject area"
-                            }
-                        ]
-                    },
-                    "resource": {
-                        "value": "Acoustics",
-                        "resourceType": "AUDIOVISUAL"
-                    },
-                    "rights": {
-                        "controlledRights": "CC_BY_4_0_ATTRIBUTION",
-                        "additionalRights": null
-                    },
-                    "rightsHolders": {
-                        "rightsHolder": [
-                            {
-                                "value": "Stuefer",
-                                "nameIdentifierScheme": "OTHER",
-                                "schemeURI": null,
-                                "nameIdentifier": null
-                            },
-                            {
-                                "value": "Majdak",
-                                "nameIdentifierScheme": "OTHER",
-                                "schemeURI": null,
-                                "nameIdentifier": null
-                            },
-                            {
-                                "value": "Austrian Academy of Sciences",
-                                "nameIdentifierScheme": "ROR",
-                                "schemeURI": "https://ror.org/",
-                                "nameIdentifier": "https://ror.org/03anc3s24"
-                            }
-                        ]
-                    }
-
-                }
-            }'),
+						'productionyear' => '2024-2025',
+						'language' => 'eng',
+						'resource' => null,
+						'datasources' => null,
+						'software' => null,
+						'processing' => null,
+						'relatedinformation' => null,
+						'rights' => null,
+            'radardataset' => null,
             'user_id' => 1, ));
         //Database::create(array('name' => 'Jonnie\'s ARI SOFA test 2', 'description' => 'Nr. 2. \'Nuf said!', 'user_id' => 1, 'radar_id' => 'dEZxRRrxpiHSzbBZ'));
         $this->call([

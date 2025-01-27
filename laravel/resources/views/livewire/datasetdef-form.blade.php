@@ -10,14 +10,14 @@
         @if (Auth::user()->id == $database->user_id)
             <p>
                 @if($datasetdef)
-                    Update this dataset definition.
+                    <h3>Edit the definition of the datafile:</h3>
                 @else
-                    Create a new dataset definition for the database "{{ $database->title }}"
+										<h3>New definition of a datafile:</h3>
                 @endif
             </p>
             <form wire:submit.prevent="save">
                 <div class="mb-4">
-                    <label for="Name" class="{{ $labelClass }}">Name</label>
+                    <label for="Name" class="{{ $labelClass }}">Datafile Name:</label>
                     <input wire:model="name" type="text" id="name"
                         class="{{ $inputClass }}" required />
                     @error('name')
@@ -25,7 +25,7 @@
                     @enderror
                 </div>
                 <div class="block">
-                    <label class="{{ $labelClass }}" for="datafiletype">Datafiletype</label>
+                    <label class="{{ $labelClass }}" for="datafiletype">Datafile Type:</label>
                     <select class="{{ $selectClass }}" id="datafiletype" wire:model="datafiletype_id">
                         <option value="">Select a datafile type</option>
                         @foreach ($datafiletypes as $datafiletype)
@@ -37,7 +37,7 @@
                     @enderror
                 </div>
                 <div>
-                    <label class="{{ $labelClass }}" for="widget">Widget</label>
+                    <label class="{{ $labelClass }}" for="widget">Linked Widget:</label>
                     <select class="{{ $selectClass }}" id="widget" wire:model="widget_id">
                         <option value="">Select a widget</option>
                         @foreach ($widgets as $widget)

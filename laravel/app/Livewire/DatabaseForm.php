@@ -13,7 +13,16 @@ class DatabaseForm extends Component
 {
     public $database;
     public $title;
+    public $additionaltitle;
     public $description;
+    public $productionyear;
+    public $language;
+    public $resource;
+    public $datasources;
+    public $software;
+    public $processing;
+    public $relatedinformation;
+    public $rights;
 
     //jw:todo rules
 	protected $rules = [
@@ -27,7 +36,16 @@ class DatabaseForm extends Component
         {
             $this->database = $database;
             $this->title = $database->title;
+						$this->additionaltitle = $database->additionaltitle;
             $this->description = $database->description;
+						$this->productionyear = $database->productionyear;
+						$this->language = $database->language;
+						$this->resource = $database->resource;
+						$this->datasources = $database->datasources;
+						$this->software = $database->software;
+						$this->processing = $database->processing;
+						$this->relatedinformation = $database->relatedinformation;
+						$this->rights = $database->rights;
         }
     }
 
@@ -45,7 +63,16 @@ class DatabaseForm extends Component
         }
 
         $this->database->title = $this->title;
+        $this->database->additionaltitle = $this->additionaltitle;
         $this->database->description = $this->description;
+        $this->database->productionyear = $this->productionyear;
+        $this->database->language = $this->language;
+        $this->database->resource = $this->resource;
+        $this->database->datasources = $this->datasources;
+        $this->database->software = $this->software;
+        $this->database->processing = $this->processing;
+        $this->database->relatedinformation = $this->relatedinformation;
+        $this->database->rights = $this->rights;
 
         $this->database->save();
 

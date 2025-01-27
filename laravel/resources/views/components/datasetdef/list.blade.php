@@ -7,10 +7,6 @@
 
 --}}
 
-Name: {{ $datasetdef->name }}, Database: {{ $datasetdef->database->title }}, Type: {{ $datasetdef->datafiletype->name }},
-@if($datasetdef->widget)
-    Widget: {{ $datasetdef->widget->name }}
-@else
-    Widget: none specified
-@endif
+<b>Datafile Name:</b> {{ $datasetdef->name }}, <b>Datafile Type:</b> {{ $datasetdef->datafiletype->name }}
+@if($datasetdef->widget), <b>Linked Widget:</b> {{ $datasetdef->widget->name }} @endif
 
