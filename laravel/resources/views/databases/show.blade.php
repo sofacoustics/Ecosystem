@@ -2,12 +2,18 @@
     <x-slot name="header">
         <x-database.header :database=$database />
     </x-slot>
-		<h3>Creators:</h3>
+		<h3>Creators:			
+			@auth            
+				@if ($database->user_id == Auth::id())  {{-- If we own this database --}}                
+					<a class="bg-green-100 inline" href="{{ route('databases.creators', $database->id) }}">Edit</a>
+        @endif
+      @endauth
+</h3>
 		<ul class="list-disc list-inside">
 		@forelse ($database->creators as $creator)
 		<li><b>Name</b>: {{ $creator->creatorName }}
 			@if ($creator->givenName != null) <b>Given Name</b>: {{ $creator->givenName }}@endif 
-			@if($creator->givenName != null) <b>Family Name</b>: {{ $creator->familyName }}@endif
+			@if($creator->familyName != null) <b>Family Name</b>: {{ $creator->familyName }}@endif
 			@if ($creator->nameIdentifier != null) <b>{{ $creator->nameIdentifierScheme }}</b>: {{ $creator->nameIdentifier }}@endif
 			@if ($creator->creatorAffiliation != null) <b>Affiliation</b>: {{ $creator->creatorAffiliation }}@endif
 			@if ($creator->affiliationIdentifier != null) <b>{{ $creator->affiliationIdentifierScheme }}</b>: {{ $creator->affiliationIdentifier }}@endif 

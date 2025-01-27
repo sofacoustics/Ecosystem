@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\WidgetController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CreatorController;
 use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\DatafileController;
 use App\Http\Controllers\DatasetController;
@@ -62,6 +63,7 @@ Route::resource('datafiles', DatafileController::class);
 // DATASETDEFS
 //
 Route::resource('datasetdefs', DatasetdefController::class);
+Route::resource('creators', CreatorController::class);
 
 /// WIDGETs
 Route::resource('widgets', WidgetController::class);

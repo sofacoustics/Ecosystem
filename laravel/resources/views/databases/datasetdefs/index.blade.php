@@ -16,4 +16,5 @@
             <p>The dataset definition is locked because the database contains datasets.</p>
         @endif
     @endcan
+		<p>resources\views\databases\datasetdefs\index.blade.php</p>
 </x-app-layout>

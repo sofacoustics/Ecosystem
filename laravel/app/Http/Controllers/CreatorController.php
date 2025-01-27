@@ -15,4 +15,17 @@ class CreatorController extends Controller
 
         return view('creators.index', compact('creators'));
     }
+		
+    public function edit(Creator $creator)
+    {
+        //
+		return view('creators.edit', [ 'creator' => $creator]);
+    }
+		
+    /*public function destroy(Datasetdef $datasetdef)
+    {
+        $datasetdef->delete();
+        return redirect()->back();
+    }*/
+
 }
