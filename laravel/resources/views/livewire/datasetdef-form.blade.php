@@ -49,9 +49,10 @@
                     @enderror
                 </div>
                 <div class="mt-4">
-                    <button type="submit" class="{{ $buttonClass }}">
+                    <x-button>
                         {{ $datasetdef ? 'Update Datasetdef' : 'Create Datasetdef' }}
-                    </button>
+                    </x-button>
+
                 </div>
             </form>
         @endif

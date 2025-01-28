@@ -2,9 +2,9 @@
     <x-slot name="header">
         <x-database.header :database=$database />
     </x-slot>
-		<h3>Creators:			
-			@auth            
-				@if ($database->user_id == Auth::id())  {{-- If we own this database --}}                
+		<h3>Creators:
+			@auth
+				@if ($database->user_id == Auth::id())  {{-- If we own this database --}}
 					<a class="bg-green-100 inline" href="{{ route('databases.creators', $database->id) }}">Edit</a>
         @endif
       @endauth
@@ -22,7 +22,7 @@
 			<li>No creators defined.</li>
 		@endforelse
 		</ul>
-		
+
 		<h3>Metadata:
 			@auth
         @if ($database->user_id == Auth::id())  {{-- If we own this database --}}  
@@ -59,90 +59,45 @@
 				<li>There is no definition of a dataset yet.</li>
 			@endforelse
 			</ul>
-		
+
     <h3>Datasets:
-        @auth
-            {{-- If we own this database --}}
-            @if ($database->user_id == Auth::id())
-                {{-- If there's a datasetdef, then we can create a dataset --}}
-                @if(count($database->datasetdefs))
-                    <a class="bg-green-100 inline" href="{{ route('databases.datasets.create', $database->id) }}">New</a><br>
-                @endif
+        @can('create', App\Models\Dataset::class)
+            {{-- jw:todo move to policy If there's a datasetdef, then we can create a dataset --}}
+            @if(count($database->datasetdefs))
+                {{-- <a href="{{ route('databases.datasets.create', $database->id) }}">(New)</a><br> --}}
+                <x-button
+                    method="GET"
+                    action="{{ route('databases.datasets.create', [$database->id]) }}"
+                    class="inline">
+                    New
+                </x-button>
             @endif
-        @endauth
+        @endcan
     </h3>
     <ul class="list-disc list-inside">
     @forelse($database->datasets as $dataset)
-        <li><x-dataset.list link='true' :dataset="$dataset"/></li>
+        <li>
+            <x-dataset.list link='true' :dataset="$dataset" />
+            @can('delete', $dataset)
+                <x-button
+                    method="DELETE"
+                    action="{{ route('datasets.destroy', [$dataset]) }}"
+                    class="inline">
+                    DELETE
+                </x-button>
+            @endcan
+        </li>
     @empty
         <li>There are no datasets associated with this database</li>
     @endforelse
     </ul>
 
 @env('local')
-    {{-- in "local" or "staging" environment --}}
-    {{--<h3>RADAR dataset</h3>--}}
-
-    {{--
-    <form method="post" action="http://sonicom-jw-local.local/api/radar/datasets/f3dxp4vswdc2xe7z">
-            <input class="rounded-full bg-amber-200 p-2" type="submit" value="send">
-    </form> --}}
-
-{{--    <x-button method="post" action="http://sonicom-jw-local.local/api/radar/datasets/{{ $database->id }}">
-        Upload metadata to RADAR
-    </x-button> --}}
-
-    {{--
-    @auth
-        <livewire:radar.dataset :database="$database" />
-    @else
-        <x-radar.dataset :dataset="$database->radardataset">
-            A radar.div component with a dataset parameter
-        </x-radar.dataset>
-    @endauth
-    --}}
-
-
-    @php
-        //var_dump($database->radardataset->creators->creator[0]);
-        //    var_dump($database->radardataset['publishers']);
-    @endphp
-    {{--
-    <p>Pure JSON output of JSON field 'radardataset' using the RadardatsetpureData laravel-data class</p>
-     <pre>{{ $database->radardataset->toJson(JSON_PRETTY_PRINT) }}</pre>
-     --}}
-    <ul class="list-disc list-inside">
-    {{--
-        <li>RADAR Dataset: {{ $database->radardataset }}</li>
-        <li>RADAR Dataset Resource: {{ $database->radardataset->radardatasetresourcetype }}</li>
-        <li>RADAR Dataset Rights Holders: {{ $database->radardataset->radardatasetrightsholders }}</li>
-        <li>RADAR Dataset Subject Area: {{ $database->radardataset->radardatasetsubjectarea }}</li>
-        <li>RADAR Dataset Subject Areas:
-            <ul class="list-disc list-inside">
-            @foreach ($database->radardataset->radardatasetsubjectareas as $radardatasetsubjectarea)
-                <li>{{ $radardatasetsubjectarea  }}</li>
-            @endforeach
-            </ul>
-        <li>RADAR Dataset Publishers: {{-- $database->radardataset->publishers->toJson() </li>
-        <p>Publishers</p>
-        @php
-            //var_dump($database->radardataset->publishers->toArray());
-            //var_dump(json_decode($database->radardataset->publishers->toJson()));
-        @endphp
-        Radardatset Model->toJson()
-        <pre> $database->radardataset->toJson(JSON_PRETTY_PRINT) </pre> --}k
-    </u>
-    --}}
-    {{-- JSON: {{ $database->radardataset->json() }} --}}
+    <div class="text-xs">
+        <p>Uploaded by: {{ $user->name }}<br>
+        Created: {{ $database->created_at }}<br>
+        Updated: {{ $database->updated_at }}</p>
     </div>
-{{-- END: Testing RADAR dataset --}}
 @endenv
 
-
-    <div class="text-xs">
-    <p>Uploaded by: {{ $user->name }}<br>
-    Created: {{ $database->created_at }}<br>
-    Updated: {{ $database->updated_at }}</p>
-    {{-- $database --}}
-</div>
 </x-app-layout>

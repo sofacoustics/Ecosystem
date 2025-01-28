@@ -5,19 +5,26 @@
 
         $datasetdef
 --}}
-    <b>Datafile Name:</b> {{ $datasetdef->name }}, <b>Datafile Type:</b> {{ $datasetdef->datafiletype->name }}
-    @if($datasetdef->widget), <b>Linked Widget:</b> {{ $datasetdef->widget->name }} @endif
-    @auth
-        @if( Auth::user()->id  == $datasetdef->database->user_id)
-            @if(count($datasetdef->database->datasets) == 0)
-                <form class="bg-green-100 inline" action="{{ route('datasetdefs.edit', [$datasetdef]) }}">
-                        <button type="submit" class="btn btn-danger btn-sm">Edit</button>
-                </form>
-                <form class="bg-red-100 inline" method="POST" action="{{ route('datasetdefs.destroy', [$datasetdef]) }}">
-                        @csrf @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                </form>
-            @endif
-        @endif
-    @endauth
-	<p>resources\views\components\datasetdef\show.blade.php</p>
+<x-datasetdef.list :datasetdef=$datasetdef />
+{{--
+<b>Datafile Name:</b> {{ $datasetdef->name }}, <b>Datafile Type:</b> {{ $datasetdef->datafiletype->name }}
+@if($datasetdef->widget), <b>Linked Widget:</b> {{ $datasetdef->widget->name }} @endif
+@role('admin') (ID: {{ $datasetdef->id }}) @endrole
+--}}
+@can('delete', $datasetdef)
+    <x-button
+        method="DELETE"
+        action="{{ route('datasetdefs.destroy', [$datasetdef]) }}"
+        class="inline">
+        Delete
+    </x-button>
+@endcan
+@can('update', $datasetdef)
+    <x-button
+        method="GET"
+        action="{{ route('datasetdefs.edit', [$datasetdef]) }}"
+        class="inline">
+        Edit
+    </x-button>
+@endcan
+<p>resources\views\components\datasetdef\show.blade.php</p>

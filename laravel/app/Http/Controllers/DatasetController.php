@@ -78,8 +78,12 @@ class DatasetController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Dataset $dataset)
     {
         //
+        //dd($dataset);
+        $this->authorize('delete', $dataset);
+        $dataset->delete();
+        return redirect()->back();
     }
 }

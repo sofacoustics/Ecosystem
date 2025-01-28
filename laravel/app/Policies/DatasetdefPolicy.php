@@ -41,23 +41,28 @@ class DatasetdefPolicy
 
     /**
      * Determine whether the user can update the model.
+     *
+     * User can only update a datsetdef if there are *no* datasets using it.
      */
     public function update(User $user, Datasetdef $datasetdef): bool
     {
-        if ($user->can('add datasetdefs') && $user->id == $datasetdef->database->user_id)
+        $nDatasets = count($datasetdef->database->datasets);
+        if ($nDatasets == 0 && $user->can('add datasetdefs') && $user->id == $datasetdef->database->user_id)
 			return true;
         return false;
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Determine whether the user can delete the the datasetdef
+     *
+     * User can only delete the datasetdef if there are not datasets which use it!
      */
     public function delete(User $user, Datasetdef $datasetdef): bool
     {
-        $database = Database::find($datasetdef->database_id);
-        if($user->id == $database->user_id)
-            return true;
-        return false;
+        $nDatasets = count($datasetdef->database->datasets);
+        return ($nDatasets == 0 && $user->id == $datasetdef->database->user_id)
+            ? true
+            : false;
     }
 
     /**

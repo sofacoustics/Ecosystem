@@ -16,6 +16,18 @@ class Datafile extends Model
         'id', 'name', 'location', 'dataset_id', 'datasetdef_id'
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::deleting(function($model) {
+            $directory = $model->directory();
+            //dd($model->directory());
+            //dd("deleting datafile $directory");
+            //$model->datafiles->each->delete();
+            Storage::disk('public')->deleteDirectory($directory);
+        });
+    }
+
     public function dataset(): BelongsTo
     {
         return $this->belongsTo(Dataset::class);
@@ -39,9 +51,15 @@ class Datafile extends Model
     /*
         Return the directory containing this file
     */
-    public function directory()
+    public function directory() : string
     {
-        return $this->dataset->database()->get()->value('id')."/".$this->dataset()->get()->value('id')."/".$this->id;
+        $database_id = $this->dataset->database->id;
+        $dataset_id = $this->dataset->id;
+        $datafile_id = $this->id;
+        $directory = $database_id."/".$dataset_id."/".$datafile_id;
+        //dd($directory);
+        //return $this->dataset->database()->get()->value('id')."/".$this->dataset()->get()->value('id')."/".$this->id;
+        return "$database_id/$dataset_id/$datafile_id";
     }
 
     public function path()

@@ -27,15 +27,29 @@
             <td class="border p-2"><a class="btn btn-primary" href="{{ route('databases.show', $database->id) }}">{{ $database->title }}</a></td>
             <td class="border p-2">{{ $database->description}}</td>
             <td class="border p-2">
-							<a class="bg-green-100 inline" href="{{ route('databases.show', $database->id) }}">Show</a>&nbsp
-							@if ($database->user_id == Auth::id())
-								<a class="bg-green-100 inline" href="{{ route('databases.edit', $database->id) }}">Edit Metadata</a>&nbsp
-                <form class="bg-red-100 inline" method="POST" action="{{ route('databases.destroy', [$database]) }}">
-									@csrf @method('DELETE')
-                  <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                </form>
+                <x-button
+                    method="GET"
+                    action="{{ route('databases.show', [$database]) }}"
+                    class="inline">
+                    Show
+                </x-button>
+                @can('update', $database)
+                    <x-button
+                        method="GET"
+                        action="{{ route('databases.edit', [$database]) }}"
+                        class="inline">
+                        Edit Metadata
+                    </x-button>
+                @endcan
+                @can('delete', $database)
+                    <x-button
+                        method="DELETE"
+                        action="{{ route('databases.destroy', [$database]) }}"
+                        class="inline">
+                        Delete
+                    </x-button>
+                @endcan
             </td>
-            @endif
         </tr>
     @endforeach
 		</table>

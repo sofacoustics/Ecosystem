@@ -43,6 +43,7 @@ class DatafileListener extends Component
 
     public function render()
     {
+        //dd($this->datafile->datasetdef->datafiletype->id);
         if($this->id == "undefined")
             return view('livewire.datafiletype-generic');
         else{

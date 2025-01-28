@@ -15,14 +15,9 @@
     @endif
 
     <p>The following datafiles are available</p>
-    <table class="table-auto">
-        <tr class="text-left">
-            <th>Title</th>
-        </tr>
+    <ul class="list-disc list-inside">
     @foreach ($allDatafiles as $datafile)
-        <tr>
-            <td>{{ $datafile->name }} (datasetdef: {{ $datafile->datasetdef->name }})</td>
-        </tr>
+        <li><x-datafile.list :datafile=$datafile /></li>
     @endforeach
-    </table>
+    </ul>
 </x-app-layout>

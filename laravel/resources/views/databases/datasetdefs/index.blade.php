@@ -3,6 +3,7 @@
         <x-database.header :database=$database />
     </x-slot>
     <h3>Definition of a Dataset:</h3>
+    <p>The following {{ count($database->datasetdefs) }} dataset definitions exist for the database "{{ $database->title }}"</p>
     <ul class="list-disc list-inside">
         @foreach($database->datasetdefs as $datasetdef)
             <li class="list-disc list-inside"><x-datasetdef.show :datasetdef=$datasetdef /></li>

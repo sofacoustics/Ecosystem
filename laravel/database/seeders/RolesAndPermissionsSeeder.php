@@ -19,12 +19,11 @@ class RolesAndPermissionsSeeder extends Seeder
         // Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-
-				$permission = Permission::create(['name' => 'add datafiletypes']);
-				$permission = Permission::create(['name' => 'add datasetdefs']);
-				$permission = Permission::create(['name' => 'add databases']);
-				$permission = Permission::create(['name' => 'add widget']);
-				$permission = Permission::create(['name' => 'edit widget']);
+        $permission = Permission::create(['name' => 'add datafiletypes']);
+        $permission = Permission::create(['name' => 'add datasetdefs']);
+        $permission = Permission::create(['name' => 'add databases']);
+        $permission = Permission::create(['name' => 'add widget']);
+        $permission = Permission::create(['name' => 'edit widget']);
 
         $contributor = Role::create(['name' => 'contributor']);
         $contributor->givePermissionTo('add databases');
@@ -39,6 +38,6 @@ class RolesAndPermissionsSeeder extends Seeder
         $curator->givePermissionTo('add widget');
         $curator->givePermissionTo('edit widget');
         $admin = Role::create(['name' => 'admin']);
-				$admin->givePermissionTo(Permission::all());
+		$admin->givePermissionTo(Permission::all());
     }
 }
