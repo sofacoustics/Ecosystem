@@ -14,7 +14,7 @@
 		<li><b>Name</b>: {{ $creator->creatorName }}
 			@if ($creator->givenName != null) <b>Given Name</b>: {{ $creator->givenName }}@endif 
 			@if($creator->familyName != null) <b>Family Name</b>: {{ $creator->familyName }}@endif
-			@if ($creator->nameIdentifier != null) <b>{{ $creator->nameIdentifierScheme }}</b>: {{ $creator->nameIdentifier }}@endif
+			@if ($creator->nameIdentifier != null) <b>{{ $creator->nameIdentifierScheme($creator->nameIdentifierSchemeIndex) }}</b>: {{ $creator->nameIdentifier }}@endif
 			@if ($creator->creatorAffiliation != null) <b>Affiliation</b>: {{ $creator->creatorAffiliation }}@endif
 			@if ($creator->affiliationIdentifier != null) <b>{{ $creator->affiliationIdentifierScheme }}</b>: {{ $creator->affiliationIdentifier }}@endif 
 		</li>

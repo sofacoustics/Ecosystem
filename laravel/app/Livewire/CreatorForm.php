@@ -15,7 +15,7 @@ class CreatorForm extends Component
 	public $givenName;
 	public $familyName;
 	public $nameIdentifier;
-	public $nameIdentifierScheme;
+	public $nameIdentifierSchemeIndex;
 	public $creatorAffiliation;
 	public $affiliationIdentifier;
 	public $affiliationIdentifierScheme;
@@ -36,7 +36,7 @@ class CreatorForm extends Component
 			$this->givenName = $creator->givenName;
 			$this->familyName = $creator->familyName;
 			$this->nameIdentifier = $creator->nameIdentifier;
-			$this->nameIdentifierScheme = $creator->nameIdentifierScheme;
+			$this->nameIdentifierSchemeIndex = $creator->nameIdentifierSchemeIndex;
 			$this->creatorAffiliation = $creator->creatorAffiliation;
 			$this->affiliationIdentifier = $creator->affiliationIdentifier;
 			$this->affiliationIdentifierScheme = $creator->affiliationIdentifierScheme;
@@ -63,7 +63,10 @@ class CreatorForm extends Component
 		$this->creator->givenName = $this->givenName;
 		$this->creator->familyName = $this->familyName;
 		$this->creator->nameIdentifier = $this->nameIdentifier;
-		$this->creator->nameIdentifierScheme = $this->nameIdentifierScheme;
+		if (empty($this->nameIdentifierSchemeIndex) and !empty($this->nameIdentifier))
+		{	 $this->creator->nameIdentifierSchemeIndex = 0; }
+		else
+		{	 $this->creator->nameIdentifierSchemeIndex = $this->nameIdentifierSchemeIndex; }
 		$this->creator->creatorAffiliation = $this->creatorAffiliation;
 		$this->creator->affiliationIdentifier = $this->affiliationIdentifier;
 		$this->creator->affiliationIdentifierScheme = $this->affiliationIdentifierScheme;

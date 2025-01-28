@@ -37,13 +37,14 @@
                 </div>
 
                 <div class="block">
-                    <label class="{{ $labelClass }}" for="datafiletype">nameIdentifierScheme:</label>
-                    <select class="{{ $selectClass }}" id="nameIdentifierScheme" wire:model="nameIdentifierScheme">
+                    <label class="{{ $labelClass }}" for="nameIdentifierSchemeIndex">Name Identifier Scheme:</label>
+                    <select class="{{ $selectClass }}" id="nameIdentifierSchemeIndex" wire:model="nameIdentifierSchemeIndex">
                         <option value="">Select an identifier scheme</option>
-												<option value="ORCID">ORCID</option>
-												<option value="ROR">ROR</option>                        
+												<option value="0">Other</option>
+												<option value="1">ORCID</option>                        
+												<option value="2">ROR</option>
                     </select>
-                    @error('nameIdentifierScheme')
+                    @error('nameIdentifierSchemeIndex')
                         <span class="text-red-500">{{ $message }}</span>
                     @enderror
                 </div>
@@ -75,5 +76,4 @@
             </form>
         @endif
     @endauth
-<p>resources\views\livewire\creator-form.blade.php</p>
 </div>

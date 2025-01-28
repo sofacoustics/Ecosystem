@@ -19,9 +19,9 @@ return new class extends Migration
 						$table->string('givenName')->nullable();
 						$table->string('familyName')->nullable();
 						$table->string('nameIdentifier')->nullable();
-						$table->enum('nameIdentifierScheme', ['ORCID', 'ROR'])->nullable();
+						$table->unsignedInteger('nameIdentifierSchemeIndex')->nullable();
 						$table->string('creatorAffiliation')->nullable();
-						$table->enum('affiliationIdentifierScheme', ['ROR'])->nullable();
+						$table->string('affiliationIdentifierScheme')->nullable();
 						$table->string('affiliationIdentifier')->nullable();
             $table->timestamps();
 							// link tables

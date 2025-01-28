@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+// Define the possible categories for the nameIdentifierSchemes
+const nameIdentifierSchemeCategories = [
+	'Other',
+	'ORCID',
+	'ROR' ];
+
 class Creator extends Model
 {
     use HasFactory;
@@ -18,9 +24,12 @@ class Creator extends Model
         return $this->belongsTo(Database::class); 
     }
 		
-    // Define the possible categories (optional)
-    public const nameIdentifierSchemeCategories = [
-        'ORCID',
-        'ROR',
-    ];
+		public function nameIdentifierScheme($x)
+		{
+			if($x == null) $x=0;
+			if($x>2) $x=2;
+			if($x<0) $x=0;
+			return nameIdentifierSchemeCategories[$x];
+		}
+		
 }

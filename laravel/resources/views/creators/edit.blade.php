@@ -16,5 +16,4 @@
 		
 			<livewire:creator-form :database="$creator->database" :creator=$creator />
     </div>
-		<p>resources\views\creators\edit.blade.php</p>
 </x-app-layout>
