@@ -10,7 +10,7 @@ class CreatorForm extends Component
 {
 	public $database;
 	public $creator;
-	public $database_id;	
+	public $database_id;
 	public $creatorName;
 	public $givenName;
 	public $familyName;

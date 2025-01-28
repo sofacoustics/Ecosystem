@@ -8,8 +8,7 @@ use App\Models\Database;
 
 class CreatorController extends Controller
 {
-    public function index() // product --> single category
-														// creator --> single database
+    public function index() 
     {
         $creators = Creator::with('database')->get(); 
 
@@ -18,14 +17,12 @@ class CreatorController extends Controller
 		
     public function edit(Creator $creator)
     {
-        //
-		return view('creators.edit', [ 'creator' => $creator]);
+        return view('creators.edit', ['creator' => $creator]);
     }
 		
-    /*public function destroy(Datasetdef $datasetdef)
+    public function destroy(Creator $creator)
     {
-        $datasetdef->delete();
+        $creator->delete();
         return redirect()->back();
-    }*/
-
+    }
 }

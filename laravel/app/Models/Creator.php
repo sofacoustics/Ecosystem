@@ -11,7 +11,7 @@ class Creator extends Model
 {
     use HasFactory;
 		
-		protected $fillable = ['id', 'database_id', 'creatorName', 'givenName'];
+		protected $fillable = ['id', 'database_id'];
 		
 		public function database(): BelongsTo
     {

@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('creators', function (Blueprint $table) {
+							// create columns
             $table->id();
 						$table->unsignedBigInteger('database_id');
 						$table->string('creatorName');
@@ -23,6 +24,8 @@ return new class extends Migration
 						$table->enum('affiliationIdentifierScheme', ['ROR'])->nullable();
 						$table->string('affiliationIdentifier')->nullable();
             $table->timestamps();
+							// link tables
+						$table->foreign('database_id')->references('id')->on('databases')->onDelete('cascade');
         });
     }
 
