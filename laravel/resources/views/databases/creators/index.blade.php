@@ -5,7 +5,7 @@
     <h3>Creators:</h3>
 
     <ul class="list-disc list-inside">
-        @foreach($database->creators as $creator)
+        @forelse($database->creators as $creator)
 					<li><b>Name</b>: {{ $creator->creatorName }}
 						@if ($creator->givenName != null) <b>Given Name</b>: {{ $creator->givenName }}@endif 
 						@if($creator->familyName != null) <b>Family Name</b>: {{ $creator->familyName }}@endif
@@ -25,7 +25,9 @@
 							@endif
 						@endauth
 					</li>
-        @endforeach
+        @empty
+					<li>No creators defined.</li>
+				@endforelse
     </ul>
 
 		<h3>Add a new creator:</h3>

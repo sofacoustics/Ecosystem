@@ -45,29 +45,25 @@ Route::view('/terms-of-use', 'pages.terms-of-use')->name('terms-of-use');
 //
 //jw:note If you specify 'database' where the id is in the URL, then it will be used to get model data for the controller method
 //jw:note 'implicit binding' https://laravel.com/docs/11.x/routing#implicit-binding
+Route::resource('databases', DatabaseController::class);
 Route::get('/databases/{database}/radar', [DatabaseController::class, 'radarShow'])->name('databases.radar');
 Route::get('/databases/{database}/radar/edit', [DatabaseController::class, 'radarEdit'])->name('databases.radar.edit');
 Route::get('/databases/{database}/datasetdefs', [DatabaseController::class, 'datasetdefs'])->name('databases.datasetdefs');
 Route::get('/databases/{database}/creators', [DatabaseController::class, 'creators'])->name('databases.creators');
-Route::resource('databases', DatabaseController::class);
-//
-// DATASET
-//
-Route::resource('databases.datasets', DatasetController::class); // /databases/{{database}}/datasets (https://davecalnan.blog/laravel-routing-gotchas)
-Route::resource('datasets', DatasetController::class);
-//
-// DATAFILES
-//
-Route::resource('datafiles', DatafileController::class);
-//
-// DATASETDEFS
-//
-Route::resource('datasetdefs', DatasetdefController::class);
-Route::resource('creators', CreatorController::class);
 
+// DATASET
+Route::resource('datasets', DatasetController::class);
+Route::resource('databases.datasets', DatasetController::class); // /databases/{{database}}/datasets (https://davecalnan.blog/laravel-routing-gotchas)
+// DATAFILES
+Route::resource('datafiles', DatafileController::class);
+// DATASETDEFS
+Route::resource('datasetdefs', DatasetdefController::class);
+
+// CREATORS
+Route::resource('creators', CreatorController::class);
 /// WIDGETs
 Route::resource('widgets', WidgetController::class);
-/// Tools
+/// TOOLS
 Route::resource('tools', ToolController::class);
 
 

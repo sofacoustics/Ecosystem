@@ -19,7 +19,7 @@
 			@if ($creator->affiliationIdentifier != null) <b>{{ $creator->affiliationIdentifierScheme }}</b>: {{ $creator->affiliationIdentifier }}@endif 
 		</li>
 		@empty
-			<li>No creators</li>
+			<li>No creators defined.</li>
 		@endforelse
 		</ul>
 		
