@@ -21,7 +21,7 @@ class DatafileListener extends Component
 
     public function mount(Datafile $datafile)
     {
-        app('log')->info('DatafileListener::mount()');
+        app('log')->info('Livewire DatafileListener::mount()');
         $this->datafile = $datafile;
         $this->id = $datafile->id;
         $this->datasetdef = $datafile->datasetdef;
@@ -30,7 +30,7 @@ class DatafileListener extends Component
     }
     public function mounted()
     {
-        app('log')->info('DatafileListener::mounted()');
+        app('log')->info('Livewire DatafileListener::mounted()');
         $this->id = "mounted";
     }
 

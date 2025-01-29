@@ -21,6 +21,17 @@ class DatafileUpload extends Component
     public Datasetdef $datasetdef;
     public $callingUrl; // URL to return to after saving file
 
+    public function updated($property)
+    {
+        if("$property" == 'file')
+        {
+            /*
+             * Save the file immediately, so user doesn't have to press a 'submit' button
+             */
+            $this->save();
+        }
+    }
+
     public function save()
     {
         //

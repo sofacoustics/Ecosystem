@@ -9,7 +9,6 @@
         {{--_Widget: {{ $datafile->datasetdef->widget->name }} --}}
     </x-slot>
 
-
     {{-- <p>jw:todo maybe just pass the $datafile and let the component decide if it is an image or not?</p> --}}
 
     {{-- --}}

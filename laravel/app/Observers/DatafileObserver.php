@@ -17,6 +17,18 @@ class DatafileObserver
     public function created(Datafile $datafile): void
     {
         //
+        app('log')->info("DatafileObserver::created");
+        app('log')->info("DatafileObserver::created - $datafile->location ");
+        //dd($datafile);
+        $path = $datafile->path();
+        app('log')->info("DatafileObserver::created - $path");
+        $widget = $datafile->datasetdef->widget;
+        if($widget)
+        {
+            //dd($datafile->datasetdef->widget);
+            if($widget->name == "Octave HRTF")
+                OctaveCli::dispatch($widget, $datafile);
+        }
     }
 
     /**
@@ -31,7 +43,7 @@ class DatafileObserver
         $location = $datafile->location;
         $localpath = $datafile->localpath();
         // if location exists, then send to Octave job
-        if($datafile->location != null) 
+        if($datafile->location != null)
         {
             //jw:tmp:start
             $dataset = $datafile->dataset->name;
