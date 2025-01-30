@@ -15,16 +15,23 @@ class DatafileUpload extends Component
 {
     use WithFileUploads; // trait necessary for livewire upload
 
+    // wire:model
     public $file;
-    public $datafile;
+
+    // component parameters (:dataset, :datasetdef)
     public Dataset $dataset;
     public Datasetdef $datasetdef;
-    public $callingUrl; // URL to return to after saving file
+    // component parameter (:datafile) if editing existing datafile
+    public ?Datafile $datafile;
+
+    public function mount()
+    {
+        //jw:note doesn't appear to work. $this->authorize('create', $this->dataset);
+    }
 
     public function updated($property)
     {
-        if("$property" == 'file')
-        {
+        if ("$property" == 'file') {
             /*
              * Save the file immediately, so user doesn't have to press a 'submit' button
              */
@@ -34,29 +41,26 @@ class DatafileUpload extends Component
 
     public function save()
     {
+        $this->authorize('update', $this->dataset); // check if dataset can be modified
         //
         // if datafile doesn't exist, create it here!
         //
-        if(!$this->datafile)
-        {
+        if (!isset($this->datafile)) {
             // create new Datafile
-            $datafile = new Datafile;
+            $datafile = new Datafile();
             // set mandatory fields
             $datafile->dataset_id = $this->dataset->id;
             $datafile->datasetdef_id = $this->datasetdef->id;
-        }
-        else
-        {
+        } else {
             // remove old files when editing existing file
-            $datafile->clean(); //jw:todo
+            $this->datafile->clean(); //jw:todo
             //jw:todo
             //Storage::disk('public')->delete("$datafile->directory()/*");
-
         }
         $datafile->name = $this->file->getClientOriginalName();
         $datafile->save(); // save so datafile has ID (necessary for saving file)
         $directory = $datafile->directory();
-        $this->file->storeAs("$directory", "$datafile->name", "public");
+        $this->file->storeAs("$directory", "$datafile->name", 'public');
         $this->redirect(url()->previous()); //jw:note if the whole dataset view was a livewire component, then we wouldn't have to redirect.
     }
 

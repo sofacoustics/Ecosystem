@@ -49,7 +49,7 @@ Route::resource('databases', DatabaseController::class);
 Route::get('/databases/{database}/radar', [DatabaseController::class, 'radarShow'])->name('databases.radar');
 Route::get('/databases/{database}/radar/edit', [DatabaseController::class, 'radarEdit'])->name('databases.radar.edit');
 Route::get('/databases/{database}/datasetdefs', [DatabaseController::class, 'datasetdefs'])->name('databases.datasetdefs');
-Route::get('/databases/{database}/creators', [DatabaseController::class, 'creators'])->name('databases.creators');
+Route::get('/databases/{database}/creators', [CreatorController::class, 'index'])->name('databases.creators');
 
 // DATASET
 Route::resource('datasets', DatasetController::class);

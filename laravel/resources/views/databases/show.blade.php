@@ -42,7 +42,7 @@
 		@if ($database->rights != null) <li><b>Rights</b>: {{ $database->rights }}</li>@endif 
 		@if ($database->relatedinformation != null) <li><b>Related Information</b>: {{ $database->relatedinformation }}</li>@endif 
 		</ul>
-		
+
     <h3>Definition of a Dataset:
 			@auth            
 				@if ($database->user_id == Auth::id())  {{-- If we own this database --}}                
@@ -61,7 +61,7 @@
 			</ul>
 
     <h3>Datasets:
-        @can('create', App\Models\Dataset::class)
+        @can('create', [App\Models\Dataset::class, $database])
             {{-- jw:todo move to policy If there's a datasetdef, then we can create a dataset --}}
             @if(count($database->datasetdefs))
                 {{-- <a href="{{ route('databases.datasets.create', $database->id) }}">(New)</a><br> --}}

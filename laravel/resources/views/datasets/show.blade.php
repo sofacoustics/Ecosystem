@@ -13,23 +13,31 @@
         @foreach ($dataset->datafiles as $datafile)
             @if (!$datafile->isImage())
                 {{-- @livewire(DatafileListener::class, ['datafile' => $datafile]) --}}
-                <a href="{{ route('datafiles.show', $datafile->id) }}">File: {{ $datafile->name }}</a><br />
+                <x-property name="File">
+                    <a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a>
+                </x-property>
                 <livewire:DatafileListener :datafile="$datafile" />
-                <x-button method="DELETE" action="{{ route('datafiles.destroy', [$datafile]) }}">
-                    Delete
-                </x-button>
+                @can('delete', $datafile)
+                    <x-button method="DELETE" action="{{ route('datafiles.destroy', [$datafile]) }}">
+                        Delete
+                    </x-button>
+                @endcan
             @endif
         @endforeach
 
         {{-- images --}}
         @foreach ($dataset->datafiles as $datafile)
             @if ($datafile->isImage())
-                <a href="{{ route('datafiles.show', $datafile->id) }}">File: {{ $datafile->name }}</a><br />
-                <x-img class="p-2 " asset="{{ $datafile->asset() }}" />
-                <p> {{ route('datafiles.destroy', [$datafile]) }} }} </p>
-                <x-button method="DELETE" action="{{ route('datafiles.destroy', [$datafile]) }}">
-                    Delete
-                </x-button>
+                <div class="bg-blue-100">
+                    <a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a>
+                    <x-img class="p-2 " asset="{{ $datafile->asset() }}" />
+                    <p> {{ route('datafiles.destroy', [$datafile]) }} }} </p>
+                    @can('delete', $datafile)
+                        <x-button method="DELETE" action="{{ route('datafiles.destroy', [$datafile]) }}">
+                            Delete
+                        </x-button>
+                    @endcan
+                </div>
             @endif
         @endforeach
     </div>
@@ -46,7 +54,11 @@
             @endforeach
         </ul>
     @endif
-
+    {{-- display option to upload whole folder, if there are not datafiles yet --}}
+    @if (count($dataset->datafiles) == 0)
+        <p>Upload all files from a folder</p>
+        <livewire:dataset-upload :dataset=$dataset />
+    @endif
     {{-- jw:note do *not* use a livewire inside a livewire if possible --}}
     {{-- @livewire(DatasetListener::class, ['dataset' => $dataset]) --}}
     {{--    <livewire:DatasetListener :dataset="$dataset" /> --}}

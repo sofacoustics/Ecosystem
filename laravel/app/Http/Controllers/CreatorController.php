@@ -8,16 +8,16 @@ use App\Models\Database;
 
 class CreatorController extends Controller
 {
-    public function index() 
+    public function index(Database $database)
     {
-        $creators = Creator::with('database')->get(); 
+        $creators = Creator::with('database')->get();
 
-        return view('creators.index', compact('creators'));
+        return view('databases.creators.index', compact('creators','database'));
     }
 		
     public function edit(Creator $creator)
     {
-        return view('creators.edit', ['creator' => $creator]);
+        return view('databases.creators.edit', ['creator' => $creator]);
     }
 		
     public function destroy(Creator $creator)

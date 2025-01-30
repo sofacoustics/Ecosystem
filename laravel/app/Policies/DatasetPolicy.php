@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Database;
 use App\Models\Dataset;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -13,7 +14,6 @@ class DatasetPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
         return true;
     }
 
@@ -22,18 +22,20 @@ class DatasetPolicy
      */
     public function view(User $user, Dataset $dataset): bool
     {
-        //
         return true;
     }
 
     /**
      * Determine whether the user can create models.
+	 *
+	 * Note that we're passing a *database* here!
      */
-    public function create(User $user): bool
+    public function create(User $user, Database $database): bool
     {
-        if($user->id > 0)
-            return true;
-        return false;
+		//dd('dataset "create" policy');
+		if($user->id === $database->user_id)
+			return true;
+		return false;
     }
 
     /**
@@ -41,8 +43,7 @@ class DatasetPolicy
      */
     public function update(User $user, Dataset $dataset): bool
     {
-        //
-        if($user->id == $dataset->database->user_id)
+        if($user->id === $dataset->database->user_id)
             return true;
         return false;
     }
@@ -54,7 +55,7 @@ class DatasetPolicy
     {
         //
         //if($user->id == $dataset->database->user_id || $user->has_role('admin'))
-        if($user->id == $dataset->database->user_id)
+        if($user->id === $dataset->database->user_id)
             return true;
         return false;
     }
@@ -64,7 +65,9 @@ class DatasetPolicy
      */
     public function restore(User $user, Dataset $dataset): bool
     {
-        //
+        if($user->id === $dataset->database->user_id)
+            return true;
+        return false;
     }
 
     /**
@@ -72,6 +75,8 @@ class DatasetPolicy
      */
     public function forceDelete(User $user, Dataset $dataset): bool
     {
-        //
+        if($user->id === $dataset->database->user_id)
+            return true;
+        return false;
     }
 }

@@ -24,7 +24,7 @@ class Creator extends Model
         return $this->belongsTo(Database::class); 
     }
 		
-		public function nameIdentifierScheme($x)
+		public static function nameIdentifierScheme($x)
 		{
 			if($x == null) $x=0;
 			if($x>2) $x=2;

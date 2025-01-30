@@ -35,14 +35,13 @@
                         <span class="text-red-500">{{ $message }}</span>
                     @enderror
                 </div>
-
                 <div class="block">
                     <label class="{{ $labelClass }}" for="nameIdentifierSchemeIndex">Name Identifier Scheme:</label>
                     <select class="{{ $selectClass }}" id="nameIdentifierSchemeIndex" wire:model="nameIdentifierSchemeIndex">
                         <option value="">Select an identifier scheme</option>
-												<option value="0">Other</option>
-												<option value="1">ORCID</option>                        
-												<option value="2">ROR</option>
+												<option value="0">{{ \App\Models\Creator::nameIdentifierScheme(0) }}</option>
+												<option value="1">{{ \App\Models\Creator::nameIdentifierScheme(1) }}</option>
+												<option value="2">{{ \App\Models\Creator::nameIdentifierScheme(2) }}</option>
                     </select>
                     @error('nameIdentifierSchemeIndex')
                         <span class="text-red-500">{{ $message }}</span>
