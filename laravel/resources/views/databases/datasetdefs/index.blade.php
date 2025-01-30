@@ -10,7 +10,7 @@
         @endforeach
     </ul>
     {{-- include a form to create a new datasetdef --}}
-    @can('create', App\Models\Datasetdef::class)
+    @can('update', $database)
         @if(count($database->datasets) == 0)
             <livewire:datasetdef-form :database=$database />
         @else
