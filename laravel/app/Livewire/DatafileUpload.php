@@ -61,6 +61,8 @@ class DatafileUpload extends Component
         $datafile->save(); // save so datafile has ID (necessary for saving file)
         $directory = $datafile->directory();
         $this->file->storeAs("$directory", "$datafile->name", 'public');
+        // clean up
+        $this->file->delete();
         $this->redirect(url()->previous()); //jw:note if the whole dataset view was a livewire component, then we wouldn't have to redirect.
     }
 

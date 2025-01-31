@@ -1,11 +1,9 @@
 <div>
     @can('update', $dataset)
         <form wire:submit="save">
-            <input type="file" wire:model="file">
-            @error('file')
-                <span class="error">{{ $message }}</span>
-            @enderror
-            {{--        <button type="submit">Save file</button> --}}
+            <input type="file" max-size="10" wire:model="file">
+            <x-error attribute='file' />
+            {{-- <button type="submit">Save file</button> --}}
         </form>
     @endcan
 </div>
