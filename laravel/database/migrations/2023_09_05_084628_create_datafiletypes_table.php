@@ -15,6 +15,8 @@ return new class extends Migration
 					$table->id();
 					$table->string('name');
 					$table->string('description');
+					$table->integer('default_widget')->nullable();
+					$table->string('extension')->nullable(); 
           $table->timestamps();
         });
     }
