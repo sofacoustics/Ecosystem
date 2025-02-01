@@ -55,10 +55,12 @@
         </ul>
     @endif
     {{-- display option to upload whole folder, if there are not datafiles yet --}}
-    @if (count($dataset->datafiles) == 0)
-        <p>Upload all files from a folder</p>
-        <livewire:dataset-upload :dataset=$dataset />
-    @endif
+    @can('update', $dataset->database)
+        @if (count($dataset->datafiles) == 0)
+            <p>Upload all files from a folder</p>
+            <livewire:dataset-upload :dataset=$dataset />
+        @endif
+    @endcan
     {{-- jw:note do *not* use a livewire inside a livewire if possible --}}
     {{-- @livewire(DatasetListener::class, ['dataset' => $dataset]) --}}
     {{--    <livewire:DatasetListener :dataset="$dataset" /> --}}
