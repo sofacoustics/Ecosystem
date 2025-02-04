@@ -9,13 +9,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 use App\Data\RadardatasetpureData;
+use App\Models\Radar\Metadataschema;
 
 class Database extends Model
 {
     use HasFactory;
     protected $fillable = ['title', 'additionaltitle', 'description', 
 		    'radardataset',
-        'productionyear', 'language', 'resource', 'datasources','software', 
+        'productionyear', 'language', 'resourcetype', 'resource', 'datasources','software', 
 				'processing', 'relatedinformation', 'rights', //'subjectAreas', 'publishers', 
 				'creators',
         'user_id', '_token', '_method', 'submit'];
@@ -63,4 +64,15 @@ class Database extends Model
         return $this->hasOne(Radardataset::class);
     }
 
+		static function resourcetypeDisplay($resourcetype)
+		{
+			$result = \App\Models\Radar\Metadataschema::where('id', $resourcetype)->select('display')->get();
+			return $result[0]->attributes['display'];
+		}
+		
+		static function resourcetypes()
+    {
+        $rr = \App\Models\Radar\Metadataschema::where('name','resourceType')->select('display')->get();
+				return $rr;
+    }
 }

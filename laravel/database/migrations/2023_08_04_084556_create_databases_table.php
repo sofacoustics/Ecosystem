@@ -24,6 +24,7 @@ return new class extends Migration
 						$table->string('productionyear')->nullable();
 						$table->string('language')->nullable();
 						// subjectAreas --> Table subjectareas
+						$table->integer('resourcetype')->nullable();
 						$table->string('resource')->nullable();
 						// geolocations --> Table geolocations
 						$table->string('datasources')->nullable();

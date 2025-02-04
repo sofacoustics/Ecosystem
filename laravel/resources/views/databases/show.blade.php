@@ -35,7 +35,9 @@
 		@if ($database->description != null) <li><b>Description</b>: {{ $database->description }}</li>@endif 
 		@if ($database->productionyear != null) <li><b>Production Year</b>: {{ $database->productionyear }}</li>@endif 
 		@if ($database->language != null) <li><b>Language</b>: {{ $database->language }}</li>@endif 
-		@if ($database->resource != null) <li><b>Resource</b>: {{ $database->resource }}</li>@endif 
+		@if ($database->resourcetype != null) <li><b>Resource Type</b>: {{ \App\Models\Database::resourcetypeDisplay($database->resourcetype) }}.
+			@if ($database->resource != null) <b>Resource</b>: {{ $database->resource }}@endif 
+		</li>@endif  
 		@if ($database->datasources != null) <li><b>Datasoures</b>: {{ $database->datasources }}</li>@endif 
 		@if ($database->software != null) <li><b>Software</b>: {{ $database->software }}</li>@endif 
 		@if ($database->processing != null) <li><b>Processing</b>: {{ $database->processing }}</li>@endif 

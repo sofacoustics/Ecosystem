@@ -17,6 +17,7 @@ class DatabaseForm extends Component
     public $description;
     public $productionyear;
     public $language;
+    public $resourcetype;
     public $resource;
     public $datasources;
     public $software;
@@ -40,6 +41,7 @@ class DatabaseForm extends Component
             $this->description = $database->description;
 						$this->productionyear = $database->productionyear;
 						$this->language = $database->language;
+						$this->resourcetype = $database->resourcetype-1;
 						$this->resource = $database->resource;
 						$this->datasources = $database->datasources;
 						$this->software = $database->software;
@@ -67,6 +69,7 @@ class DatabaseForm extends Component
         $this->database->description = $this->description;
         $this->database->productionyear = $this->productionyear;
         $this->database->language = $this->language;
+        $this->database->resourcetype = $this->resourcetype+1;
         $this->database->resource = $this->resource;
         $this->database->datasources = $this->datasources;
         $this->database->software = $this->software;

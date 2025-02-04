@@ -38,7 +38,14 @@
 		  @error('language') <span class="text-red-500">{{ $message }}</span> @enderror
 
 		<div class="mb-4">
-		  <label for="resource" class="text-gray-700 mb-2 block font-bold">Resource:</label>
+		  <label for="resource" class="text-gray-700 mb-2 block font-bold">Resource Type / Resource Description:</label>
+			<select wire:model.live="resourcetype">
+        <option disabled value="">Select a resource type...</option>
+					
+        @foreach(\App\Models\Database::resourcetypes() as $r => $t)
+            <option value="{{ $r }}">{{ $t->display }}</option>
+        @endforeach
+			</select>
 		  <input wire:model="resource" type="text" id="resource"
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"
 				 />
