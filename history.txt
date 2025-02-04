@@ -5,14 +5,14 @@ Metadata status:
 ================
 
 Done: 
-- Title: done.
-- ProductionYear: done.
-- Resource (& resourceType): done. 
-- Language: done. 
+* Title: done.
+* ProductionYear: done.
+* Resource (& resourceType): done. 
+* Language: done. 
 
 To be done (tbd): 
-- Additional Title (& additionalTitleType): done as 0-1, attribute tbd, 0-n for later. 
-- Description (& descriptionType):  done as 0-1, attribute tbd, 0-n for later.
+* Additional Title (& additionalTitleType): done as 0-1, attribute tbd, 0-n for later. 
+* Description (& descriptionType):  done as 0-1, attribute tbd, 0-n for later.
 * Identifier (& identifierType): will be created by RADAR. 
 * Creator: done, but 0-n (should be 1-n). Implement Owner as Creator 0. 
 * Publisher: (& nameIdentifier, nameIdentifierScheme, schemeURI): tbd as 1-n.
