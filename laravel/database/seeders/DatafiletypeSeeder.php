@@ -15,14 +15,14 @@ class DatafiletypeSeeder extends Seeder
     {
         //
        Datafiletype::create([ 'name' => 'jpg', 
-				'description' => 'A jpg image file', ]);
-				'extension' => '.jpg',
+				'description' => 'A jpg image file',
+				'extension' => '.jpg', ]);
        Datafiletype::create([ 'name' => 'png', 
-				'description' => 'A png image file', ]);
-				'extension' => '.png',
+				'description' => 'A png image file', 
+				'extension' => '.png', ]);
        Datafiletype::create([ 'name' => 'HRTF.sofa', 
-				'description' => 'A HRTF file in SOFA format', ]);
-				'extension' => '.sofa',
+				'description' => 'A HRTF file in SOFA format',
+				'extension' => '.sofa', ]);
        Datafiletype::create([ 'name' => 'Spatial acoustics: HRTFs (SOFA)', 
 			  'default_widget' => null,
 				'extension' => '.sofa',
