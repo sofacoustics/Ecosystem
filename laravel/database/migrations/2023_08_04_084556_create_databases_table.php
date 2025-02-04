@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
 						// creators --> Table creators
             $table->string('title');
+						$table->integer('additionaltitletype')->nullable();
 						$table->string('additionaltitle')->nullable();
             $table->string('description')->nullable();
 						// keywords --> Table keywords

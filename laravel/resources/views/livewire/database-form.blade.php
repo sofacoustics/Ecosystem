@@ -10,6 +10,12 @@
 		
 		<div class="mb-4">
 		  <label for="title" class="text-gray-700 mb-2 block font-bold">Additional Title:</label>
+			<select wire:model.live="additionaltitletype">
+        <option disabled value="">Select a title type...</option>
+        @foreach(\App\Models\Database::additionaltitletypes() as $r => $t)
+            <option value="{{ $r }}">{{ $t->display }}</option>
+        @endforeach
+			</select>
 		  <input wire:model="additionaltitle" type="text" id="additionaltitle"
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"
 				/>
@@ -38,10 +44,9 @@
 		  @error('language') <span class="text-red-500">{{ $message }}</span> @enderror
 
 		<div class="mb-4">
-		  <label for="resource" class="text-gray-700 mb-2 block font-bold">Resource Type / Resource Description:</label>
+		  <label for="resource" class="text-gray-700 mb-2 block font-bold">Resource Type and Description:</label>
 			<select wire:model.live="resourcetype">
         <option disabled value="">Select a resource type...</option>
-					
         @foreach(\App\Models\Database::resourcetypes() as $r => $t)
             <option value="{{ $r }}">{{ $t->display }}</option>
         @endforeach

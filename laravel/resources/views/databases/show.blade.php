@@ -31,12 +31,14 @@
 			@endauth
 		</h3>
 		<ul class="list-disc list-inside">
-		@if ($database->additionaltitle != null) <li><b>Additional Title</b>: {{ $database->additionaltitle }}</li>@endif 
+		@if ($database->additionaltitletype != null) <li><b>Additional Title ({{ \App\Models\Database::additionaltitletypedisplay($database->additionaltitletype) }})</b>
+			@if ($database->additionaltitle != null) : {{ $database->additionaltitle }}@endif 
+		</li>@endif  
 		@if ($database->description != null) <li><b>Description</b>: {{ $database->description }}</li>@endif 
 		@if ($database->productionyear != null) <li><b>Production Year</b>: {{ $database->productionyear }}</li>@endif 
 		@if ($database->language != null) <li><b>Language</b>: {{ $database->language }}</li>@endif 
-		@if ($database->resourcetype != null) <li><b>Resource Type</b>: {{ \App\Models\Database::resourcetypeDisplay($database->resourcetype) }}.
-			@if ($database->resource != null) <b>Resource</b>: {{ $database->resource }}@endif 
+		@if ($database->resourcetype != null) <li><b>Resource Type ({{ \App\Models\Database::resourcetypeDisplay($database->resourcetype) }})</b>
+			@if ($database->resource != null) : {{ $database->resource }}@endif 
 		</li>@endif  
 		@if ($database->datasources != null) <li><b>Datasoures</b>: {{ $database->datasources }}</li>@endif 
 		@if ($database->software != null) <li><b>Software</b>: {{ $database->software }}</li>@endif 
