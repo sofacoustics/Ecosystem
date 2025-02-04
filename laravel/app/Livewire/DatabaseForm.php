@@ -17,6 +17,7 @@ class DatabaseForm extends Component
     public $additionaltitletype;
     public $description;
     public $productionyear;
+    public $publicationyear;
     public $language;
     public $resourcetype;
     public $resource;
@@ -29,7 +30,9 @@ class DatabaseForm extends Component
     //jw:todo rules
 	protected $rules = [
 		'title' => 'required',
-		'description' => 'required',
+		'productionyear' => 'required',
+		'publicationyear' => 'required',
+		'resourcetype' => 'required',
 	];
 
     public function mount($database = null)
@@ -42,6 +45,7 @@ class DatabaseForm extends Component
 						$this->additionaltitletype = $database->additionaltitletype-72;
             $this->description = $database->description;
 						$this->productionyear = $database->productionyear;
+						$this->publicationyear = $database->publicationyear;
 						$this->language = $database->language;
 						$this->resourcetype = $database->resourcetype-1;
 						$this->resource = $database->resource;
@@ -68,9 +72,11 @@ class DatabaseForm extends Component
 
         $this->database->title = $this->title;
         $this->database->additionaltitle = $this->additionaltitle;
-        $this->database->additionaltitletype = $this->additionaltitletype+72;
+				if ($this->additionaltitletype == null) { $this->database->additionaltitletype = null; }
+					else { $this->database->additionaltitletype = $this->additionaltitletype+72; }
         $this->database->description = $this->description;
         $this->database->productionyear = $this->productionyear;
+        $this->database->publicationyear = $this->publicationyear;
         $this->database->language = $this->language;
         $this->database->resourcetype = $this->resourcetype+1;
         $this->database->resource = $this->resource;

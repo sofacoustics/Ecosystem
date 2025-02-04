@@ -23,6 +23,7 @@ return new class extends Migration
 						// keywords --> Table keywords
 						// publishers --> Table publishers
 						$table->string('productionyear')->nullable();
+						$table->string('publicationyear')->nullable();
 						$table->string('language')->nullable();
 						// subjectAreas --> Table subjectareas
 						$table->integer('resourcetype')->nullable();

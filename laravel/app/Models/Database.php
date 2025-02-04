@@ -16,7 +16,7 @@ class Database extends Model
     use HasFactory;
     protected $fillable = ['title', 'additionaltitle', 'additionaltitletype', 'description', 
 		    'radardataset',
-        'productionyear', 'language', 'resourcetype', 'resource', 'datasources','software', 
+        'productionyear', 'publicationyear', 'language', 'resourcetype', 'resource', 'datasources','software', 
 				'processing', 'relatedinformation', 'rights', //'subjectAreas', 'publishers', 
 				'creators',
         'user_id', '_token', '_method', 'submit'];

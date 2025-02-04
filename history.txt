@@ -9,14 +9,13 @@ Done:
 * ProductionYear: done.
 * Resource (& resourceType): done. 
 * Language: done. 
+* Additional Title (& additionalTitleType): done as 0-1 (0-n for later).
+* PublicationYear: done.
 
 To be done (tbd): 
-* Additional Title (& additionalTitleType): done as 0-1, attribute tbd, 0-n for later. 
 * Description (& descriptionType):  done as 0-1, attribute tbd, 0-n for later.
-* Identifier (& identifierType): will be created by RADAR. 
 * Creator: done, but 0-n (should be 1-n). Implement Owner as Creator 0. 
 * Publisher: (& nameIdentifier, nameIdentifierScheme, schemeURI): tbd as 1-n.
-* PublicationYear: tbd as 1.
 * SubjectArea (& controlledSubjectArea and optional additionalSubjectArea): tbd, 1-n. 
 * Rights (& controlledRights and optional additionalRights): child elements tbd.
 * RightsHolder (& optional nameIdentifier, nameIdentifierScheme,  schemeURI): tbd, 1-n.
@@ -24,6 +23,7 @@ To be done (tbd):
 * Contributor (& contributorType, contributorName): tbd, 0-n. 
 * DataSource (& dataSourceDetail): tbd as 0-n.
 * FundingReference (& funderName, optional funderIdentifier, awardNumber, awardURI, awardTitle): tbd as 0-n. 
+* Identifier (& identifierType): to be created by RADAR. 
 
 For later: 
 * AlternateIdentifier (& alternateIdentifierType): tbd as 0-n, later. 
