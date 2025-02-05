@@ -26,7 +26,8 @@ class DatabaseForm extends Component
     public $software;
     public $processing;
     public $relatedinformation;
-    public $rights;
+		public $controlledrights;
+    public $additionalrights;
 
     //jw:todo rules
 	protected $rules = [
@@ -34,6 +35,7 @@ class DatabaseForm extends Component
 		'productionyear' => 'required',
 		'publicationyear' => 'required',
 		'resourcetype' => 'required',
+		'controlledrights' => 'required',
 	];
 
     public function mount($database = null)
@@ -55,6 +57,7 @@ class DatabaseForm extends Component
 						$this->software = $database->software;
 						$this->processing = $database->processing;
 						$this->relatedinformation = $database->relatedinformation;
+						$this->controlledrights = $database->controlledrights-47;
 						$this->additionalrights = $database->additionalrights;
         }
     }
@@ -88,6 +91,7 @@ class DatabaseForm extends Component
         $this->database->software = $this->software;
         $this->database->processing = $this->processing;
         $this->database->relatedinformation = $this->relatedinformation;
+        $this->database->controlledrights = $this->controlledrights+47;
         $this->database->additionalrights = $this->additionalrights;
 
         $this->database->save();

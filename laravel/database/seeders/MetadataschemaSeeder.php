@@ -83,7 +83,7 @@ class MetadataschemaSeeder extends Seeder
         Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'subjectArea', 'value' => 'VETERINARY_MEDICINE', 'display' => 'Veterinary Medicine'));
         Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'subjectArea', 'value' => 'OTHER', 'display' => 'Other'));
         // controlledRights
-        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'controlledRights', 'value'=> 'CC_BY_4_0_ATTRIBUTION', 'display' => 'C BY 4.0 Attribution'));
+        Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'controlledRights', 'value'=> 'CC_BY_4_0_ATTRIBUTION', 'display' => 'CC BY 4.0 Attribution'));
         Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'controlledRights', 'value'=> 'CC_BY_ND_4_0_ATTRIBUTION_NO_DERIVS', 'display' => 'CC BY-ND 4.0 Attribution-NoDerivs'));
         Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'controlledRights', 'value'=> 'CC_BY_NC_ND_4_0_ATTRIBUTION_NON_COMMERCIAL_NO_DERIVS', 'display' => 'CC BY-NC-ND 4.0 Attribution- N on Commercial -NoDerivs'));
         Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'controlledRights', 'value'=> 'CC_BY_SA_4_0_ATTRIBUTION_SHARE_ALIKE', 'display' => 'CC BY-SA 4.0 Attribution-ShareAlike'));

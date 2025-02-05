@@ -98,4 +98,16 @@ class Database extends Model
         $rr = \App\Models\Radar\Metadataschema::where('name','descriptionType')->select('display')->get();
 				return $rr;
     }
+
+		static function controlledrightsdisplay($controlledrights)
+		{
+			$result = \App\Models\Radar\Metadataschema::where('id', $controlledrights)->select('display')->get();
+			return $result[0]->attributes['display'];
+		}
+		
+		static function controlledrights()
+    {
+        $rr = \App\Models\Radar\Metadataschema::where('name','controlledRights')->select('display')->get();
+				return $rr;
+    }
 }

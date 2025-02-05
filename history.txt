@@ -13,9 +13,9 @@ Done:
 * PublicationYear: done.
 * Creator: done, but 0-n (should be 1-n). 
 * Description (& descriptionType): done as 0-1 (0-n for later).
+* Rights (& controlledRights and optional additionalRights): done.
 
 To be done (tbd): 
-* Rights (& controlledRights and optional additionalRights): child elements tbd.
 * Publisher: (& nameIdentifier, nameIdentifierScheme, schemeURI): tbd as 1-n.
 * SubjectArea (& controlledSubjectArea and optional additionalSubjectArea): tbd, 1-n. 
 * RightsHolder (& optional nameIdentifier, nameIdentifierScheme,  schemeURI): tbd, 1-n.

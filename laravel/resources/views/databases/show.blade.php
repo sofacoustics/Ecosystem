@@ -31,22 +31,27 @@
 			@endauth
 		</h3>
 		<ul class="list-disc list-inside">
+			{{-- mandatory metadata --}}
+		@if ($database->productionyear != null) <li><b>Production Year</b>: {{ $database->productionyear }}</li>@endif 
+		@if ($database->publicationyear != null) <li><b>Publication Year</b>: {{ $database->publicationyear }}</li>@endif 
+		@if ($database->resourcetype != null) <li><b>Resource Type ({{ \App\Models\Database::resourcetypeDisplay($database->resourcetype) }})</b>
+			@if ($database->resource != null) : {{ $database->resource }}@endif 
+		</li>@endif  
+		@if ($database->controlledrights != null) <li><b>Rights:</b> {{ \App\Models\Database::controlledrightsdisplay($database->controlledrights) }}
+			@if ($database->additionalrights != null) ({{ $database->additionalrights }})</li>@endif 
+		</li>@endif 
+
+			{{-- optional metadata --}}
 		@if ($database->additionaltitletype != null) <li><b>Additional Title ({{ \App\Models\Database::additionaltitletypedisplay($database->additionaltitletype) }})</b>
 			@if ($database->additionaltitle != null) : {{ $database->additionaltitle }}@endif 
 		</li>@endif  
 		@if ($database->descriptiontype != null) <li><b>Description ({{ \App\Models\Database::descriptiontypedisplay($database->descriptiontype) }})</b>
 			@if ($database->description != null) : {{ $database->description }}@endif 
 		</li>@endif  
-		@if ($database->productionyear != null) <li><b>Production Year</b>: {{ $database->productionyear }}</li>@endif 
-		@if ($database->publicationyear != null) <li><b>Publication Year</b>: {{ $database->publicationyear }}</li>@endif 
 		@if ($database->language != null) <li><b>Language</b>: {{ $database->language }}</li>@endif 
-		@if ($database->resourcetype != null) <li><b>Resource Type ({{ \App\Models\Database::resourcetypeDisplay($database->resourcetype) }})</b>
-			@if ($database->resource != null) : {{ $database->resource }}@endif 
-		</li>@endif  
 		@if ($database->datasources != null) <li><b>Datasoures</b>: {{ $database->datasources }}</li>@endif 
 		@if ($database->software != null) <li><b>Software</b>: {{ $database->software }}</li>@endif 
 		@if ($database->processing != null) <li><b>Processing</b>: {{ $database->processing }}</li>@endif 
-		@if ($database->additionalrights != null) <li><b>Rights</b>: {{ $database->additionalrights }}</li>@endif 
 		@if ($database->relatedinformation != null) <li><b>Related Information</b>: {{ $database->relatedinformation }}</li>@endif 
 		</ul>
 
