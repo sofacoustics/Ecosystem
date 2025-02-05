@@ -14,7 +14,7 @@ use App\Models\Radar\Metadataschema;
 class Database extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'additionaltitle', 'additionaltitletype', 'description', 
+    protected $fillable = ['title', 'additionaltitle', 'additionaltitletype', 'description', 'descriptiontype',
 		    'radardataset',
         'productionyear', 'publicationyear', 'language', 'resourcetype', 'resource', 'datasources','software', 
 				'processing', 'relatedinformation', 'rights', //'subjectAreas', 'publishers', 
@@ -84,6 +84,18 @@ class Database extends Model
 		static function additionaltitletypes()
     {
         $rr = \App\Models\Radar\Metadataschema::where('name','additionalTitleType')->select('display')->get();
+				return $rr;
+    }
+		
+		static function descriptiontypedisplay($descriptiontype)
+		{
+			$result = \App\Models\Radar\Metadataschema::where('id', $descriptiontype)->select('display')->get();
+			return $result[0]->attributes['display'];
+		}
+		
+		static function descriptiontypes()
+    {
+        $rr = \App\Models\Radar\Metadataschema::where('name','descriptionType')->select('display')->get();
 				return $rr;
     }
 }

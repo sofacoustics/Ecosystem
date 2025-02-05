@@ -11,13 +11,13 @@ Done:
 * Language: done. 
 * Additional Title (& additionalTitleType): done as 0-1 (0-n for later).
 * PublicationYear: done.
+* Creator: done, but 0-n (should be 1-n). 
+* Description (& descriptionType): done as 0-1 (0-n for later).
 
 To be done (tbd): 
-* Description (& descriptionType):  done as 0-1, attribute tbd, 0-n for later.
-* Creator: done, but 0-n (should be 1-n). Implement Owner as Creator 0. 
+* Rights (& controlledRights and optional additionalRights): child elements tbd.
 * Publisher: (& nameIdentifier, nameIdentifierScheme, schemeURI): tbd as 1-n.
 * SubjectArea (& controlledSubjectArea and optional additionalSubjectArea): tbd, 1-n. 
-* Rights (& controlledRights and optional additionalRights): child elements tbd.
 * RightsHolder (& optional nameIdentifier, nameIdentifierScheme,  schemeURI): tbd, 1-n.
 * Keyword (& optional keywordScheme, schemeURI, valueURI, classificationCode): tbd, 0-n.
 * Contributor (& contributorType, contributorName): tbd, 0-n. 

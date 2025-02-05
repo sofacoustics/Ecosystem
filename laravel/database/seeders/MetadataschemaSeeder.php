@@ -114,5 +114,15 @@ class MetadataschemaSeeder extends Seeder
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'additionalTitleType', 'value'=> 'Translated Title', 'display' => 'Translated Title'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'additionalTitleType', 'value'=> 'Alternative Title', 'display' => 'Alternative Title'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'additionalTitleType', 'value'=> 'Other', 'display' => 'Other'));
+		
+		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'descriptionType', 'value'=> 'Abstract', 'display' => 'Abstract'));
+		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'descriptionType', 'value'=> 'Method', 'display' => 'Method'));
+		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'descriptionType', 'value'=> 'Object', 'display' => 'Object'));
+		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'descriptionType', 'value'=> 'Table of Contents', 'display' => 'Table of Contents'));
+		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'descriptionType', 'value'=> 'Technical Info', 'display' => 'Technical Info'));
+		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'descriptionType', 'value'=> 'Technical Remarks', 'display' => 'Technical Remarks'));
+		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'descriptionType', 'value'=> 'Other', 'display' => 'Other'));
+		
+		
     }
 }

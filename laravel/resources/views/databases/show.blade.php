@@ -34,7 +34,9 @@
 		@if ($database->additionaltitletype != null) <li><b>Additional Title ({{ \App\Models\Database::additionaltitletypedisplay($database->additionaltitletype) }})</b>
 			@if ($database->additionaltitle != null) : {{ $database->additionaltitle }}@endif 
 		</li>@endif  
-		@if ($database->description != null) <li><b>Description</b>: {{ $database->description }}</li>@endif 
+		@if ($database->descriptiontype != null) <li><b>Description ({{ \App\Models\Database::descriptiontypedisplay($database->descriptiontype) }})</b>
+			@if ($database->description != null) : {{ $database->description }}@endif 
+		</li>@endif  
 		@if ($database->productionyear != null) <li><b>Production Year</b>: {{ $database->productionyear }}</li>@endif 
 		@if ($database->publicationyear != null) <li><b>Publication Year</b>: {{ $database->publicationyear }}</li>@endif 
 		@if ($database->language != null) <li><b>Language</b>: {{ $database->language }}</li>@endif 

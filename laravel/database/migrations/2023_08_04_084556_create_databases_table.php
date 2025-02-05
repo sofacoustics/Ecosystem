@@ -20,6 +20,7 @@ return new class extends Migration
 						$table->integer('additionaltitletype')->nullable();
 						$table->string('additionaltitle')->nullable();
             $table->string('description')->nullable();
+						$table->integer('descriptiontype')->nullable();						
 						// keywords --> Table keywords
 						// publishers --> Table publishers
 						$table->string('productionyear')->nullable();

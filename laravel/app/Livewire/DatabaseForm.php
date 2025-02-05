@@ -16,6 +16,7 @@ class DatabaseForm extends Component
     public $additionaltitle;
     public $additionaltitletype;
     public $description;
+		public $descriptiontype;
     public $productionyear;
     public $publicationyear;
     public $language;
@@ -44,6 +45,7 @@ class DatabaseForm extends Component
 						$this->additionaltitle = $database->additionaltitle;
 						$this->additionaltitletype = $database->additionaltitletype-72;
             $this->description = $database->description;
+            $this->descriptiontype = $database->descriptiontype-76;
 						$this->productionyear = $database->productionyear;
 						$this->publicationyear = $database->publicationyear;
 						$this->language = $database->language;
@@ -75,6 +77,8 @@ class DatabaseForm extends Component
 				if ($this->additionaltitletype == null) { $this->database->additionaltitletype = null; }
 					else { $this->database->additionaltitletype = $this->additionaltitletype+72; }
         $this->database->description = $this->description;
+				if ($this->descriptiontype == null) { $this->database->descriptiontype = null; }
+					else { $this->database->descriptiontype = $this->descriptiontype+76; }
         $this->database->productionyear = $this->productionyear;
         $this->database->publicationyear = $this->publicationyear;
         $this->database->language = $this->language;
