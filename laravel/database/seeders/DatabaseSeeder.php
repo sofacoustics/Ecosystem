@@ -39,7 +39,8 @@ class DatabaseSeeder extends Seeder
 						'software' => 'Software version e.g. 1.3',
 						'processing' => 'Instructions used for processing the data in the digital resource (e.g. statistics).',
 						'relatedinformation' => 'Related information on the sample used to produce the digital data in the resource (e. g. Database ID, registry number, GenBank, IntEnz, PubChem, MedGen, PMID, PDB, molecular formula).',
-						'rights' => 'CC BY-NC 4.0 Attribution-NonCommercial',
+						'controlledrights' => 68,
+						'additionalrights' => 'My own license',
             'radardataset' => null,
             'user_id' => 2));
         Database::create(array('title' => 'ARI BezierPPM',
@@ -53,7 +54,8 @@ class DatabaseSeeder extends Seeder
 						'software' => null,
 						'processing' => null,
 						'relatedinformation' => null,
-						'rights' => null,
+						'controlledrights' => 47,
+						'additionalrights' => null,
             'radardataset' => null,
             'user_id' => 1, ));
         //Database::create(array('name' => 'Jonnie\'s ARI SOFA test 2', 'description' => 'Nr. 2. \'Nuf said!', 'user_id' => 1, 'radar_id' => 'dEZxRRrxpiHSzbBZ'));

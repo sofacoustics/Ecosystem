@@ -55,7 +55,7 @@ class DatabaseForm extends Component
 						$this->software = $database->software;
 						$this->processing = $database->processing;
 						$this->relatedinformation = $database->relatedinformation;
-						$this->rights = $database->rights;
+						$this->additionalrights = $database->additionalrights;
         }
     }
 
@@ -88,7 +88,7 @@ class DatabaseForm extends Component
         $this->database->software = $this->software;
         $this->database->processing = $this->processing;
         $this->database->relatedinformation = $this->relatedinformation;
-        $this->database->rights = $this->rights;
+        $this->database->additionalrights = $this->additionalrights;
 
         $this->database->save();
 

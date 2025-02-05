@@ -99,7 +99,7 @@
 
 		<div class="mb-4">
 		  <label for="rights" class="text-gray-700 mb-2 block font-bold">Rights: </label>
-		  <input wire:model="rights" type="text" id="rights"
+		  <input wire:model="additionalrights" type="text" id="additionalrights"
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"
 			  />
 		  @error('rights') <span class="text-red-500">{{ $message }}</span> @enderror

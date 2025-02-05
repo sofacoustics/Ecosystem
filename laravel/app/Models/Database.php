@@ -17,7 +17,7 @@ class Database extends Model
     protected $fillable = ['title', 'additionaltitle', 'additionaltitletype', 'description', 'descriptiontype',
 		    'radardataset',
         'productionyear', 'publicationyear', 'language', 'resourcetype', 'resource', 'datasources','software', 
-				'processing', 'relatedinformation', 'rights', //'subjectAreas', 'publishers', 
+				'processing', 'relatedinformation', 'controlledrights', 'additionalrights', //'subjectAreas', 'publishers', 
 				'creators',
         'user_id', '_token', '_method', 'submit'];
 

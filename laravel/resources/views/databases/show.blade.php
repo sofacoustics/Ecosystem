@@ -46,7 +46,7 @@
 		@if ($database->datasources != null) <li><b>Datasoures</b>: {{ $database->datasources }}</li>@endif 
 		@if ($database->software != null) <li><b>Software</b>: {{ $database->software }}</li>@endif 
 		@if ($database->processing != null) <li><b>Processing</b>: {{ $database->processing }}</li>@endif 
-		@if ($database->rights != null) <li><b>Rights</b>: {{ $database->rights }}</li>@endif 
+		@if ($database->additionalrights != null) <li><b>Rights</b>: {{ $database->additionalrights }}</li>@endif 
 		@if ($database->relatedinformation != null) <li><b>Related Information</b>: {{ $database->relatedinformation }}</li>@endif 
 		</ul>
 

@@ -35,7 +35,8 @@ return new class extends Migration
 						$table->string('processing')->nullable();
 						// rightsholders --> Table rightholders
 						$table->string('relatedinformation')->nullable();
-						$table->string('rights')->nullable();
+						$table->integer('controlledrights');
+						$table->string('additionalrights')->nullable();
 						// fundingreferences --> Table fundingreferences
             $table->json('radardataset')->nullable();
             $table->unsignedBigInteger('user_id');
