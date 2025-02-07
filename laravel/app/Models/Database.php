@@ -59,6 +59,11 @@ class Database extends Model
         return $this->hasMany(Creator::class); 
     }
 
+		public function publishers()
+    {
+        return $this->hasMany(Publisher::class); 
+    }
+		
     public function radardataset(): HasOne
     {
         return $this->hasOne(Radardataset::class);

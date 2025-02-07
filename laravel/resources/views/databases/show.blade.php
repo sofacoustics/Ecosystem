@@ -8,7 +8,7 @@
 					<a class="bg-green-100 inline" href="{{ route('databases.creators', $database->id) }}">Edit</a>
         @endif
       @endauth
-</h3>
+		</h3>
 		<ul class="list-disc list-inside">
 		@forelse ($database->creators as $creator)
 		<li><b>Name</b>: {{ $creator->creatorName }}
@@ -22,6 +22,30 @@
 			<li>No creators defined.</li>
 		@endforelse
 		</ul>
+
+		<h3>Publishers:
+			@auth
+				@if ($database->user_id == Auth::id())  {{-- If we own this database --}}
+					<a class="bg-green-100 inline" href="{{ route('databases.publishers', $database->id) }}">Edit</a>
+        @endif
+      @endauth
+		</h3>
+		<ul class="list-disc list-inside">
+		@forelse ($database->publishers as $publisher)
+		<li><b>Name</b>: {{ $publisher->publisherName }}
+			@if ($publisher->nameIdentifier != null) <b>{{ $publisher->nameIdentifierScheme($publisher->nameIdentifierSchemeIndex) }}</b>: 
+				@if ($publisher->schemeURI != null) <a href="{{ $publisher->schemeURI }}"> @endif
+				{{ $publisher->nameIdentifier }}
+				@if ($publisher->schemeURI != null) </a> @endif
+			@endif
+		</li>
+		@empty
+			<li>No publishers defined.</li>
+		@endforelse
+		</ul>
+
+
+
 
 		<h3>Metadata:
 			@auth

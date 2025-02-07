@@ -3,6 +3,7 @@
 use App\Http\Controllers\WidgetController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CreatorController;
+use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\DatafileController;
 use App\Http\Controllers\DatasetController;
@@ -50,6 +51,7 @@ Route::get('/databases/{database}/radar', [DatabaseController::class, 'radarShow
 Route::get('/databases/{database}/radar/edit', [DatabaseController::class, 'radarEdit'])->name('databases.radar.edit');
 Route::get('/databases/{database}/datasetdefs', [DatabaseController::class, 'datasetdefs'])->name('databases.datasetdefs');
 Route::get('/databases/{database}/creators', [CreatorController::class, 'index'])->name('databases.creators');
+Route::get('/databases/{database}/publishers', [PublisherController::class, 'index'])->name('databases.publishers');
 
 // DATASET
 Route::resource('datasets', DatasetController::class);
@@ -61,6 +63,8 @@ Route::resource('datasetdefs', DatasetdefController::class);
 
 // CREATORS
 Route::resource('creators', CreatorController::class);
+// Publishers
+Route::resource('publishers', PublisherController::class);
 /// WIDGETs
 Route::resource('widgets', WidgetController::class);
 /// TOOLS
