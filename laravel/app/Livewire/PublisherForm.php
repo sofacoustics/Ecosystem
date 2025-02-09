@@ -69,6 +69,5 @@ class PublisherForm extends Component
 	public function render()
 	{
 			return view('livewire.publisher-form');
-			return view('livewire.publisher-form');
 	}
 }

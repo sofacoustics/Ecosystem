@@ -64,6 +64,11 @@ class Database extends Model
         return $this->hasMany(Publisher::class); 
     }
 		
+		public function subjectareas()
+    {
+        return $this->hasMany(SubjectArea::class); 
+    }
+
     public function radardataset(): HasOne
     {
         return $this->hasOne(Radardataset::class);
@@ -113,6 +118,18 @@ class Database extends Model
 		static function controlledrights()
     {
         $rr = \App\Models\Radar\Metadataschema::where('name','controlledRights')->select('display')->get();
+				return $rr;
+    }
+
+		static function subjectareaDisplay($subjectareaindex)
+		{
+			$result = \App\Models\Radar\Metadataschema::where('id', $subjectareaindex)->select('display')->get();
+			return $result[0]->attributes['display'];
+		}
+		
+		static function subjectareasList()
+    {
+        $rr = \App\Models\Radar\Metadataschema::where('name','subjectArea')->select('display')->get();
 				return $rr;
     }
 }

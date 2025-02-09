@@ -44,6 +44,23 @@
 		@endforelse
 		</ul>
 
+		<h3>Subject Areas:
+			@auth
+				@if ($database->user_id == Auth::id())  {{-- If we own this database --}}
+					<a class="bg-green-100 inline" href="{{ route('databases.subjectareas', $database->id) }}">Edit</a>
+        @endif
+      @endauth
+		</h3>
+		<ul class="list-disc list-inside">
+		@forelse ($database->subjectareas as $subjectarea)
+		<li><b>{{ \App\Models\Database::subjectareaDisplay($subjectarea->controlledSubjectAreaIndex) }}</b>
+				@if ($subjectarea->additionalSubjectArea != null) : {{ $subjectarea->additionalSubjectArea }} @endif
+		</li>
+		@empty
+			<li>No subject areas defined.</li>
+		@endforelse
+		</ul>
+
 
 
 
