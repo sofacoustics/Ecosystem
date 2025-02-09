@@ -7,7 +7,7 @@
     <ul class="list-disc list-inside">
         @forelse($database->subjectareas as $subjectarea)
 					<li><b>{{ \App\Models\Database::subjectareaDisplay($subjectarea->controlledSubjectAreaIndex) }}</b>
-							@if ($subjectarea->additionalSubjectArea != null) : {{ $subjectarea->additionalSubjectArea }} @endif
+							@if ($subjectarea->additionalSubjectArea != null) ({{ $subjectarea->additionalSubjectArea }}) @endif
 							@can('update', $database)
 									<x-button method="GET" action="{{ route('subjectareas.edit', [$subjectarea]) }}" class="inline">
 											Edit

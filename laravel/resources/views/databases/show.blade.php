@@ -54,7 +54,7 @@
 		<ul class="list-disc list-inside">
 		@forelse ($database->subjectareas as $subjectarea)
 		<li><b>{{ \App\Models\Database::subjectareaDisplay($subjectarea->controlledSubjectAreaIndex) }}</b>
-				@if ($subjectarea->additionalSubjectArea != null) : {{ $subjectarea->additionalSubjectArea }} @endif
+				@if ($subjectarea->additionalSubjectArea != null) ({{ $subjectarea->additionalSubjectArea }}) @endif
 		</li>
 		@empty
 			<li>No subject areas defined.</li>
