@@ -78,15 +78,15 @@
 		@if ($database->resourcetype != null) <li><b>Resource Type ({{ \App\Models\Database::resourcetypeDisplay($database->resourcetype) }})</b>
 			@if ($database->resource != null) : {{ $database->resource }}@endif 
 		</li>@endif  
-		@if ($database->controlledrights != null) <li><b>Rights:</b> {{ \App\Models\Database::controlledrightsdisplay($database->controlledrights) }}
+		@if ($database->controlledrights != null) <li><b>Rights:</b> {{ \App\Models\Database::controlledrightsDisplay($database->controlledrights) }}
 			@if ($database->additionalrights != null) ({{ $database->additionalrights }})</li>@endif 
 		</li>@endif 
 
 			{{-- optional metadata --}}
-		@if ($database->additionaltitletype != null) <li><b>Additional Title ({{ \App\Models\Database::additionaltitletypedisplay($database->additionaltitletype) }})</b>
+		@if ($database->additionaltitletype != null) <li><b>Additional Title ({{ \App\Models\Database::additionaltitletypeDisplay($database->additionaltitletype) }})</b>
 			@if ($database->additionaltitle != null) : {{ $database->additionaltitle }}@endif 
 		</li>@endif  
-		@if ($database->descriptiontype != null) <li><b>Description ({{ \App\Models\Database::descriptiontypedisplay($database->descriptiontype) }})</b>
+		@if ($database->descriptiontype != null) <li><b>Description ({{ \App\Models\Database::descriptiontypeDisplay($database->descriptiontype) }})</b>
 			@if ($database->description != null) : {{ $database->description }}@endif 
 		</li>@endif  
 		@if ($database->language != null) <li><b>Language</b>: {{ $database->language }}</li>@endif 

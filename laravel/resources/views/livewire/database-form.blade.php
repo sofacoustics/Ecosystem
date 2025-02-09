@@ -29,7 +29,7 @@
 		  <label for="resource" class="text-gray-700 mb-2 block font-bold">Resource Type (*) and optional Description:</label>
 			<select wire:model.live="resourcetype">
         <option value="">Select a resource type...</option>
-        @foreach(\App\Models\Database::resourcetypes() as $r => $t)
+        @foreach(\App\Models\Database::resourcetypesList() as $r => $t)
             <option value="{{ $r }}">{{ $t->display }}</option>
         @endforeach
 		  @error('resourcetype') <span class="text-red-500">{{ $message }}</span> @enderror
@@ -42,7 +42,7 @@
 		  <label for="rights" class="text-gray-700 mb-2 block font-bold">Rights (*): </label>
 			<select wire:model.live="controlledrights" required>
         <option value="">Select a license...</option>
-        @foreach(\App\Models\Database::controlledrights() as $r => $t)
+        @foreach(\App\Models\Database::controlledrightsList() as $r => $t)
             <option value="{{ $r }}">{{ $t->display }}</option>
         @endforeach
 		  @error('controlledrights') <span class="text-red-500">{{ $message }}</span> @enderror
@@ -57,7 +57,7 @@
 		  <label for="additionaltitle" class="text-gray-700 mb-2 block font-bold">Additional Title:</label>
 			<select wire:model.live="additionaltitletype">
         <option value="">Select a title type...</option>
-        @foreach(\App\Models\Database::additionaltitletypes() as $r => $t)
+        @foreach(\App\Models\Database::additionaltitletypesList() as $r => $t)
             <option value="{{ $r }}">{{ $t->display }}</option>
         @endforeach
 			</select>
@@ -69,7 +69,7 @@
 		  <label for="description" class="text-gray-700 mb-2 block font-bold">Description:</label>
 			<select wire:model.live="descriptiontype">
         <option value="">Select a description type...</option>
-        @foreach(\App\Models\Database::descriptiontypes() as $r => $t)
+        @foreach(\App\Models\Database::descriptiontypesList() as $r => $t)
             <option value="{{ $r }}">{{ $t->display }}</option>
         @endforeach
 			</select>

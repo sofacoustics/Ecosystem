@@ -80,42 +80,42 @@ class Database extends Model
 			return $result[0]->attributes['display'];
 		}
 		
-		static function resourcetypes()
+		static function resourcetypesList()
     {
         $rr = \App\Models\Radar\Metadataschema::where('name','resourceType')->select('display')->get();
 				return $rr;
     }
-		static function additionaltitletypedisplay($additionaltitletype)
+		static function additionaltitletypeDisplay($additionaltitletype)
 		{
 			$result = \App\Models\Radar\Metadataschema::where('id', $additionaltitletype)->select('display')->get();
 			return $result[0]->attributes['display'];
 		}
 		
-		static function additionaltitletypes()
+		static function additionaltitletypesList()
     {
         $rr = \App\Models\Radar\Metadataschema::where('name','additionalTitleType')->select('display')->get();
 				return $rr;
     }
 		
-		static function descriptiontypedisplay($descriptiontype)
+		static function descriptiontypeDisplay($descriptiontype)
 		{
 			$result = \App\Models\Radar\Metadataschema::where('id', $descriptiontype)->select('display')->get();
 			return $result[0]->attributes['display'];
 		}
 		
-		static function descriptiontypes()
+		static function descriptiontypesList()
     {
         $rr = \App\Models\Radar\Metadataschema::where('name','descriptionType')->select('display')->get();
 				return $rr;
     }
 
-		static function controlledrightsdisplay($controlledrights)
+		static function controlledrightsDisplay($controlledrights)
 		{
 			$result = \App\Models\Radar\Metadataschema::where('id', $controlledrights)->select('display')->get();
 			return $result[0]->attributes['display'];
 		}
 		
-		static function controlledrights()
+		static function controlledrightsList()
     {
         $rr = \App\Models\Radar\Metadataschema::where('name','controlledRights')->select('display')->get();
 				return $rr;
