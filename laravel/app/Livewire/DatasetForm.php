@@ -19,7 +19,6 @@ class DatasetForm extends Component
 
 	protected $rules = [
 		'name' => 'required',
-        'description' => 'required', /* really required? */
 	];
 
     public function mount($dataset = null)
