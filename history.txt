@@ -16,9 +16,9 @@ Done:
 * Rights (& controlledRights and optional additionalRights): done.
 * Publisher: (& nameIdentifier, nameIdentifierScheme, schemeURI): done as 1-n.
 * SubjectArea (& controlledSubjectArea and optional additionalSubjectArea): done as 1-n. 
+* RightsHolder (& optional nameIdentifier, nameIdentifierScheme,  schemeURI): tbd, 1-n.
 
 To be done (tbd): 
-* RightsHolder (& optional nameIdentifier, nameIdentifierScheme,  schemeURI): tbd, 1-n.
 * Keyword (& optional keywordScheme, schemeURI, valueURI, classificationCode): tbd, 0-n.
 * Contributor (& contributorType, contributorName): tbd, 0-n. 
 * DataSource (& dataSourceDetail): tbd as 0-n.

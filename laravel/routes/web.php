@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CreatorController;
 use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\SubjectAreaController;
+use App\Http\Controllers\RightsholderController;
 use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\DatafileController;
 use App\Http\Controllers\DatasetController;
@@ -54,6 +55,7 @@ Route::get('/databases/{database}/datasetdefs', [DatabaseController::class, 'dat
 Route::get('/databases/{database}/creators', [CreatorController::class, 'index'])->name('databases.creators');
 Route::get('/databases/{database}/publishers', [PublisherController::class, 'index'])->name('databases.publishers');
 Route::get('/databases/{database}/subjectareas', [SubjectAreaController::class, 'index'])->name('databases.subjectareas');
+Route::get('/databases/{database}/rightsholders', [RightsholderController::class, 'index'])->name('databases.rightsholders');
 
 // DATASET
 Route::resource('datasets', DatasetController::class);
@@ -69,6 +71,8 @@ Route::resource('creators', CreatorController::class);
 Route::resource('publishers', PublisherController::class);
 // SubjectAreas
 Route::resource('subjectareas', SubjectAreaController::class);
+// Rightsholders
+Route::resource('rightsholders', RightsholderController::class);
 /// WIDGETs
 Route::resource('widgets', WidgetController::class);
 /// TOOLS

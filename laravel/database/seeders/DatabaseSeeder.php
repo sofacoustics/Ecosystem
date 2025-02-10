@@ -71,6 +71,7 @@ class DatabaseSeeder extends Seeder
 						CreatorSeeder::class,
 						PublisherSeeder::class,
 						SubjectAreaSeeder::class,
+						RightsholderSeeder::class,
             /*
             RadardatasetresourcetypeSeeder::class,
             RadardatasetsubjectareaSeeder::class,

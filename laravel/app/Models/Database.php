@@ -69,6 +69,11 @@ class Database extends Model
         return $this->hasMany(SubjectArea::class); 
     }
 
+		public function rightsholders()
+    {
+        return $this->hasMany(Rightsholder::class); 
+    }
+
     public function radardataset(): HasOne
     {
         return $this->hasOne(Radardataset::class);
