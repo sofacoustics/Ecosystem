@@ -14,9 +14,9 @@ Done:
 * Creator: done, but 0-n (should be 1-n). 
 * Description (& descriptionType): done as 0-1 (0-n for later).
 * Rights (& controlledRights and optional additionalRights): done.
-* Publisher: (& nameIdentifier, nameIdentifierScheme, schemeURI): done as 1-n.
-* SubjectArea (& controlledSubjectArea and optional additionalSubjectArea): done as 1-n. 
-* RightsHolder (& optional nameIdentifier, nameIdentifierScheme,  schemeURI): tbd, 1-n.
+* Publisher: (& nameIdentifier, nameIdentifierScheme, schemeURI): done as 0-n.
+* SubjectArea (& controlledSubjectArea and optional additionalSubjectArea): done as 0-n. 
+* RightsHolder (& optional nameIdentifier, nameIdentifierScheme,  schemeURI): done as 0-n.
 
 To be done (tbd): 
 * Keyword (& optional keywordScheme, schemeURI, valueURI, classificationCode): tbd, 0-n.

@@ -61,7 +61,7 @@
 		@endforelse
 		</ul>
 
-		<h3>Rights Holders:
+		<h3>Rightsholders:
 			@auth
 				@if ($database->user_id == Auth::id())  {{-- If we own this database --}}
 					<a class="bg-green-100 inline" href="{{ route('databases.rightsholders', $database->id) }}">Edit</a>
@@ -78,7 +78,7 @@
 			@endif
 		</li>
 		@empty
-			<li>No rights holder defined.</li>
+			<li>No rightsholder defined.</li>
 		@endforelse
 		</ul>
 
