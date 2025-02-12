@@ -7,7 +7,13 @@ branch_name=$(git branch | grep "*" | sed "s/\* //")
 echo "branch: $branch_name"
 
 # we should be in the root folder of the git repository
+cd laravel
+
 echo "Running 'composer install'"
-cd laravel && composer install && cd ..
+composer install
+echo "Running ./artisan storage:unlink && ./artisan storage:link"
+./artisan storage:unlink && ./artisan storage:link
 echo "Running 'npm install and npm run build'"
-cd laravel && npm install && npm run build && cd ..
+npm install && npm run build
+
+cd ..
