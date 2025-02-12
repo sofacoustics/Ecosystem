@@ -46,7 +46,7 @@ return [
 
         'sonicom-data' => [
             'driver' => 'local',
-            'root' => env('STORAGE_PATH_SONICOM_DATA'), //jw:note use .env settings for root path
+            'root' => env('STORAGE_PATH_SONICOM_DATA',storage_path('app/public/data')), //jw:note use .env settings for root path
             'url' => env('APP_URL').'/data',
             'visibility' => 'public',
             'throw' => false,
@@ -79,7 +79,7 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
-        public_path('data') => env('STORAGE_PATH_SONICOM_DATA'),
+        public_path('data') => env('STORAGE_PATH_SONICOM_DATA',storage_path('app/public/data')),
     ],
 
 ];
