@@ -74,6 +74,11 @@ class Database extends Model
         return $this->hasMany(Rightsholder::class); 
     }
 
+		public function keywords()
+    {
+        return $this->hasMany(Keyword::class); 
+    }
+
     public function radardataset(): HasOne
     {
         return $this->hasOne(Radardataset::class);
