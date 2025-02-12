@@ -188,4 +188,6 @@ return [
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
+    //'app_storage_path' => env('APP_STORAGE_PATH', base_path().'/storage'), //jw:note - this would put cache files on the external disk too!
+
 ];

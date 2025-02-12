@@ -57,11 +57,11 @@ class DatasetdefForm extends Component
 		{
 			$this->datasetdef = new Datasetdef();
 		}
-		
+
 		$this->datasetdef->name = $this->name;
 		$this->datasetdef->database_id = $this->database->id;
-    $this->datasetdef->datafiletype_id = $this->datafiletype_id;
-		$this->datasetdef->widget_id = $this->widget_id;
+        $this->datasetdef->datafiletype_id = $this->datafiletype_id;
+        $this->datasetdef->widget_id = $this->widget_id > 0 ? $this->widget_id : null;
 		$this->datasetdef->save();
 
        session()->flash('message', $isNew ? 'Datasetdef created successfully.' : 'Datasetdef updated successfully.');

@@ -41,6 +41,8 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+//jw:note tried this but failed $app->useStoragePath(env('PUBLIC_STORAGE_PATH'));
+
 /*
 |--------------------------------------------------------------------------
 | Return The Application

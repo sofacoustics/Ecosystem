@@ -54,13 +54,11 @@ class DatafileUpload extends Component
         } else {
             // remove old files when editing existing file
             $this->datafile->clean(); //jw:todo
-            //jw:todo
-            //Storage::disk('public')->delete("$datafile->directory()/*");
         }
         $datafile->name = $this->file->getClientOriginalName();
         $datafile->save(); // save so datafile has ID (necessary for saving file)
         $directory = $datafile->directory();
-        $this->file->storeAs("$directory", "$datafile->name", 'public');
+        $this->file->storeAs("$directory", "$datafile->name", 'sonicom-data');
         // clean up
         $this->file->delete();
         $this->redirect(url()->previous()); //jw:note if the whole dataset view was a livewire component, then we wouldn't have to redirect.

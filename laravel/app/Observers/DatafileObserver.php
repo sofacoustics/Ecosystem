@@ -41,7 +41,6 @@ class DatafileObserver
         $path = $datafile->path();
         $name = $datafile->name;
         $location = $datafile->location;
-        $localpath = $datafile->localpath();
         // if location exists, then send to Octave job
         if($datafile->location != null)
         {
@@ -60,14 +59,11 @@ class DatafileObserver
             }
             else
                 app('log')->info('DatafileObserver::updated() - widget = ' . $widget);
-            $storage_path = storage_path();
-            $storage_disk_path = Storage::disk('public')->path($datafile->location);
-            $path = Storage::path($datafile->location);
-            app('log')->info('DatafileObserver::updated() - $widget->functionname = ' . $widget->functionname); 
+            $storage_disk_path = Storage::disk('sonicom-data')->path($datafile->location);
+            app('log')->info('DatafileObserver::updated() - $widget->functionname = ' . $widget->functionname);
             //jw:note If you want to debug a job, you *must* use the 'sync' queue, not the 'database' queue
-            app('log')->info('DatafileObserver::updated() - name = ' . $datafile->name . ' location = ' . $datafile->location . ' path = ' . $datafile->path() . ' storage_path = ' . $storage_path . ' storage_disk_path = ' . $storage_disk_path);
+            app('log')->info('DatafileObserver::updated() - name = ' . $datafile->name . ' location = ' . $datafile->location . ' path = ' . $datafile->path() . ' storage_disk_path = ' . $storage_disk_path . ' storage_disk_path = ' . $storage_disk_path);
             app('log')->info('DatafileObserver::updated() - $datafile->path() = ' . $datafile->path());
-            app('log')->info('DatafileObserver::updated() - $datafile->localpath() = ' . $datafile->localpath());
             app('log')->info('DatafileObserver::updated() - $datafile->absolutepath() = ' . $datafile->absolutepath());
 
             OctaveCli::dispatch($widget, $datafile);

@@ -31,6 +31,8 @@ class AppServiceProvider extends ServiceProvider
         //
         Datafile::observe(DatafileObserver::class);
 
+        //$this->app->useStoragePath(config('app.app_storage_path')); //jw:note this could be used to put all files including cache on external disk in conjunctino with app.php
+
         //jw:note throw excption if attemptinng to fill and unfillable attribute (https://laravel.com/docs/11.x/eloquent#mass-assignment-json-columns) for local development (production should still ignore silently).
         Model::preventSilentlyDiscardingAttributes($this->app->isLocal());
 	/*

@@ -47,11 +47,7 @@ class DatafileController extends Controller
      */
     public function show($id)
     {
-        //
-        //$contents = Storage::disk('public')->get('test.txt');
-        //print_r($contents);
         $datafile = \App\Models\Datafile::where('id', $id)->first();
-        //print_r($datafile);
         return view('datafiles.show', ['datafile' => $datafile]);
     }
 

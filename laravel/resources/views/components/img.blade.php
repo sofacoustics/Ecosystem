@@ -4,7 +4,6 @@
     'asset' => '',
     'class' => ''
 ])
-
 <div class="p-5">
     {{-- <p>img.blade.php</p> --}}
     @if ($asset == "")
