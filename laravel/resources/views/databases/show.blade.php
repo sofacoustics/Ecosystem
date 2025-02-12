@@ -82,6 +82,28 @@
 		@endforelse
 		</ul>
 
+		<h3>Keywords:
+			@auth
+				@if ($database->user_id == Auth::id())  {{-- If we own this database --}}
+					<a class="bg-green-100 inline" href="{{ route('databases.keywords', $database->id) }}">Edit</a>
+        @endif
+      @endauth
+		</h3>
+		<ul class="list-disc list-inside">
+		@forelse ($database->keywords as $keyword)
+		<li><b> {{ $keyword->keywordName }} </b> (
+			@if ($keyword->schemeURI != null)<a href="{{ $keyword->schemeURI }}"> @endif
+				{{$keyword->keywordScheme($keyword->keywordSchemeIndex)}}
+			@if ($keyword->schemeURI != null)</a> @endif </b>: 
+			@if ($keyword->valueURI != null)<a href="{{ $keyword->valueURI }}"> @endif
+			{{ $keyword->classificationCode }}
+			@if ($keyword->valueURI != null)</a> @endif )
+		</li>
+		@empty
+			<li>No keywords defined.</li>
+		@endforelse
+		</ul>
+
 		<h3>Metadata:
 			@auth
         @if ($database->user_id == Auth::id())  {{-- If we own this database --}}  
