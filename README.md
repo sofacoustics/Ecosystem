@@ -394,5 +394,6 @@ To                         Action      From
 If, when running `./artisan migrate:fresh --seed`, you get the error 'Spatie\Permission\Exceptions\PermissionAlreadyExists', you can fix this by running the following:
 
     ./artisan cache:forget spatie.permission.cache
+    ./artisan cache:clear
 
 
