@@ -11,6 +11,8 @@ cd laravel
 
 echo "Running 'composer install'"
 composer install
+echo "Running 'artisan migrate'"
+./artisan migrate
 echo "Running ./artisan storage:unlink && ./artisan storage:link"
 ./artisan storage:unlink && ./artisan storage:link
 echo "Running 'npm install and npm run build'"

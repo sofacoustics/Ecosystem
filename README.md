@@ -125,11 +125,15 @@ And the default .launch Listen for debug
 
 ## git
 
-If you are pushing to a remote git repository, then a post-receive hook should run:
+### git hooks
 
-* composer install
-* php artisan migrate
-* php artisan db:seed
+#### post-merge
+
+If you are pulling from master/origin you should link the post-merge hook into the .git/hooks director with:
+
+    cd .git/hooks && ln -s ../../git-hooks/post-merge post-merge
+
+This will do the stuff necessary to update your local code, e.g. run composer install, ./artisan migrate, etc. See the file for details 'git-hooks/post-merge'
 
 ## TODO
 
