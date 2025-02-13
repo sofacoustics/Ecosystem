@@ -387,12 +387,12 @@ To                         Action      From
 8081 (v6)                  ALLOW       Anywhere (v6)
 1433 (v6)                  ALLOW       Anywhere (v6)
 
+## Troubleshooting
 
-a
-a
-a
-a
-a
-a
-a
-a
+### Error "Spatie\Permission\Exceptions\PermissionAlreadyExists" when running ./artisan migrate:fresh --seed
+
+If, when running `./artisan migrate:fresh --seed`, you get the error 'Spatie\Permission\Exceptions\PermissionAlreadyExists', you can fix this by running the following:
+
+    ./artisan cache:forget spatie.permission.cache
+
+
