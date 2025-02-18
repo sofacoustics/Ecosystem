@@ -56,11 +56,18 @@ class DatafileUpload extends Component
             $this->datafile->clean(); //jw:todo
         }
         $datafile->name = $this->file->getClientOriginalName();
+        //session()->flash('status', "Datafile (id=$datafile->id) is being saved to the database");
         $datafile->save(); // save so datafile has ID (necessary for saving file)
         $directory = $datafile->directory();
+        //$this->dispatch('saving-file', name: $datafile->name); // dispatch a browser event
+        $this->dispatch('showFlashMessage', ['type' => 'success', 'message' => 'storeAs']);
+        //session()->flash('status', "Datafile $datafile->name is being saved to disk");
         $this->file->storeAs("$directory", "$datafile->name", 'sonicom-data');
         // clean up
         $this->file->delete();
+        //jw:note 'navigate: true' means that livewire retrieves the page in the background.
+        //jw:note This means we may be able to load multiple files concurrently.
+        //$this->redirect(url()->previous(), navigate: true);
         $this->redirect(url()->previous()); //jw:note if the whole dataset view was a livewire component, then we wouldn't have to redirect.
     }
 
