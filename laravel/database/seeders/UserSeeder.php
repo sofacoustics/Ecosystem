@@ -33,6 +33,12 @@ class UserSeeder extends Seeder
             'name' => 'Jonnie User',
             'email' => 'jonathan.stuefer@oeaw.ac.at',
             'password' => '$2y$10$eljLQEcv5TU/7sgcBQZCMupOVkHPKIrPPXOgKmSs/MKlI9i.Mnp66'
-           ]);
+        ]);
+        $user = User::create([
+            'name' => 'Michael Mihocic',
+            'email' => 'michael.mihocic@oeaw.ac.at',
+            'password' => '$2y$10$en9XzixWc7wEn25LoZOn8.M7DYodeQa7T2najcOp1h5B/OCMiPKS6'
+        ]);
+
     }
 }
