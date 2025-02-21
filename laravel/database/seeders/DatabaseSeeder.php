@@ -62,6 +62,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             DatasetSeeder::class,
             DatafiletypeSeeder::class,
+            ServiceSeeder::class,
             WidgetSeeder::class,
             DatasetdefSeeder::class,
             DatafileSeeder::class,

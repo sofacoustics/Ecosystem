@@ -253,6 +253,16 @@ A 'datasetdef' is a definition of which datatypes are in each dataset. E.g. a da
 
 A datafile associated with a dataset. E.g. one SOFA file or one PNG
 
+### service
+
+E.g. Octave
+
+The service is started via a job and can be passed dynamic parameters. A widget can be linked to a service and specify parameters.
+
+### widget
+
+A widget is a way of processing and displaying data. It could be just a simple image display, or a file name / parameter listing. However, it could also be linked to a service.
+
 ## Laravel
 
 ### Logs

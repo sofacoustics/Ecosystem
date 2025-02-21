@@ -11,36 +11,26 @@
     <p>This dataset contains {{ count($dataset->datafiles) }} files</p>
     {{-- <p>This dataset contains <livewire:dataset.datafile-counter :dataset="$dataset" /> files.</p> --}}
 
-    <div>
+    <div class="ml-2">
         @foreach ($dataset->datafiles as $datafile)
             <div wire:key="{{ $datafile->id }}">
-                @if (!$datafile->isImage())
-                    {{-- @livewire(DatafileListener::class, ['datafile' => $datafile]) --}}
-                    <x-property name="File">
-                        <a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a>
-                    </x-property>
-                    <livewire:DatafileListener :datafile="$datafile" :key="$datafile->id" />
-                    @can('delete', $datafile)
-                        <x-button method="DELETE" action="{{ route('datafiles.destroy', [$datafile]) }}">
-                            Delete
-                        </x-button>
-                    @endcan
-                @else
-                    <div>
-                        <x-property name="File">
-                            <a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a>
-                        </x-property>
-                        <x-img class="p-2 " asset="{{ $datafile->asset() }}" />
-                        @can('delete', $datafile)
-                            <x-button method="DELETE" action="{{ route('datafiles.destroy', [$datafile]) }}">
-                                Delete
-                            </x-button>
-                        @endcan
-                    </div>
-                @endif
+                {{-- @livewire(DatafileListener::class, ['datafile' => $datafile]) --}}
+                <x-property name="File">
+                    <a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a>
+                </x-property>
+                <x-property name="Widget">
+                    <a href="{{ route('widgets.show', $datafile->datasetdef->widget->id) }}">{{ $datafile->datasetdef->widget->name }}</a>
+                </x-property>
+                <livewire:DatafileListener :datafile="$datafile" :key="$datafile->id" />
+                @can('delete', $datafile)
+                    <x-button method="DELETE" action="{{ route('datafiles.destroy', [$datafile]) }}">
+                        Delete
+                    </x-button>
+                @endcan
             </div>
         @endforeach
     </div>
+
     @if (count($dataset->datafiles) < count($dataset->database->datasetdefs))
         <p>According to the dataset definition, the following
             {{ count($dataset->database->datasetdefs) - count($dataset->datafiles) }} files are missing:</p>

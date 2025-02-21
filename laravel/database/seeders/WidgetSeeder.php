@@ -14,21 +14,23 @@ class WidgetSeeder extends Seeder
      */
     public function run(): void
     {
-       Widget::create(array('name' => 'Octave HRTF', 
-        'description' => 'Generate HRTF images from HRTF SOFA files using octave script ...', 
-        'scriptname' => 'CreateFigures.m',
-        'scriptpath' => 'jw:todo',
-        'scriptparameters' => 'jw:todo',
-        'functionname' => 'CreateFigures',
-        'externalurl' => null
+        Widget::create(array('name' => 'Properties',
+            'description' => 'Display datafile properties',
+            'view' => 'properties',
         ));
-       Widget::create(array('name' => 'Octave BRIR', 
-        'description' => 'Generate ... for BRIR files', 
-        'scriptname' => 'jw:todo',
-        'scriptpath' => 'jw:todo',
-        'scriptparameters' => 'jw:todo',
-        'externalurl' => null
-    ));
-        //
+        Widget::create(array('name' => 'HRTF - ETC and Magnitude (3 images)',
+            'description' => 'Plot and display ETC horizontal plane, magnitude spectrum in the median plane, channel 2, and non-normalized magnitude spectrum in the median plane, channel 1 using Octave script CreateFigures.m',
+            'service_id' => 1,
+            'view' => 'hrtf-3-images',
+        ));
+        Widget::create(array('name' => 'Image',
+            'description' => 'Display an image',
+            'view' => 'image',
+        ));
+        Widget::create(array('name' => 'HRTF - ETC (1 image)',
+            'description' => 'Plot and display ETC horizontal plane using Octave CreateFigures.m script',
+            'service_id' => 2,
+            'view' => 'hrtf-1-image',
+        ));
     }
 }

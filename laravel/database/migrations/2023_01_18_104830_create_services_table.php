@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('widgets', function (Blueprint $table) {
+        Schema::create('services', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('description');
-            $table->string('view')->nullable()->default('properties'); // a string identifying the view to use with this widget
-            $table->foreignId('service_id')
-                ->nullable()
-                ->constrained();
+            $table->string('name'); // displayed in GUI
+            $table->string('exe'); // exe to run e.g. octave-cli
+            $table->string('file'); // file to run e.g. CreateFigures.m
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('widgets');
+        Schema::dropIfExists('services');
     }
 };

@@ -10,6 +10,7 @@ use Livewire\Component;
 use App\Models\Datafile;
 use App\Models\Datasetdef;
 use App\Models\Datafiletype;
+use App\Models\Widget;
 
 class DatafileListener extends Component
 {
@@ -18,6 +19,7 @@ class DatafileListener extends Component
     public Datafile $datafile;
     public Datasetdef $datasetdef;
     public Datafiletype $datafiletype;
+    public Widget $widget;
 
     public function mount(Datafile $datafile)
     {
@@ -26,6 +28,7 @@ class DatafileListener extends Component
         $this->id = $datafile->id;
         $this->datasetdef = $datafile->datasetdef;
         $this->datafiletype = $datafile->datasetdef->datafiletype;
+        $this->widget = $datafile->datasetdef->widget;
 
     }
     public function mounted()
@@ -43,6 +46,12 @@ class DatafileListener extends Component
 
     public function render()
     {
+        $view = "livewire.datafiles.".$this->widget->view;
+        if(!isset($this->datafile) || !View::exists($view))
+        {
+            $view = 'livewire.datafiles.generic';
+        }
+        return view($view);
         //dd($this->datafile->datasetdef->datafiletype->id);
         if($this->id == "undefined")
             return view('livewire.datafiletype-generic');
