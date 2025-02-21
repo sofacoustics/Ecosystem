@@ -13,6 +13,7 @@ use App\Http\Controllers\DatasetController;
 use App\Http\Controllers\DatasetdefController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RadarController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ToolController;
 use Illuminate\Support\Facades\Route;
 
@@ -81,6 +82,8 @@ Route::resource('keywords', KeywordController::class);
 Route::resource('widgets', WidgetController::class);
 /// TOOLS
 Route::resource('tools', ToolController::class);
+/// SERVICEs
+Route::resource('services', ServiceController::class);
 
 
 /// Backend (Filament)

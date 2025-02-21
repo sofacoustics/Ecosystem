@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->string('name'); // displayed in GUI
+            $table->string('description'); // displayed in GUI
             $table->string('exe'); // exe to run e.g. octave-cli
-            $table->string('file'); // file to run e.g. CreateFigures.m
+            $table->string('parameters'); // file to run e.g. CreateFigures.m
             $table->timestamps();
         });
     }
