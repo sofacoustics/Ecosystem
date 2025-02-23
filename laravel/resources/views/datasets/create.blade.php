@@ -24,7 +24,8 @@
 		{
 			let fn_pattern = document.getElementById("fn_pattern").value;
 			let id_pattern = document.getElementById("id_pattern").value;
-			let s=fn_pattern + "; ID Pattern: " + id_pattern + "\n";
+			let s=""; //+fn_pattern + "; ID Pattern: " + id_pattern + "\n";
+			console.log(fn_pattern); 
 			if (this.type === "file") 
 			{
 				for (let i = 0; i < this.files.length; i++) 
@@ -40,12 +41,12 @@
 						let end_num = fn.search(postfix); // zahl ende: beginn von postfix gefunden in fn
 						let num = fn.substring(beg_num,end_num); // Nummer <NUM> gefunden
 						let id = id_pattern.replace("<NUM>", num); // baue neue ID zusammen
-						s = s + fn + ": ID: " + id + " filename: " + fn + "\n";
+						s = s + fn + ": <b>ID</b>: " + id + "<br>";
 					}
 				else
-				{ s = s + fn + ": skipped\n"; }
+				{ s = s + fn + ": skipped<br>"; }
 			}
-			document.getElementById("results").innerText = s;
+			document.getElementById("results").innerHTML = s;
 		}
   }; });
 	</script>
