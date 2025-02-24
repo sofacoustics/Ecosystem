@@ -16,7 +16,7 @@
             <div wire:key="{{ $datafile->id }}">
                 {{-- @livewire(DatafileListener::class, ['datafile' => $datafile]) --}}
                 <x-property name="File">
-                    <a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a>
+                    <a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a> @role('admin') (ID: {{ $datafile->id }}) @endrole
                 </x-property>
                 @if ($datafile->datasetdef->widget()->exists())
                     <x-property name="Widget">

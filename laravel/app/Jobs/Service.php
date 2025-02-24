@@ -41,7 +41,8 @@ class Service implements ShouldQueue
         app('log')->info('Service::handle() - $this->service->id = ' . $service->id);
         $directory=storage_path('app/services/' . $service->id);
         app('log')->info('Service::handle() - $directory= ' . $directory);
-        $process = $service->exe . ' ' . $service->file . ' "' . $this->datafile->absolutepath() . '"';
+        app('log')->info('Service::handle() - $service->parameters= ' . $service->parameters);
+        $process = $service->exe . ' ' . $service->parameters . ' "' . $this->datafile->absolutepath() . '"';
         app('log')->info('Service::handle() - $process = ' . $process);
         app('log')->info('Service::handle() - run process');
         $result = Process::quietly()->path($directory)->run($process);

@@ -46,7 +46,8 @@ class DatafileListener extends Component
 
     public function render()
     {
-        $view = "livewire.datafiles.".$this?->widget && $this->widget?->view ? $this->widget->view : 'generic' ;
+        //dd($this->widget->view);
+        $view = $this?->widget && $this->widget?->view ? "livewire.datafiles.".$this->widget->view : 'livewire.datafiles.generic' ;
         if(!View::exists($view))
             $view = 'livewire.datafiles.generic';
         return view($view);
