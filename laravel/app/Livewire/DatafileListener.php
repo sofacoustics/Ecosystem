@@ -19,7 +19,7 @@ class DatafileListener extends Component
     public Datafile $datafile;
     public Datasetdef $datasetdef;
     public Datafiletype $datafiletype;
-    public Widget $widget;
+    public ?Widget $widget; // may be null
 
     public function mount(Datafile $datafile)
     {
@@ -46,27 +46,9 @@ class DatafileListener extends Component
 
     public function render()
     {
-        $view = "livewire.datafiles.".$this->widget->view;
-        if(!isset($this->datafile) || !View::exists($view))
-        {
+        $view = "livewire.datafiles.".$this?->widget && $this->widget?->view ? $this->widget->view : 'generic' ;
+        if(!View::exists($view))
             $view = 'livewire.datafiles.generic';
-        }
-        return view($view);
-        //dd($this->datafile->datasetdef->datafiletype->id);
-        if($this->id == "undefined")
-            return view('livewire.datafiletype-generic');
-        else{
-            $this->datasetdef = $this->datafile->datasetdef;
-            $this->datafiletype = $this->datasetdef->datafiletype;
-        }
-        //jw:todo do these really need to be livewire views?
-        //jw:note This does not neccessarily have to be a livewire view.
-        $view = 'livewire.datafiletypes.datafiletype-'.$this->datafiletype->id;
-        //$view = 'datafiletypes.datafiletype-'.$this->datafiletype->id;
-        if(!isset($this->datafile) || !View::exists($view))
-        {
-            $view = 'livewire.datafiletypes.datafiletype-generic';
-        }
         return view($view);
     }
 }

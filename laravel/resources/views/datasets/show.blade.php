@@ -18,9 +18,11 @@
                 <x-property name="File">
                     <a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a>
                 </x-property>
-                <x-property name="Widget">
-                    <a href="{{ route('widgets.show', $datafile->datasetdef->widget->id) }}">{{ $datafile->datasetdef->widget->name }}</a>
-                </x-property>
+                @if ($datafile->datasetdef->widget()->exists())
+                    <x-property name="Widget">
+                        <a href="{{ route('widgets.show', $datafile->datasetdef->widget->id) }}">{{ $datafile->datasetdef->widget->name }}</a>
+                    </x-property>
+                @endif
                 <livewire:DatafileListener :datafile="$datafile" :key="$datafile->id" />
                 @can('delete', $datafile)
                     <x-button method="DELETE" action="{{ route('datafiles.destroy', [$datafile]) }}">
