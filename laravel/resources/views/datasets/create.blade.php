@@ -13,38 +13,48 @@
 			<input type="file" id="files" webkitdirectory mozdirectory />
 		</p>
 		<p>Input the pattern for the filename:<input type="text" id="fn_pattern" value="hrtf b_nh<NUM>.sofa"/></p>
-		<p>Input the pattern for the ID:<input type="text" id="id_pattern" value="NH<NUM>" /></p>
-		<h3>Analysis results:<h3>
+		<p>Input the pattern for the dataset name:<input type="text" id="id_pattern" value="NH<NUM>" /></p>
+		<h3>Analysis results:</h3>
 		<p id="results"></p>
 		
 		<script>
-		var inps = document.querySelectorAll('input');
+var inps = document.querySelectorAll('input');
 		[].forEach.call(inps, function(inp) {
 		inp.onchange = function(e) 
 		{
 			let fn_pattern = document.getElementById("fn_pattern").value;
+			let fn_filter = RegExp(fn_pattern.replace("<NUM>", "[0-9]+"));
+			let end_filter = fn_pattern.indexOf(">")+"[0-9]+".length-"<NUM>".length; // find the end of the number
+			let postfix = fn_pattern.substring(end_filter); // hole den postfix, d.h., text nach <NUM> raus
+			let beg_num = fn_pattern.indexOf("<"); // zahl anfang: index von < in fn_pattern
 			let id_pattern = document.getElementById("id_pattern").value;
-			let s=""; //+fn_pattern + "; ID Pattern: " + id_pattern + "\n";
-			console.log(fn_pattern); 
+			let s=""; 
+			console.log(fn_pattern);
+      if (fn_pattern.indexOf("/") >= 0)
+      { s = "<b>Nested mode:</b><br>"; } else { s = "<b>Flat mode:</b><br>"; }
 			if (this.type === "file") 
 			{
 				for (let i = 0; i < this.files.length; i++) 
-				{ 
-					fn = this.files[i].name;
-					let fn_filter = RegExp(fn_pattern.replace("<NUM>", "[0-9]+"));
+				{   
+          if (fn_pattern.indexOf("/") >= 0)
+          {   // we have a directory in the pattern
+            fn = this.files[i].webkitRelativePath;
+            fn = fn.substring(fn.indexOf("/")+1); // remove the root directory
+          }
+          else
+          {	// we don't have a directory, use the filename
+          	fn = this.files[i].name;
+          }
 					let hit = fn_filter.test(fn);
 					if (hit)
 					{
-						let end_filter = fn_pattern.indexOf(">")+"[0-9]+".length-"<NUM>".length; // find the end of the number
-						let postfix = fn_pattern.substring(end_filter); // hole den postfix, d.h., text nach <NUM> raus
-						let beg_num = fn_pattern.indexOf("<"); // zahl anfang: index von < in fn_pattern
 						let end_num = fn.search(postfix); // zahl ende: beginn von postfix gefunden in fn
 						let num = fn.substring(beg_num,end_num); // Nummer <NUM> gefunden
 						let id = id_pattern.replace("<NUM>", num); // baue neue ID zusammen
-						s = s + fn + ": <b>ID</b>: " + id + "<br>";
+						s = s + fn + ": <b>Dataset name:</b> " + id + "<br>" ;
 					}
-				else
-				{ s = s + fn + ": skipped<br>"; }
+					else
+					{ s = s + fn + ": <b>skipped</b> <br>"; }
 			}
 			document.getElementById("results").innerHTML = s;
 		}
