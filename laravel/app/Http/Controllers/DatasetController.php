@@ -10,6 +10,18 @@ use App\Models\Dataset;
 
 class DatasetController extends Controller
 {
+    public function __construct()
+    {
+        // It would be possible to authorize functions using policy with this code,
+        // which would mean we don't need to specify it in every function.
+        // Since we are calling this controller via multiple routes, however, I'm
+        // not sure how to do this.
+        /*
+        $this->authorizeResource(Dataset::class, 'dataset', [
+            'except' => [ 'index', 'show', 'create' ],
+        ]);
+        */
+    }
     /**
      * Display a listing of the resource.
      */
