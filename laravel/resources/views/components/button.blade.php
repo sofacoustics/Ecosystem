@@ -5,7 +5,7 @@
 
         method     	The form method.
 		action 		??
-		type	   	button|submit|reset  Default: submit
+		type	   	button|submit|reset  Default: 'submit' for 'action' buttons, 'button' otherwise
 
     Example:
 

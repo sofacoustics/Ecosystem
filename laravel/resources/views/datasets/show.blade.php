@@ -10,7 +10,6 @@
     <h3>Files</h3>
     <p>This dataset contains {{ count($dataset->datafiles) }} files</p>
     {{-- <p>This dataset contains <livewire:dataset.datafile-counter :dataset="$dataset" /> files.</p> --}}
-
     <div class="ml-2">
         @foreach ($dataset->datafiles as $datafile)
             <div wire:key="{{ $datafile->id }}">

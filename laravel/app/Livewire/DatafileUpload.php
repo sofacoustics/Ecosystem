@@ -3,9 +3,11 @@
 namespace App\Livewire;
 
 use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\Facades\Validator;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\Attributes\On;
 
 use App\Models\Datafile;
 use App\Models\Dataset;
@@ -27,20 +29,69 @@ class DatafileUpload extends Component
     public function mount()
     {
         //jw:note doesn't appear to work. $this->authorize('create', $this->dataset);
+		\Log::info("DatafileUpload::mount()");
     }
 
-    public function updated($property)
+
+    #[On('livewire-upload-cancel')]
+    public function handleCancelUpload()
     {
-        if ("$property" == 'file') {
-            /*
-             * Save the file immediately, so user doesn't have to press a 'submit' button
-             */
-            $this->save();
-        }
+        // Handle the cancellation
+		\Log::info("DatafileUpload::handleCancelUpload()");
+		//dd('handleCancelUpload()');
+        // For example, reset any related properties or perform cleanup
+    }
+
+	public function updatedFile()
+	{
+		//dd(true);
+		\Log::info("updatedFile()");
+		try {
+			$this->validate($this->rules());
+			\Log::info("validation passed");
+			$this->save();
+		} catch (\Illuminate\Validation\ValidationException $e) {
+			\Log::info("validation failed");
+			//dd($e);
+			\Log::info("deleting file");
+			$this->file->delete(); // deletes the temporary file
+			\Log::info("resetting 'file'");
+			$this->reset('file');
+			\Log::info("Setting 'file' to null");
+			$this->file = null;
+			\Log::info("Setting custom validation error message");
+			$this->addError('file', $e->getMessage()); // error messages weren't appearing without this, when using try/catch!
+		}
+	}
+
+    protected function rules()
+    {
+		$requiredMimetypes = $this->datasetdef->datafiletype->mimetypes;
+		if($requiredMimetypes != "")
+			$mimetypes="|mimetypes:$requiredMimetypes";
+
+		return [
+			'file' => "required$mimetypes",
+		];
+
     }
 
     public function save()
     {
+		if(!$this->file)
+		{
+			\Log::info("DatafileUpload::save() - $this->file is empty, so returning early!");
+			return;
+		}
+		\Log::info("DatafileUpload::save()");
+		// https://www.iana.org/assignments/media-types/media-types.xhtml#audio
+        $requiredMimetypes = $this->datasetdef->datafiletype->mimetypes;
+        \Log::info("Required MIME type: {$requiredMimetypes}");
+        $mimetype = $this->file->getMimeType();
+        \Log::info("Uploaded file MIME type: {$mimetype}");
+
+		$this->validate();
+
         $this->authorize('update', $this->dataset); // check if dataset can be modified
         //
         // if datafile doesn't exist, create it here!
@@ -63,6 +114,7 @@ class DatafileUpload extends Component
         $this->dispatch('showFlashMessage', ['type' => 'success', 'message' => 'storeAs']);
         //session()->flash('status', "Datafile $datafile->name is being saved to disk");
         $this->file->storeAs("$directory", "$datafile->name", 'sonicom-data');
+        //$this->validate();
         // clean up
         $this->file->delete();
         //jw:note 'navigate: true' means that livewire retrieves the page in the background.

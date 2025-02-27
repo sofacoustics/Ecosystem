@@ -14,7 +14,7 @@ class DatafilePolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -22,7 +22,7 @@ class DatafilePolicy
      */
     public function view(User $user, Datafile $datafile): bool
     {
-        //
+        return true;
     }
 
     /**
