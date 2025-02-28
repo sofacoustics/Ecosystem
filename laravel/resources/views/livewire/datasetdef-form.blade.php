@@ -48,7 +48,7 @@
                     @enderror
                 </div>
                 <div class="mt-4">
-                    <x-button>
+                    <x-button type="submit">
                         {{ $datasetdef ? 'Update Datasetdef' : 'Create Datasetdef' }}
                     </x-button>
 
