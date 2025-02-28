@@ -52,7 +52,7 @@
                 @endif
             @endif
     @endif
-    <button {{ $attributes->except(['action', 'type']) }} type="{{ $type }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold mx-1 my-1 py-1 px-2 rounded">
+    <button {{ $attributes->except(['action', 'type', 'class']) }} type="{{ $type }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold mx-1 my-1 py-1 px-2 rounded">
         {{ $slot }}
     </button>
     @if ($attributes->has('action'))
