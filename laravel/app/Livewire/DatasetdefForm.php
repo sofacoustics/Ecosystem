@@ -38,8 +38,10 @@ class DatasetdefForm extends Component
 		else
 		{
 			$this->datafiletype_id = null;
-			$this->database_id = $this->database->id;
-		}
+            $this->database_id = $this->database->id;
+        }
+        if($this->widget_id == null)
+            $this->widget_id = 1; // default widget
 		assert($this->database->id == $this->datasetdef->id);
 
         $this->datafiletypes = \App\Models\Datafiletype::all();

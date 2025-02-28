@@ -1,25 +1,24 @@
 @php
     // https://laravel.com/docs/11.x/blade#conditional-classes
-    $labelClass = "text-gray-700 mb-2 block font-bold";
-    $selectClass = "form-control text-gray-700 rounded-lg mb-2 block font-bold";
-    $inputClass = "text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none";
-    $buttonClass = "bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white";
+    $labelClass = 'text-gray-700 mb-2 block font-bold';
+    $selectClass = 'form-control text-gray-700 rounded-lg mb-2 block font-bold';
+    $inputClass = 'text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none';
+    $buttonClass = 'bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white';
 @endphp
 <div>
     @auth
         @if (Auth::user()->id == $database->user_id)
             <p>
-                @if($datasetdef)
+                @if ($datasetdef)
                     <h3>Edit the definition of the datafile:</h3>
                 @else
-										<h3>New definition of a datafile:</h3>
+                    <h3>New definition of a datafile:</h3>
                 @endif
             </p>
             <form wire:submit.prevent="save">
                 <div class="mb-4">
                     <label for="Name" class="{{ $labelClass }}">Datafile Name:</label>
-                    <input wire:model="name" type="text" id="name"
-                        class="{{ $inputClass }}" required />
+                    <input wire:model="name" type="text" id="name" class="{{ $inputClass }}" required />
                     @error('name')
                         <span class="text-red-500">{{ $message }}</span>
                     @enderror
@@ -39,9 +38,9 @@
                 <div>
                     <label class="{{ $labelClass }}" for="widget">Linked Widget:</label>
                     <select class="{{ $selectClass }}" id="widget" wire:model="widget_id">
-                        <option value="">Select a widget</option>
+                        <option value="" disabled>Select a widget</option>
                         @foreach ($widgets as $widget)
-                            <option value="{{ $widget->id }}">{{ $widget->name }}</option>
+                            <option value="{{ $widget->id }}">{{ $widget->name }} </option>
                         @endforeach
                     </select>
                     @error('widget_id')
@@ -57,5 +56,5 @@
             </form>
         @endif
     @endauth
-<p>resources\views\livewire\datasetdef-form.blade.php</p>
+    <p>resources\views\livewire\datasetdef-form.blade.php</p>
 </div>
