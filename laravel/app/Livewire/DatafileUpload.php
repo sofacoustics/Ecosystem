@@ -68,10 +68,10 @@ class DatafileUpload extends Component
     {
 		$requiredMimetypes = $this->datasetdef->datafiletype->mimetypes;
 		if($requiredMimetypes != "")
-			$mimetypes="|mimetypes:$requiredMimetypes";
+			$requiredMimetypes="|mimetypes:$requiredMimetypes";
 
 		return [
-			'file' => "required$mimetypes",
+			'file' => "required$requiredMimetypes",
 		];
 
     }
