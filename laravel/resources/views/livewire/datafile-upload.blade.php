@@ -25,11 +25,11 @@
                         <x-button type="button" wire:click="$cancelUpload('file')">Cancel Upload</x-button>
                     </div>
                     <div class="bg-gray-100">
-                        <div wire:loading>Livewire communication with server</div>
+                        {{-- <div wire:loading>Livewire communication with server</div> --}}
                         <x-message show="cancelled" timeout="2000">The upload has been cancelled</x-message>
                         <x-message show="error">Error: there was an error uploading</x-message>
                         <x-message show="uploading">Uploading to server</x-message>
-                        <x-message show="finished" timeout="5000">Upload finished</x-message>
+                        {{-- <x-message show="finished" timeout="5000">Upload finished</x-message> --}}
                     </div>
                 </div>
                 <x-error attribute='file' />

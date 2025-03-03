@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description');
-            $table->string('view')->nullable()->default('properties'); // a string identifying the view to use with this widget
+            $table->string('view')->default('properties'); // a string identifying the view to use with this widget
             $table->foreignId('service_id')
                 ->nullable()
                 ->constrained();

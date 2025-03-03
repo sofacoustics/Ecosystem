@@ -32,9 +32,9 @@ class WidgetSeeder extends Seeder
             'service_id' => 2,
             'view' => 'hrtf-1-image',
         ));
-        Widget::create(array('name' => 'Images',
-            'description' => 'Display all images associated with this datafile.',
-            'view' => 'images',
+        Widget::create(array('name' => 'Audio',
+            'description' => 'Display an audio player for the audio file.',
+            'view' => 'audio',
         ));
     }
 }
