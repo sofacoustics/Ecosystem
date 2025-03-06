@@ -52,6 +52,12 @@ class DatasetController extends Controller
         return view('datasets.create', ['database' => $database]);
     }
 
+    public function bulkupload(Database $database)
+    {
+        //dd($database);
+        return view('datasets.bulkupload', ['database' => $database]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */

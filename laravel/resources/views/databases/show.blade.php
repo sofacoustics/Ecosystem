@@ -157,12 +157,17 @@
         @can('create', [App\Models\Dataset::class, $database])
             {{-- jw:todo move to policy If there's a datasetdef, then we can create a dataset --}}
             @if(count($database->datasetdefs))
-                {{-- <a href="{{ route('databases.datasets.create', $database->id) }}">(New)</a><br> --}}
                 <x-button
                     method="GET"
                     action="{{ route('databases.datasets.create', [$database->id]) }}"
                     class="inline">
                     New
+                </x-button>
+                <x-button
+                    method="GET"
+                    action="{{ route('databases.datasets.bulkupload', [$database->id]) }}"
+                    class="inline">
+                    Bulk Upload
                 </x-button>
             @endif
         @endcan
