@@ -15,7 +15,19 @@
 		<p>Input the pattern for the filename:<input type="text" id="fn_pattern" value="hrtf b_nh<ID>.sofa"/></p>
 		<p>Input the pattern for the dataset name:<input type="text" id="name_pattern" value="NH<ID>" /></p>
 		<h3>Analysis results:</h3>
-		<p id="results"></p>
+		<p id="mode"></p>
+		<table id="results" border="1"> 
+        <thead> 
+            <tr> 
+                <th align="center">ID</th> 
+                <th align="center">{{ $database->title }}</th> 
+            </tr> 
+        </thead> 
+        <tbody> 
+            <!-- Rows will be added here --> 
+        </tbody> 
+    </table> 
+		<p id="skipped"></p>
 		
 		<script>
 var inps = document.querySelectorAll('input');
@@ -43,12 +55,15 @@ var inps = document.querySelectorAll('input');
 			console.log([fn_pattern, fn_filter, end_filter, postfix, beg_id]);
 
       if (fn_pattern.indexOf("/") >= 0)
-				s = "<b>Nested mode:</b><br>";
+				document.getElementById("mode").innerHTML = "<b>Nested mode</b>";
 			else
-				s = "<b>Flat mode:</b><br>";
+				document.getElementById("mode").innerHTML = "<b>Flat mode</b>";
 			
 			if (this.type === "file") 
-			{
+			{ 
+				s="<b>Skipped:</b><br>";
+				const tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
+				tableBody.innerHTML = "";
 				for (let i = 0; i < this.files.length; i++) 
 				{   
           if (fn_pattern.indexOf("/") >= 0)
@@ -65,13 +80,19 @@ var inps = document.querySelectorAll('input');
 					{
 						let end_id = fn.search(postfix); // zahl ende: beginn von postfix gefunden in fn
 						let id = fn.substring(beg_id,end_id); // Nummer <ID> gefunden
-						let name = name_pattern.replace("<ID>", id); // baue neue ID zusammen*/
-						s = s + fn + ": <b>Dataset name:</b> " + name + "<br>" ;
+						let name = name_pattern.replace("<ID>", id); // baue neue ID zusammen
+						const newRow = tableBody.insertRow();  
+							// Insert new cells (columns) into the row 
+						const cell1 = newRow.insertCell(0); 
+						const cell2 = newRow.insertCell(1); 
+							// Add data to the cells 
+						cell1.textContent = name; // Replace with actual data 
+						cell2.textContent = fn;        // Replace with actual data 
 					}
 					else
-					{ s = s + fn + ": <b>skipped</b> <br>"; }
-			}
-			document.getElementById("results").innerHTML = s;
+					{ s = s + fn + "<br>"; }
+				}
+				document.getElementById("skipped").innerHTML = s;
 		}
   }; });
 	</script>
