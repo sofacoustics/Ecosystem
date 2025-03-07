@@ -19,12 +19,12 @@
         Delete
     </x-button>
 @endcan
-@can('update', $datasetdef)
+{{-- @can('update', $datasetdef) --}}
     <x-button
         method="GET"
         action="{{ route('datasetdefs.edit', [$datasetdef]) }}"
         class="inline">
         Edit
     </x-button>
-@endcan
+		{{-- @endcan --}}
 <p>resources\views\components\datasetdef\show.blade.php</p>

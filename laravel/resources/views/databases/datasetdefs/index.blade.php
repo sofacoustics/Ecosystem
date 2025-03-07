@@ -14,7 +14,7 @@
         @if(count($database->datasets) == 0)
             <livewire:datasetdef-form :database=$database />
         @else
-            <p>The dataset definition is locked because the database contains datasets.</p>
+            <p>New dataset definition cannot be added because the database contains datasets.</p>
         @endif
     @endcan
 		<p>resources\views\databases\datasetdefs\index.blade.php</p>

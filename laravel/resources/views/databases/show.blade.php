@@ -139,9 +139,9 @@
     <h3>Definition of a Dataset:
 			@auth            
 				@if ($database->user_id == Auth::id())  {{-- If we own this database --}}                
-					@if(count($database->datasets)==0)  {{-- If there's a dataset, then we cannot change the datasetdef anymore --}}
+					{{--	@if(count($database->datasets)==0)  {{-- If there's a dataset, then we cannot change the datasetdef anymore --}}
 						<a class="bg-green-100 inline" href="{{ route('databases.datasetdefs', $database->id) }}">Edit</a>
-          @endif
+					{{-- @endif --}}
         @endif
       @endauth
     </h3>
