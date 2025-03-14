@@ -29,4 +29,9 @@ class Keyword extends Model
 			if($x<0) $x=0;
 			return keywordSchemeCategories[$x]; // categories defined in Creator.php
 		}
+
+		public static function keywordSchemeList()
+		{
+			return keywordSchemeCategories;
+		}
 }

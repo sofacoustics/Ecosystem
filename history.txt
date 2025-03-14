@@ -17,9 +17,9 @@ Done:
 * Publisher: (& nameIdentifier, nameIdentifierScheme, schemeURI): done as 0-n.
 * SubjectArea (& controlledSubjectArea and optional additionalSubjectArea): done as 0-n. 
 * RightsHolder (& optional nameIdentifier, nameIdentifierScheme,  schemeURI): done as 0-n.
+* Keyword (& optional keywordScheme, schemeURI, valueURI, classificationCode): done as 0-n.
 
 To be done (tbd): 
-* Keyword (& optional keywordScheme, schemeURI, valueURI, classificationCode): tbd, 0-n.
 * Contributor (& contributorType, contributorName): tbd, 0-n. 
 * DataSource (& dataSourceDetail): tbd as 0-n.
 * FundingReference (& funderName, optional funderIdentifier, awardNumber, awardURI, awardTitle): tbd as 0-n. 
