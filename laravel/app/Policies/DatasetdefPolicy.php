@@ -46,10 +46,12 @@ class DatasetdefPolicy
      */
     public function update(User $user, Datasetdef $datasetdef): bool
     {
-        $nDatasets = count($datasetdef->database->datasets);
-        if ($nDatasets == 0 && $user->can('add datasetdefs') && $user->id == $datasetdef->database->user_id)
-			return true;
-        return false;
+      //  $nDatasets = count($datasetdef->database->datasets);
+      //  if ($nDatasets == 0 && $user->can('add datasetdefs') && $user->id == $datasetdef->database->user_id)
+			//return true;
+      //  return false;
+			return ($user->can('add datasetdefs') && $user->id == $datasetdef->database->user_id);
+				
     }
 
     /**

@@ -30,15 +30,12 @@ tr:hover {background-color: #D6EEEE;}
 </style>
 
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Database: <a href="{{ route('databases.show', $database->id) }}">{{ $database->title }}</a>
-        </h2>
-    </x-slot>
-		
+ 	<x-slot name="header">
+		<x-database.header :database=$database />
+	</x-slot>
 
     <form wire:submit.prevent="save">
-			<h3>Pattern to create a Name of a datasets:</h3>
+			<h3>Pattern for the datasets names:</h3>
 			<div class="mb-4">				
 					<p>Note: It must include "&lt;ID&gt;"</p>
 					<input wire:model="name_pattern" type="text" id="name_pattern" class="{{ $inputClass }}" required value="Subject <ID>"/>
@@ -46,8 +43,8 @@ tr:hover {background-color: #D6EEEE;}
 							<span class="text-red-500">{{ $message }}</span>
 					@enderror
 			</div>
-			<h3>Patterns for the datafiles:</h3>
-			<p>Note: At least one datafile pattern must include "&lt;ID&gt;"</p>
+			<h3>Patterns for the datafile names:</h3>
+			<p>Note: Must include "&lt;ID&gt;"</p>
 
 			@forelse($database->datasetdefs as $datasetdef)
         <div class="mb-4">

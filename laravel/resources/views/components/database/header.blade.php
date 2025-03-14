@@ -14,24 +14,24 @@
         $database = $dataset->database;
     }
 @endphp
-<h2 class="font-semibold text-xl text-gray-800 leading-tight">Title:
+
+<!-- <p>laravel\resources\views\components\database\header.blade.php</p> --!>
+
+<h2 class="font-semibold text-xl text-gray-800 leading-tight">
     <a href="{{ route('databases.show', $database->id) }}">{{ $database->title }}</a>
-    {{-- https://spatie.be/docs/laravel-permission/v6/basic-usage/blade-directives --}}
     @role('admin')
-        (ID: {{ $database->id }})
+			(ID: {{ $database->id }})
     @endrole
-    @can('update', $database)
-        <x-button method="GET" action="{{ route('databases.edit', [$database]) }}" class="inline">
-            Edit
-        </x-button>
-    @endcan
 </h2>
-<x-property name="Ecosystem Owner">
-    {{ \App\Models\User::find($database->user_id)->name }}
-</x-property>
 <x-property name="Description">
     {{ $database->description }}
 </x-property>
-<a class="btn btn-primary" href="{{ route('databases.show', $database->id) }}">Datasets</a>
-<a class="btn btn-primary" href="{{ route('databases.datasetdefs', $database->id) }}">Datasetdef</a>
-<a class="btn btn-primary" href="{{ route('databases.creators', $database->id) }}">Creators</a>
+<x-property name="Ecosystem Manager">
+    {{ \App\Models\User::find($database->user_id)->name }}
+</x-property>
+    @can('update', $database)
+        <x-button method="GET" action="{{ route('databases.edit', [$database]) }}" class="inline">Edit Metadata</x-button>
+    @endcan
+<x-button class="inline" method="GET" action="{{ route('databases.show', $database->id) }}">Datasets</x-button>
+<x-button class="inline" method="GET" action="{{ route('databases.datasetdefs', $database->id) }}">Definition</x-button>
+

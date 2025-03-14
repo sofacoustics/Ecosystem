@@ -7,29 +7,26 @@
             (ID: {{ $dataset->id }})
         @endrole
     </h2>
-    <h3>Files</h3>
-    <p>This dataset contains {{ count($dataset->datafiles) }} files</p>
-    {{-- <p>This dataset contains <livewire:dataset.datafile-counter :dataset="$dataset" /> files.</p> --}}
+    <p>This dataset contains {{ count($dataset->datafiles) }} files.</p>
     <div class="ml-2">
-        @foreach ($dataset->datafiles as $datafile)
-            <div wire:key="{{ $datafile->id }}">
-                {{-- @livewire(DatafileListener::class, ['datafile' => $datafile]) --}}
-                <x-property name="File">
-                    <a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a> @role('admin') (ID: {{ $datafile->id }}) @endrole
-                </x-property>
-                @if ($datafile->datasetdef->widget()->exists())
-                    <x-property name="Widget">
-                        <a href="{{ route('widgets.show', $datafile->datasetdef->widget->id) }}">{{ $datafile->datasetdef->widget->name }}</a>
-                    </x-property>
-                @endif
-                <livewire:DatafileListener :datafile="$datafile" :key="$datafile->id" />
-                @can('delete', $datafile)
-                    <x-button method="DELETE" action="{{ route('datafiles.destroy', [$datafile]) }}">
-                        Delete
-                    </x-button>
-                @endcan
-            </div>
-        @endforeach
+			@foreach ($dataset->datafiles as $datafile)
+				<h3>
+					@can('delete', $datafile)
+						<x-button method="DELETE" class="inline" action="{{ route('datafiles.destroy', [$datafile]) }}">Delete</x-button>
+					@endcan
+					{{ $datafile->datasetdef->name }}:</h3>
+				<div wire:key="{{ $datafile->id }}">
+					<livewire:DatafileListener :datafile="$datafile" :key="$datafile->id" />
+					<x-property name="Name">
+						<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a> @role('admin') (ID: {{ $datafile->id }}) @endrole
+					</x-property>
+					@if ($datafile->datasetdef->widget()->exists())
+						<x-property name="Widget">
+							<a href="{{ route('widgets.show', $datafile->datasetdef->widget->id) }}">{{ $datafile->datasetdef->widget->name }}</a>
+						</x-property>
+					@endif
+				</div>
+			@endforeach
     </div>
 
     @if (count($dataset->datafiles) < count($dataset->database->datasetdefs))

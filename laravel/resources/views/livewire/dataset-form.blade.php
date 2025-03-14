@@ -27,13 +27,13 @@
         </div>
         <div class="mt-4">
             <button type="submit" class="{{ $buttonClass }}">
-                {{ $dataset ? 'Update Dataset' : 'Create Dataset' }}
+                {{ $dataset ? 'Update' : 'Create' }}
             </button>
         </div>
 
     </form>
 
     @env('local')
-        <p>resource/views/livewire/dataset-form.blade.php</p>
+     <!--   <p>resource/views/livewire/dataset-form.blade.php</p> --!>
     @endenv
 </div>
