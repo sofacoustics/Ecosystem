@@ -37,14 +37,14 @@ tr:hover {background-color: #D6EEEE;}
     <form wire:submit.prevent="save">
 			<h3>Pattern for the datasets names:</h3>
 			<div class="mb-4">				
-					<p>Note: It must include "&lt;ID&gt;"</p>
+					<p>Note: It must include "&lt;ID&gt;".</p>
 					<input wire:model="name_pattern" type="text" id="name_pattern" class="{{ $inputClass }}" required value="Subject <ID>"/>
 					@error('name')
 							<span class="text-red-500">{{ $message }}</span>
 					@enderror
 			</div>
 			<h3>Patterns for the datafile names:</h3>
-			<p>Note: Must include "&lt;ID&gt;"</p>
+			<p>Note: Must include "&lt;ID&gt;" and may include "&lt;NUM&gt;" and "&lt;ANY&gt;".</p>
 
 			@forelse($database->datasetdefs as $datasetdef)
         <div class="mb-4">
@@ -105,6 +105,7 @@ tr:hover {background-color: #D6EEEE;}
 						fn_filter = fn_filter.replace(/\^/g, "\\^"); 
 						fn_filter = fn_filter.replace(/\./g, "\\."); 
 						fn_filter = fn_filter.replace(/\$/g, "\\$"); 
+						fn_filter = fn_filter.replace(/<NUM>/g, "[0-9]+"); 
 						fn_filter = fn_filter.replace(/<ANY>/g, ".+"); 
 						fn_filter = RegExp(fn_filter.replace(/<ID>/g, ".+"));
 						fn_filter_array[i]=fn_filter; 
@@ -118,6 +119,7 @@ tr:hover {background-color: #D6EEEE;}
 						postfix = postfix.replace(/\^/g, "\\^"); 
 						postfix = postfix.replace(/\./g, "\\.");
 						postfix = postfix.replace(/\$/g, "\\$");
+						postfix = postfix.replace(/<NUM>/g, "[0-9]+");
 						postfix = RegExp(postfix.replace(/<ANY>/g, ".+"));
 						postfix_array[i]=postfix; 
 						let beg_id = fn_pattern.indexOf("<"); // zahl anfang: index von < in fn_pattern
