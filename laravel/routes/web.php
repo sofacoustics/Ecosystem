@@ -7,6 +7,7 @@ use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\SubjectAreaController;
 use App\Http\Controllers\RightsholderController;
 use App\Http\Controllers\KeywordController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\DatafileController;
 use App\Http\Controllers\DatasetController;
@@ -59,6 +60,7 @@ Route::get('/databases/{database}/publishers', [PublisherController::class, 'ind
 Route::get('/databases/{database}/subjectareas', [SubjectAreaController::class, 'index'])->name('databases.subjectareas');
 Route::get('/databases/{database}/rightsholders', [RightsholderController::class, 'index'])->name('databases.rightsholders');
 Route::get('/databases/{database}/keywords', [KeywordController::class, 'index'])->name('databases.keywords');
+Route::get('/databases/{database}/comments', [CommentController::class, 'index'])->name('databases.comments');
 Route::get('/databases/{database}/datasets/bulkupload', [DatasetController::class, 'bulkupload'])->name('databases.datasets.bulkupload'); 
 
 // DATASET
@@ -79,6 +81,9 @@ Route::resource('subjectareas', SubjectAreaController::class);
 Route::resource('rightsholders', RightsholderController::class);
 // Keywords
 Route::resource('keywords', KeywordController::class);
+// Comments
+Route::resource('comments', CommentController::class);
+
 /// WIDGETs
 Route::resource('widgets', WidgetController::class);
 /// TOOLS

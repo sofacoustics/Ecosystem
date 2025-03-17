@@ -1,5 +1,12 @@
 *** Ecosystem ***
 
+Functionality status:
+=====================
+
+- Comments: show & delete implemented. 
+
+To be done: 
+- Comments: edit, new. 
 
 Metadata status:
 ================

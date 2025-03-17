@@ -137,25 +137,6 @@
 			@if ($database->relatedinformation != null) <li><b>Related Information</b>: {{ $database->relatedinformation }}</li>@endif 
 		</ul>
 
-<!--
-		
-    <h3>Definition of a Dataset:
-			@auth            
-				@if ($database->user_id == Auth::id())  {{-- If we own this database --}}                
-					{{--	@if(count($database->datasets)==0)  {{-- If there's a dataset, then we cannot change the datasetdef anymore --}}
-						<a class="bg-green-100 inline" href="{{ route('databases.datasetdefs', $database->id) }}">Edit</a>
-					{{-- @endif --}}
-        @endif
-      @endauth
-    </h3>
-			<ul class="list-disc list-inside">
-			@forelse($database->datasetdefs as $datasetdef)
-				<li><x-datasetdef.list link='true' :datasetdef="$datasetdef"/></li>
-			@empty
-				<li>There is no definition of a dataset yet.</li>
-			@endforelse
-			</ul>
---!>
 	<h2>Datasets:</h2>
 		@can('create', [App\Models\Dataset::class, $database])
 			@if(count($database->datasetdefs))
@@ -180,6 +161,30 @@
 			@endforeach
 			</ul>
 		@endif
+
+	<h2>Comments:</h2>
+		@if(count($database->comments)==0)
+			No comments found.
+		@else
+			<b>{{ count($database->comments) }}</b> comments found:
+			<ul class="list-disc list-inside">
+			@foreach($database->comments as $comment)
+				<li>
+					@auth
+						@if ($comment->user_id == Auth::id()) 
+							<x-button method="DELETE" class="inline" action="{{ route('comments.destroy', [$comment]) }}">Delete</x-button>
+							<x-button method="EDIT" class="inline" action="{{ route('comments.edit', [$comment]) }}">Edit</x-button>
+						@endif
+					@endauth
+					<b> {{ $comment->user->name }} </b> wrote on {{ $comment->created_at }}: {{ $comment->text }}
+				</li>
+			@endforeach
+			</ul>
+			@auth
+				<x-button method="NEW" class="inline" action="{{ route('comments.create', [$comment]) }}">Comment</x-button>
+			@endauth
+		@endif
+
 
 @env('local')
     <div class="text-xs">

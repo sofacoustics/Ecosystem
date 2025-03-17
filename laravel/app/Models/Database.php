@@ -79,6 +79,11 @@ class Database extends Model
         return $this->hasMany(Keyword::class); 
     }
 
+		public function comments()
+    {
+        return $this->hasMany(Comment::class); 
+    }
+
     public function radardataset(): HasOne
     {
         return $this->hasOne(Radardataset::class);
