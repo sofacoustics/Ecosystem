@@ -7,68 +7,23 @@
 @endphp
 <div>
     @can('update', $database)
-        @if ($creator)
-            <h3>Edit a creator:</h3>
+        @if ($comment)
+            <h3>Edit a comment:</h3>
         @else
-            <h3>Add a new creator:</h3>
+            <h3>Add a new comment:</h3>
         @endif
         <form wire:submit.prevent="save">
             <div class="mb-4">
-                <label for="creatorName" class="{{ $labelClass }}">Name: (*)</label>
-                <input wire:model="creatorName" type="text" id="creatorName" class="{{ $inputClass }}" required />
-                @error('creatorName')
-                    <span class="text-red-500">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <div class="mb-4">
-                <label for="givenName" class="{{ $labelClass }}">Given Name:</label>
-                <input wire:model="givenName" type="text" id="givenName" class="{{ $inputClass }}" />
-                @error('givenName')
-                    <span class="text-red-500">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <div class="mb-4">
-                <label for="familyName" class="{{ $labelClass }}">Family Name:</label>
-                <input wire:model="familyName" type="text" id="familyName" class="{{ $inputClass }}" />
-                @error('familyName')
-                    <span class="text-red-500">{{ $message }}</span>
-                @enderror
-            </div>
-            <div class="block">
-                <label class="{{ $labelClass }}" for="nameIdentifierSchemeIndex">Name Identifier Scheme:</label>
-                <select class="{{ $selectClass }}" id="nameIdentifierSchemeIndex" wire:model="nameIdentifierSchemeIndex">
-                    <option value="">Select an identifier scheme</option>
-                    <option value="0">{{ \App\Models\Creator::nameIdentifierScheme(0) }}</option>
-                    <option value="1">{{ \App\Models\Creator::nameIdentifierScheme(1) }}</option>
-                    <option value="2">{{ \App\Models\Creator::nameIdentifierScheme(2) }}</option>
-                </select>
-                @error('nameIdentifierSchemeIndex')
-                    <span class="text-red-500">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <div class="mb-4">
-                <label for="nameIdentifier" class="{{ $labelClass }}">Name Identifier:</label>
-                <input wire:model="nameIdentifier" type="text" id="nameIdentifier" class="{{ $inputClass }}" />
-                @error('nameIdentifier')
-                    <span class="text-red-500">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <div class="mb-4">
-                <label for="creatorAffiliation" class="{{ $labelClass }}">Creator Affiliation:</label>
-                <input wire:model="creatorAffiliation" type="text" id="creatorAffiliation"
-                    class="{{ $inputClass }}" />
-                @error('creatorAffiliation')
+                <label for="text" class="{{ $labelClass }}">Comment: (*)</label>
+                <input wire:model="text" type="text" id="text" class="{{ $inputClass }}" required />
+                @error('text')
                     <span class="text-red-500">{{ $message }}</span>
                 @enderror
             </div>
 
             <div class="mt-4">
                 <button type="submit" class="{{ $buttonClass }}">
-                    {{ $creator ? 'Update Creator' : 'Create Creator' }}
+                    {{ $comment ? 'Update comment' : 'Create comment' }}
                 </button>
             </div>
 

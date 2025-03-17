@@ -44,18 +44,20 @@ class CommentForm extends Component
 		if($isNew)
 		{
 			$this->comment = new Comment();
+			$this->comment->user_id = auth()->id();
 		}
 		
 		$this->comment->database_id = $this->database->id;
-		$this->comment->user_id = $this->user_id;
+		$this->comment->user_id = $this->database->user_id;
 		$this->comment->text = $this->text;
 
 		$this->comment->save();
 
     session()->flash('message', $isNew ? 'comment created successfully.' : 'comment updated successfully.');
 
-		$user = \App\Models\User::where('id', $database->user_id)->first();
-		return view('databases.show',[ 'database' => $database, 'user' => $user ]);
+		//$user = \App\Models\User::where('id', $database->user_id)->first();
+		return redirect()->route('databases.show',[ 'database' => $this->database->id ]);
+		//route('databases.show', $database->id) 
 
     //return redirect()->route('databases.comments', $this->database);
 	}

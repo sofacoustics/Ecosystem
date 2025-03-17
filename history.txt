@@ -3,10 +3,14 @@
 Functionality status:
 =====================
 
-- Comments: show & delete implemented. 
+- Comments: show, delete, edit, new implemented. 
 
 To be done: 
-- Comments: edit, new. 
+- Edit a dataset (name & description)
+- Bulk upload
+- Multiple photos as a single datafile
+- Filter for database landing page
+- Archive a database
 
 Metadata status:
 ================

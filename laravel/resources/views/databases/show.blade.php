@@ -173,7 +173,7 @@
 					@auth
 						@if ($comment->user_id == Auth::id()) 
 							<x-button method="DELETE" class="inline" action="{{ route('comments.destroy', [$comment]) }}">Delete</x-button>
-							<x-button method="EDIT" class="inline" action="{{ route('comments.edit', [$comment]) }}">Edit</x-button>
+							<x-button method="GET" class="inline" action="{{ route('comments.edit', [$comment]) }}" >Edit</x-button>
 						@endif
 					@endauth
 					<b> {{ $comment->user->name }} </b> wrote on {{ $comment->created_at }}: {{ $comment->text }}
@@ -181,7 +181,7 @@
 			@endforeach
 			</ul>
 			@auth
-				<x-button method="NEW" class="inline" action="{{ route('comments.create', [$comment]) }}">Comment</x-button>
+				<x-button method="GET" class="inline" action="{{ route('databases.comments', $database->id) }}">Comment</x-button>
 			@endauth
 		@endif
 
