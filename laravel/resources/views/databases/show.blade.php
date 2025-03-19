@@ -165,7 +165,7 @@
 
 	<h2>Comments:</h2>
 		@if(count($database->comments)==0)
-			No comments found.
+			<p>No comments found.</p>
 		@else
 			<b>{{ count($database->comments) }}</b> comments found:
 			<ul class="list-disc list-inside">
@@ -181,10 +181,11 @@
 				</li>
 			@endforeach
 			</ul>
-			@auth
-				<x-button method="GET" class="inline" action="{{ route('databases.comments', $database->id) }}">Comment</x-button>
-			@endauth
 		@endif
+		@auth
+			<x-button method="GET" class="inline" action="{{ route('databases.comments', $database->id) }}">Comment</x-button>
+		@endauth
+
 
 
 @env('local')
