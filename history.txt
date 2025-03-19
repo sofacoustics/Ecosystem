@@ -4,9 +4,9 @@ Functionality status:
 =====================
 
 - Comments: show, delete, edit, new implemented. 
+- Edit a dataset (name & description)
 
 To be done: 
-- Edit a dataset (name & description)
 - Bulk upload
 - Multiple photos as a single datafile
 - Filter for database landing page
