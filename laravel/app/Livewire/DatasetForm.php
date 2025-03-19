@@ -28,6 +28,7 @@ class DatasetForm extends Component
             $this->dataset = $dataset;
             $this->name = $dataset->name;
             $this->description = $dataset->description;
+						$this->database = $dataset->database;
             assert($this->database->id == $dataset->database_id);
         }
     }
@@ -39,20 +40,23 @@ class DatasetForm extends Component
         $isNew = !$this->dataset;
 
         if($isNew)
-        {
-            $this->dataset = new Dataset();
+        {		// create
+          $this->dataset = new Dataset();
+					$this->dataset->name = $this->name;
+					$this->dataset->description = $this->description;
+					$this->dataset->database_id = $this->database->id;
+					$this->dataset->save();
+					session()->flash('message', 'Dataset created successfully.');
+					return redirect()->route('datasets.show', $this->dataset);
         }
-
-        $this->dataset->name = $this->name;
-        $this->dataset->description = $this->description;
-        $this->dataset->database_id = $this->database->id;
-
-        $this->dataset->save();
-
-        //dd($this->dataset);
-
-        session()->flash('message', $isNew ? 'Dataset created successfully.' : 'Dataset updated successfully.');
-        return redirect()->route('datasets.show', $this->dataset);
+				else
+				{		// update
+					$this->dataset->name = $this->name;
+					$this->dataset->description = $this->description;
+					$this->dataset->save();
+					session()->flash('message', 'Dataset updated successfully.');
+					return redirect()->route('databases.show', $this->database);
+				}
     }
 
     public function render()
