@@ -41,16 +41,20 @@ class DatasetdefPolicy
 
     /**
      * Determine whether the user can update the model.
-     *
-     * User can only update a datsetdef if there are *no* datasets using it.
      */
     public function update(User $user, Datasetdef $datasetdef): bool
     {
+			// this code: User can only update a datsetdef if there are *no* datasets using it.
       //  $nDatasets = count($datasetdef->database->datasets);
       //  if ($nDatasets == 0 && $user->can('add datasetdefs') && $user->id == $datasetdef->database->user_id)
 			//return true;
       //  return false;
-			return ($user->can('add datasetdefs') && $user->id == $datasetdef->database->user_id);
+			
+				// User can only update their database
+			if($user->id == $datasetdef->database->user_id)
+				return true;
+			else
+				return false;
 				
     }
 
