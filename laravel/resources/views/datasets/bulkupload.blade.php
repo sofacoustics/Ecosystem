@@ -105,6 +105,8 @@ tr:hover {background-color: #D6EEEE;}
 						fn_filter = fn_filter.replace(/\^/g, "\\^"); 
 						fn_filter = fn_filter.replace(/\./g, "\\."); 
 						fn_filter = fn_filter.replace(/\$/g, "\\$"); 
+						fn_filter = fn_filter.replace(/\(/g, "\\("); 
+						fn_filter = fn_filter.replace(/\)/g, "\\)"); 
 						fn_filter = fn_filter.replace(/<NUM>/g, "[0-9]+"); 
 						fn_filter = fn_filter.replace(/<ANY>/g, ".+"); 
 						fn_filter = RegExp(fn_filter.replace(/<ID>/g, ".+"));
@@ -119,6 +121,8 @@ tr:hover {background-color: #D6EEEE;}
 						postfix = postfix.replace(/\^/g, "\\^"); 
 						postfix = postfix.replace(/\./g, "\\.");
 						postfix = postfix.replace(/\$/g, "\\$");
+						postfix = postfix.replace(/\(/g, "\\(");
+						postfix = postfix.replace(/\)/g, "\\)");
 						postfix = postfix.replace(/<NUM>/g, "[0-9]+");
 						postfix = RegExp(postfix.replace(/<ANY>/g, ".+"));
 						postfix_array[i]=postfix; 
