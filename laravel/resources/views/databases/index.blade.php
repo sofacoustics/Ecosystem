@@ -17,6 +17,9 @@
         </div>
     @endif
 
+   <livewire:database-table-filter />
+
+		<!--
     <table class="table-auto border border-slate-399">
         <tr class="text-left">
             <th class="border p-2">Title</th>
@@ -42,7 +45,7 @@
 					</tr>
         @endforeach
     </table>
-
+		--!>
 
     {{-- START: Testing RADAR dataset --}}
     @env('ignore')
