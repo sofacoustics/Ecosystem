@@ -16,9 +16,37 @@
 			<thead class="bg-gray-50">
 				<tr>
 					<th class="border p-2">Command</th>
-					<th class="border p-2">Title</th>
+					<th class="border p-2">
+						<button wire:click="sortBy('title')">Title
+							@if ($sortField === 'title')
+								@if ($sortAsc)
+									<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
+									</svg>
+								@else
+									<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+									</svg>
+								@endif
+							@endif
+						</button>
+					</th>
 					<th class="border p-2"># Datasets</th>
-					<th class="border p-2">Description</th>
+					<th class="border p-2">
+						<button wire:click="sortBy('description')">Description
+							@if ($sortField === 'description')
+								@if ($sortAsc)
+									<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
+									</svg>
+								@else
+									<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+									</svg>
+								@endif
+							@endif
+						</button>
+					</th>
 					<th class="border p-2">Owner</th>
 				</tr>
 			</thead>

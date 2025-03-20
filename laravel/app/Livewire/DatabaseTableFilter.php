@@ -16,6 +16,9 @@ class DatabaseTableFilter extends Component
         'descriptiontype' => '',
     ];
 
+		public $sortField = 'title'; // Default sorting field
+    public $sortAsc = true; // Default sorting order
+		
     public $descriptiontypes = ['Other', 'inactive', 'pending']; // Example descriptiontypes.
 		
     public $databases;
@@ -42,7 +45,7 @@ class DatabaseTableFilter extends Component
         if (!empty($this->filters['descriptiontype'])) {
             $query->where('descriptiontype', $this->filters['descriptiontype']);
         }
-        $this->databases = $query->get();
+        $this->databases = $query->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')->get();
     }
 
     public function render()
@@ -71,5 +74,18 @@ class DatabaseTableFilter extends Component
 			$datasets=\App\Models\Dataset::where('database_id',$database_id)->get();
 			return count($datasets);
 		}
+		
+		public function sortBy($field)
+    {
+			if ($this->sortField === $field) 
+			{
+				$this->sortAsc = !$this->sortAsc;
+			} else 
+			{
+				$this->sortAsc = true;
+				$this->sortField = $field;
+			}
+			$this->applyFilters();
+    }		
 		
 }
