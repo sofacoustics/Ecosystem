@@ -12,10 +12,11 @@
 ])
 
 @if($link=='true')
-    <a href="{{ route('datasets.show', $dataset->id) }}">
+  <a href="{{ route('datasets.show', $dataset->id) }}">
 @endif
-Name: {{ $dataset->name }}
-@role('admin') (ID: {{ $dataset->id }}) @endrole
+		<b>{{ $dataset->name }}</b>
 @if($link)
-    </a>
+  </a>
 @endif
+
+@role('admin') <small>(ID: {{ $dataset->id }})</small> @endrole

@@ -44,7 +44,7 @@
 
 @can('create', [App\Models\Dataset::class, $database])
 	@if(count($database->datasetdefs))
-		<x-button method="GET" class="inline" action="{{ route('databases.datasets.create', [$database->id]) }}">New</x-button>
+		<x-button method="GET" class="inline" action="{{ route('databases.datasets.create', [$database->id]) }}">Upload</x-button>
 		<x-button method="GET" class="inline" action="{{ route('databases.datasets.bulkupload', [$database->id]) }}">Bulk Upload</x-button>
 	@endif
 @endcan

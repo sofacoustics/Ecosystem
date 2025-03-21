@@ -137,15 +137,17 @@
 			@if ($database->relatedinformation != null) <li><b>Related Information</b>: {{ $database->relatedinformation }}</li>@endif 
 		</ul>
 
-	<h2>Datasets:</h2>
+	<hr>
+	
+	<h2>
 		@can('create', [App\Models\Dataset::class, $database])
 			@if(count($database->datasetdefs))
-				<p>
-				<x-button method="GET" class="inline" action="{{ route('databases.datasets.create', [$database->id]) }}">New</x-button>
+				<x-button method="GET" class="inline" action="{{ route('databases.datasets.create', [$database->id]) }}">Upload</x-button>
 				<x-button method="GET" class="inline" action="{{ route('databases.datasets.bulkupload', [$database->id]) }}">Bulk Upload</x-button>
-				</p>
 			@endif
 		@endcan
+		Datasets:
+	</h2>
 		@if(count($database->datasets)==0)
 			No datasets found.
 		@else
@@ -163,6 +165,8 @@
 			</ul>
 		@endif
 
+	<hr>
+	
 	<h2>Comments:</h2>
 		@if(count($database->comments)==0)
 			<p>No comments found.</p>
@@ -177,13 +181,13 @@
 							<x-button method="GET" class="inline" action="{{ route('comments.edit', $comment) }}" >Edit</x-button>
 						@endif
 					@endauth
-					<b> {{ $comment->user->name }} </b> wrote on {{ $comment->created_at }}: {{ $comment->text }}
+					<b> {{ $comment->user->name }} </b><small>({{ $comment->created_at }})</small>: {{ $comment->text }}
 				</li>
 			@endforeach
 			</ul>
 		@endif
 		@auth
-			<x-button method="GET" class="inline" action="{{ route('databases.comments', $database->id) }}">Comment</x-button>
+			<x-button method="GET" class="inline" action="{{ route('databases.comments', $database->id) }}">Add a comment</x-button>
 		@endauth
 
 
