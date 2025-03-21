@@ -60,6 +60,14 @@ class DatabaseForm extends Component
 						$this->controlledrights = $database->controlledrights-47;
 						$this->additionalrights = $database->additionalrights;
         }
+				else
+				{
+					$this->resourcetype=2; // dataset
+					$this->resource = "SONICOM Ecosystem";
+					$this->controlledrights = 0; // CC BY
+					$this->additionaltitletype = 0; // Subtitle
+					
+				}
     }
 
     public function save()

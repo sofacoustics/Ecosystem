@@ -31,7 +31,50 @@
 							@endif
 						</button>
 					</th>
-					<th class="border p-2"># Datasets</th>
+					<th class="border p-2">
+						<button wire:click="sortBy('productionyear')">Produced
+							@if ($sortField === 'productionyear')
+								@if ($sortAsc)
+									<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
+									</svg>
+								@else
+									<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+									</svg>
+								@endif
+							@endif
+						</button>
+					</th>
+					<th class="border p-2">
+						<button wire:click="sortBy('publicationyear')">Published
+							@if ($sortField === 'publicationyear')
+								@if ($sortAsc)
+									<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
+									</svg>
+								@else
+									<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+									</svg>
+								@endif
+							@endif
+						</button>
+					<th class="border p-2">
+						<button wire:click="sortBy('updated_at')">Last update
+							@if ($sortField === 'updated_at')
+								@if ($sortAsc)
+									<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
+									</svg>
+								@else
+									<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+									</svg>
+								@endif
+							@endif
+						</button>
+					</th>
 					<th class="border p-2">
 						<button wire:click="sortBy('description')">Description
 							@if ($sortField === 'description')
@@ -47,7 +90,10 @@
 							@endif
 						</button>
 					</th>
-					<th class="border p-2">Owner</th>
+					<th class="border p-2"># Datasets</th>
+					@auth
+						<th class="border p-2">Owner</th>
+					@endauth
 				</tr>
 			</thead>
 			<tbody class="bg-white divide-y divide-gray-200">
@@ -67,9 +113,14 @@
 						<td class="px-6 py-4 whitespace-nowrap">
 							<a class="btn btn-primary" href="{{ route('databases.show', $database->id) }}">{{ $database->title }}</a>
 						</td>
-						<td class="px-6 py-4 whitespace-nowrap">{{ \App\Livewire\DatabaseTableFilter::countDatasets($database->id) }}</td>
+						<td class="px-6 py-4 whitespace-nowrap">{{ $database->productionyear }}</td>
+						<td class="px-6 py-4 whitespace-nowrap">{{ $database->publicationyear }}</td>
+						<td class="px-6 py-4 whitespace-nowrap">{{ $database->updated_at }}</td>
 						<td class="px-6 py-4 whitespace-nowrap">{{ $database->description }}</td>
-						<td class="px-6 py-4 whitespace-nowrap">{{ \App\Livewire\DatabaseTableFilter::userName($database->user_id) }}</td>
+						<td class="px-6 py-4 whitespace-nowrap">{{ \App\Livewire\DatabaseTableFilter::countDatasets($database->id) }}</td>
+						@auth
+							<td class="px-6 py-4 whitespace-nowrap">{{ \App\Livewire\DatabaseTableFilter::userName($database->user_id) }}</td>
+						@endauth
 					</tr>
 				@endforeach
 				@if($databases->isEmpty())

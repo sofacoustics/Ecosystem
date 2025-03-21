@@ -24,9 +24,7 @@ Done:
 * Multiple photos as a single datafile: user needs to create animated WEBP
 * "Non-spatial data (SOFA)" added
 
-
 To be done: 
-* Set for all databases the "Resource type" to "Other (Sonicom Ecosystem)"
 * Define various widgets
 
 Archive a database
@@ -37,7 +35,7 @@ Done:
 * Retrieval of all databases from datathek
 
 To be done: 
-* Check the procedure of curation
+* Procedure of curation
 * Create an object decribing a database
 * Allocate a database at Datathek by send the database object
 * Upload database datafiles to Datathek
@@ -48,10 +46,11 @@ Database landing page
 
 Done: 
 * General implementation
+* Include Publication and Production Date for sorting
+* Include Last Modified for sorting
 
 To be done: 
-* Include Upload Date for sorting
-* Include Last Modified Data for sorting
+* ???
 
 Bulk upload
 ===========
@@ -76,7 +75,7 @@ Metadata status:
 Done: 
 * Title: done.
 * ProductionYear: done.
-* Resource (& resourceType): done. 
+* Resource (& resourceType): done. Set to "Dataset" and "Sonicom Ecosystem)", non-editable.
 * Language: done. 
 * Additional Title (& additionalTitleType): done as 0-1 (0-n for later).
 * PublicationYear: done.
