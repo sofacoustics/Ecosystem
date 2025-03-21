@@ -5,7 +5,6 @@ General
 
 * Provide information at each entry
 * Check how to link a documentation with a database
-* Add an "Upload" button to the header
 
 Comments
 ========
@@ -23,12 +22,12 @@ Done:
 * New, Show, Delete, Edit
 * Widgets generally implemented
 * Multiple photos as a single datafile: user needs to create animated WEBP
+* "Non-spatial data (SOFA)" added
 
 
 To be done: 
-* Add "Non-spatial data (SOFA)"
 * Set for all databases the "Resource type" to "Other (Sonicom Ecosystem)"
-
+* Define various widgets
 
 Archive a database
 ==================
