@@ -2,7 +2,7 @@
 	<x-slot name="header">
 			<x-database.header :database=$database />
 	</x-slot>
-	<h2>Metadata:</h2>
+	<h2>Metadata</h2>
 		<h3>
 			@auth
 				@if ($database->user_id == Auth::id())
@@ -139,19 +139,18 @@
 
 	<hr>
 	
-	<h2>
+	<h2>Datasets</h2>
 		@can('create', [App\Models\Dataset::class, $database])
 			@if(count($database->datasetdefs))
 				<x-button method="GET" class="inline" action="{{ route('databases.datasets.create', [$database->id]) }}">Upload</x-button>
 				<x-button method="GET" class="inline" action="{{ route('databases.datasets.bulkupload', [$database->id]) }}">Bulk Upload</x-button>
 			@endif
 		@endcan
-		Datasets:
-	</h2>
+	
 		@if(count($database->datasets)==0)
-			No datasets found.
+			<p>No datasets found.</p>
 		@else
-			<b>{{ count($database->datasets) }}</b> datasets found:
+			<p><b>{{ count($database->datasets) }}</b> datasets found:</p>
 			<ul class="list-disc list-inside">
 			@foreach($database->datasets as $dataset)
 				<li>
@@ -167,7 +166,7 @@
 
 	<hr>
 	
-	<h2>Comments:</h2>
+	<h2>Comments</h2>
 		@if(count($database->comments)==0)
 			<p>No comments found.</p>
 		@else
@@ -190,7 +189,7 @@
 			<x-button method="GET" class="inline" action="{{ route('databases.comments', $database->id) }}">Add a comment</x-button>
 		@endauth
 
-
+	<hr>
 
 @env('local')
     <div class="text-xs">

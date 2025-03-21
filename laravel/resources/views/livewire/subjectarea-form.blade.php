@@ -15,7 +15,6 @@
         <form wire:submit.prevent="save">
             <div class="block">
 						
-              <label class="{{ $labelClass }}" for="subjectareaindex">Subject Area:</label>
 							<select wire:model.live="controlledSubjectAreaIndex">
 								<option value="">Select a subject area...</option>
 								@foreach(\App\Models\Database::subjectareasList() as $r => $t)
@@ -23,7 +22,10 @@
 								@endforeach
 							@error('subjectareaindex') <span class="text-red-500">{{ $message }}</span> @enderror
 							</select>
-							<input wire:model="additionalSubjectArea" type="text" id="additionalSubjectArea"
+							
+							<input wire:model="additionalSubjectArea" type="text" 
+								placeholder="Optional free text."
+								id="additionalSubjectArea"
 								class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"/>
 							@error('additionalSubjectArea') <span class="text-red-500">{{ $message }}</span> @enderror
 

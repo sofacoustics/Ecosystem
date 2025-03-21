@@ -12,10 +12,19 @@
         @else
             <h3>Add a new publisher:</h3>
         @endif
+				
+				<p>Persons are to be entered with given and family names. Optionally, ORCiD ID and institutional affiliation can be added.<br>
+					 Institutions do not have given and family names. They can be identified by an ID from the 
+						<a href="https://ror.org" target="_blank">Research Organization Registry (ROR)</a> 
+					list.
+				</p>
+
         <form wire:submit.prevent="save">
             <div class="mb-4">
                 <label for="publisherName" class="{{ $labelClass }}">Name: (*)</label>
-                <input wire:model="publisherName" type="text" id="publisherName" class="{{ $inputClass }}" required />
+                <input wire:model="publisherName" type="text" 
+									placeholder="Name of the person or institution."
+									id="publisherName" class="{{ $inputClass }}" required />
                 @error('publisherName')
                     <span class="text-red-500">{{ $message }}</span>
                 @enderror
@@ -36,7 +45,9 @@
 
             <div class="mb-4">
                 <label for="nameIdentifier" class="{{ $labelClass }}">Name Identifier:</label>
-                <input wire:model="nameIdentifier" type="text" id="nameIdentifier" class="{{ $inputClass }}" />
+                <input wire:model="nameIdentifier" type="text" 
+									placeholder="ROR identifier (if institution), ORCID (if person), free text (if other)."
+									id="nameIdentifier" class="{{ $inputClass }}" />
                 @error('nameIdentifier')
                     <span class="text-red-500">{{ $message }}</span>
                 @enderror
@@ -44,7 +55,9 @@
 
             <div class="mb-4">
                 <label for="schemeURI" class="{{ $labelClass }}">Scheme URI:</label>
-                <input wire:model="schemeURI" type="text" id="schemeURI"
+                <input wire:model="schemeURI" type="text" 
+										placeholder="If name identifier is Other, provide the URI."
+										id="schemeURI"
                     class="{{ $inputClass }}" />
                 @error('schemeURI')
                     <span class="text-red-500">{{ $message }}</span>
