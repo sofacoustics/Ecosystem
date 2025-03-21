@@ -3,8 +3,11 @@
 General
 =======
 
-* Provide information at each entry
-* Check how to link a documentation with a database
+Done:
+* Information at each entry of metadata provided
+
+To be done:
+* Check how to link optional documentation files with a database
 
 Comments
 ========
@@ -13,7 +16,7 @@ Done:
 * show, delete, new, edit
 
 To be done: 
-* ???
+
 
 Datasets definition
 ===================
@@ -40,7 +43,6 @@ To be done:
 * Allocate a database at Datathek by send the database object
 * Upload database datafiles to Datathek
 
-
 Database landing page
 =====================
 
@@ -50,7 +52,6 @@ Done:
 * Include Last Modified for sorting
 
 To be done: 
-* ???
 
 Bulk upload
 ===========
