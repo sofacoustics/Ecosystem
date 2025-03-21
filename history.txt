@@ -1,16 +1,75 @@
 *** Ecosystem ***
 
-Functionality status:
-=====================
+General
+=======
 
-- Comments: show, delete, edit, new implemented. 
-- Edit a dataset (name & description)
+* Provide information at each entry
+* Check how to link a documentation with a database
+* Add an "Upload" button to the header
+
+Comments
+========
+
+Done: 
+* show, delete, new, edit
 
 To be done: 
-- Bulk upload
-- Multiple photos as a single datafile
-- Filter for database landing page
-- Archive a database
+* ???
+
+Datasets definition
+===================
+
+Done: 
+* New, Show, Delete, Edit
+* Widgets generally implemented
+* Multiple photos as a single datafile: user needs to create animated WEBP
+
+
+To be done: 
+* Add "Non-spatial data (SOFA)"
+* Set for all databases the "Resource type" to "Other (Sonicom Ecosystem)"
+
+
+Archive a database
+==================
+
+Done: 
+* General check of the RADAR API
+* Retrieval of all databases from datathek
+
+To be done: 
+* Check the procedure of curation
+* Create an object decribing a database
+* Allocate a database at Datathek by send the database object
+* Upload database datafiles to Datathek
+
+
+Database landing page
+=====================
+
+Done: 
+* General implementation
+
+To be done: 
+* Include Upload Date for sorting
+* Include Last Modified Data for sorting
+
+Bulk upload
+===========
+
+Done: 
+* Dataset name and datafile names linked by <ID>
+* Support for wildcard by <ANY> 
+* Brief statistics
+* Table
+
+To be done:
+* Check if duplicate files assigned to the same datafile
+* Provide option to select datasets for the upload
+* Upload
+* Cancel an upload
+* Check if a dataset already exists
+* Automatic fill of the dataset description
 
 Metadata status:
 ================
