@@ -17,13 +17,26 @@ class DatabasePolicy
 	    return true;
     }
 
+    /* This seems to have no effect
+		public function show(?User $user, Database $database): bool
+    {
+				dd($database);
+        return true;
+    }*/ 
+		
     /**
      * Determine whether the user can view the model.
      */
-    public function view(?User $user, Database $database): bool
+    public function view(?User $user, Database $database): Response
     {
-			//
-			return true;
+				// Access only if public or owned by the user
+			if (empty($user))
+				$access = $database->published;
+			else
+				$access = ($user->id == $database->user_id) || $database->published;
+      return $access
+            ? Response::allow()
+            : Response::deny('You may not see this database, since it is not public and you do not own it!');
     }
 
     /**

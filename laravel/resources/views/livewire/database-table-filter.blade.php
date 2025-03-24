@@ -115,7 +115,9 @@
 				@foreach($databases as $database)
 					<tr>
 						<td class="border p-2">
-							<x-button method="GET" action="{{ route('databases.show', [$database->id]) }}" class="inline">Show</x-button>
+							@if($database->published || ($user_id == $database->user_id))
+								<x-button method="GET" action="{{ route('databases.show', [$database->id]) }}" class="inline">Show</x-button>
+							@endif
 							@can('update', $database)
 								<x-button method="GET" action="{{ route('databases.edit', [$database->id]) }}" class="inline">Edit Metadata</x-button>
 								<x-button method="GET" class="inline" action="{{ route('databases.datasets.create', [$database->id]) }}">Upload</x-button>

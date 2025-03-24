@@ -30,8 +30,9 @@ Done:
 
 To be done: 
 * Define various widgets
+* Implement various widgets
 
-Archive a database
+Database
 ==================
 
 Done: 
@@ -41,6 +42,9 @@ Done:
 To be done: 
 * Procedure to "Assign DOI"
 * Procedure for "Publish with DOI"
+* show and edit "Published"
+DOI, "published with DOI"
+
 
 Database landing page
 =====================
@@ -49,8 +53,10 @@ Done:
 * General implementation
 * Include Publication and Production Date for sorting
 * Include Last Modified for sorting
+* Include Published for sorting
 
 To be done: 
+* Include filter by Published
 
 Bulk upload
 ===========

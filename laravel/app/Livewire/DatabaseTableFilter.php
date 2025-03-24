@@ -22,11 +22,17 @@ class DatabaseTableFilter extends Component
     public $descriptiontypes = ['Other', 'inactive', 'pending']; // Example descriptiontypes.
 		
     public $databases;
+		
+		public $user_id;
 
     public function mount()
     {
         $this->applyFilters();
-				$this->xx = 0;
+				$user = auth()->user();
+				if(empty($user))
+					$this->user_id = null;
+				else
+					$this->user_id = $user->id;
     }
 
     public function applyFilters()
