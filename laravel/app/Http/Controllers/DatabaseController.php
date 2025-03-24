@@ -60,6 +60,20 @@ class DatabaseController extends Controller
         return redirect('databases')->with('success', "Database $request->title successfully created!");
     }
 
+    public function publish(Database $database)
+    {
+        $this->authorize($database);
+				$database->published = true;
+        return view('databases.show',[ 'database' => $database, 'user' => $user ]);
+    }
+
+    public function hide(Database $database)
+    {
+        $this->authorize($database);
+				$database->published = false;
+        return view('databases.show',[ 'database' => $database, 'user' => $user ]);
+    }
+
     /**
      * Display the specified resource.
      */

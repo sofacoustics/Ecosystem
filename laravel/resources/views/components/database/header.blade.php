@@ -48,3 +48,18 @@
 		<x-button method="GET" class="inline" action="{{ route('databases.datasets.bulkupload', [$database->id]) }}">Bulk Upload</x-button>
 	@endif
 @endcan
+
+@can('update', $database)
+
+	<?php /*@if($database->published)
+
+		<form action="{{route('databases.publish')}}" method="post">
+				<div>
+						<button type="submit" class="btn btn-danger">Publish</button>
+				</div>
+		</form>
+		<?php /*<x-button method="GET" action="{{ route('databases.hide', [$database]) }}" class="inline">Hide</x-button>  
+	@else
+		<x-button method="GET" action="{{ route('databases.publish', [$database]) }}" class="inline">Publish</x-button> 
+	@endif */ ?>
+@endcan
