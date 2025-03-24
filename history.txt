@@ -8,6 +8,7 @@ Done:
 
 To be done:
 * Check how to link optional documentation files with a database
+* Check how to set a database public
 
 Comments
 ========
@@ -38,10 +39,8 @@ Done:
 * Retrieval of all databases from datathek
 
 To be done: 
-* Procedure of curation
-* Create an object decribing a database
-* Allocate a database at Datathek by send the database object
-* Upload database datafiles to Datathek
+* Procedure to "Assign DOI"
+* Procedure for "Publish with DOI"
 
 Database landing page
 =====================

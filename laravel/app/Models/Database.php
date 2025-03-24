@@ -18,7 +18,7 @@ class Database extends Model
 		    'radardataset',
         'productionyear', 'publicationyear', 'language', 'resourcetype', 'resource', 'datasources','software', 
 				'processing', 'relatedinformation', 'controlledrights', 'additionalrights', //'subjectAreas', 'publishers', 
-				'creators',
+				'creators', 'doi', 'published', 'radarstatus',
         'user_id', '_token', '_method', 'submit'];
 
     // https://spatie.be/docs/laravel-data/v4/advanced-usage/eloquent-casting
