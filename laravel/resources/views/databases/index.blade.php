@@ -17,9 +17,7 @@
 		</div>
 	@endif
 
-   <livewire:database-table-filter />
-
-
+	<livewire:database-table-filter />
 
 	{{-- START: Testing RADAR dataset --}}
 	@env('ignore')
