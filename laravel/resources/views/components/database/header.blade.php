@@ -51,7 +51,7 @@
 
 @can('update', $database)
 
-	<?php /*@if($database->published)
+	<?php /*@if($database->visible)
 
 		<form action="{{route('databases.publish')}}" method="post">
 				<div>

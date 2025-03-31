@@ -31,12 +31,12 @@ class DatabasePolicy
     {
 				// Access only if public or owned by the user
 			if (empty($user))
-				$access = $database->published;
+				$access = $database->visible;
 			else
-				$access = ($user->id == $database->user_id) || $database->published;
+				$access = ($user->id == $database->user_id) || $database->visible;
       return $access
             ? Response::allow()
-            : Response::deny('You may not see this database, since it is not public and you do not own it!');
+            : Response::deny('You can not see this database because it is not public and you do not own it!');
     }
 
     /**

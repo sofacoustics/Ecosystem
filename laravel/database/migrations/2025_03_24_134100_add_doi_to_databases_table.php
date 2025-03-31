@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('databases', function (Blueprint $table) {
-					$table->boolean('published')->nullable(); // Adding Published
+					$table->boolean('visible')->nullable(); // Adding flag for the database being visible in the Ecosystem to others
 					$table->string('doi')->nullable(); // Adding DOI
 					$table->unsignedInteger('radarstatus')->nullable(); // Adding RADAR Status
         });
@@ -24,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('databases', function (Blueprint $table) {
-					$table->dropColumn('published'); // Dropping the added column
+					$table->dropColumn('visible'); // Dropping the added column
 					$table->dropColumn('doi'); // Dropping the added column
 					$table->dropColumn('radarstatus'); // Dropping the added column
         });

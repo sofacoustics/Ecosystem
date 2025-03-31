@@ -32,8 +32,8 @@
 						</button>
 					</th>
 					<th class="border p-2">
-						<button wire:click="sortBy('published')">Published
-							@if ($sortField === 'published')
+						<button wire:click="sortBy('visible')">Visible
+							@if ($sortField === 'visible')
 								@if ($sortAsc)
 									<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
@@ -113,11 +113,10 @@
 			</thead>
 			<tbody class="bg-white divide-y divide-gray-200">
 				@foreach($databases as $database)
+					@if($database->visible || ($user_id == $database->user_id))
 					<tr>
 						<td class="border p-2">
-							@if($database->published || ($user_id == $database->user_id))
-								<x-button method="GET" action="{{ route('databases.show', [$database->id]) }}" class="inline">Show</x-button>
-							@endif
+							<x-button method="GET" action="{{ route('databases.show', [$database->id]) }}" class="inline">Show</x-button>
 							@can('update', $database)
 								<x-button method="GET" action="{{ route('databases.edit', [$database->id]) }}" class="inline">Edit Metadata</x-button>
 								<x-button method="GET" class="inline" action="{{ route('databases.datasets.create', [$database->id]) }}">Upload</x-button>
@@ -131,7 +130,7 @@
 							<a class="btn btn-primary" href="{{ route('databases.show', $database->id) }}">{{ $database->title }}</a>
 						</td>
 						<td class="px-6 py-4 whitespace-nowrap">
-							@if($database->published)
+							@if($database->visible)
 									X
 							@else
 								  -
@@ -146,6 +145,7 @@
 							<td class="px-6 py-4 whitespace-nowrap">{{ \App\Livewire\DatabaseTableFilter::userName($database->user_id) }}</td>
 						@endauth
 					</tr>
+					@endif
 				@endforeach
 				@if($databases->isEmpty())
 					<tr>

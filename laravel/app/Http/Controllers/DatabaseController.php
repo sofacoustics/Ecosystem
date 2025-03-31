@@ -60,17 +60,17 @@ class DatabaseController extends Controller
         return redirect('databases')->with('success', "Database $request->title successfully created!");
     }
 
-    public function publish(Database $database)
+    public function expose(Database $database)
     {
         $this->authorize($database);
-				$database->published = true;
+				$database->visible = true;
         return view('databases.show',[ 'database' => $database, 'user' => $user ]);
     }
 
     public function hide(Database $database)
     {
         $this->authorize($database);
-				$database->published = false;
+				$database->visible = false;
         return view('databases.show',[ 'database' => $database, 'user' => $user ]);
     }
 
