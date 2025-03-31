@@ -1,8 +1,8 @@
 @php
-    $labelClass = "text-gray-700 mb-2 block font-bold";
-    $selectClass = "form-control text-gray-700 rounded-lg mb-2 block font-bold";
-    $inputClass = "text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none";
-    $buttonClass = "bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white";
+	$labelClass = "text-gray-700 mb-2 block font-bold";
+	$selectClass = "form-control text-gray-700 rounded-lg mb-2 block font-bold";
+	$inputClass = "text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none";
+	$buttonClass = "bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white";
 @endphp
 
 <style>
@@ -30,11 +30,11 @@ tr:hover {background-color: #D6EEEE;}
 </style>
 
 <x-app-layout>
- 	<x-slot name="header">
+	<x-slot name="header">
 		<x-database.header :database=$database />
 	</x-slot>
 
-    <form wire:submit.prevent="save">
+	<form wire:submit.prevent="save">
 			<h3>Pattern for the datasets names:</h3>
 			<div class="mb-4">				
 					<p>Note: It must include "&lt;ID&gt;".</p>
@@ -47,23 +47,23 @@ tr:hover {background-color: #D6EEEE;}
 			<p>Note: Must include "&lt;ID&gt;" and may include "&lt;NUM&gt;" and "&lt;ANY&gt;".</p>
 
 			@forelse($database->datasetdefs as $datasetdef)
-        <div class="mb-4">
-            <label for="fn_pattern{{ $datasetdef->id }}" class="{{ $labelClass }}">Pattern for datafile "{{ $datasetdef->name }}":</label>
-            <input wire:model="fn_pattern{{ $datasetdef->id }}" type="text" id="fn_pattern{{ $datasetdef->id }}" 
+		<div class="mb-4">
+			<label for="fn_pattern{{ $datasetdef->id }}" class="{{ $labelClass }}">Pattern for datafile "{{ $datasetdef->name }}":</label>
+			<input wire:model="fn_pattern{{ $datasetdef->id }}" type="text" id="fn_pattern{{ $datasetdef->id }}" 
 							class="{{ $inputClass }}" required value="{{ $datasetdef->name }}<ID>.sofa"/>
-            @error('description')
-                <span class="text-red-500">{{ $message }}</span>
-            @enderror
-        </div>
+			@error('description')
+				<span class="text-red-500">{{ $message }}</span>
+			@enderror
+		</div>
 			@empty
 				<li>There is no definition of a dataset yet.</li>
 			@endforelse
-        <div class="mt-4">
+		<div class="mt-4">
 						<label for="analyze" class="{{ $buttonClass }}">Analyze!</label>
 						<input type="file" class="{{ $buttonClass }}" id="analyze" webkitdirectory mozdirectory />
-        </div>
+		</div>
 				
-    </form>
+	</form>
 
 		<h3>Analysis results:</h3>
 		<p id="mode"></p>
@@ -82,7 +82,7 @@ tr:hover {background-color: #D6EEEE;}
 			<tbody> 
 					<!-- Rows will be added here --> 
 			</tbody> 
-    </table> 
+	</table> 
 		<p id="skipped"></p>
 		
 		<script>

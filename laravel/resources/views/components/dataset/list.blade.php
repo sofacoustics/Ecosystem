@@ -1,14 +1,14 @@
 {{--
-    A dataset component to display a dataset as an entry in a list
+	A dataset component to display a dataset as an entry in a list
 
-    Parameters:
+	Parameters:
 
-        $dataset    The dataset we want to display
-        $link       'true' if url link should be used, 'false' otherwise
+		$dataset    The dataset we want to display
+		$link       'true' if url link should be used, 'false' otherwise
 --}}
 @props([
-    'link' => 'true',
-    'dataset' => null,
+	'link' => 'true',
+	'dataset' => null,
 ])
 
 @if($link=='true')

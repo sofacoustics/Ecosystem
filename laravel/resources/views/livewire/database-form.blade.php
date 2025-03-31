@@ -1,5 +1,5 @@
 <div>
-    <form wire:submit.prevent="save">
+	<form wire:submit.prevent="save">
 			
 			{{-- Mandatory metadata --}}
 			
@@ -31,12 +31,12 @@
 		<div class="mb-4">
 		  <label for="resource" class="text-gray-700 mb-2 block font-bold">Resource Type (*, non-editable):</label>
 			<select wire:model.live="resourcetype">
-        <option value="">Select a resource type...</option>
-        @foreach(\App\Models\Database::resourcetypesList() as $r => $t)
-            <option disabled value="{{ $r }}">
+		<option value="">Select a resource type...</option>
+		@foreach(\App\Models\Database::resourcetypesList() as $r => $t)
+			<option disabled value="{{ $r }}">
 							{{ $t->display }}
 						</option>
-        @endforeach
+		@endforeach
 		  @error('resourcetype') <span class="text-red-500">{{ $message }}</span> @enderror
 			</select>
 		  <input wire:model="resource" type="text" id="resource"
@@ -48,10 +48,10 @@
 		<div class="mb-4">
 		  <label for="rights" class="text-gray-700 mb-2 block font-bold">Rights (*): </label>
 			<select wire:model.live="controlledrights" required>
-        <option value="">Select a license...</option>
-        @foreach(\App\Models\Database::controlledrightsList() as $r => $t)
-            <option value="{{ $r }}">{{ $t->display }}</option>
-        @endforeach
+		<option value="">Select a license...</option>
+		@foreach(\App\Models\Database::controlledrightsList() as $r => $t)
+			<option value="{{ $r }}">{{ $t->display }}</option>
+		@endforeach
 		  @error('controlledrights') <span class="text-red-500">{{ $message }}</span> @enderror
 			</select>
 		  <input wire:model="additionalrights" type="text" id="additionalrights"
@@ -64,10 +64,10 @@
 		<div class="mb-4">
 		  <label for="additionaltitle" class="text-gray-700 mb-2 block font-bold">Additional Title:</label>
 			<select wire:model.live="additionaltitletype">
-        <option value="">Select a title type...</option>
-        @foreach(\App\Models\Database::additionaltitletypesList() as $r => $t)
-            <option value="{{ $r }}">{{ $t->display }}</option>
-        @endforeach
+		<option value="">Select a title type...</option>
+		@foreach(\App\Models\Database::additionaltitletypesList() as $r => $t)
+			<option value="{{ $r }}">{{ $t->display }}</option>
+		@endforeach
 			</select>
 		  <input wire:model="additionaltitle" type="text" id="additionaltitle"
 				placeholder="Alternative or additional titles as free text"
@@ -77,10 +77,10 @@
 		<div class="mb-4">
 		  <label for="description" class="text-gray-700 mb-2 block font-bold">Description:</label>
 			<select wire:model.live="descriptiontype">
-        <option value="">Select a description type...</option>
-        @foreach(\App\Models\Database::descriptiontypesList() as $r => $t)
-            <option value="{{ $r }}">{{ $t->display }}</option>
-        @endforeach
+		<option value="">Select a description type...</option>
+		@foreach(\App\Models\Database::descriptiontypesList() as $r => $t)
+			<option value="{{ $r }}">{{ $t->display }}</option>
+		@endforeach
 			</select>
 		  <input wire:model="description" type="text" id="title"
 			  placeholder="Description of the content, e.g. technical remarks or an summary of the dataset."
@@ -136,5 +136,5 @@
 			{{ $database ? 'Update' : 'Create' }}
 		  </button>
 		</div>
-    </form>
+	</form>
 </div>

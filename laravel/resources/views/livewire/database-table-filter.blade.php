@@ -1,18 +1,18 @@
 <div>
-    <div class="mb-4">
-        <input type="text" wire:model.live.debounce.500ms="filters.title" placeholder="Filter by Title" class="border rounded p-2">
-        <input type="text" wire:model.live.debounce.500ms="filters.description" placeholder="Filter by Description" class="border rounded p-2">
-        <!-- <select wire:model.live="filters.descriptiontype" class="border rounded p-2">
-            <option value="">All descriptiontypes</option>
-            {{-- @foreach($descriptiontypes as $descriptiontype)
-                <option value="{{ $descriptiontype }}">{{ ucfirst($descriptiontype) }}</option>
-            @endforeach --}}
-        </select> --!>
-        <button wire:click="clearFilters" class="bg-gray-200 rounded p-2">Clear Filters</button>
-    </div>
+	<div class="mb-4">
+		<input type="text" wire:model.live.debounce.500ms="filters.title" placeholder="Filter by Title" class="border rounded p-2">
+		<input type="text" wire:model.live.debounce.500ms="filters.description" placeholder="Filter by Description" class="border rounded p-2">
+		<!-- <select wire:model.live="filters.descriptiontype" class="border rounded p-2">
+			<option value="">All descriptiontypes</option>
+			{{-- @foreach($descriptiontypes as $descriptiontype)
+				<option value="{{ $descriptiontype }}">{{ ucfirst($descriptiontype) }}</option>
+			@endforeach --}}
+		</select> --!>
+		<button wire:click="clearFilters" class="bg-gray-200 rounded p-2">Clear Filters</button>
+	</div>
 
-    <!-- <table class="min-w-full divide-y divide-gray-200">-->
-    <table class="table-auto border border-slate-399">
+	<!-- <table class="min-w-full divide-y divide-gray-200">-->
+	<table class="table-auto border border-slate-399">
 			<thead class="bg-gray-50">
 				<tr>
 					<th class="border p-2">Command</th>
@@ -153,6 +153,6 @@
 					</tr>
 				@endif
 			</tbody>
-    </table>
+	</table>
 </div>
 

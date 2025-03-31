@@ -192,11 +192,11 @@
 	<hr>
 
 @env('local')
-    <div class="text-xs">
-        <p>Uploaded by: {{ $user->name }}<br>
-        Created: {{ $database->created_at }}<br>
-        Updated: {{ $database->updated_at }}</p>
-    </div>
+	<div class="text-xs">
+		<p>Uploaded by: {{ $user->name }}<br>
+		Created: {{ $database->created_at }}<br>
+		Updated: {{ $database->updated_at }}</p>
+	</div>
 @endenv
 
 </x-app-layout>

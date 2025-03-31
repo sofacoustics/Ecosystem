@@ -1,12 +1,12 @@
 <x-app-layout>
-    <x-slot name="header">
-        <x-database.header :database=$database />
-    </x-slot>
-    <h3>Rightsholders</h3>
+	<x-slot name="header">
+		<x-database.header :database=$database />
+	</x-slot>
+	<h3>Rightsholders</h3>
 
 		<p>The person(s) or institution(s) owning or managing the property rights of this database:</p>
 
-    <ul class="list-disc list-inside">
+	<ul class="list-disc list-inside">
 			@forelse($database->rightsholders as $rightsholder)
 				<li>
 					@can('update', $database)
@@ -29,8 +29,8 @@
 			@empty
 				<li>No rights holders defined yet.</li>
 			@endforelse
-    </ul>
+	</ul>
 
-    <livewire:rightsholder-form :database=$database />
+	<livewire:rightsholder-form :database=$database />
 
 </x-app-layout>

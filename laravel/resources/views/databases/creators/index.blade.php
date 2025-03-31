@@ -1,12 +1,12 @@
 <x-app-layout>
-    <x-slot name="header">
-        <x-database.header :database=$database />
-    </x-slot>
-    <h3>Creators</h3>
+	<x-slot name="header">
+		<x-database.header :database=$database />
+	</x-slot>
+	<h3>Creators</h3>
 
 		<p>Persons or institutions responsible for the content of the research data:</p>
 		
-    <ul class="list-disc list-inside">
+	<ul class="list-disc list-inside">
 			@forelse($database->creators as $creator)
 				<li>
 					@can('update', $database)
@@ -41,8 +41,8 @@
 			@empty
 				<li>No creators defined yet.</li>
 			@endforelse
-    </ul>
+	</ul>
 
-    <livewire:creator-form :database=$database />
+	<livewire:creator-form :database=$database />
 
 </x-app-layout>

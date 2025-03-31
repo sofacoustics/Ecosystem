@@ -1,13 +1,13 @@
 <x-app-layout>
-    <x-slot name="header">
-        <x-database.header :database=$database />
-    </x-slot>
-    <h3>Subject Areas</h3>
+	<x-slot name="header">
+		<x-database.header :database=$database />
+	</x-slot>
+	<h3>Subject Areas</h3>
 
 		<p>List of scientific research areas that the database can be assigned to:</p>
 		
-    <ul class="list-disc list-inside">
-      @forelse($database->subjectareas as $subjectarea)
+	<ul class="list-disc list-inside">
+	  @forelse($database->subjectareas as $subjectarea)
 				<li>
 					@can('update', $database)
 						<x-button method="GET" action="{{ route('subjectareas.edit', [$subjectarea]) }}" class="inline">
@@ -25,8 +25,8 @@
 			@empty
 				<li>No subject areas defined yet.</li>
 			@endforelse
-    </ul>
+	</ul>
 
-    <livewire:subjectarea-form :database=$database />
+	<livewire:subjectarea-form :database=$database />
 
 </x-app-layout>

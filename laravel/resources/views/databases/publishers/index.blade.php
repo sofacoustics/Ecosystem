@@ -1,12 +1,12 @@
 <x-app-layout>
-    <x-slot name="header">
-        <x-database.header :database=$database />
-    </x-slot>
-    <h3>Publishers</h3>
+	<x-slot name="header">
+		<x-database.header :database=$database />
+	</x-slot>
+	<h3>Publishers</h3>
 
 		<p>Person(s) or institution(s) responsible for publishing this database at the Ecosystem:</p>
 		
-    <ul class="list-disc list-inside">
+	<ul class="list-disc list-inside">
 			@forelse($database->publishers as $publisher)
 				<li>
 					@can('update', $database)
@@ -29,8 +29,8 @@
 			@empty
 				<li>No publishers defined yet.</li>
 			@endforelse
-    </ul>
+	</ul>
 
-    <livewire:publisher-form :database=$database />
+	<livewire:publisher-form :database=$database />
 
 </x-app-layout>

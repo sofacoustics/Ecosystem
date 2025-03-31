@@ -1,27 +1,27 @@
 {{--
-    the database header to put in the app layout slot 'header'
+	the database header to put in the app layout slot 'header'
 
-    Parameters
+	Parameters
 
-        $database   The database
-        $dataset    The dataset ($database does not need to be set)
+		$database   The database
+		$dataset    The dataset ($database does not need to be set)
 --}}
 @php
-    if (isset($datafile)) {
-        $dataset = $datafile->dataset;
-    }
-    if (isset($dataset)) {
-        $database = $dataset->database;
-    }
+	if (isset($datafile)) {
+		$dataset = $datafile->dataset;
+	}
+	if (isset($dataset)) {
+		$database = $dataset->database;
+	}
 @endphp
 
 <!-- <p>laravel\resources\views\components\database\header.blade.php</p> --!>
 
 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-    <a href="{{ route('databases.show', $database->id) }}">{{ $database->title }} ({{ $database->productionyear }})</a>
-    @role('admin')
+	<a href="{{ route('databases.show', $database->id) }}">{{ $database->title }} ({{ $database->productionyear }})</a>
+	@role('admin')
 			<small>(ID: {{ $database->id }})</small>
-    @endrole
+	@endrole
 </h2>
 
 <x-property name="Additional Title">
