@@ -50,6 +50,7 @@
 @endcan
 
 @can('update', $database)
+	<x-button method="GET" action="{{ route('databases.visibility', [$database]) }}" class="inline">Manage Visibility</x-button>
 
 	<?php /*@if($database->visible)
 

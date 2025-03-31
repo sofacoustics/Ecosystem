@@ -60,20 +60,6 @@ class DatabaseController extends Controller
         return redirect('databases')->with('success', "Database $request->title successfully created!");
     }
 
-    public function expose(Database $database)
-    {
-        $this->authorize($database);
-				$database->visible = true;
-        return view('databases.show',[ 'database' => $database, 'user' => $user ]);
-    }
-
-    public function hide(Database $database)
-    {
-        $this->authorize($database);
-				$database->visible = false;
-        return view('databases.show',[ 'database' => $database, 'user' => $user ]);
-    }
-
     /**
      * Display the specified resource.
      */
@@ -82,6 +68,17 @@ class DatabaseController extends Controller
         $this->authorize($database);
 				$user = \App\Models\User::where('id', $database->user_id)->first();
         return view('databases.show',[ 'database' => $database, 'user' => $user ]);
+    }
+
+    /**
+     * Manage database visibility options
+     */
+    public function visibility(Database $database)
+    {
+        $this->authorize('update', $database);
+				$user = \App\Models\User::where('id', $database->user_id)->first();
+        return view('databases.visibility', [ 'database' => $database, 'user' => $user ]);
+        //return view('databases.visibility',[ 'database' => $database, 'user' => $user ]);
     }
 
     /**
