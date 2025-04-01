@@ -75,7 +75,7 @@ class DatabaseController extends Controller
      */
     public function visibility(Database $database)
     {
-        $this->authorize('update', $database);
+        $this->authorize('own', $database);
 				$user = \App\Models\User::where('id', $database->user_id)->first();
         return view('databases.visibility', [ 'database' => $database, 'user' => $user ]);
         //return view('databases.visibility',[ 'database' => $database, 'user' => $user ]);

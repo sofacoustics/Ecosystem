@@ -3,7 +3,7 @@
 			<x-database.header :database=$database />
 	</x-slot>
 
-@can('update', $database)
+@can('own', $database)
 	<livewire:database-visibility :database=$database />
 @else
 	<p>BUG: You may not edit this database! You should not be able to access this page. Please report this to the webmaster.</p>

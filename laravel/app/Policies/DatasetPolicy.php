@@ -32,10 +32,9 @@ class DatasetPolicy
      */
     public function create(User $user, Database $database): bool
     {
-		//dd('dataset "create" policy');
-		if($user->id === $database->user_id)
-			return true;
-		return false;
+			if($user->id == $database->user_id && $database->radarstatus < 1)
+				return true;
+			return false;
     }
 
     /**
@@ -43,21 +42,19 @@ class DatasetPolicy
      */
     public function update(User $user, Dataset $dataset): bool
     {
-        if($user->id === $dataset->database->user_id)
-            return true;
-        return false;
+			if($user->id === $dataset->database->user_id)
+					return true;
+			return false;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Dataset $dataset): bool
+    public function delete(User $user, Dataset $dataset, Database $database): bool
     {
-        //
-        //if($user->id == $dataset->database->user_id || $user->has_role('admin'))
-        if($user->id === $dataset->database->user_id)
-            return true;
-        return false;
+			if($user->id === $dataset->database->user_id && $database->radarstatus < 1)
+					return true;
+			return false;
     }
 
     /**

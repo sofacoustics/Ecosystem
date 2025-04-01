@@ -66,6 +66,7 @@ class DatabaseVisibility extends Component
 				$this->database->radarstatus=1;
 				$this->database->save();
 				$this->radarstatus = $this->database->radarstatus;
+				$this->js('window.location.reload()'); 
     }
 
     public function approve() // Emulate the curator approving the publication at the Datathek
@@ -82,6 +83,7 @@ class DatabaseVisibility extends Component
 				$this->database->save();
 				$this->doi = $this->database->doi;
 				$this->radarstatus = $this->database->radarstatus;
+				$this->js('window.location.reload()'); 
     }
     public function render()
     {

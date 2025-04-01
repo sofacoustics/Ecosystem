@@ -42,14 +42,14 @@
 	<x-button class="inline" method="GET" action="{{ route('databases.show', $database->id) }}">Datasets</x-button>
 @endif
 
-@can('create', [App\Models\Dataset::class, $database])
+@can('update', $database)
 	@if(count($database->datasetdefs))
 		<x-button method="GET" class="inline" action="{{ route('databases.datasets.create', [$database->id]) }}">Upload</x-button>
 		<x-button method="GET" class="inline" action="{{ route('databases.datasets.bulkupload', [$database->id]) }}">Bulk Upload</x-button>
 	@endif
 @endcan
 
-@can('update', $database)
+@can('own', $database)
 	<x-button method="GET" action="{{ route('databases.visibility', [$database]) }}" class="inline">Manage Visibility</x-button>
 
 	<?php /*@if($database->visible)

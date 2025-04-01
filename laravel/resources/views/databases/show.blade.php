@@ -5,9 +5,9 @@
 	<h2>Metadata</h2>
 		<h3>
 			@auth
-				@if ($database->user_id == Auth::id())
+				@can('update', $database)
 					<x-button method="GET" class="inline" action="{{ route('databases.creators', $database->id) }}">Edit</x-button>
-				@endif
+				@endcan
 			@endauth
 			Creators:</h3>
 		<ul class="list-disc list-inside">
@@ -26,9 +26,9 @@
 
 		<h3>
 			@auth
-				@if ($database->user_id == Auth::id()) 
+				@can('update', $database)
 					<x-button method="GET" class="inline" action="{{ route('databases.publishers', $database->id) }}">Edit</x-button>
-				@endif
+				@endcan
 			@endauth
 			Publishers:</h3>
 		<ul class="list-disc list-inside">
@@ -47,9 +47,9 @@
 
 		<h3>
 			@auth
-				@if ($database->user_id == Auth::id())  {{-- If we own this database --}}
+				@can('update', $database)
 					<x-button method="GET" class="inline" action="{{ route('databases.subjectareas', $database->id) }}">Edit</x-button>
-				@endif
+				@endcan
 			@endauth
 			Subject Areas:</h3>
 		<ul class="list-disc list-inside">
@@ -64,9 +64,9 @@
 
 		<h3>
 			@auth
-				@if ($database->user_id == Auth::id())  {{-- If we own this database --}}
+				@can('update', $database)
 					<x-button method="GET" class="inline" action="{{ route('databases.rightsholders', $database->id) }}">Edit</x-button>
-				@endif
+				@endcan
 			@endauth
 			Rightsholders:</h3>
 		<ul class="list-disc list-inside">
@@ -85,9 +85,9 @@
 
 		<h3>
 			@auth
-				@if ($database->user_id == Auth::id())  {{-- If we own this database --}}
-				<x-button method="GET" class="inline" action="{{ route('databases.keywords', $database->id) }}">Edit</x-button>
-				@endif
+				@can('update', $database)
+					<x-button method="GET" class="inline" action="{{ route('databases.keywords', $database->id) }}">Edit</x-button>
+				@endcan
 			@endauth
 			Keywords:</h3>
 		<ul class="list-disc list-inside">
@@ -107,9 +107,9 @@
 
 		<h3>
 			@auth
-				@if ($database->user_id == Auth::id()) 
+				@can('update', $database)
 					<x-button method="GET" class="inline" action="{{ route('databases.edit', $database->id) }}">Edit</x-button>
-				@endif
+				@endcan
 			@endauth
 			Other Metadata:</h3>
 		<ul class="list-disc list-inside">
@@ -154,7 +154,7 @@
 			<ul class="list-disc list-inside">
 			@foreach($database->datasets as $dataset)
 				<li>
-					@can('delete', $dataset)
+					@can('delete', [$dataset, $database])
 						<x-button method="DELETE" class="inline" action="{{ route('datasets.destroy', [$dataset]) }}">Delete</x-button>
 						<x-button method="GET" class="inline" action="{{ route('datasets.edit', $dataset) }}" >Edit</x-button>
 					@endcan

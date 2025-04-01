@@ -1,9 +1,9 @@
 {{--
     An list component for a datasetdef
 
-    Parameters:
+    Parameters:        datasetdef
 
-        datasetdef
+		Unused (most probably), because this is now integrated in resources\views\databases\datasetdefs\index.blade.php		
 
 --}}
 
