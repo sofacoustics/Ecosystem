@@ -43,34 +43,46 @@ class DatabaseVisibility extends Component
 				$this->database->visible = true;
 				$this->database->save();
 				$this->visible = $this->database->visible;
+				$this->js('window.location.reload()'); 
     }
 
     public function hide()
     {
 				$this->database->visible = false;
-				$this->database->radarstatus = 0;
 				$this->database->save();
 				$this->visible = $this->database->visible;
-				$this->radarstatus = $this->database->radarstatus;
+				$this->js('window.location.reload()'); 
     }
 
-    public function doi()
+    public function assignDOI()
     {
-				$this->database->doi = 'testDOI';
+				$this->database->doi = "testDOI";
 				$this->database->save();
 				$this->doi = $this->database->doi;
     }
 
-    public function publish()
+    public function submitToPublish()
     {
-				$this->database->radarstatus++;
+				$this->database->radarstatus=1;
 				$this->database->save();
 				$this->radarstatus = $this->database->radarstatus;
     }
 
+    public function approve() // Emulate the curator approving the publication at the Datathek
+    {
+				$this->database->radarstatus=2;
+				$this->database->save();
+				$this->radarstatus = $this->database->radarstatus;
+    }
 
-
-
+    public function resetDOI()
+    {
+				$this->database->radarstatus=null;
+				$this->database->doi = null;
+				$this->database->save();
+				$this->doi = $this->database->doi;
+				$this->radarstatus = $this->database->radarstatus;
+    }
     public function render()
     {
         return view('livewire.database-visibility');
