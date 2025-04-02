@@ -1,6 +1,7 @@
 *** Ecosystem ***
 
 To be done:
+* Bug when deleting a definition in a dataset (Data->Show->Definition->Delete: error!)
 * Check how to link optional documentation files with a database
 * Define various widgets
 * Implement various widgets
@@ -32,6 +33,7 @@ Datasets definition
 * Widgets generally implemented
 * Multiple photos as a single datafile: user needs to create animated WEBP
 * "Non-spatial data (SOFA)" added
+* Definitions as a table
 
 
 Database

@@ -2,23 +2,50 @@
 	<x-slot name="header">
 			<x-database.header :database=$database />
 	</x-slot>
-	<h3>Each dataset is defined as followed:</h3>
-	<ul class="list-disc list-inside">
+	@if(count($database->datasetdefs)>0)		
+		<h3>Each dataset is defined as followed:</h3>
+		<table class="table-auto border border-slate-399">
+		<thead class="bg-gray-50">
+			<tr>
+				<th class="border p-2">#</th>
+				<th class="border p-2">Name</th>
+				<th class="border p-2">Type</th>
+				<th class="border p-2">Widget</th>
+				@role('admin')
+					<th class="border p-2">ID</th>
+				@endrole
+			</tr>
+		</thead>
+
+		<tbody class="bg-white divide-y divide-gray-200">
 		@foreach($database->datasetdefs as $datasetdef)
-			<?php /*<li class="list-disc list-inside"><x-datasetdef.show :datasetdef=$datasetdef /></li> */ ?>
-			<li>
-				@can('delete', [$datasetdef, $database])
-					<x-button method="DELETE" class="inline" action="{{ route('datasetdefs.destroy', [$datasetdef]) }}">Delete</x-button>
-				@endcan
-				@can('update', [$datasetdef, $database])
-					<x-button method="GET" class="inline" action="{{ route('datasetdefs.edit', [$datasetdef]) }}">Edit</x-button>
-				@endcan
-				<b>Name:</b> {{ $datasetdef->name }}, <b>Type:</b> {{ $datasetdef->datafiletype->name }}
-				@if($datasetdef->widget), <b>Linked Widget:</b> {{ $datasetdef->widget->name }} @endif
-				@role('admin') (ID: {{ $datasetdef->datafiletype->id }}), @endrole
-			</li>
+			<tr>
+				<td class="border p-2">
+					{{ ($loop->index)+1 }}
+					@can('delete', [$datasetdef, $database])
+						<x-button method="DELETE" class="inline" action="{{ route('datasetdefs.destroy', [$datasetdef]) }}">Delete</x-button>
+					@endcan
+					@can('update', [$datasetdef, $database])
+						<x-button method="GET" class="inline" action="{{ route('datasetdefs.edit', [$datasetdef]) }}">Edit</x-button>
+					@endcan
+				</td>
+				<td class="px-6 py-4 whitespace-nowrap">{{ $datasetdef->name }}</td>
+				<td class="px-6 py-4 whitespace-nowrap">{{ $datasetdef->datafiletype->name }}</td>
+				<td class="px-6 py-4 whitespace-nowrap">
+					@if($datasetdef->widget)
+						{{ $datasetdef->widget->name }}
+					@else
+						No widget
+					@endif
+				</td>
+				@role('admin') 
+					<td class="px-6 py-4 whitespace-nowrap">{{ $datasetdef->datafiletype->id }}</td>
+				@endrole
+			</tr>
 		@endforeach
-	</ul>
+		</tbody>
+		</table>
+	@endif
 
 	@can('update', $database)
 		@if(count($database->datasets) == 0)
