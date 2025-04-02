@@ -58,6 +58,21 @@ class DatabaseSeeder extends Seeder
 						'additionalrights' => null,
             'radardataset' => null,
             'user_id' => 1, ));
+		Database::create(array('title' => 'AXD',
+						'additionaltitle' => null,
+            'description' => 'Specialty: SONICOM Database',
+						'productionyear' => '2020-',
+						'language' => 'eng',
+						'resourcetype' => null,
+						'resource' => null,
+						'datasources' => null,
+						'software' => null,
+						'processing' => null,
+						'relatedinformation' => null,
+						'controlledrights' => 47,
+						'additionalrights' => null,
+            'radardataset' => null,
+            'user_id' => 4, ));
         //Database::create(array('name' => 'Jonnie\'s ARI SOFA test 2', 'description' => 'Nr. 2. \'Nuf said!', 'user_id' => 1, 'radar_id' => 'dEZxRRrxpiHSzbBZ'));
         $this->call([
             DatasetSeeder::class,

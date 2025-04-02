@@ -31,12 +31,12 @@ class DatabasePolicy
     {
 				// Access only if public or owned by the user
 			if (empty($user))
-				$access = $database->published;
+				$access = $database->visible;
 			else
-				$access = ($user->id == $database->user_id) || $database->published;
+				$access = ($user->id == $database->user_id) || $database->visible;
       return $access
             ? Response::allow()
-            : Response::deny('You may not see this database, since it is not public and you do not own it!');
+            : Response::deny('You can not see this database because it is not public and you do not own it!');
     }
 
     /**
@@ -52,13 +52,26 @@ class DatabasePolicy
     /**
      * Determine whether the user can update the model.
      */
+    public function own(User $user, Database $database): Response
+    {
+        // this is called from the controller edit function, when $this->authorize($database) is called.
+        return ($user->id == $database->user_id) // allow only for owners 
+            ? Response::allow()
+            : Response::deny('You can not update this database because you do not own it!');
+    }
+
+
+    /**
+     * Determine whether the user can update the model.
+     */
     public function update(User $user, Database $database): Response
     {
         // this is called from the controller edit function, when $this->authorize($database) is called.
-        return $user->id == $database->user_id
+        return ($user->id == $database->user_id) && ($database->radarstatus < 1) // allow only for owners and if not submitted for persistent publication
             ? Response::allow()
-            : Response::deny('You may not update this database, since you do not own it!');
+            : Response::deny('You can not update this database because you do not own it or it is locked for persistent publication!');
     }
+
 
     /**
      * Determine whether the user can delete the model.
@@ -66,7 +79,7 @@ class DatabasePolicy
     public function delete(User $user, Database $database): Response
     {
         //
-        return $user->id == $database->user_id
+        return ($user->id == $database->user_id) && ($database->radarstatus < 1) // allow only for owners and if not submitted for persistent publication
             ? Response::allow()
             : Response::deny('You may not delete this database, since you do not own it!');
 

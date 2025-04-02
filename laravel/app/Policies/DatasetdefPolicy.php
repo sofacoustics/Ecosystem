@@ -42,7 +42,7 @@ class DatasetdefPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Datasetdef $datasetdef): bool
+    public function update(User $user, Datasetdef $datasetdef, Database $database): bool
     {
 			// this code: User can only update a datsetdef if there are *no* datasets using it.
       //  $nDatasets = count($datasetdef->database->datasets);
@@ -51,7 +51,7 @@ class DatasetdefPolicy
       //  return false;
 			
 				// User can only update their database
-			if($user->id == $datasetdef->database->user_id)
+			if($user->id == $datasetdef->database->user_id && $database->radarstatus < 1)
 				return true;
 			else
 				return false;
@@ -63,10 +63,10 @@ class DatasetdefPolicy
      *
      * User can only delete the datasetdef if there are not datasets which use it!
      */
-    public function delete(User $user, Datasetdef $datasetdef): bool
+    public function delete(User $user, Datasetdef $datasetdef, Database $database): bool
     {
         $nDatasets = count($datasetdef->database->datasets);
-        return ($nDatasets == 0 && $user->id == $datasetdef->database->user_id)
+        return ($nDatasets == 0 && $user->id == $datasetdef->database->user_id && $database->radarstatus < 1)
             ? true
             : false;
     }

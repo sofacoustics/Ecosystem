@@ -52,6 +52,7 @@ Route::view('/terms-of-use', 'pages.terms-of-use')->name('terms-of-use');
 //jw:note If you specify 'database' where the id is in the URL, then it will be used to get model data for the controller method
 //jw:note 'implicit binding' https://laravel.com/docs/11.x/routing#implicit-binding
 Route::resource('databases', DatabaseController::class);
+Route::get('/databases/{database}/visibility', [DatabaseController::class, 'visibility'])->name('databases.visibility');
 Route::get('/databases/{database}/radar', [DatabaseController::class, 'radarShow'])->name('databases.radar');
 Route::get('/databases/{database}/radar/edit', [DatabaseController::class, 'radarEdit'])->name('databases.radar.edit');
 Route::get('/databases/{database}/datasetdefs', [DatabaseController::class, 'datasetdefs'])->name('databases.datasetdefs');
