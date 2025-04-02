@@ -30,11 +30,15 @@ class DatasetPolicy
 	 *
 	 * Note that we're passing a *database* here!
      */
-    public function create(User $user, Database $database): bool
+    public function create(User $user, Database $database): Response
     {
-			if($user->id == $database->user_id && $database->radarstatus < 1)
-				return true;
-			return false;
+			//dd($database);
+			$access = ($user->id == $database->user_id && $database->radarstatus < 1);
+//				return true;
+	//		return false;
+			return $access
+            ? Response::allow()
+            : Response::deny('You can not create a dataset because it is not public and you do not own it!');
     }
 
     /**
