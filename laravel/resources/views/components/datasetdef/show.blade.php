@@ -1,13 +1,13 @@
 {{--
-    display a datasetdef
+	display a datasetdef
 
-    Parameters:        $datasetdef
+	Parameters:        $datasetdef
 		
 		Unused (most probably), because this is now integrated in resources\views\databases\datasetdefs\index.blade.php		
 		
 --}}
 @can('delete', $datasetdef)
-    <x-button method="DELETE" class="inline" action="{{ route('datasetdefs.destroy', [$datasetdef]) }}">Delete</x-button>
+	<x-button method="DELETE" class="inline" action="{{ route('datasetdefs.destroy', [$datasetdef]) }}">Delete</x-button>
 @endcan
 @auth
 	@can('update', $datasetdef)
