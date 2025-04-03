@@ -2,6 +2,7 @@
 
 To be done:
 * Check how to link optional documentation files with a database
+* Check user registration with ORCID
 * Define various widgets
 * Implement various widgets
 * Implement the actual procedure to "Assign DOI"
@@ -14,6 +15,7 @@ To be done:
 * Buld Upload: Check if a dataset already exists
 * Buld Upload: Automatic fill of the dataset description
 * Thing about how to implement all the database functionality for tools
+* Trim spaces from the inputs
 
 
 
