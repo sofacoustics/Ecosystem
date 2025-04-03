@@ -1,3 +1,7 @@
+{{-- 
+	Filter code moved to resources/views/livewire/database-upload.blade.php
+--}}
+{{--
 @php
 	$labelClass = "text-gray-700 mb-2 block font-bold";
 	$selectClass = "form-control text-gray-700 rounded-lg mb-2 block font-bold";
@@ -120,7 +124,7 @@ tr:hover {background-color: #D6EEEE;}
 							let postfix = fn_pattern.substring(end_filter); // hole den postfix, d.h., text nach <ID> raus
 							postfix = postfix.replace(/\[/g, "\\["); 
 							postfix = postfix.replace(/\]/g, "\\]"); 
-							postfix = postfix.replace(/\^/g, "\\^"); 
+							postfix = postfix.replace(/\^/g, "\\^");
 							postfix = postfix.replace(/\./g, "\\.");
 							postfix = postfix.replace(/\$/g, "\\$");
 							postfix = postfix.replace(/\(/g, "\\(");
@@ -235,3 +239,4 @@ tr:hover {background-color: #D6EEEE;}
 		<p>You are not allowed to upload datasets because you do not own this database or it is locked for persistent publications.</p>
 	@endcan
 </x-app-layout>
+--}}
