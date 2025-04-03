@@ -1,7 +1,6 @@
 *** Ecosystem ***
 
 To be done:
-* Bug when deleting a definition in a dataset (Data->Show->Definition->Delete: error!)
 * Check how to link optional documentation files with a database
 * Define various widgets
 * Implement various widgets

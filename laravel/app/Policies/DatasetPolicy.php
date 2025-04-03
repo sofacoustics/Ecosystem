@@ -32,7 +32,6 @@ class DatasetPolicy
      */
     public function create(User $user, Database $database): Response
     {
-			//dd($database);
 			$access = ($user->id == $database->user_id && $database->radarstatus < 1);
 //				return true;
 	//		return false;
@@ -46,7 +45,7 @@ class DatasetPolicy
      */
     public function update(User $user, Dataset $dataset): bool
     {
-			if($user->id === $dataset->database->user_id)
+			if($user->id === $dataset->database->user_id && $dataset->database->radarstatus < 1)
 					return true;
 			return false;
     }
@@ -54,9 +53,9 @@ class DatasetPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Dataset $dataset, Database $database): bool
+    public function delete(User $user, Dataset $dataset): bool
     {
-			if($user->id === $dataset->database->user_id && $database->radarstatus < 1)
+			if($user->id === $dataset->database->user_id && $dataset->database->radarstatus < 1)
 					return true;
 			return false;
     }

@@ -154,7 +154,7 @@
 			<ul class="list-disc list-inside">
 			@foreach($database->datasets as $dataset)
 				<li>
-					@can('delete', [$dataset, $database])
+					@can('update', [App\Models\Dataset::class, $dataset])
 						<x-button method="DELETE" class="inline" action="{{ route('datasets.destroy', [$dataset]) }}">Delete</x-button>
 						<x-button method="GET" class="inline" action="{{ route('datasets.edit', $dataset) }}" >Edit</x-button>
 					@endcan
