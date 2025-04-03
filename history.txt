@@ -1,9 +1,8 @@
 *** Ecosystem ***
 
 To be done:
+* Bug when deleting a definition in a dataset (Data->Show->Definition->Delete: error!)
 * Check how to link optional documentation files with a database
-* bug: if submitted for persistent publication, this must not work https://sonicom.amtoolbox.org/databases/1/datasets/create?
-* bug: check also other injections if submitted for persistent publication
 * Define various widgets
 * Implement various widgets
 * Implement the actual procedure to "Assign DOI"
@@ -15,6 +14,7 @@ To be done:
 * Buld Upload: Cancel an upload
 * Buld Upload: Check if a dataset already exists
 * Buld Upload: Automatic fill of the dataset description
+* Thing about how to implement all the database functionality for tools
 
 
 
@@ -33,6 +33,7 @@ Datasets definition
 * Widgets generally implemented
 * Multiple photos as a single datafile: user needs to create animated WEBP
 * "Non-spatial data (SOFA)" added
+* Definitions as a table
 
 
 Database

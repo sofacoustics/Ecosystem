@@ -27,19 +27,7 @@ class DatasetController extends Controller
      */
     public function index()
     {
-        //
-        /*
-        echo "databaseId = $databaseId<br>";
-        $database = \App\Models\Database::where('id', $databaseId)->first();
-         */
-        //dd($database->datasets);
-
         $datasets = \App\Models\Dataset::all();
-        //
-        //
-        //print_r($database);
-        //echo $database->name;
-        //echo "name = " . $database->name() . "<br>";
         return view('datasets.index', ['datasets' => $datasets]);
     }
 
@@ -48,7 +36,7 @@ class DatasetController extends Controller
      */
     public function create(Database $database)
     {
-        //dd($database);
+				$this->authorize('create', $database);
         return view('datasets.create', ['database' => $database]);
     }
 
