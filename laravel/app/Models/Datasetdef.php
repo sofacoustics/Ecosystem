@@ -11,7 +11,7 @@ class Datasetdef extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','bulk_upload_pattern_prefix','bulk_upload_pattern_suffix'];
+    protected $fillable = ['name','bulk_upload_filename_filter'];
 
     public function database(): BelongsTo
     {

@@ -22,8 +22,7 @@ class DatabaseUpload extends Component
     public $datasetdefIds; // array of datasetdef ids
     public $datasets;
     public $datasetnamefilter;
-    public $prefixes = [];
-    public $suffixes = [];
+    public $datafilenamefilters= [];
     public $datasetsCount = 0;
 
     public bool $started = false;
@@ -85,14 +84,13 @@ class DatabaseUpload extends Component
         $this->datasetnamefilter = $database->bulk_upload_dataset_name_filter;
         foreach($this->database->datasetdefs as $datasetdef)
         {
-            $this->prefixes[$datasetdef->id] = $datasetdef->bulk_upload_pattern_prefix;
-            $this->suffixes[$datasetdef->id] = $datasetdef->bulk_upload_pattern_suffix;
+            $this->datafilenamefilters[$datasetdef->id] = $datasetdef->bulk_upload_filename_filter;
         }
 
         $this->overwriteExisting = session()->get('sonicomEcosystemBulkUploadOverwrite') == 1 ? true : false;
         $this->calculateExisting();
         $this->status = "Mounted";
-        //dd($this->prefixes);
+        //dd($this->datafilenamefilters);
     }
 
     public function boot()
@@ -214,7 +212,7 @@ class DatabaseUpload extends Component
     }
 
     // https://dev.to/zaxwebs/accessing-updated-index-in-livewire-48oc
-    public function updatedPrefixes($value, $key)
+    public function updatedDatafilenamefilters($value, $key)
     {
         //jw:todo check syntax etc.
         //
@@ -223,19 +221,9 @@ class DatabaseUpload extends Component
         $value = $this->sanitizePattern($value); // remove invalid characters
         //FILTER_SANITIZE_STRING is deprecated
         $datasetdef = Datasetdef::find($key);
-        $datasetdef->bulk_upload_pattern_prefix = "$value";
+        $datasetdef->bulk_upload_filename_filter = "$value";
         $datasetdef->save();
-        $this->prefixes[$key] = "$value";
-    }
-// https://dev.to/zaxwebs/accessing-updated-index-in-livewire-48oc
-    public function updatedSuffixes($value, $key)
-    {
-        //jw:todo check syntax etc.
-        //
-        //
-        $datasetdef = Datasetdef::find($key);
-        $datasetdef->bulk_upload_pattern_suffix = "$value";
-        $datasetdef->save();
+        $this->datafilenamefilters[$key] = "$value";
     }
 
     // 

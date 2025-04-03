@@ -47,7 +47,7 @@
 				<li>{{ $datasetdef->name }}
 					<label>Datafile name pattern
 						<input class="w-full" type="text" placeholder="E.g. prefix<ID>.ext"
-							id="fn_pattern{{ $datasetdef->id }}" wire:model.blur="prefixes.{{ $datasetdef->id }}" />
+							id="fn_pattern{{ $datasetdef->id }}" wire:model.blur="datafilenamefilters.{{ $datasetdef->id }}" />
 						{{-- https://www.perplexity.ai/search/how-can-i-access-and-update-ha-xiLcN4hYTKajSuuB3IMR4A --}}
 					</label>
 				</li>
