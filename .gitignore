@@ -1,3 +1,5 @@
 *.swp
+.undodir
+/laravel/storage/app/livewire-tmp
 Session.vim
 laravel-jetstream
