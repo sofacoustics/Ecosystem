@@ -113,8 +113,8 @@
 			@endauth
 			Other Metadata:</h3>
 		<ul class="list-disc list-inside">
-				<!-- mandatory metadata --!>
-			@if ($database->productionyear != null) <li><b>Production Year</b>: {{ $database->productionyear }}</li>@endif 
+			{{-- mandatory metadata --}}>
+			@if ($database->productionyear != null) <li><b>Production Year</b>: {{ $database->productionyear }}</li>@endif
 			@if ($database->publicationyear != null) <li><b>Publication Year</b>: {{ $database->publicationyear }}</li>@endif 
 			@if ($database->resourcetype != null) <li><b>Resource Type ({{ \App\Models\Database::resourcetypeDisplay($database->resourcetype) }})</b>
 				@if ($database->resource != null) : {{ $database->resource }}@endif 
@@ -123,10 +123,10 @@
 				@if ($database->additionalrights != null) ({{ $database->additionalrights }})</li>@endif 
 			</li>@endif 
 
-				<!-- optional metadata --!>
+				{{-- optional metadata --}}
 			@if ($database->additionaltitletype != null) <li><b>Additional Title ({{ \App\Models\Database::additionaltitletypeDisplay($database->additionaltitletype) }})</b>
 				@if ($database->additionaltitle != null) : {{ $database->additionaltitle }}@endif 
-			</li>@endif  
+			</li>@endif
 			@if ($database->descriptiontype != null) <li><b>Description ({{ \App\Models\Database::descriptiontypeDisplay($database->descriptiontype) }})</b>
 				@if ($database->description != null) : {{ $database->description }}@endif 
 			</li>@endif  
@@ -143,7 +143,7 @@
 		@can('create', [App\Models\Dataset::class, $database])
 			@if(count($database->datasetdefs))
 				<x-button method="GET" class="inline" action="{{ route('databases.datasets.create', [$database->id]) }}">Upload</x-button>
-				<x-button method="GET" class="inline" action="{{ route('databases.datasets.bulkupload', [$database->id]) }}">Bulk Upload</x-button>
+				<x-button method="GET" class="inline" action="{{ route('databases.upload', [$database->id]) }}">Bulk Upload</x-button>
 			@endif
 		@endcan
 	

@@ -61,6 +61,7 @@ Route::get('/databases/{database}/publishers', [PublisherController::class, 'ind
 Route::get('/databases/{database}/subjectareas', [SubjectAreaController::class, 'index'])->name('databases.subjectareas');
 Route::get('/databases/{database}/rightsholders', [RightsholderController::class, 'index'])->name('databases.rightsholders');
 Route::get('/databases/{database}/keywords', [KeywordController::class, 'index'])->name('databases.keywords');
+Route::get('/databases/{database}/update', [DatabaseController::class, 'upload'])->name('databases.upload');
 Route::get('/databases/{database}/comments', [CommentController::class, 'index'])->name('databases.comments');
 Route::get('/databases/{database}/datasets/bulkupload', [DatasetController::class, 'bulkupload'])->name('databases.datasets.bulkupload'); 
 

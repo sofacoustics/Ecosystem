@@ -19,6 +19,7 @@ class Database extends Model
         'productionyear', 'publicationyear', 'language', 'resourcetype', 'resource', 'datasources','software', 
 				'processing', 'relatedinformation', 'controlledrights', 'additionalrights', //'subjectAreas', 'publishers', 
 				'creators', 'doi', 'visible', 'radarstatus',
+				'bulk_upload_dataset_name_prefix', 'bulk_upload_dataset_name_suffix',
         'user_id', '_token', '_method', 'submit'];
 
     // https://spatie.be/docs/laravel-data/v4/advanced-usage/eloquent-casting

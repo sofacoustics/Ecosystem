@@ -31,6 +31,7 @@
 			</div>
 
 			<div class="block">
+				<label class="{{ $labelClass }}" for="nameIdentifierSchemeIndex">Name Identifier Scheme:</label>
 				<select class="{{ $selectClass }}" id="nameIdentifierSchemeIndex" wire:model="nameIdentifierSchemeIndex">
 					<option value="">Select an identifier scheme</option>
 					<option value="0">{{ \App\Models\Creator::nameIdentifierScheme(0) }}</option>

@@ -91,10 +91,10 @@ tr:hover {background-color: #D6EEEE;}
 			var inps = document.querySelectorAll('input');
 			[].forEach.call(inps, function(inp) 
 			{
-				inp.onchange = function(e) 
+				inp.onchange = function(e)
 				{
 					if (this.type === "file") 
-					{ 
+					{
 						mode=0;
 						let df_array = [ @foreach($database->datasetdefs as $datasetdef) {{ $datasetdef->id }}, @endforeach ];
 						let fn_filter_array = [], postfix_array = [], beg_id_array = [], dummy = [], fn_cnt = [];
@@ -110,7 +110,7 @@ tr:hover {background-color: #D6EEEE;}
 							fn_filter = fn_filter.replace(/\(/g, "\\("); 
 							fn_filter = fn_filter.replace(/\)/g, "\\)"); 
 							fn_filter = fn_filter.replace(/<NUM>/g, "[0-9]+"); 
-							fn_filter = fn_filter.replace(/<ANY>/g, ".+"); 
+							fn_filter = fn_filter.replace(/<ANY>/g, ".+");
 							fn_filter = RegExp(fn_filter.replace(/<ID>/g, ".+"));
 							fn_filter_array[i]=fn_filter; 
 
@@ -165,7 +165,7 @@ tr:hover {background-color: #D6EEEE;}
 									let id = fn.substring(beg_id_array[j],end_id); // <ID> gefunden
 									let name = name_pattern.replace("<ID>", id); // baue Name mit neuem ID zusammen
 										// Array
-									idx = name_array.indexOf(name); 
+									idx = name_array.indexOf(name);
 									if (idx == -1)
 									{   // new item in the list
 										name_array[name_array.length] = name; // extend the name array

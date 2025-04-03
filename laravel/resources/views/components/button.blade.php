@@ -6,10 +6,15 @@
 		method     	The form method.
 		action 		??
 		type	   	button|submit|reset  Default: 'submit' for 'action' buttons, 'button' otherwise
+		disabled    true or false. default: false
 
 	Example:
 
+<<<<<<< HEAD
+			<x-button 
+=======
 			<x-button
+>>>>>>> dev
 				method="DELETE"
 				action="{{ route('datasets.destroy', [$dataset]) }}"
 				class="inline">
@@ -23,6 +28,7 @@
 --}}
 @props([
 	'method' => 'POST',
+	'disabled' => false,
 ])
 @php
 	if ($method == 'GET') {
@@ -41,6 +47,14 @@
 		$type = $attributes->get('type');
 	}
 
+	// button colors
+	$classColors = 'blue-500 bg-blue-500 hover:bg-blue-700 text-white';
+	if ($disabled) {
+		$classColors = 'gray-400 bg-gray-400 text-white';
+	}
+	if ("$method" == 'DELETE') {
+		$classColors = 'red-400 bg-red-400 hover:bg-red-600 text-white';
+	}
 @endphp
 <div class="inline">
 	@if ($attributes->has('action'))
@@ -52,7 +66,9 @@
 				@endif
 			@endif
 	@endif
-	<button {{ $attributes->except(['action', 'type', 'class']) }} type="{{ $type }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold mx-1 my-1 py-1 px-2 rounded">
+	<button {{ $attributes->except(['action', 'type', 'class']) }} type="{{ $type }}"
+		@if ($disabled) disabled @endif
+		class="{{ $classColors }} font-bold mx-1 my-1 py-1 px-2 rounded">
 		{{ $slot }}
 	</button>
 	@if ($attributes->has('action'))

@@ -397,6 +397,13 @@ To                         Action      From
 8081 (v6)                  ALLOW       Anywhere (v6)
 1433 (v6)                  ALLOW       Anywhere (v6)
 
+## AlpineJS
+
+### Documentation / Tutorials etc.
+
+<https://codewithhugo.com/alpine-tips/>  
+<https://codewithhugo.com/alpinejs-x-for-with-objects/>
+
 ## Troubleshooting
 
 ### Error "Spatie\Permission\Exceptions\PermissionAlreadyExists" when running ./artisan migrate:fresh --seed
@@ -406,4 +413,14 @@ If, when running `./artisan migrate:fresh --seed`, you get the error 'Spatie\Per
     ./artisan cache:forget spatie.permission.cache
     ./artisan cache:clear
 
+## Conventions
 
+### Indenting tab spaces 4
+
+Jonnie uses git attibututes and smudge/clean filters to convert to 4 space tabs when committing code. Added `*.blade.php filter=tabspace4` to `.git/info/attributes` file.
+
+## Tailwind CSS
+
+We're using Tailwind CSS.
+
+If you want to convert a HEX color into a Tailwind color, you could use this site: <https://nearest-tailwind-color.netlify.app/>

@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
+
 use Illuminate\Support\ServiceProvider;
 /*
  * This *was* necessary to get livewire to upload files. However, it turns
@@ -30,6 +34,12 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Datafile::observe(DatafileObserver::class);
+
+        // Increase rate limit to avoid "429 Too Many Requests" error
+        //jw:note https://onlinecode.org/fixing-429-too-many-requests-in-laravel-11/
+        RateLimiter::for('global', function (Request $request) {
+            return Limit::perMinute(5000);
+        });
 
         //$this->app->useStoragePath(config('app.app_storage_path')); //jw:note this could be used to put all files including cache on external disk in conjunctino with app.php
 

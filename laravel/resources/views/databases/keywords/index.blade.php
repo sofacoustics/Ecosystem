@@ -27,6 +27,18 @@
 						{{ $keyword->classificationCode }}
 						@if ($keyword->valueURI != null)</a> @endif )
 					</li>
+
+							@can('update', $database)
+									<x-button method="GET" action="{{ route('keywords.edit', [$keyword]) }}" class="inline">
+											Edit
+									</x-button>
+							@endcan
+							@can('delete', $database)
+									<x-button method="DELETE" action="{{ route('keywords.destroy', [$keyword]) }}" class="inline">
+											Delete
+									</x-button>
+							@endcan
+		  </li>
 		@empty
 			<li>No keywords defined yet.</li>
 		@endforelse

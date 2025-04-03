@@ -5,7 +5,7 @@
 	<h3>Creators</h3>
 
 		<p>Persons or institutions responsible for the content of the research data:</p>
-		
+
 	<ul class="list-disc list-inside">
 			@forelse($database->creators as $creator)
 				<li>

@@ -15,8 +15,6 @@
 	}
 @endphp
 
-<!-- <p>laravel\resources\views\components\database\header.blade.php</p> --!>
-
 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
 	<a href="{{ route('databases.show', $database->id) }}">{{ $database->title }} ({{ $database->productionyear }})</a>
 	@role('admin')
@@ -45,7 +43,7 @@
 @can('update', $database)
 	@if(count($database->datasetdefs))
 		<x-button method="GET" class="inline" action="{{ route('databases.datasets.create', [$database->id]) }}">Upload</x-button>
-		<x-button method="GET" class="inline" action="{{ route('databases.datasets.bulkupload', [$database->id]) }}">Bulk Upload</x-button>
+		<x-button method="GET" class="inline" action="{{ route('databases.upload', [$database->id]) }}">Bulk Upload</x-button>
 	@endif
 @endcan
 

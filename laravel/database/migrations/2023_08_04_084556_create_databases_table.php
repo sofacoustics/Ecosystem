@@ -38,6 +38,8 @@ return new class extends Migration
 						$table->integer('controlledrights');
 						$table->string('additionalrights')->nullable();
 						// fundingreferences --> Table fundingreferences
+            $table->string('bulk_upload_dataset_name_prefix')->nullable();
+            $table->string('bulk_upload_dataset_name_suffix')->nullable();
             $table->json('radardataset')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->string('radar_id')->nullable(); // Save the RADAR id (e.g. iqcCQbvmGzYxYUne) here

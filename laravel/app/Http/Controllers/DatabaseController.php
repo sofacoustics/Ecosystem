@@ -142,4 +142,11 @@ class DatabaseController extends Controller
             'database' => $database
         ]);
     }
+
+    public function upload(Database $database)
+    {
+        return view('databases.upload', [
+            'database' => $database
+        ]);
+    }
 }
