@@ -39,7 +39,7 @@
 		--}}
 		<label>Dataset name pattern
 			<input class="w-full" type="text" placeholder="E.g. name<ID>" id="name_pattern"
-				wire:model.blur="datasetprefix" />
+				wire:model.blur="datasetnamefilter" />
 		</label>
 		{{-- just working for one datasetdef at the moment --}}
 		<ul class="list-disc list-inside">

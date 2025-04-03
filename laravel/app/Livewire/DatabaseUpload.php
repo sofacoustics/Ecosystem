@@ -21,8 +21,7 @@ class DatabaseUpload extends Component
     public Database $database;
     public $datasetdefIds; // array of datasetdef ids
     public $datasets;
-    public $datasetprefix;
-    public $datasetsuffix;
+    public $datasetnamefilter;
     public $prefixes = [];
     public $suffixes = [];
     public $datasetsCount = 0;
@@ -83,8 +82,7 @@ class DatabaseUpload extends Component
         $this->datasetdefIds = $this->database->datasetdefs->pluck('id');
         $this->datasets = $this->database->datasets;
         $this->datasetsCount = count($this->datasets);
-        $this->datasetprefix = $database->bulk_upload_dataset_name_prefix;
-        $this->datasetsuffix = $database->bulk_upload_dataset_name_suffix;
+        $this->datasetnamefilter = $database->bulk_upload_dataset_name_filter;
         foreach($this->database->datasetdefs as $datasetdef)
         {
             $this->prefixes[$datasetdef->id] = $datasetdef->bulk_upload_pattern_prefix;
@@ -250,16 +248,10 @@ class DatabaseUpload extends Component
        // dd($field, ' updated');
         //$this->console("updated($property, $value) key: $key");
         // save to database
-        if("$property" == "datasetprefix")
+        if("$property" == "datasetnamefilter")
         {
             //jw:todo filter
-            $this->database->bulk_upload_dataset_name_prefix = $this->sanitizePattern($this->datasetprefix);
-            //$this->database->bulk_upload_dataset_name_prefix = filter_var($this->datasetprefix, FILTER_SANITIZE_STRING);
-			$this->database->save();
-        }
-        else if("$property" == "datasetsuffix")
-        {
-            $this->database->bulk_upload_dataset_name_suffix = filter_var($this->datasetsuffix, FILTER_SANITIZE_STRING);
+            $this->database->bulk_upload_dataset_name_filter = $this->sanitizePattern($this->datasetnamefilter);
 			$this->database->save();
         }
         else if("$property" == "uploads")
@@ -339,9 +331,6 @@ class DatabaseUpload extends Component
                     //
                     //
                     //
-                    //$prefix = $datasetdef->bulk_upload_pattern_prefix;
-                    //$suffix = $datasetdef->bulk_upload_pattern_suffix;
-                    //$pattern = "$prefix$id$suffix";
                     foreach($this->uploads as $key => $upload)
                     {
                         //if(!isset($upload['fileRef']))

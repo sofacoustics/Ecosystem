@@ -13,82 +13,82 @@ use App\Models\Radar\Metadataschema;
 
 class Database extends Model
 {
-    use HasFactory;
-    protected $fillable = ['title', 'additionaltitle', 'additionaltitletype', 'description', 'descriptiontype',
-		    'radardataset',
-        'productionyear', 'publicationyear', 'language', 'resourcetype', 'resource', 'datasources','software', 
-				'processing', 'relatedinformation', 'controlledrights', 'additionalrights', //'subjectAreas', 'publishers', 
-				'creators', 'doi', 'visible', 'radarstatus',
-				'bulk_upload_dataset_name_prefix', 'bulk_upload_dataset_name_suffix',
-        'user_id', '_token', '_method', 'submit'];
+	use HasFactory;
+	protected $fillable = ['title', 'additionaltitle', 'additionaltitletype', 'description', 'descriptiontype',
+		'radardataset',
+		'productionyear', 'publicationyear', 'language', 'resourcetype', 'resource', 'datasources','software', 
+		'processing', 'relatedinformation', 'controlledrights', 'additionalrights', //'subjectAreas', 'publishers',
+		'creators', 'doi', 'visible', 'radarstatus',
+		'bulk_upload_dataset_name_filter',
+		'user_id', '_token', '_method', 'submit'];
 
-    // https://spatie.be/docs/laravel-data/v4/advanced-usage/eloquent-casting
-    protected $casts = [
-        'radardataset' => RadardatasetpureData::class,
-    ];
+	// https://spatie.be/docs/laravel-data/v4/advanced-usage/eloquent-casting
+	protected $casts = [
+		'radardataset' => RadardatasetpureData::class,
+	];
 
 
-    protected static function booted()
-    {
-    }
+	protected static function booted()
+	{
+	}
 
-    //
-    // RELATIONSHIPS
-    //
-    /**
-     * Get the datasets for a database
-     *
-     * https://laravel.com/docs/10.x/eloquent-relationships#one-to-many
-     */
-    public function datasets(): HasMany
-    {
-        return $this->hasMany(Dataset::class);
+	//
+	// RELATIONSHIPS
+	//
+	/**
+	 * Get the datasets for a database
+	 *
+	 * https://laravel.com/docs/10.x/eloquent-relationships#one-to-many
+	 */
+	public function datasets(): HasMany
+	{
+		return $this->hasMany(Dataset::class);
 		}
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class); //jw:note Specifying this relationship connects the column user_id with the User table
-    }
+	public function user(): BelongsTo
+	{
+		return $this->belongsTo(User::class); //jw:note Specifying this relationship connects the column user_id with the User table
+	}
 
-    public function datasetdefs(): HasMany
-    {
-        return $this->hasMany(Datasetdef::class);
-    }
+	public function datasetdefs(): HasMany
+	{
+		return $this->hasMany(Datasetdef::class);
+	}
 
 		public function creators()
-    {
-        return $this->hasMany(Creator::class); 
-    }
+	{
+		return $this->hasMany(Creator::class); 
+	}
 
 		public function publishers()
-    {
-        return $this->hasMany(Publisher::class); 
-    }
+	{
+		return $this->hasMany(Publisher::class); 
+	}
 		
 		public function subjectareas()
-    {
-        return $this->hasMany(SubjectArea::class); 
-    }
+	{
+		return $this->hasMany(SubjectArea::class); 
+	}
 
 		public function rightsholders()
-    {
-        return $this->hasMany(Rightsholder::class); 
-    }
+	{
+		return $this->hasMany(Rightsholder::class); 
+	}
 
 		public function keywords()
-    {
-        return $this->hasMany(Keyword::class); 
-    }
+	{
+		return $this->hasMany(Keyword::class); 
+	}
 
 		public function comments()
-    {
-        return $this->hasMany(Comment::class); 
-    }
+	{
+		return $this->hasMany(Comment::class); 
+	}
 
-    public function radardataset(): HasOne
-    {
-        return $this->hasOne(Radardataset::class);
-    }
+	public function radardataset(): HasOne
+	{
+		return $this->hasOne(Radardataset::class);
+	}
 
 		static function resourcetypeDisplay($resourcetype)
 		{
@@ -97,10 +97,10 @@ class Database extends Model
 		}
 		
 		static function resourcetypesList()
-    {
-        $rr = \App\Models\Radar\Metadataschema::where('name','resourceType')->select('display')->get();
+	{
+		$rr = \App\Models\Radar\Metadataschema::where('name','resourceType')->select('display')->get();
 				return $rr;
-    }
+	}
 		static function additionaltitletypeDisplay($additionaltitletype)
 		{
 			$result = \App\Models\Radar\Metadataschema::where('id', $additionaltitletype)->select('display')->get();
@@ -108,10 +108,10 @@ class Database extends Model
 		}
 		
 		static function additionaltitletypesList()
-    {
-        $rr = \App\Models\Radar\Metadataschema::where('name','additionalTitleType')->select('display')->get();
+	{
+		$rr = \App\Models\Radar\Metadataschema::where('name','additionalTitleType')->select('display')->get();
 				return $rr;
-    }
+	}
 		
 		static function descriptiontypeDisplay($descriptiontype)
 		{
@@ -120,10 +120,10 @@ class Database extends Model
 		}
 		
 		static function descriptiontypesList()
-    {
-        $rr = \App\Models\Radar\Metadataschema::where('name','descriptionType')->select('display')->get();
+	{
+		$rr = \App\Models\Radar\Metadataschema::where('name','descriptionType')->select('display')->get();
 				return $rr;
-    }
+	}
 
 		static function controlledrightsDisplay($controlledrights)
 		{
@@ -132,10 +132,10 @@ class Database extends Model
 		}
 		
 		static function controlledrightsList()
-    {
-        $rr = \App\Models\Radar\Metadataschema::where('name','controlledRights')->select('display')->get();
+	{
+		$rr = \App\Models\Radar\Metadataschema::where('name','controlledRights')->select('display')->get();
 				return $rr;
-    }
+	}
 
 		static function subjectareaDisplay($subjectareaindex)
 		{
@@ -144,8 +144,8 @@ class Database extends Model
 		}
 		
 		static function subjectareasList()
-    {
-        $rr = \App\Models\Radar\Metadataschema::where('name','subjectArea')->select('display')->get();
+	{
+		$rr = \App\Models\Radar\Metadataschema::where('name','subjectArea')->select('display')->get();
 				return $rr;
-    }
+	}
 }
