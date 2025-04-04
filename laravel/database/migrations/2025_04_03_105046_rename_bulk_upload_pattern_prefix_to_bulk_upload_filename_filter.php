@@ -11,11 +11,22 @@ return new class extends Migration
 	 */
 	public function up(): void
 	{
-		Schema::table('datasetdefs', function (Blueprint $table) {
-			$table->renameColumn('bulk_upload_pattern_prefix', 'bulk_upload_filename_filter');
-			$table->dropColumn('bulk_upload_pattern_id');
-			$table->dropColumn('bulk_upload_pattern_suffix');
-		});
+		// if column exists, then rename it
+		if (Schema::hasColumn('datasetdefs', 'bulk_upload_pattern_prefix'))
+		{
+			Schema::table('datasetdefs', function (Blueprint $table) {
+				$table->renameColumn('bulk_upload_pattern_prefix', 'bulk_upload_filename_filter');
+				$table->dropColumn('bulk_upload_pattern_id');
+				$table->dropColumn('bulk_upload_pattern_suffix');
+			});
+		}
+		// else create it
+		else
+		{
+			Schema::table('datasetdefs', function (Blueprint $table) {
+				$table->string('bulk_upload_filename_filter')->nullable();
+			});
+		}
 	}
 
 	/**
