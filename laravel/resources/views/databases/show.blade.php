@@ -113,7 +113,8 @@
 			@endauth
 			Other Metadata:</h3>
 		<ul class="list-disc list-inside">
-			{{-- mandatory metadata --}}>
+		
+			{{-- mandatory metadata --}}
 			@if ($database->productionyear != null) <li><b>Production Year</b>: {{ $database->productionyear }}</li>@endif
 			@if ($database->publicationyear != null) <li><b>Publication Year</b>: {{ $database->publicationyear }}</li>@endif 
 			@if ($database->resourcetype != null) <li><b>Resource Type ({{ \App\Models\Database::resourcetypeDisplay($database->resourcetype) }})</b>

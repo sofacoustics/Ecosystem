@@ -20,8 +20,6 @@ class DatabaseForm extends Component
     public $productionyear;
     public $publicationyear;
     public $language;
-    public $resourcetype;
-    public $resource;
     public $datasources;
     public $software;
     public $processing;
@@ -34,7 +32,6 @@ class DatabaseForm extends Component
 		'title' => 'required',
 		'productionyear' => 'required',
 		'publicationyear' => 'required',
-		'resourcetype' => 'required',
 		'controlledrights' => 'required',
 	];
 
@@ -45,14 +42,18 @@ class DatabaseForm extends Component
             $this->database = $database;
             $this->title = $database->title;
 						$this->additionaltitle = $database->additionaltitle;
-						$this->additionaltitletype = $database->additionaltitletype-72;
+						if ($database->additionaltitletype == null)
+							$this->additionaltitletype = null;
+						else
+							$this->additionaltitletype = $database->additionaltitletype-72;
             $this->description = $database->description;
-            $this->descriptiontype = $database->descriptiontype-76;
+						if ($database->descriptiontype == null)
+							$this->descriptiontype = null;
+						else
+							$this->descriptiontype = $database->descriptiontype-76;
 						$this->productionyear = $database->productionyear;
 						$this->publicationyear = $database->publicationyear;
 						$this->language = $database->language;
-						$this->resourcetype = $database->resourcetype-1;
-						$this->resource = $database->resource;
 						$this->datasources = $database->datasources;
 						$this->software = $database->software;
 						$this->processing = $database->processing;
@@ -62,11 +63,8 @@ class DatabaseForm extends Component
         }
 				else
 				{
-					$this->resourcetype=2; // dataset
-					$this->resource = "SONICOM Ecosystem";
 					$this->controlledrights = 0; // CC BY
 					$this->additionaltitletype = 0; // Subtitle
-					
 				}
     }
 
@@ -93,8 +91,8 @@ class DatabaseForm extends Component
         $this->database->productionyear = $this->productionyear;
         $this->database->publicationyear = $this->publicationyear;
         $this->database->language = $this->language;
-        $this->database->resourcetype = $this->resourcetype+1;
-        $this->database->resource = $this->resource;
+        $this->database->resourcetype = 3; // fix to Dataset 
+        $this->database->resource = "SONICOM Ecosystem"; // fix 
         $this->database->datasources = $this->datasources;
         $this->database->software = $this->software;
         $this->database->processing = $this->processing;

@@ -1,8 +1,10 @@
 *** Ecosystem ***
 
 To be done:
+* Prepare metadata for RADAR
 * Check how to link optional documentation files with a database
 * Check user registration with ORCID
+* Define download (single file, bulk)
 * Define various widgets
 * Implement various widgets
 * Implement the actual procedure to "Assign DOI"
@@ -14,7 +16,7 @@ To be done:
 * Buld Upload: Cancel an upload
 * Buld Upload: Check if a dataset already exists
 * Buld Upload: Automatic fill of the dataset description
-* Thing about how to implement all the database functionality for tools
+* Think about how to implement all the database functionality for tools
 * Trim spaces from the inputs
 
 
@@ -71,7 +73,7 @@ Metadata status:
 Done: 
 * Title: done.
 * ProductionYear: done.
-* Resource (& resourceType): done. Set to "Dataset" and "Sonicom Ecosystem)", non-editable.
+* Resource (& resourceType): done. Set to "Dataset" and "Sonicom Ecosystem", non-editable.
 * Language: done. 
 * Additional Title (& additionalTitleType): done as 0-1 (0-n for later).
 * PublicationYear: done.

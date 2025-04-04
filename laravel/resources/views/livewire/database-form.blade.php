@@ -19,6 +19,7 @@
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"
 				required />
 		  @error('productionyear') <span class="text-red-500">{{ $message }}</span> @enderror
+		</div>
 
 		<div class="mb-4">
 		  <label for="publicationyear" class="text-gray-700 mb-2 block font-bold">Publication Year (*):</label>
@@ -27,7 +28,9 @@
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"
 				required />
 		  @error('publicationyear') <span class="text-red-500">{{ $message }}</span> @enderror
+		</div>
 
+		<?php /*
 		<div class="mb-4">
 		  <label for="resource" class="text-gray-700 mb-2 block font-bold">Resource Type (*, non-editable):</label>
 			<select wire:model.live="resourcetype">
@@ -44,19 +47,22 @@
 				disabled
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"/>
 		  @error('resource') <span class="text-red-500">{{ $message }}</span> @enderror
+		*/ ?>
 
 		<div class="mb-4">
 		  <label for="rights" class="text-gray-700 mb-2 block font-bold">Rights (*): </label>
 			<select wire:model.live="controlledrights" required>
-		<option value="">Select a license...</option>
 		@foreach(\App\Models\Database::controlledrightsList() as $r => $t)
 			<option value="{{ $r }}">{{ $t->display }}</option>
 		@endforeach
 		  @error('controlledrights') <span class="text-red-500">{{ $message }}</span> @enderror
 			</select>
-		  <input wire:model="additionalrights" type="text" id="additionalrights"
+			@if ($controlledrights == 21)
+		  <input wire:model.live="additionalrights" type="text" id="additionalrights"
 				placeholder="Free text for the specification of a proprietary license (not recommended)"
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"/>
+			@endif
+		</div>
 
 
 		{{-- Optional metadata --}}
@@ -69,11 +75,14 @@
 			<option value="{{ $r }}">{{ $t->display }}</option>
 		@endforeach
 			</select>
+		@if ($additionaltitletype != '')
 		  <input wire:model="additionaltitle" type="text" id="additionaltitle"
 				placeholder="Alternative or additional titles as free text"
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"/>
 		  @error('additionaltitle') <span class="text-red-500">{{ $message }}</span> @enderror
-
+		@endif
+		</div>
+		
 		<div class="mb-4">
 		  <label for="description" class="text-gray-700 mb-2 block font-bold">Description:</label>
 			<select wire:model.live="descriptiontype">
@@ -82,10 +91,12 @@
 			<option value="{{ $r }}">{{ $t->display }}</option>
 		@endforeach
 			</select>
+		@if ($descriptiontype != '')
 		  <input wire:model="description" type="text" id="title"
 			  placeholder="Description of the content, e.g. technical remarks or an summary of the dataset."
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none" />
 		  @error('description') <span class="text-red-500">{{ $message }}</span> @enderror
+		@endif
 		</div>
 
 		<div class="mb-4">
@@ -95,6 +106,7 @@
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"
 				 />
 		  @error('language') <span class="text-red-500">{{ $message }}</span> @enderror
+		</div>
 
 		<div class="mb-4">
 		  <label for="datasources" class="text-gray-700 mb-2 block font-bold">Data Source:</label>
