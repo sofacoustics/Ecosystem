@@ -117,14 +117,6 @@
 					<tr>
 						<td class="border p-2">
 							<x-button method="GET" action="{{ route('databases.show', [$database->id]) }}" class="inline">Show</x-button>
-							@can('update', $database)
-								<x-button method="GET" action="{{ route('databases.edit', [$database->id]) }}" class="inline">Edit Metadata</x-button>
-								<x-button method="GET" class="inline" action="{{ route('databases.datasets.create', [$database->id]) }}">Upload</x-button>
-								<x-button method="GET" class="inline" action="{{ route('databases.datasets.bulkupload', [$database->id]) }}">Bulk Upload</x-button>
-							@endcan
-							@can('delete', $database)
-								<x-button method="DELETE" action="{{ route('databases.destroy', [$database->id]) }}" class="inline">Delete</x-button>
-							@endcan
 						</td>
 						<td class="px-6 py-4 whitespace-nowrap">
 							<a class="btn btn-primary" href="{{ route('databases.show', $database->id) }}">{{ $database->title }}</a>

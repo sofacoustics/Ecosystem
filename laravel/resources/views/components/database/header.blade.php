@@ -49,6 +49,10 @@
 
 @can('own', $database)
 	<x-button method="GET" action="{{ route('databases.visibility', [$database]) }}" class="inline">Manage Visibility</x-button>
+	
+@can('delete', $database)
+	<x-button method="DELETE" action="{{ route('databases.destroy', [$database->id]) }}" class="inline">Delete</x-button>
+@endcan
 
 	<?php /*@if($database->visible)
 

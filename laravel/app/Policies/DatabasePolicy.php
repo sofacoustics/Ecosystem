@@ -62,7 +62,7 @@ class DatabasePolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Database $database): Response
+    public function update(?User $user, Database $database): Response
     {
         // this is called from the controller edit function, when $this->authorize($database) is called.
         return ($user->id == $database->user_id) && ($database->radarstatus < 1) // allow only for owners and if not submitted for persistent publication
@@ -76,7 +76,6 @@ class DatabasePolicy
      */
     public function delete(User $user, Database $database): Response
     {
-        //
         return ($user->id == $database->user_id) && ($database->radarstatus < 1) // allow only for owners and if not submitted for persistent publication
             ? Response::allow()
             : Response::deny('You may not delete this database, since you do not own it!');
