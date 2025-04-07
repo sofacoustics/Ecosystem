@@ -1,23 +1,38 @@
 *** Ecosystem ***
 
 To be done:
+* DatabasePolicy.php: difference between ?User and User? 
+* Where can we (in RADAR Metadate) store the reference to a publication? 
+* Show Database: remove Edit from Header
+* Fork to a SONICOM Github repository
+* Add "Admin" as a role to User table. Admins should be able to see and edit all data.
+* Add "ORCID" to the User 
+* Add "Description" to the Definition of each Datasetfile? 
+* Add confirmation on delete (JW)
 * Prepare metadata for RADAR
 * Check how to link optional documentation files with a database
-* Check user registration with ORCID
 * Define download (single file, bulk)
 * Define various widgets
-* Implement various widgets
+* Implement various widgets: 
+	C:\ISF\Github\SONICOM Ecosystem\laravel\storage\app\services\1
+	C:\ISF\Github\SONICOM Ecosystem\laravel\storage\app\widgets löschen
+	Seeder --> Service und Widget tables
+	Widgets: C:\ISF\Github\SONICOM Ecosystem\laravel\resources\views\livewire\datafiles
 * Implement the actual procedure to "Assign DOI"
 * Implement the actual procedure to "Publish with DOI"
 * Landing page: Include filter by Visible and DOI
 * Buld Upload: Check if duplicate files assigned to the same datafile
 * Buld Upload: Provide option to select datasets for the upload
-* Buld Upload: Implement the actual Upload
 * Buld Upload: Cancel an upload
-* Buld Upload: Check if a dataset already exists
+* Buld Upload: Warn if a dataset already exists
 * Buld Upload: Automatic fill of the dataset description
 * Think about how to implement all the database functionality for tools
+
+Nice to have: 
+* Check user registration with ORCID
+* Layout: Show buttons as tabs
 * Trim spaces from the inputs
+* Add "Fill in with your name" at creators, publishers, and rightsholders.
 
 
 
@@ -62,6 +77,8 @@ Bulk upload
 ===========
 
 Done: 
+* Check if a dataset already exists
+* Implement the actual Upload
 * Dataset name and datafile names linked by <ID>
 * Support for wildcard by <ANY> 
 * Brief statistics

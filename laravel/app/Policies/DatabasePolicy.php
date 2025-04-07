@@ -53,6 +53,7 @@ class DatabasePolicy
     public function own(User $user, Database $database): Response
     {
         // this is called from the controller edit function, when $this->authorize($database) is called.
+				//dd($user);
         return ($user->id == $database->user_id) // allow only for owners 
             ? Response::allow()
             : Response::deny('You can not update this database because you do not own it!');
@@ -65,7 +66,11 @@ class DatabasePolicy
     public function update(?User $user, Database $database): Response
     {
         // this is called from the controller edit function, when $this->authorize($database) is called.
-        return ($user->id == $database->user_id) && ($database->radarstatus < 1) // allow only for owners and if not submitted for persistent publication
+				if (isset($user->id))
+					$enable = ($user->id == $database->user_id) && ($database->radarstatus < 1); // allow only for owners and if not submitted for persistent publication
+				else
+					$enable = false; // do not allow if non-authorized
+        return $enable
             ? Response::allow()
             : Response::deny('You can not update this database because you do not own it or it is locked for persistent publication!');
     }

@@ -63,6 +63,7 @@ class DatabaseForm extends Component
         }
 				else
 				{
+					$this->language = "eng"; 
 					$this->controlledrights = 0; // CC BY
 					$this->additionaltitletype = 0; // Subtitle
 				}

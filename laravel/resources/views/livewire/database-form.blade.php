@@ -102,7 +102,7 @@
 		<div class="mb-4">
 		  <label for="language" class="text-gray-700 mb-2 block font-bold">Language:</label>
 		  <input wire:model="language" type="text" id="language"
-				placeholder="Primary language of the resource, &quot;eng&quot; for English"
+				placeholder="Primary language of the resource as defined by ISO 639-3, &quot;eng&quot; for English"
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"
 				 />
 		  @error('language') <span class="text-red-500">{{ $message }}</span> @enderror
