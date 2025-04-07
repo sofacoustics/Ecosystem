@@ -1,9 +1,8 @@
 *** Ecosystem ***
 
 To be done:
-* DatabasePolicy.php: difference between ?User and User? 
-* Where can we (in RADAR Metadate) store the reference to a publication? 
-* Show Database: remove Edit from Header
+* Ask JW: DatabasePolicy.php: what's the difference between ?User and User
+* Where can we (in RADAR Metadate) store the citation to the corresponding publication? 
 * Fork to a SONICOM Github repository
 * Add "Admin" as a role to User table. Admins should be able to see and edit all data.
 * Add "ORCID" to the User 
