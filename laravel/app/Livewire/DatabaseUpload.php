@@ -56,6 +56,7 @@ class DatabaseUpload extends Component
     public bool $canUpload = false; // set to true, if there are filtered files we can upload
 
     private $debugLevel = 0;
+    private $debugIndent = 0;
 
     /*
     #[Computed]
@@ -280,17 +281,18 @@ class DatabaseUpload extends Component
     public function save()
     {
         $this->status = "Saving";
-        $this->debug(1, "save(): There are ".count($this->uploads)." uploads to save");
+        $this->debug(1, "save(): There are ".count($this->uploads)." uploads to save", 0);
 		if(count($this->uploads))
         {
 			// Create the datasets and their datafiles
             $this->debug(1, "There are ".count($this->pdatasetnames)." datasets to save");
 			foreach($this->pdatasetnames as $datasetnameKey => $datasetname)
             {
+                $this->debug(1, "Dataset $datasetnameKey: $datasetname", 1);
                 // Create dataset if it doesn't exist1
                 if(!Dataset::where('name', "$datasetname")->exists())
                 {
-                    $this->debug(1, "Creating dataset $datasetname");
+                    $this->debug(1, "Creating dataset");
                     // create the dataset
                     $dataset = new Dataset();
                     $dataset->name = "$datasetname";
@@ -300,7 +302,7 @@ class DatabaseUpload extends Component
                 }
                 else
                 {
-                    $this->debug(1, "Using existing dataset $datasetname");
+                    $this->debug(1, "Using existing dataset");
                     $dataset = Dataset::where('name', "$datasetname")->first();
                 }
 
@@ -308,12 +310,37 @@ class DatabaseUpload extends Component
                 $this->debug(1, "There are ".count($this->datasetdefIds)." datafiles to set");
                 foreach($this->datasetdefIds as $datasetdefKey => $datasetdefId)
                 {
+                    $this->debug(1, "Datasetdef $datasetdefId", 2);
                     //jw:todo validate file!!!
                     $datafile = Datafile::where('datasetdef_id', $datasetdefId)
                         ->where('dataset_id', "$dataset->id")
                         ->first();
+                    if($datafile)
+                        $this->debug(1, "A datafile for the datasetdef $datasetdefId already exists in the database (id: $datafile->id)");
+                    if($datafile && !$this->overwriteExisting)
+                        $this->debug(1, "Since this overwriting existing datafiles is disabled, we will just remove the corresponding upload, if it exists.");
 
                     //jw:todo find out which datafile
+                    //dd($this->pdatasetfilenames);
+                    $this->debug(2, "Checking if datasetnameKey $datasetnameKey exists in pdatasetfilenames");
+                    if(array_key_exists($datasetnameKey, $this->pdatasetfilenames))
+                    {
+                        $this->debug(2, "-> datasetnameKey $datasetnameKey exists in pdatasetfilenames ($datasetname)");
+
+                        $this->debug(2, "Checking if pdatasetfilenames[$datasetnameKey] key $datasetdefKey exists.");
+                        if(!array_key_exists($datasetdefKey, $this->pdatasetfilenames[$datasetnameKey]))
+                        {
+                            // this datasetdef has no corresponding datasetfilenames entry! continue;
+                            $this->debug(2, "pdatasetfilenames[$datasetnameKey] key $datasetdefKey does not exist.");
+                            continue;
+                        }
+                        $this->debug(2, "pdatasetfilenames[$datasetnameKey] key $datasetdefKey exists.");
+                    }
+                    else
+                    {
+                        $this->debug(2, "pdatasetfilenames key $datasetnameKey does not exist.");
+                        continue;
+                    }
                     $datafileName = $this->pdatasetfilenames[$datasetnameKey][$datasetdefKey];
                     $this->debug(1, "Datafile name to look for in uploads: $datafileName");
                     //
@@ -324,13 +351,13 @@ class DatabaseUpload extends Component
                         //if(!isset($upload['fileRef']))
                         //    continue; // it may be that the fileRef is not set, although, e.g. fileName is. (see Javascript)
                         $file = $upload; //$upload['fileRef'];
-                        $this->debug(1, "Processing upload $key");
+                        $this->debug(2, "Processing upload $key");
                         $originalName = $file->getClientOriginalName();
                         if("$originalName" == "")
                             $this->error('trying to create a datafile with an empty name');
                         else if("$originalName" == "$datafileName")
                         {
-                            $this->debug(1, "Match found ($key)");
+                            $this->debug(1, "Upload match found (upload key $key)");
                             if($datafile && !$this->overwriteExisting)
                             {
                                 $this->debug(1, "Skipping existing datafile $datafile->id since overwriteExisting is false");
@@ -382,6 +409,7 @@ class DatabaseUpload extends Component
         $this->nFilesToUpload = 0;
         $this->uploading = false;
         $this->refresh();
+        $this->debug(1, "save(): finished", 0);
         $this->dispatch('saved-to-database');
     }
 
@@ -421,10 +449,12 @@ class DatabaseUpload extends Component
         $this->console("ERROR: $p");
     }
 
-    private function debug($debugLevel, $p)
+    private function debug($debugLevel, $p, $indent=-1)
     {
+        if($indent >= 0 && $indent != $this->debugIndent)
+            $this->debugIndent = $indent;
         if($this->debugLevel >= $debugLevel)
-            $this->console("DEBUG($debugLevel): $p");
+            $this->console("DEBUG($debugLevel): ".str_repeat(' ', $this->debugIndent)."$p");
     }
 
     private function console($p)
