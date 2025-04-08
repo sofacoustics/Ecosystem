@@ -72,12 +72,9 @@
 			<x-button :disabled="$nFilesToUpload > $nFilesUploadedByEvent || $nFilesToUpload === 0" type="submit">Save files to database</x-button>
 			<h3>STATUS</h3>
 			<h4>Livewire Properties:</h4>
-			<div>Status: {{ $status }}</div>
-			<div>uploading: {{ $uploading }}</div>
-			<div>nFilesFiltered: {{ $nFilesFiltered }}</div>
-			<div>nFilesToUpload: {{ $nFilesToUpload }}</div>
-			<div>nFilesUploaded: {{ $nFilesUploaded }}</div>
-			<div>Progress: {{ $nFilesUploaded }}/{{ $nFilesToUpload }}</div>
+			<p>Status: {{ $status }}</p>
+			<p>nFilesFiltered: {{ $nFilesFiltered }}</p>
+			<p>nFilesToUpload: {{ $nFilesToUpload }}</p>
 			<h4>Alpine:</h4>
 			<p>Status: <span id="status" wire:ignore></span></p>
 			<p id="nUploaded" wire:ignore></p>
