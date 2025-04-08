@@ -18,18 +18,6 @@ class DatafiletypeSeeder extends Seeder
         // use an extension as well. The extension will be used to filter the 
         // input dialog, whilst the mime type will be used to validate the 
         // file.
-/*        Datafiletype::create([ 'name' => 'jpg',
-					'description' => 'A jpg image file',
-					'mimetypes' => 'image/jpeg', ]);
-								
-        Datafiletype::create([ 'name' => 'png',
-				'description' => 'A png image file',
-				'mimetypes' => 'image/png', ]);
-				
-        Datafiletype::create([ 'name' => 'HRTF.sofa',
-					'description' => 'A HRTF file in SOFA format',
-          'extension' => '.sofa',
-          'mimetypes' => 'application/x-hdf,application/x-hdf5', ]);*/
 								
         Datafiletype::create([ 'name' => 'Spatial acoustics: HRTFs (SOFA)',
  			    'default_widget' => null,
@@ -109,7 +97,7 @@ class DatafiletypeSeeder extends Seeder
 					'mimetypes' => 'audio/wav,audio/wave,audio/vnd.wave,audio/x-wav,audio/mpeg,audio/mp3,audio/flac',
 					'description' => 'Binaural audio recorded under varying spatial conditions, i.e., implicitly spatial (WAV, MP3 or FLAC file)', ]);
 					
-        Datafiletype::create([ 'name' => 'Non-spatial acoustic data (SOFA)',
+        Datafiletype::create([ 'name' => 'Non-spatial acoustic data, e.g., headphone IRs (SOFA)',
 			    'default_widget' => null,
 					'extension' => '.sofa',
 					'mimetypes' => 'application/x-hdf,application/x-hdf5',
