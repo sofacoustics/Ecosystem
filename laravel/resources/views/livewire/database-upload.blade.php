@@ -21,12 +21,13 @@
 		uploadFinished: false,
 		uploading: false,
 		nUploaded: 0,
+		nUploading: 0,
 		nSelected: 0,
 		progress: 0,
 		finished: false,
 		error: false,
 		cancelled: false
-	}">
+	}" id="alpineComponent">
 		{{--
 		<p>Steps to bulk uploading files:</p>
 		<ol class="list-decimal list-inside">
@@ -47,7 +48,8 @@
 				<li>{{ $datasetdef->name }}
 					<label>Datafile name pattern
 						<input class="w-full" type="text" placeholder="E.g. prefix<ID>.ext"
-							id="fn_pattern{{ $datasetdef->id }}" wire:model.blur="datafilenamefilters.{{ $datasetdef->id }}" />
+							id="fn_pattern{{ $datasetdef->id }}"
+							wire:model.blur="datafilenamefilters.{{ $datasetdef->id }}" />
 						{{-- https://www.perplexity.ai/search/how-can-i-access-and-update-ha-xiLcN4hYTKajSuuB3IMR4A --}}
 					</label>
 				</li>
@@ -64,66 +66,25 @@
 				<input id="directory-picker" type="file" webkitdirectory directory
 					x-on:change="allFiles = Array.from($event.target.files);">
 			</div>
-			<x-button wire:click="$js.piotrsFilter($data)" :disabled="$nFilesSelected == 0 || $uploading" class="flex items-center gap-1">Apply
-				filter</x-button>
-			{{-- <template x-if="allFiles.length !== 0 && !$wire.uploading">
-			</template> --}}
-			{{-- <template x-if="$wire.pdatasetnames.length > 0 && !$wire.uploading"> --}}
+			<x-button wire:click="$js.piotrsFilter($data)" :disabled="$nFilesSelected == 0 || $uploading" class="flex items-center gap-1">Apply filter</x-button>
 			<x-button wire:loading:attr="disabled" wire:click="$js.doPiotrUpload($data)" :disabled="!$canUpload">Start
 				upload</x-button>
-			{{-- </template> --}}
-
-			{{--			<template x-if="$wire.nFilesToUpload > 0 && $wire.uploaded.length == $wire.nFilesToUpload"> --}}
-			<x-button :disabled="$nFilesToUpload > $nFilesUploaded || $nFilesToUpload === 0" type="submit">Save files to database</x-button>
-			{{--			</template> --}}
-			{{-- STATUS --}}
+			<x-button :disabled="$nFilesToUpload > $nFilesUploadedByEvent || $nFilesToUpload === 0" type="submit">Save files to database</x-button>
 			<h3>STATUS</h3>
-			{{--
-			Status:
-			<div class="inline" x-show="$wire.nFilesToUpload == 0">Waiting for upload</div>
-			<div class="inline" x-show="$wire.uploading">Uploading</div>
-			<div class="inline" x-show="$wire.nFilesToUpload > 0 && $wire.uploaded.length == $wire.nFilesToUpload">
-				Finished</div>
-			--}}
-			<div>Livewire Properties:
-				<div>status: {{ $status }}</div>
-				<div>uploading: {{ $uploading }}</div>
-				<div>nFilesFiltered: {{ $nFilesFiltered }}</div>
-				<div>nFilesToUpload: {{ $nFilesToUpload }}</div>
-				<div>nFilesUploaded: {{ $nFilesUploaded }}</div>
-			</div>
+			<h4>Livewire Properties:</h4>
+			<div>Status: {{ $status }}</div>
+			<div>uploading: {{ $uploading }}</div>
+			<div>nFilesFiltered: {{ $nFilesFiltered }}</div>
+			<div>nFilesToUpload: {{ $nFilesToUpload }}</div>
+			<div>nFilesUploaded: {{ $nFilesUploaded }}</div>
 			<div>Progress: {{ $nFilesUploaded }}/{{ $nFilesToUpload }}</div>
-
+			<h4>Alpine:</h4>
+			<p>Status: <span id="status" wire:ignore></span></p>
 			<p id="nUploaded" wire:ignore></p>
 			<p id="nUploadProgress" wire:ignore></p>
-			<div x-cloak>
-				<div class="bg-gray-100">
-					{{-- <div wire:loading>Livewire communication with server</div> --}}
-					<x-message show="cancelled" timeout="2000">The upload has been cancelled</x-message>
-					<x-message show="error">Error: there was an error uploading</x-message>
-					<x-message show="uploading">Uploading to server</x-message>
-					{{-- <x-message show="finished" timeout="5000">Upload finished</x-message> --}}
-				</div>
-			</div>
-
-
 			{{--
-				<template x-for="(upl,index) in $wire.uploads" :key="index">
-					<span x-text="index + ': '"></span>
-					<span x-text="upl['fileName']"></span>
-				</template>
-				@foreach ($uploads as $i => $upl)
-					<div id="upload-progress" wire:key="$i">
-						<label>
-							<div>{{ $upl['fileName'] }}</div>
-							<div>{{ $upl['progress'] }}%</div>
-				  </label>
-						<progress max="100" wire:model="uploads.{{ $i }}.progress" />
-					</div>
-				@endforeach
-				--}}
-
-			<div>
+			<progress max="100" :style="`width: ${progress}%;`" />
+			--}}
 		</form>
 
 		<h3>Analysis results:</h3>
@@ -158,7 +119,7 @@
 						console.log('EVENT: directory-picker event listener: length', e.target.files.length);
 						$wire.set('nFilesSelected', e.target.files
 							.length
-							); // set immediately using $wire.set(), otherwise set when next $wire.$refresh or another action that triggers a refresh. See
+						); // set immediately using $wire.set(), otherwise set when next $wire.$refresh or another action that triggers a refresh. See
 					},
 					false,
 				);
@@ -194,6 +155,43 @@
 				$wire.on('livewire-upload-start', () => {
 					console.log('EVENT: livewire-upload-start event triggered');
 				});
+
+				document.addEventListener("upload-job", async function(event) {
+					console.log('EVENT: upload-job event triggered', event.detail);
+					await new Promise(resolve => setTimeout(resolve, 60000)); // 10s delay
+					let data = Alpine.$data(document.getElementById('alpineComponent'));
+					let nPending = data.pendingFiles.length;
+					console.log("       upload-job: nPending: ", nPending);
+					file = data.pendingFiles.at(event.detail.index);
+					let uploads = Object.values($wire.uploads);
+					let offset = uploads.length;
+					let index = event.detail.index;
+					console.log("       upload-job: uploading ", file, " (index: ", index, " offset+index: ", (
+						index + offset), ")");
+					// https://www.perplexity.ai/search/in-php-if-dd-displays-an-array-oyxbqrAVQPK_4xxPBLYF8Q?4=d#4
+					@this.upload(
+						'uploads.' + (index + offset),
+						file,
+						finish = (n) => {
+							console.log('upload-job: this.upload() finished');
+							data.nUploaded++;
+							//document.getElementById("nUploaded").innerHTML = "File upload count: " + data
+							//	  .nUploaded + "/" + $wire.nFilesToUpload;
+						}, error = () => {}, progress = (event) => {
+							let html = document.getElementById("nUploadProgress").innerHTML;
+							document.getElementById("nUploadProgress").innerHTML = html + ".";
+							//document.getElementById("nUploadProgress").innerHTML = data.nUploaded + " files have been uploaded";
+						}
+					);
+				});
+				//                document.querySelector('[x-data]').addEventListener('upload-job', (e) => {
+				//                        console.log('EVENT: upload-job');
+				//                        const alpineData = e.target.__x.getUnobservedData();
+				//                        console.log(alpineData);
+				//                });
+				//data.pendingFiles.forEach((file, index) => {
+				//await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate delay
+				//console.log("upload-job Event handled!");
 				////////////////////////////////////////////////////////////////////////////////
 				//	Functions
 				////////////////////////////////////////////////////////////////////////////////
@@ -208,8 +206,8 @@
 					//@this.set('uploading', true);
 					$wire.set('status', 'Uploading');
 					data.nUploaded = 0;
-					//data.uploadStarted = true;
-					//data.uploadFinished = false;
+					data.uploadStarted = true;
+					data.uploadFinished = false;
 
 					// flat list of files to upload
 					let filenamesToUpload = $wire.pdatasetfilenames.flat();
@@ -228,10 +226,65 @@
 					//$wire.status = "Uploading";
 					let uploads = Object.values($wire.uploads);
 					let offset = uploads.length;
-					//console.log("doUpload() - existing upload count: ", offset);
+					console.log("  uploads.length", uploads.length);
 					// https://fly.io/laravel-bytes/multi-file-upload-livewire/
-					data.pendingFiles.forEach((file, index) => {
-						$wire.dispatch('upload file ', index);
+					document.getElementById("nUploadProgress").innerHTML = "";
+					for( let i = 0; i < data.pendingFiles.length; i++) {
+					//data.pendingFiles.forEach((file, index) => {
+						console.log("data.pendingFiles.length: ", data.pendingFiles.length);
+						//$wire.dispatch('upload file ', index);
+						//const event = new Event("upload-job");
+						/*
+						const event = new CustomEvent("upload-job", {
+							detail: {
+								index: index
+							}, // Custom data
+							bubbles: true, // Allows the event to bubble up through the DOM
+							cancelable: true // Allows the event to be canceled
+						});
+						document.dispatchEvent(event); // For global events
+						*/
+
+						//document.querySelector('[x-data]').dispatchEvent(event); // For global events
+
+						// https://sinnbeck.dev/posts/making-a-complete-file-uploader-with-progressbar-using-livewire-and-alpinejs
+						data.isUploading = true;
+						//document.getElementById("nUploaded").innerHTML = "File upload count: " + data.nUploaded + "/" + $wire.nFilesToUpload;
+						let status = "Upload started";
+						$wire.set('status', status);
+						document.getElementById("status").innerHTML = status;
+						@this.uploadMultiple('uploads', data.pendingFiles,
+							function(success) { //upload was a success and was finished
+								data.nUploaded++;
+								data.uploading = false;
+								$wire.set('nFilesUploadedByEvent', data.nUploaded);
+								let status = 'uploadMultiple:  uploading ' + (data.nUploading) + '/' + $wire.nFilesToUpload + '. ' + data.nUploaded + ' files successfully uploaded';
+								$wire.set('status', status);
+								document.getElementById("status").innerHTML = status;
+								//document.getElementById("nUploaded").innerHTML = "File upload count: " + data.nUploaded + "/" + $wire.nFilesToUpload;
+
+							//document.getElementById("       data.uploading = false
+								//$this.progress = 0
+								data.progress = 0;
+							},
+							function(error) { //an error occured
+								console.log('error', error)
+							},
+							function(event) { //upload progress was made
+								data.nUploading = data.nUploaded + 1;
+								let status = 'uploadMultiple:  uploading ' + (data.nUploading) + '/' + $wire.nFilesToUpload + '. ' + data.nUploaded + ' files successfully uploaded';
+								$wire.set('status', status);
+								document.getElementById("status").innerHTML = status;
+								//$this.progress = event.detail.progress
+								data.progress = event.detail.progress;
+								//let html = document.getElementById("nUploadProgress").innerHTML;
+								//document.getElementById("nUploadProgress").innerHTML = html + ".";
+							}
+						)
+
+
+
+						/* //jw:note moved to upload-job event
 						console.log("doPiotrUpload(): uploading ", file, " (index: ", index, " offset+index: ", (
 							index + offset), ")");
 						// https://www.perplexity.ai/search/in-php-if-dd-displays-an-array-oyxbqrAVQPK_4xxPBLYF8Q?4=d#4
@@ -249,12 +302,9 @@
 								//document.getElementById("nUploadProgress").innerHTML = data.nUploaded + " files have been uploaded";
 							}
 						);
-					});
-					$wire.set('status', 'Upload finished');
-					data.uploadStarted = false;
-					data.uploadFinished = true;
-					$wire.uploading = false;
-					$wire.finished = true;
+						*/
+					//});
+					} // end of for loop
 					console.log("doPiotrUpload() finished");
 				});
 				$js('piotrsFilter', (data) => {
@@ -308,7 +358,7 @@
 						let name_pattern = document.getElementById("name_pattern").value;
 				
 						s="<b>Skipped:</b><br>";
-						const tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
+						const tableBody = document.getElementById('results').getElementsByTagName('tbody')[0];
 						tableBody.innerHTML = "";
 
 						let name_array = [], fn_array = []; name_cnt = 0; skipped_cnt = 0;
@@ -383,7 +433,7 @@
 						for (let i=0; i<name_array.length; i++)
 						{
 							newRow = tableBody.insertRow(-1);
-							cell = newRow.insertCell(-1); 
+							cell = newRow.insertCell(-1);
 							cell.textContent = i+1; // insert the index
 							cell = newRow.insertCell(-1); 
 							cell.textContent = name_array[i]; // insert Name to the table
@@ -396,6 +446,7 @@
 									}
 							}
 						}
+						console.log(tableBody); //jw:tmp
 						$wire.set('pdatasetnames', name_array);
 						console.log('$wire.pdatasetnames: ', $wire.pdatasetnames);
 						$wire.set('pdatasetfilenames', fn_array);
