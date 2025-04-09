@@ -1,6 +1,6 @@
 # SONICOM Ecosystem in Laravel
 
-## Install
+## Install 
 
 Install Laravel
 
