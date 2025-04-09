@@ -1,4 +1,4 @@
-# SONICOM Ecosystem in Laravel
+# SONICOM Ecosystem in Laravel 
 
 ## Requirements
 
