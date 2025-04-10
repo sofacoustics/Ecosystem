@@ -52,7 +52,6 @@ class DatabaseUpload extends Component
     public $nFilesFiltered = 0;
     public $nFilesToUpload = 0;
     public $nFilesUploaded = 0;
-    public $nFilesUploadedByEvent = 0;
 
     public bool $canUpload = false; // set to true, if there are filtered files we can upload
 
@@ -77,20 +76,6 @@ class DatabaseUpload extends Component
 
     public $dto = null; // a DataTranfer object containing list of files to upload
 
-    public function finishUpload($name, $tmpPath, $isMultiple)
-    {
-        $this->cleanupOldUploads();
-
-        $files = collect($tmpPath)->map(function ($i) {
-            return TemporaryUploadedFile::createFromLivewire($i);
-        })->toArray();
-        $this->emitSelf('upload:finished', $name, collect($files)->map->getFilename()->toArray());
-
-        $files = array_merge($this->getPropertyValue($name), $files);
-        $this->syncInput($name, $files);
-    }
-
-
     public function mount(Database $database)
     {
         $this->database = $database->load('datasetdefs','datasets'); // https://laracasts.com/discuss/channels/livewire/livewire-wiremodel-with-model-relationship
@@ -112,7 +97,7 @@ class DatabaseUpload extends Component
     public function boot()
     {
         $this->calculateExisting();
-        $this->debug(1, "calculatingExisting() from boot()");
+        $this->console("calculatingExisting() from boot()");
     }
 
 
@@ -211,7 +196,7 @@ class DatabaseUpload extends Component
     public function updatedPdatasetnames($value, $key)
     {
         //dd("array[$key] = $value");
-        $this->debug(1, "updatedPdatasetnames");
+        $this->console("updatedPdatasetnames");
     }
 
     public function updatedPdatasetfilenames($value, $key)
@@ -224,7 +209,7 @@ class DatabaseUpload extends Component
             $this->canUpload = true;
         $this->nFilesFiltered = $nDatafiles; // number of datafiles minus number of datasets
         $this->status = "Files filtered";
-        $this->debug(1, "updatedPdatasetfilenames ($this->nFilesFiltered)");
+        $this->console("updatedPdatasetfilenames ($this->nFilesFiltered)");
     }
 
     // https://dev.to/zaxwebs/accessing-updated-index-in-livewire-48oc
@@ -271,8 +256,6 @@ class DatabaseUpload extends Component
             //dd("$field, $value, $property, $key");
             // Only update uploads if the fileRef value has been set,
             // since the others are set first.
-            //dd($field, $value);
-            //$this->console("updatedUploads");
             $this->calculateUploaded();
             $this->calculatePending();
         }
@@ -432,7 +415,7 @@ class DatabaseUpload extends Component
 
     public function render()
     {
-        $this->debug(1, 'Livewire render()');
+        $this->console('Livewire render()');
         return view('livewire.database-upload');
     }
 
@@ -526,12 +509,12 @@ class DatabaseUpload extends Component
 
         }
         $this->nFilesUploaded = count($this->uploaded);
-        //$this->console("calculateUploaded(): Livewire property nFilesUploaded = $this->nFilesUploaded");
+        $this->console("calculateUploaded()");
         if($this->uploading && $this->nFilesUploaded == $this->nFilesToUpload)
         {
             $this->console("calculateUploaded(): Everything uploaded. Resetting $this->uploading to false");
             $this->uploading = false;
-            //$this->status = "Everything uploaded! (calculateUploaded())"; // this does not mean that the files have actually arrived!
+            $this->status = "Everything uploaded! (calculateUploaded())";
         }
         sort($this->uploaded);
     }
