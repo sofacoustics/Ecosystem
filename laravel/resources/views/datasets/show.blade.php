@@ -10,22 +10,18 @@
     <p>This dataset contains {{ count($dataset->datafiles) }} files.</p>
     <div class="ml-2">
 			@foreach ($dataset->datafiles as $datafile)
-				<h3>
+				<h3>Name: {{ $datafile->datasetdef->name }}
 					@can('delete', $datafile)
 						<x-button method="DELETE" class="inline" action="{{ route('datafiles.destroy', [$datafile]) }}">Delete</x-button>
 					@endcan
-					{{ $datafile->datasetdef->name }}:</h3>
+				</h3>
 				<div wire:key="{{ $datafile->id }}">
-					<livewire:DatafileListener :datafile="$datafile" :key="$datafile->id" />
-					<x-property name="Name">
+					<x-property name="Datafile Name">
 						<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a> @role('admin') (ID: {{ $datafile->id }}) @endrole
 					</x-property>
-					@if ($datafile->datasetdef->widget()->exists())
-						<x-property name="Widget">
-							<a href="{{ route('widgets.show', $datafile->datasetdef->widget->id) }}">{{ $datafile->datasetdef->widget->name }}</a>
-						</x-property>
-					@endif
+					<livewire:DatafileListener :datafile="$datafile" :key="$datafile->id" />
 				</div>
+				<hr>
 			@endforeach
     </div>
 
@@ -44,17 +40,5 @@
             @endforeach
         </ul>
     @endif
-    {{-- display option to upload whole folder, if there are not datafiles yet --}}
-    {{-- jw:note - not implemented yet
-    @can('update', $dataset->database)
-        @if (count($dataset->datafiles) == 0)
-            <p>Upload all files from a folder</p>
-            <livewire:dataset-upload :dataset=$dataset />
-        @endif
-    @endcan
-	--}}
-    {{-- jw:note do *not* use a livewire inside a livewire if possible --}}
-    {{-- @livewire(DatasetListener::class, ['dataset' => $dataset]) --}}
-    {{--    <livewire:DatasetListener :dataset="$dataset" /> --}}
 
 </x-app-layout>
