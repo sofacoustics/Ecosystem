@@ -97,7 +97,7 @@ class DatabaseUpload extends Component
     public function boot()
     {
         $this->calculateExisting();
-        $this->console("calculatingExisting() from boot()");
+        $this->debug(1, "calculatingExisting() from boot()");
     }
 
 
@@ -415,7 +415,7 @@ class DatabaseUpload extends Component
 
     public function render()
     {
-        $this->console('Livewire render()');
+        $this->debug(1, 'Livewire render()');
         return view('livewire.database-upload');
     }
 
@@ -509,7 +509,7 @@ class DatabaseUpload extends Component
 
         }
         $this->nFilesUploaded = count($this->uploaded);
-        $this->console("calculateUploaded()");
+        $this->debug(1, "calculateUploaded()");
         if($this->uploading && $this->nFilesUploaded == $this->nFilesToUpload)
         {
             $this->console("calculateUploaded(): Everything uploaded. Resetting $this->uploading to false");
@@ -529,6 +529,7 @@ class DatabaseUpload extends Component
 
     private function sanitizePattern($input)
     {
+        return $input; //jw:tmp currently do nothing!
         // Define the pattern to match any character that is not alphanumeric, a period, or < or >
         $pattern = '/[\/:*?"|]/';
         //$pattern = '/[^a-zA-Z0-9.<>]/';

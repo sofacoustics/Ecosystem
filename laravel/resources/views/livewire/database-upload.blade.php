@@ -17,9 +17,8 @@
 		allFiles: [],
 		filteredFiles: [],
 		pendingFiles: [],
-		uploadStarted: false,
-		uploadFinished: false,
 		uploading: false,
+        nFiltered: 0,
 		nUploaded: 0,
 		nSelected: 0,
 		progress: 0,
@@ -29,16 +28,6 @@
 		cancelled: false,
         status: ''
 	}" id='alpineComponent'>
-		{{--
-		<p>Steps to bulk uploading files:</p>
-		<ol class="list-decimal list-inside">
-			<li>Select the directory you want to upload files from. This must contain all the files (does not recurse to
-				subdirectories yet)</li>
-			<li>Apply the filters you have specified.</li>
-			<li>Start the upload. Note that only files from the filtered list will actually be uploaded.</li>
-			<li>Save the files to the database.</li>
-		</ol>
-		--}}
 		<label>Dataset name pattern
 			<input class="w-full" type="text" placeholder="E.g. name<ID>" id="name_pattern"
 				wire:model.blur="datasetnamefilter" />
@@ -55,38 +44,27 @@
 				</li>
 			@endforeach
 		</ul>
-		<label>Would you like to overwrite existing files?
-			<input type="checkbox" wire:model.live="overwriteExisting">
-		</label>
 
 		<form wire:submit="save">
-			{{-- BUTTONS --}}
-			<h3>BUTTONS</h3>
-			<div x-show="!$wire.uploading">
-				<input id="directory-picker" type="file" webkitdirectory directory
-					x-on:change="allFiles = Array.from($event.target.files);">
-			</div>
-			<x-button wire:click="$js.piotrsFilter($data)" :disabled="$nFilesSelected == 0 || $uploading" class="flex items-center gap-1">Apply
-				filter</x-button>
-			{{-- <template x-if="allFiles.length !== 0 && !$wire.uploading">
-			</template> --}}
-			{{-- <template x-if="$wire.pdatasetnames.length > 0 && !$wire.uploading"> --}}
-			<x-button wire:loading:attr="disabled" wire:click="$js.doPiotrUpload($data)" :disabled="!$canUpload">Start
-				upload</x-button>
-			{{-- </template> --}}
-
-			{{--			<template x-if="$wire.nFilesToUpload > 0 && $wire.uploaded.length == $wire.nFilesToUpload"> --}}
+            <input id="directory-picker" type="file" webkitdirectory directory
+                x-bind:disabled="uploading"
+                x-on:change="allFiles = Array.from($event.target.files);">
+            <br>
+            <label>Would you like to overwrite existing files?
+                <input type="checkbox" wire:model.live="overwriteExisting">
+            </label>
+            <br>
+			<x-button wire:click="$js.piotrsFilter($data)" :disabled="$nFilesSelected == 0 || $uploading" class="flex items-center gap-1">Apply filter</x-button>
+			<x-button wire:loading:attr="disabled" wire:click="$js.doPiotrUpload($data)" :disabled="!$canUpload">Start upload</x-button>
 			<x-button :disabled="$nFilesToUpload > $nFilesUploaded || $nFilesToUpload === 0" type="submit">Save files to database</x-button>
-			{{--			</template> --}}
 			{{-- STATUS --}}
 			<h3>STATUS</h3>
 			<h4>Livewire Properties:</h4>
-			<p>Status: {{ $status }}</p>
-			<p>nFilesFiltered: {{ $nFilesFiltered }}</p>
+            {{--<p>Status: {{ $status }}</p>--}}
 			<p>nFilesToUpload: {{ $nFilesToUpload }}</p>
 			<h4>Alpine:</h4>
-			<p>Status (innerHTML): <span id="status" wire:ignore></span></p>
-            <p>Status (x-text):  <span x-text="status"></span></p>
+            <p>Status:  <span x-text="status"></span></p>
+            <p>nFiltered: <span x-text="nFiltered"></span></p>
 			<p id="nUploaded" wire:ignore></p>
 			<p id="nUploadProgress" wire:ignore></p>
 			<div x-cloak>
@@ -119,8 +97,7 @@
 			<div>
 		</form>
 
-        <p>Progress (alpine): <span x-text="progressText"></span></p>
-        <p id="progressText" wire:ignore></p>
+        <p>Upload progress: <span x-text="progressText"></span></p>
         <div class="relative h-2 mt-2 rounded-full bg-base-200">
             <div
                 x-bind:style="'width: ' + progress + '%;'"
@@ -201,32 +178,24 @@
 				////////////////////////////////////////////////////////////////////////////////
 
 				$js('doPiotrUpload', (data) => {
-					console.log("doPiotrUpload() started");
-					$wire.resetUploads();
+                    resetUpload();
 					$wire.set('canUpload', false);
-					data.uploading = true; // use this for button state (enabled/disabled)
-					// either @this.set('uploading', true) or $wire.uploading = true works.
-					$wire.set('uploading', true); // set immediately
+					$wire.set('uploading', true); // set immediately. This is used within the Livewire component
+					data.uploading = true; // use this for input button state (enabled/disabled)
                     setStatus("Upload started");
-					data.nUploaded = 0;
-					//data.uploadStarted = true;
-					//data.uploadFinished = false;
 
 					// flat list of files to upload
 					let filenamesToUpload = $wire.pdatasetfilenames.flat();
-					//console.log("filenamesToUpload (flat): ", filenamesToUpload);
-					//jw:todo filter data.allFiles using $wire.pdatasetfilenames
+
+                    // get filtered list of file objects
 					data.pendingFiles = data.allFiles.filter((file) => {
 						return filenamesToUpload.includes(file.name);
 					});
-					//console.log("data.allFiles: ", data.allFiles);
-					//console.log("data.pendingFiles: ", data.pendingFiles);
 
 					// set number of files to upload, so we can say we're finished
 					// when $this->uploads == $this->nFilesToUpload in Livewire component
 					$wire.set('nFilesToUpload', data.pendingFiles.length);
 
-					//$wire.status = "Uploading";
 					let uploads = Object.values($wire.uploads);
 					let offset = uploads.length;
 					//console.log("doUpload() - existing upload count: ", offset);
@@ -240,39 +209,29 @@
 							'uploads.' + (index + offset),
 							file,
 							finish = (n) => {
-								console.log('doPiotrUpload() - this.upload() finished');
 								data.nUploaded++;
-                                setStatus("upload " + index + " finished");
+                                setStatus("Uploading " + index + " now finished");
                                 data.progressText = data.nUploaded + "/" + $wire.nFilesToUpload + " files successfully uploaded";
-								//document.getElementById("progressText").innerHTML = "Progress (innerHTML): " + data.progressText;
-								//document.getElementById("nUploaded").innerHTML = "File upload count: " + data
-								//	  .nUploaded + "/" + $wire.nFilesToUpload;
-							}, error = () => {}, 
+                                // if this is the last upload, set 'uploading' to false
+                                if(data.nUploaded == $wire.nFilesToUpload)
+                                {
+                                    data.uploading = false; // finished
+                                    setStatus("Uploading is now finished. You may save the files to the database!");
+                                }
+							}, error = () => {},
                             progress = (event) => {
-								let html = document.getElementById("nUploadProgress").innerHTML;
-								document.getElementById("nUploadProgress").innerHTML = html + ".";
-								//document.getElementById("nUploadProgress").innerHTML = data.nUploaded + " files have been uploaded";
-                                setStatus("upload " + index + " progress");
+                                setStatus("Uploading " + index);
                                 data.progress = event.detail.progress;
 							}
 						);
 					});
                     setStatus('Upload finished!?');
-					data.uploadStarted = false;
-					data.uploadFinished = true;
-					$wire.uploading = false;
-					$wire.finished = true;
-					console.log("doPiotrUpload() finished");
 				});
 				$js('piotrsFilter', (data) => {
-					console.log('piotrsFilter()');
 					if (data) {
                         resetUpload();
-						console.log('piotrsFilter() - data', data);
                         setStatus('Filtering started');
-						$wire.resetUploads();
 						mode = 0;
-						console.log('$datasetdefIds: ', $wire.datasetdefIds);
 						let df_array = $wire.datasetdefIds;
 						console.log('df_array', df_array);
 						let fn_filter_array = [], postfix_array = [], beg_id_array = [], dummy = [], fn_cnt = [];
@@ -313,7 +272,7 @@
 							dummy[i] = "<NONE>";
 							fn_cnt[i] = 0;
 						}
-						
+
 						let name_pattern = document.getElementById("name_pattern").value;
 				
 						s="<b>Skipped:</b><br>";
@@ -378,7 +337,7 @@
 
 							// Table - Summary row
 						newRow = tableBody.insertRow(-1);
-						cell = newRow.insertCell(-1); 
+						cell = newRow.insertCell(-1);
 						cell.textContent = "Sum:"; 
 						cell = newRow.insertCell(-1); 
 						cell.textContent = name_cnt; // insert count of Names
@@ -406,8 +365,9 @@
 							}
 						}
 						$wire.set('pdatasetnames', name_array);
-						console.log('$wire.pdatasetnames: ', $wire.pdatasetnames);
+						//console.log('$wire.pdatasetnames: ', $wire.pdatasetnames);
 						$wire.set('pdatasetfilenames', fn_array);
+                        data.nFiltered = fn_array.length;
 						console.log('$wire.pdatasetfilenames: ', $wire.pdatasetfilenames);
                         setStatus('Filtering finished');
 					} else
@@ -420,24 +380,18 @@
                     console.log("Status: ", string);
                     let data = Alpine.$data(document.getElementById('alpineComponent'));
                     $wire.set('status', string);
-                    document.getElementById("status").innerHTML = string
                     data.status = string;
                 };
 
                 function resetUpload()
                 {
+					$wire.resetUploads();
                     let data = Alpine.$data(document.getElementById('alpineComponent'));
                     data.progress = 0;
                     data.progressText = '';
                     data.nUploaded = 0;
                     data.uploading = false;
                     setStatus("resetUpload()");
-                }
-
-
-                function setProgress(progressText)
-                {
-                    document.getElementById("progressText").innerHTML = "Progress (innerHTML): " + data.progressText;
                 }
 			</script>
 		@endscript
