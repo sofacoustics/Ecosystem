@@ -23,10 +23,12 @@
 		nUploaded: 0,
 		nSelected: 0,
 		progress: 0,
+        progressText: '',
 		finished: false,
 		error: false,
-		cancelled: false
-	}">
+		cancelled: false,
+        status: ''
+	}" id='alpineComponent'>
 		{{--
 		<p>Steps to bulk uploading files:</p>
 		<ol class="list-decimal list-inside">
@@ -83,7 +85,8 @@
 			<p>nFilesFiltered: {{ $nFilesFiltered }}</p>
 			<p>nFilesToUpload: {{ $nFilesToUpload }}</p>
 			<h4>Alpine:</h4>
-			<p>Status: <span id="status" wire:ignore></span></p>
+			<p>Status (innerHTML): <span id="status" wire:ignore></span></p>
+            <p>Status (x-text):  <span x-text="status"></span></p>
 			<p id="nUploaded" wire:ignore></p>
 			<p id="nUploadProgress" wire:ignore></p>
 			<div x-cloak>
@@ -115,6 +118,15 @@
 
 			<div>
 		</form>
+
+        <p>Progress (alpine): <span x-text="progressText"></span></p>
+        <p id="progressText" wire:ignore></p>
+        <div class="relative h-2 mt-2 rounded-full bg-base-200">
+            <div
+                x-bind:style="'width: ' + progress + '%;'"
+                class="absolute top-0 left-0 h-full bg-orange-500 rounded-full">
+            </div>
+        </div>
 
 		<h3>Analysis results:</h3>
 		<p id="mode" wire:ignore></p>
@@ -195,8 +207,7 @@
 					data.uploading = true; // use this for button state (enabled/disabled)
 					// either @this.set('uploading', true) or $wire.uploading = true works.
 					$wire.set('uploading', true); // set immediately
-					//@this.set('uploading', true);
-					$wire.set('status', 'Uploading');
+                    setStatus("Upload started");
 					data.nUploaded = 0;
 					//data.uploadStarted = true;
 					//data.uploadFinished = false;
@@ -231,16 +242,22 @@
 							finish = (n) => {
 								console.log('doPiotrUpload() - this.upload() finished');
 								data.nUploaded++;
+                                setStatus("upload " + index + " finished");
+                                data.progressText = data.nUploaded + "/" + $wire.nFilesToUpload + " files successfully uploaded";
+								//document.getElementById("progressText").innerHTML = "Progress (innerHTML): " + data.progressText;
 								//document.getElementById("nUploaded").innerHTML = "File upload count: " + data
 								//	  .nUploaded + "/" + $wire.nFilesToUpload;
-							}, error = () => {}, progress = (event) => {
+							}, error = () => {}, 
+                            progress = (event) => {
 								let html = document.getElementById("nUploadProgress").innerHTML;
 								document.getElementById("nUploadProgress").innerHTML = html + ".";
 								//document.getElementById("nUploadProgress").innerHTML = data.nUploaded + " files have been uploaded";
+                                setStatus("upload " + index + " progress");
+                                data.progress = event.detail.progress;
 							}
 						);
 					});
-					$wire.set('status', 'Upload finished');
+                    setStatus('Upload finished!?');
 					data.uploadStarted = false;
 					data.uploadFinished = true;
 					$wire.uploading = false;
@@ -250,7 +267,9 @@
 				$js('piotrsFilter', (data) => {
 					console.log('piotrsFilter()');
 					if (data) {
+                        resetUpload();
 						console.log('piotrsFilter() - data', data);
+                        setStatus('Filtering started');
 						$wire.resetUploads();
 						mode = 0;
 						console.log('$datasetdefIds: ', $wire.datasetdefIds);
@@ -344,7 +363,7 @@
 							} // for all fn_patterns
 							if(skipped) 
 							{
-								s = s + fn + "<br>"; 
+								s = s + fn + "<br>";
 								skipped_cnt++;
 							}
 						} // for all fns
@@ -390,9 +409,36 @@
 						console.log('$wire.pdatasetnames: ', $wire.pdatasetnames);
 						$wire.set('pdatasetfilenames', fn_array);
 						console.log('$wire.pdatasetfilenames: ', $wire.pdatasetfilenames);
+                        setStatus('Filtering finished');
 					} else
 						console.log('piotrsFilter() - data parameter *does not* exist!');
 				});
+
+                // set both Livewire, Alpine and inner HTML status.
+                function setStatus(string)
+                {
+                    console.log("Status: ", string);
+                    let data = Alpine.$data(document.getElementById('alpineComponent'));
+                    $wire.set('status', string);
+                    document.getElementById("status").innerHTML = string
+                    data.status = string;
+                };
+
+                function resetUpload()
+                {
+                    let data = Alpine.$data(document.getElementById('alpineComponent'));
+                    data.progress = 0;
+                    data.progressText = '';
+                    data.nUploaded = 0;
+                    data.uploading = false;
+                    setStatus("resetUpload()");
+                }
+
+
+                function setProgress(progressText)
+                {
+                    document.getElementById("progressText").innerHTML = "Progress (innerHTML): " + data.progressText;
+                }
 			</script>
 		@endscript
 	</div>
