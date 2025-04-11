@@ -42,8 +42,13 @@ class DatabaseUpload extends Component
 
     public $overwriteExisting = false; // set to true, if existing datafiles should be overwritten.
 
-    public array $pdatasetnames= []; // array of dataset names
-    public array $pdatasetfilenames= []; // a two dimensional array, first dimension - index of piotrsNames, second dimension - index of datasetdefIds
+    // from Piotr's Javascript functions
+    //   array of dataset names. E.g. NH01
+    public array $pdatasetnames= [];
+    //   a two dimensional array,
+    //     first dimension - index of pdatasetnames
+    //     second dimension - index of datasetdefIds
+    public array $pdatafilenames= [];
 
     public $progress;
     public $uploading;
@@ -90,14 +95,13 @@ class DatabaseUpload extends Component
 
         $this->overwriteExisting = session()->get('sonicomEcosystemBulkUploadOverwrite') == 1 ? true : false;
         $this->calculateExisting();
-        $this->status = "Mounted";
-        //dd($this->datafilenamefilters);
+        $this->debug(1, "Mounted");
     }
 
     public function boot()
     {
         $this->calculateExisting();
-        $this->console("calculatingExisting() from boot()");
+        $this->debug(1, "calculatingExisting() from boot()");
     }
 
 
@@ -120,10 +124,8 @@ class DatabaseUpload extends Component
 
     public function resetUploads()
     {
-        //dd("resetUploads()");
+        $this->setStatus("Resetting uploads");
         // clean up uploads
-        //$this->console("resetUploads()");
-
         foreach($this->filtered as $id => $file)
         {
             //$this->console("filtered[$id]: $file");
@@ -153,9 +155,7 @@ class DatabaseUpload extends Component
             $originalName = $file->getClientOriginalName();
             $uploadList .= "$key ($originalName), ";
         }
-        //$this->status = "Reset uploads";
         $this->calculateUploaded();
-        $this->console("resetUploads(): after reset - uploadList: $uploadList");
     }
 
 
@@ -199,17 +199,15 @@ class DatabaseUpload extends Component
         $this->console("updatedPdatasetnames");
     }
 
-    public function updatedPdatasetfilenames($value, $key)
+    public function updatedPdatafilenames($value, $key)
     {
-        //dd("datasetfilenames being updated");
-        $nTotalElements = count($this->pdatasetfilenames, 1); // count multi-dimensional array
-        $nDatasets = count($this->pdatasetfilenames);
+        $nTotalElements = count($this->pdatafilenames, 1); // count multi-dimensional array
+        $nDatasets = count($this->pdatafilenames);
         $nDatafiles = $nTotalElements - $nDatasets;
         if($nDatafiles > 0)
             $this->canUpload = true;
         $this->nFilesFiltered = $nDatafiles; // number of datafiles minus number of datasets
-        $this->status = "Files filtered";
-        $this->console("updatedPdatasetfilenames ($this->nFilesFiltered)");
+        $this->setStatus("\$this->pdatafilenames set to $this->nFilesFiltered entries");
     }
 
     // https://dev.to/zaxwebs/accessing-updated-index-in-livewire-48oc
@@ -267,6 +265,10 @@ class DatabaseUpload extends Component
             $this->calculatePending();
             $this->saved = [];
         }
+        else if("$property" == "nFilesToUpload")
+        {
+            $this->setStatus("Updating nFilesToUpload to $value");
+        }
         else
         {
             //dd("$field: $value");
@@ -280,8 +282,7 @@ class DatabaseUpload extends Component
 
     public function save()
     {
-        $this->status = "Saving";
-        $this->debug(1, "save(): There are ".count($this->uploads)." uploads to save", 0);
+        $this->setStatus("Saving: there are " . count($this->uploads)." uploads to save");
 		if(count($this->uploads))
         {
 			// Create the datasets and their datafiles
@@ -321,30 +322,31 @@ class DatabaseUpload extends Component
                         $this->debug(1, "Since this overwriting existing datafiles is disabled, we will just remove the corresponding upload, if it exists.");
 
                     //jw:todo find out which datafile
-                    //dd($this->pdatasetfilenames);
-                    $this->debug(2, "Checking if datasetnameKey $datasetnameKey exists in pdatasetfilenames");
-                    if(array_key_exists($datasetnameKey, $this->pdatasetfilenames))
+                    //dd($this->pdatafilenames);
+                    $this->debug(2, "Checking if datasetnameKey $datasetnameKey exists in pdatafilenames");
+                    if(array_key_exists($datasetnameKey, $this->pdatafilenames))
                     {
-                        $this->debug(2, "-> datasetnameKey $datasetnameKey exists in pdatasetfilenames ($datasetname)");
+                        $this->debug(2, "-> datasetnameKey $datasetnameKey exists in pdatafilenames ($datasetname)");
 
-                        $this->debug(2, "Checking if pdatasetfilenames[$datasetnameKey] key $datasetdefKey exists.");
-                        if(!array_key_exists($datasetdefKey, $this->pdatasetfilenames[$datasetnameKey]))
+                        $this->debug(2, "Checking if pdatafilenames[$datasetnameKey] key $datasetdefKey exists.");
+                        if(!array_key_exists($datasetdefKey, $this->pdatafilenames[$datasetnameKey]))
                         {
-                            // this datasetdef has no corresponding datasetfilenames entry! continue;
-                            $this->debug(2, "pdatasetfilenames[$datasetnameKey] key $datasetdefKey does not exist.");
+                            // this datasetdef has no corresponding datafilenames entry! continue;
+                            $this->debug(2, "pdatafilenames[$datasetnameKey] key $datasetdefKey does not exist.");
                             continue;
                         }
-                        $this->debug(2, "pdatasetfilenames[$datasetnameKey] key $datasetdefKey exists.");
+                        $this->debug(2, "pdatafilenames[$datasetnameKey] key $datasetdefKey exists.");
                     }
                     else
                     {
-                        $this->debug(2, "pdatasetfilenames key $datasetnameKey does not exist.");
+                        $this->debug(2, "pdatafilenames key $datasetnameKey does not exist.");
                         continue;
                     }
-                    $datafileName = $this->pdatasetfilenames[$datasetnameKey][$datasetdefKey];
+                    // the pdatafilenames entries may include nested entries with paths
+                    $datafileNameWithPath = $this->pdatafilenames[$datasetnameKey][$datasetdefKey];
+                    // remove relative directory
+                    $datafileName = substr($datafileNameWithPath, strrpos($datafileNameWithPath, '/') + 1);
                     $this->debug(1, "Datafile name to look for in uploads: $datafileName");
-                    //
-                    //
                     //
                     foreach($this->uploads as $key => $upload)
                     {
@@ -403,7 +405,7 @@ class DatabaseUpload extends Component
                 }
 			}
         }
-        $this->status = "Saved";
+        $this->setStatus("Saving now complete");
         $this->saved = []; // reset saved
         $this->uploaded = []; // reset uploaded
         $this->nFilesToUpload = 0;
@@ -415,7 +417,7 @@ class DatabaseUpload extends Component
 
     public function render()
     {
-        $this->console('Livewire render()');
+        $this->debug(1, 'Livewire render()');
         return view('livewire.database-upload');
     }
 
@@ -509,12 +511,11 @@ class DatabaseUpload extends Component
 
         }
         $this->nFilesUploaded = count($this->uploaded);
-        $this->console("calculateUploaded()");
+        $this->debug(1, "calculateUploaded()");
         if($this->uploading && $this->nFilesUploaded == $this->nFilesToUpload)
         {
-            $this->console("calculateUploaded(): Everything uploaded. Resetting $this->uploading to false");
+            $this->setStatus("$this->nFilesUploaded now in \$this->uploads. Resetting \$this->uploading to false");
             $this->uploading = false;
-            $this->status = "Everything uploaded! (calculateUploaded())";
         }
         sort($this->uploaded);
     }
@@ -529,12 +530,19 @@ class DatabaseUpload extends Component
 
     private function sanitizePattern($input)
     {
+        return $input; //jw:tmp currently do nothing!
         // Define the pattern to match any character that is not alphanumeric, a period, or < or >
         $pattern = '/[\/:*?"|]/';
         //$pattern = '/[^a-zA-Z0-9.<>]/';
         // Replace any character that matches the pattern with an empty string
         $sanitized = preg_replace($pattern, '', $input);
         return $sanitized;
+    }
+
+    private function setStatus($status) 
+    {
+        $this->status = "$status";
+        $this->console("Status (Livewire): $status");
     }
 
 }
