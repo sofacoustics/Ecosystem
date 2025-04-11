@@ -11,6 +11,7 @@
 				<th class="border p-2">Name</th>
 				<th class="border p-2">Type</th>
 				<th class="border p-2">Widget</th>
+				<th class="border p-2">Description</th>
 				@role('admin')
 					<th class="border p-2">ID</th>
 				@endrole
@@ -38,6 +39,7 @@
 						No widget
 					@endif
 				</td>
+				<td class="px-6 py-4 whitespace-nowrap">{{ $datasetdef->description }}</td>
 				@role('admin') 
 					<td class="px-6 py-4 whitespace-nowrap">{{ $datasetdef->datafiletype->id }}</td>
 				@endrole

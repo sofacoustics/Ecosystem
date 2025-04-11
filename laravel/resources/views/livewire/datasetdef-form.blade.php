@@ -17,12 +17,21 @@
             </p>
             <form wire:submit.prevent="save">
                 <div class="mb-4">
-                    <label for="Name" class="{{ $labelClass }}">Name:</label>
+                    <label for="Name" class="{{ $labelClass }}">Name (*):</label>
                     <input wire:model="name" type="text" id="name" class="{{ $inputClass }}" required />
                     @error('name')
                         <span class="text-red-500">{{ $message }}</span>
                     @enderror
                 </div>
+								
+                <div class="mb-4">
+                    <label for="Description" class="{{ $labelClass }}">Description:</label>
+                    <input wire:model="description" type="text" id="description" class="{{ $inputClass }}" required />
+                    @error('description')
+                        <span class="text-red-500">{{ $message }}</span>
+                    @enderror
+                </div>
+
                 <div class="block">
                     <label class="{{ $labelClass }}" for="datafiletype">Type:</label>
                     <select class="{{ $selectClass }}" id="datafiletype" wire:model="datafiletype_id">

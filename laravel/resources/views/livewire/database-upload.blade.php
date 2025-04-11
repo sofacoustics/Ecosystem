@@ -17,9 +17,8 @@
 		allFiles: [],
 		filteredFiles: [],
 		pendingFiles: [],
-		uploadStarted: false,
-		uploadFinished: false,
 		uploading: false,
+        nFiltered: 0,
 		nUploaded: 0,
 		nSelected: 0,
 		progress: 0,
@@ -27,18 +26,9 @@
 		finished: false,
 		error: false,
 		cancelled: false,
-        status: ''
+        status: '',
+        directory: ''
 	}" id='alpineComponent'>
-		{{--
-		<p>Steps to bulk uploading files:</p>
-		<ol class="list-decimal list-inside">
-			<li>Select the directory you want to upload files from. This must contain all the files (does not recurse to
-				subdirectories yet)</li>
-			<li>Apply the filters you have specified.</li>
-			<li>Start the upload. Note that only files from the filtered list will actually be uploaded.</li>
-			<li>Save the files to the database.</li>
-		</ol>
-		--}}
 		<label>Dataset name pattern
 			<input class="w-full" type="text" placeholder="E.g. name<ID>" id="name_pattern"
 				wire:model.blur="datasetnamefilter" />
@@ -55,38 +45,28 @@
 				</li>
 			@endforeach
 		</ul>
-		<label>Would you like to overwrite existing files?
-			<input type="checkbox" wire:model.live="overwriteExisting">
-		</label>
 
 		<form wire:submit="save">
-			{{-- BUTTONS --}}
-			<h3>BUTTONS</h3>
-			<div x-show="!$wire.uploading">
-				<input id="directory-picker" type="file" webkitdirectory directory
-					x-on:change="allFiles = Array.from($event.target.files);">
-			</div>
-			<x-button wire:click="$js.piotrsFilter($data)" :disabled="$nFilesSelected == 0 || $uploading" class="flex items-center gap-1">Apply
-				filter</x-button>
-			{{-- <template x-if="allFiles.length !== 0 && !$wire.uploading">
-			</template> --}}
-			{{-- <template x-if="$wire.pdatasetnames.length > 0 && !$wire.uploading"> --}}
-			<x-button wire:loading:attr="disabled" wire:click="$js.doPiotrUpload($data)" :disabled="!$canUpload">Start
-				upload</x-button>
-			{{-- </template> --}}
-
-			{{--			<template x-if="$wire.nFilesToUpload > 0 && $wire.uploaded.length == $wire.nFilesToUpload"> --}}
+            <input id="directory-picker" type="file" webkitdirectory directory
+                x-bind:disabled="uploading"
+                x-on:change="allFiles = Array.from($event.target.files);">
+            <br>
+            <label>Would you like to overwrite existing files?
+                <input type="checkbox" wire:model.live="overwriteExisting">
+            </label>
+            <br>
+			<x-button wire:click="$js.piotrsFilter($data)" :disabled="$nFilesSelected == 0 || $uploading" class="flex items-center gap-1">Apply filter</x-button>
+			<x-button wire:loading:attr="disabled" wire:click="$js.doPiotrUpload($data)" :disabled="!$canUpload">Start upload</x-button>
 			<x-button :disabled="$nFilesToUpload > $nFilesUploaded || $nFilesToUpload === 0" type="submit">Save files to database</x-button>
-			{{--			</template> --}}
 			{{-- STATUS --}}
 			<h3>STATUS</h3>
 			<h4>Livewire Properties:</h4>
-			<p>Status: {{ $status }}</p>
-			<p>nFilesFiltered: {{ $nFilesFiltered }}</p>
+            <p>Status: {{ $status }}</p>
 			<p>nFilesToUpload: {{ $nFilesToUpload }}</p>
 			<h4>Alpine:</h4>
-			<p>Status (innerHTML): <span id="status" wire:ignore></span></p>
-            <p>Status (x-text):  <span x-text="status"></span></p>
+            <p>Directory: <span x-text="directory"></span></p>
+            <p>Status:  <span x-text="status"></span></p>
+            <p>nFiltered: <span x-text="nFiltered"></span></p>
 			<p id="nUploaded" wire:ignore></p>
 			<p id="nUploadProgress" wire:ignore></p>
 			<div x-cloak>
@@ -119,8 +99,7 @@
 			<div>
 		</form>
 
-        <p>Progress (alpine): <span x-text="progressText"></span></p>
-        <p id="progressText" wire:ignore></p>
+        <p>Upload progress: <span x-text="progressText"></span></p>
         <div class="relative h-2 mt-2 rounded-full bg-base-200">
             <div
                 x-bind:style="'width: ' + progress + '%;'"
@@ -158,6 +137,15 @@
 					(e) => {
 						console.log('EVENT: directory-picker event listener:', Array.from(e.target.files));
 						console.log('EVENT: directory-picker event listener: length', e.target.files.length);
+                        const files = event.target.files;
+                        if (files.length > 0) {
+                            // Extract the first file's relative path and get the directory name
+                            const firstFilePath = files[0].webkitRelativePath;
+                            const directoryName = firstFilePath.split('/')[0]; // First segment is the directory name
+                            let data = Alpine.$data(document.getElementById('alpineComponent'));
+                            data.directory = directoryName;
+                     }
+                        $wire.set("nFilesToUpload", 0);
 						$wire.set('nFilesSelected', e.target.files
 							.length
 							); // set immediately using $wire.set(), otherwise set when next $wire.$refresh or another action that triggers a refresh. See
@@ -172,6 +160,8 @@
 
 				window.addEventListener('saved-to-database', event => {
 					console.log('EVENT: saved-to-database (window)');
+                    let data = Alpine.$data(document.getElementById('alpineComponent'));
+                    resetUpload();
 				});
 
 				$wire.on('saved-to-database', () => {
@@ -201,32 +191,13 @@
 				////////////////////////////////////////////////////////////////////////////////
 
 				$js('doPiotrUpload', (data) => {
-					console.log("doPiotrUpload() started");
-					$wire.resetUploads();
+                    resetUpload();
 					$wire.set('canUpload', false);
-					data.uploading = true; // use this for button state (enabled/disabled)
-					// either @this.set('uploading', true) or $wire.uploading = true works.
-					$wire.set('uploading', true); // set immediately
+					$wire.set('uploading', true); // set immediately. This is used within the Livewire component
+					data.uploading = true; // use this for input button state (enabled/disabled)
                     setStatus("Upload started");
-					data.nUploaded = 0;
-					//data.uploadStarted = true;
-					//data.uploadFinished = false;
 
-					// flat list of files to upload
-					let filenamesToUpload = $wire.pdatasetfilenames.flat();
-					//console.log("filenamesToUpload (flat): ", filenamesToUpload);
-					//jw:todo filter data.allFiles using $wire.pdatasetfilenames
-					data.pendingFiles = data.allFiles.filter((file) => {
-						return filenamesToUpload.includes(file.name);
-					});
-					//console.log("data.allFiles: ", data.allFiles);
-					//console.log("data.pendingFiles: ", data.pendingFiles);
 
-					// set number of files to upload, so we can say we're finished
-					// when $this->uploads == $this->nFilesToUpload in Livewire component
-					$wire.set('nFilesToUpload', data.pendingFiles.length);
-
-					//$wire.status = "Uploading";
 					let uploads = Object.values($wire.uploads);
 					let offset = uploads.length;
 					//console.log("doUpload() - existing upload count: ", offset);
@@ -240,39 +211,30 @@
 							'uploads.' + (index + offset),
 							file,
 							finish = (n) => {
-								console.log('doPiotrUpload() - this.upload() finished');
 								data.nUploaded++;
-                                setStatus("upload " + index + " finished");
+                                setStatus("Uploading " + index + " now finished");
                                 data.progressText = data.nUploaded + "/" + $wire.nFilesToUpload + " files successfully uploaded";
-								//document.getElementById("progressText").innerHTML = "Progress (innerHTML): " + data.progressText;
-								//document.getElementById("nUploaded").innerHTML = "File upload count: " + data
-								//	  .nUploaded + "/" + $wire.nFilesToUpload;
-							}, error = () => {}, 
+                                // if this is the last upload, set 'uploading' to false
+                                if(data.nUploaded == $wire.nFilesToUpload)
+                                {
+                                    data.uploading = false; // finished
+                                    setStatus("Uploading is now finished. You may save the files to the database!");
+                                }
+							}, error = () => {},
                             progress = (event) => {
-								let html = document.getElementById("nUploadProgress").innerHTML;
-								document.getElementById("nUploadProgress").innerHTML = html + ".";
-								//document.getElementById("nUploadProgress").innerHTML = data.nUploaded + " files have been uploaded";
-                                setStatus("upload " + index + " progress");
+                                setStatus("Uploading " + index);
                                 data.progress = event.detail.progress;
 							}
 						);
 					});
                     setStatus('Upload finished!?');
-					data.uploadStarted = false;
-					data.uploadFinished = true;
-					$wire.uploading = false;
-					$wire.finished = true;
-					console.log("doPiotrUpload() finished");
 				});
+
 				$js('piotrsFilter', (data) => {
-					console.log('piotrsFilter()');
 					if (data) {
                         resetUpload();
-						console.log('piotrsFilter() - data', data);
                         setStatus('Filtering started');
-						$wire.resetUploads();
 						mode = 0;
-						console.log('$datasetdefIds: ', $wire.datasetdefIds);
 						let df_array = $wire.datasetdefIds;
 						console.log('df_array', df_array);
 						let fn_filter_array = [], postfix_array = [], beg_id_array = [], dummy = [], fn_cnt = [];
@@ -283,7 +245,7 @@
 							let fn_filter = fn_pattern.replace(/\[/g, "\\[");
 							fn_filter = fn_filter.replace(/\]/g, "\\]"); 
 							fn_filter = fn_filter.replace(/\^/g, "\\^");
-							fn_filter = fn_filter.replace(/\./g, "\\."); 
+							fn_filter = fn_filter.replace(/\./g, "\\.");
 							fn_filter = fn_filter.replace(/\$/g, "\\$"); 
 							fn_filter = fn_filter.replace(/\(/g, "\\(");
 							fn_filter = fn_filter.replace(/\)/g, "\\)"); 
@@ -296,7 +258,7 @@
 
 							let end_filter = fn_pattern.indexOf("ID>")+3; // find the end of the ID
 							let postfix = fn_pattern.substring(end_filter); // hole den postfix, d.h., text nach <ID> raus
-							postfix = postfix.replace(/\[/g, "\\["); 
+							postfix = postfix.replace(/\[/g, "\\[");
 							postfix = postfix.replace(/\]/g, "\\]"); 
 							postfix = postfix.replace(/\^/g, "\\^"); 
 							postfix = postfix.replace(/\./g, "\\.");
@@ -313,7 +275,7 @@
 							dummy[i] = "<NONE>";
 							fn_cnt[i] = 0;
 						}
-						
+
 						let name_pattern = document.getElementById("name_pattern").value;
 				
 						s="<b>Skipped:</b><br>";
@@ -322,7 +284,7 @@
 
 						let name_array = [], fn_array = []; name_cnt = 0; skipped_cnt = 0;
 						for (let i = 0; i < data.allFiles.length; i++)
-						{   
+						{
 							if (mode == 1)
 							{   // we have a directory in the pattern
 								fn = data.allFiles[i].webkitRelativePath;
@@ -378,8 +340,8 @@
 
 							// Table - Summary row
 						newRow = tableBody.insertRow(-1);
-						cell = newRow.insertCell(-1); 
-						cell.textContent = "Sum:"; 
+						cell = newRow.insertCell(-1);
+						cell.textContent = "Sum:";
 						cell = newRow.insertCell(-1); 
 						cell.textContent = name_cnt; // insert count of Names
 						for (let j=0; j<df_array.length; j++) // for each column
@@ -400,15 +362,54 @@
 							{
 									cell = newRow.insertCell(-1);
 									cell.textContent = fn_array[i][j]; // insert fn to the specific cell
-									if (fn_array[i][j]=="<NONE>") 
+									if (fn_array[i][j]=="<NONE>")
 									{ cell.style.backgroundcolor = "red"; // this does not work, I dont know why...
 									}
 							}
 						}
+                        // save dataset and datafile lists in Livewire
 						$wire.set('pdatasetnames', name_array);
-						console.log('$wire.pdatasetnames: ', $wire.pdatasetnames);
-						$wire.set('pdatasetfilenames', fn_array);
-						console.log('$wire.pdatasetfilenames: ', $wire.pdatasetfilenames);
+                        console.log("name_array (pdatasetnames): ", name_array);
+						//console.log('$wire.pdatasetnames: ', $wire.pdatasetnames);
+                        data.nFiltered = fn_array.flat().length; // since this is a multi-dimensional array, we need to flatten it first for length to count all elemets
+
+                        // flat list of files to upload. This is a relative path
+                        // from the directory chosen as input. E.g. P0002/3DSCAN/P0002_watertight.stl
+                        let filenamesToUpload = fn_array.flat();
+                        console.log("filenamesToUpload: " + filenamesToUpload);
+                        console.log("filenamesToUpload.length: " + filenamesToUpload.length);
+                        //console.log("Example filenamesToUpload string: " + filenamesToUpload[0].name);
+
+                        // the data.allFiles 'name' is *just* the file name. There is a relative path,
+                        // but it also contains the parent folder. E.g. AXD-small/P0002/3DSCAN/P0002_watertight.stl
+                        console.log("allFiles: ", data.allFiles);
+                        $wire.set('pdatafilenames', fn_array);
+                        if(mode == 0) // flat
+                        {
+                            // get filtered list of file objects
+                            data.pendingFiles = data.allFiles.filter((file) => {
+                                return filenamesToUpload.includes(file.name);
+                            });
+                            console.log("fn_array (pdatafilenames): ", fn_array);
+                        }
+                        else // nested
+                        {
+                            // prepend filenamesToUpload with directory for comparison with allFiles
+                            let prefix = data.directory+'/';
+                            dirPrefixed = filenamesToUpload.map(item => prefix + item);
+                            console.log('dirPrefixed: ', dirPrefixed);
+                            data.pendingFiles = data.allFiles.filter((file) => {
+                                return dirPrefixed.includes(file.webkitRelativePath);
+                            });
+
+                        }
+                        console.log("data.pendingFiles.length: " + data.pendingFiles.length);
+                        console.log("data.allFiles.length: " + data.allFiles.length);
+
+                        // set number of files to upload, so Livewire knows how many
+                        // files to expect.
+                        $wire.set('nFilesToUpload', data.pendingFiles.length);
+
                         setStatus('Filtering finished');
 					} else
 						console.log('piotrsFilter() - data parameter *does not* exist!');
@@ -417,15 +418,15 @@
                 // set both Livewire, Alpine and inner HTML status.
                 function setStatus(string)
                 {
-                    console.log("Status: ", string);
+                    console.log("Status (alpine): ", string);
                     let data = Alpine.$data(document.getElementById('alpineComponent'));
-                    $wire.set('status', string);
-                    document.getElementById("status").innerHTML = string
+                    //$wire.set('status', string); // Set Livewire status from within component class
                     data.status = string;
                 };
 
                 function resetUpload()
                 {
+					$wire.resetUploads();
                     let data = Alpine.$data(document.getElementById('alpineComponent'));
                     data.progress = 0;
                     data.progressText = '';
@@ -434,11 +435,43 @@
                     setStatus("resetUpload()");
                 }
 
+                /* // possible code for reducing number of concurrent uploads (perplexity )
+                let maxParallelUploads = 2; // Maximum concurrent uploads
+                let uploadQueue = [];
 
-                function setProgress(progressText)
-                {
-                    document.getElementById("progressText").innerHTML = "Progress (innerHTML): " + data.progressText;
+                function processQueue() {
+                    while (uploadQueue.length > 0 && maxParallelUploads > 0) {
+                        const { index, file } = uploadQueue.shift();
+                        maxParallelUploads--;
+                                            
+                        @this.upload(
+                            `files.${index}`, // Livewire property
+                            file,
+                            () => { 
+                                // Success handler
+                            },
+                            () => { 
+                                // Error handler
+                            },
+                            (progress) => { 
+                                // Progress updates
+                            },
+                            () => {
+                                maxParallelUploads++; // Free up a slot
+                                processQueue(); // Process next in queue
+                            }
+                        );
+                    }
                 }
+
+                // Add files to queue when selected
+                document.querySelector('input[type="file"]').addEventListener('change', (e) => {
+                        Array.from(e.target.files).forEach((file, index) => {
+                                    uploadQueue.push({ index, file });
+                                });
+                        processQueue();
+                    });
+                */
 			</script>
 		@endscript
 	</div>

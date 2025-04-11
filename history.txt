@@ -2,11 +2,9 @@
 
 To be done:
 * Ask JW: DatabasePolicy.php: what's the difference between ?User and User
+* Ask JW: Is Spatie used for permissions? 
 * Where can we (in RADAR Metadate) store the citation to the corresponding publication? 
-
 * Add "Admin" as a role to User table. Admins should be able to see and edit all data.
-* Add "ORCID" to the User 
-* Add "Description" to the Definition of each Datasetfile? 
 * Add confirmation on delete (JW)
 * Prepare metadata for RADAR
 * Check how to link optional documentation files with a database
@@ -16,11 +14,11 @@ To be done:
 * Implement the actual procedure to "Assign DOI"
 * Implement the actual procedure to "Publish with DOI"
 * Landing page: Include filter by Visible and DOI
-* Buld Upload: Check if duplicate files assigned to the same datafile
-* Buld Upload: Provide option to select datasets for the upload
-* Buld Upload: Cancel an upload
-* Buld Upload: Warn if a dataset already exists
-* Buld Upload: Automatic fill of the dataset description
+* Bulk Upload: Check if duplicate files assigned to the same datafile
+* Bulk Upload: Provide option to select datasets for the upload
+* Bulk Upload: Cancel an upload
+* Bulk Upload: Warn if a dataset already exists
+* Bulk Upload: Automatic fill of the dataset description
 * Think about how to implement all the database functionality for tools
 
 Nice to have: 
@@ -30,6 +28,8 @@ Nice to have:
 * Add "Fill in with your name" at creators, publishers, and rightsholders.
 * Fork to a SONICOM Github repository. PM: I tried that, but it is more complex than I thought. Skipped for later. 
 * Audio View: add https://wavesurfer.xyz/
+* Check ORCID via pattern
+* Check ORCID via https://info.orcid.org/documentation/api-tutorials/api-tutorial-get-and-authenticated-orcid-id/
 
 
 DONE!
@@ -56,6 +56,8 @@ Datasets definition
 * Multiple photos as a single datafile: user needs to create animated WEBP
 * "Non-spatial data (SOFA)" added
 * Definitions as a table
+* "Description" added to the Definition of each Datasetfile.
+
 
 
 Database
@@ -87,6 +89,12 @@ Done:
 * Support for wildcard by <ANY> 
 * Brief statistics
 * Table
+
+User profile:
+=============
+
+* "ORCID" added. Syntax: String, max 20 characters. 
+
 
 Metadata status:
 ================

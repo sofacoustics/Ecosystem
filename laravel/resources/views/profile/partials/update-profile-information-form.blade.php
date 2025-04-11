@@ -47,6 +47,13 @@
             @endif
         </div>
 
+        <div>
+            <x-input-label for="orcid" :value="__('ORCID')" />
+            <x-text-input id="orcid" name="orcid" type="text" class="mt-1 block w-full" :value="old('orcid', $user->orcid)" required autofocus autocomplete="orcid" />
+            <x-input-error class="mt-2" :messages="$errors->get('orcid')" />
+        </div>
+
+
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 
