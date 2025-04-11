@@ -1,4 +1,4 @@
-%Create Figures - Function to load SOFA files, create and save visualizing figures
+%HRIR1 - Function to load SOFA files, create and save visualizing 1 figure
 
 % #Author: Michael Mihocic: First version, loading and plotting a few figures, supporting a few conventions (31.08.2023)
 %
@@ -9,12 +9,12 @@
 % Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 % See the License for the specific language governing  permissions and limitations under the License.
 
-function CreateFigures(SOFAfile)
+function HRIR1(SOFAfile)
 % for debug purpose comment function row above, and uncomment this one:
 % SOFAfile= 'hrtf_nh4.sofa';
 
 %jw:tmp logfile
-logfile="/home/sonicom/isf-sonicom-laravel/laravel/storage/app/tools/1/CreateFigures.log"
+logfile="/home/sonicom/isf-sonicom-laravel/laravel/storage/app/tools/1/HRIR1.log"
 fid = fopen(logfile, "w");
 s = pwd;
 disp(["pwd = " s]);

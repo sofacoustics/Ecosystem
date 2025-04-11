@@ -12,7 +12,7 @@ nodejs
 npm
 supervisor
 
-## Install
+## Install 
 
 ### Installing an existing Laravel
 
