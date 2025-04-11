@@ -60,7 +60,7 @@
 			{{-- STATUS --}}
 			<h3>STATUS</h3>
 			<h4>Livewire Properties:</h4>
-            {{--<p>Status: {{ $status }}</p>--}}
+            <p>Status: {{ $status }}</p>
 			<p>nFilesToUpload: {{ $nFilesToUpload }}</p>
 			<h4>Alpine:</h4>
             <p>Status:  <span x-text="status"></span></p>
@@ -186,11 +186,15 @@
 
 					// flat list of files to upload
 					let filenamesToUpload = $wire.pdatasetfilenames.flat();
+                    console.log("filenamesToUpload.length: " + filenamesToUpload.length);
+                    console.log("Example filenamesToUpload string: " + filenamesToUpload[0].name);
 
                     // get filtered list of file objects
 					data.pendingFiles = data.allFiles.filter((file) => {
 						return filenamesToUpload.includes(file.name);
 					});
+                    console.log("data.pendingFiles.length: " + data.pendingFiles.length);
+                    console.log("data.allFiles.length: " + data.allFiles.length);
 
 					// set number of files to upload, so we can say we're finished
 					// when $this->uploads == $this->nFilesToUpload in Livewire component
@@ -364,8 +368,10 @@
 									}
 							}
 						}
+                        console.log("name_array: ", name_array);
 						$wire.set('pdatasetnames', name_array);
 						//console.log('$wire.pdatasetnames: ', $wire.pdatasetnames);
+                        console.log("fn_array: ", fn_array);
 						$wire.set('pdatasetfilenames', fn_array);
                         data.nFiltered = fn_array.length;
 						console.log('$wire.pdatasetfilenames: ', $wire.pdatasetfilenames);
@@ -377,9 +383,9 @@
                 // set both Livewire, Alpine and inner HTML status.
                 function setStatus(string)
                 {
-                    console.log("Status: ", string);
+                    console.log("Status (alpine): ", string);
                     let data = Alpine.$data(document.getElementById('alpineComponent'));
-                    $wire.set('status', string);
+                    //$wire.set('status', string); // Set Livewire status from within component class
                     data.status = string;
                 };
 

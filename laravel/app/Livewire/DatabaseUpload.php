@@ -90,8 +90,7 @@ class DatabaseUpload extends Component
 
         $this->overwriteExisting = session()->get('sonicomEcosystemBulkUploadOverwrite') == 1 ? true : false;
         $this->calculateExisting();
-        $this->status = "Mounted";
-        //dd($this->datafilenamefilters);
+        $this->debug(1, "Mounted");
     }
 
     public function boot()
@@ -153,9 +152,8 @@ class DatabaseUpload extends Component
             $originalName = $file->getClientOriginalName();
             $uploadList .= "$key ($originalName), ";
         }
-        //$this->status = "Reset uploads";
         $this->calculateUploaded();
-        $this->console("resetUploads(): after reset - uploadList: $uploadList");
+        $this->setStatus("Resetting uploads");
     }
 
 
@@ -201,15 +199,13 @@ class DatabaseUpload extends Component
 
     public function updatedPdatasetfilenames($value, $key)
     {
-        //dd("datasetfilenames being updated");
         $nTotalElements = count($this->pdatasetfilenames, 1); // count multi-dimensional array
         $nDatasets = count($this->pdatasetfilenames);
         $nDatafiles = $nTotalElements - $nDatasets;
         if($nDatafiles > 0)
             $this->canUpload = true;
         $this->nFilesFiltered = $nDatafiles; // number of datafiles minus number of datasets
-        $this->status = "Files filtered";
-        $this->console("updatedPdatasetfilenames ($this->nFilesFiltered)");
+        $this->setStatus("\$this->pdatasetfilenames set to $this->nFilesFiltered entries");
     }
 
     // https://dev.to/zaxwebs/accessing-updated-index-in-livewire-48oc
@@ -280,8 +276,7 @@ class DatabaseUpload extends Component
 
     public function save()
     {
-        $this->status = "Saving";
-        $this->debug(1, "save(): There are ".count($this->uploads)." uploads to save", 0);
+        $this->setStatus("Saving: there are " . count($this->uploads)." uploads to save");
 		if(count($this->uploads))
         {
 			// Create the datasets and their datafiles
@@ -403,7 +398,7 @@ class DatabaseUpload extends Component
                 }
 			}
         }
-        $this->status = "Saved";
+        $this->setStatus("Saving not complete");
         $this->saved = []; // reset saved
         $this->uploaded = []; // reset uploaded
         $this->nFilesToUpload = 0;
@@ -512,9 +507,8 @@ class DatabaseUpload extends Component
         $this->debug(1, "calculateUploaded()");
         if($this->uploading && $this->nFilesUploaded == $this->nFilesToUpload)
         {
-            $this->console("calculateUploaded(): Everything uploaded. Resetting $this->uploading to false");
+            $this->setStatus("$this->nFilesUploaded now in \$this->uploads. Resetting \$this->uploading to false");
             $this->uploading = false;
-            $this->status = "Everything uploaded! (calculateUploaded())";
         }
         sort($this->uploaded);
     }
@@ -536,6 +530,12 @@ class DatabaseUpload extends Component
         // Replace any character that matches the pattern with an empty string
         $sanitized = preg_replace($pattern, '', $input);
         return $sanitized;
+    }
+
+    private function setStatus($status) 
+    {
+        $this->status = "$status";
+        $this->console("STATUS (Livewire): $status");
     }
 
 }
