@@ -10,11 +10,8 @@
 
 	Example:
 
-<<<<<<< HEAD
 			<x-button 
-=======
 			<x-button
->>>>>>> dev
 				method="DELETE"
 				action="{{ route('datasets.destroy', [$dataset]) }}"
 				class="inline">

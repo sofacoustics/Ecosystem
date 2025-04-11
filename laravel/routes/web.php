@@ -105,14 +105,9 @@ Route::resource('services', ServiceController::class);
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile', [ProfileController::class, 'process'])->name('profile.process');
+    Route::get('/profile/callback', [ProfileController::class, 'callback'])->name('profile.callback');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-// OrcidVerificationController
-Route::get('/orcid/verify', [OrcidVerificationController::class, 'verify'])->name('orcid.verify');
-Route::get('/orcid/callback', [OrcidVerificationController::class, 'callback'])->name('orcid.callback');
-Route::get('/orcid/success', [OrcidVerificationController::class, 'verificationSuccess'])->name('orcid.verification.success');
-Route::get('/orcid/failed', [OrcidVerificationController::class, 'verificationFailed'])->name('orcid.verification.failed');
-
 
 require __DIR__.'/auth.php';
