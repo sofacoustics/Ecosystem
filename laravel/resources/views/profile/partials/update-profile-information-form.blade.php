@@ -53,7 +53,6 @@
             <x-input-error class="mt-2" :messages="$errors->get('orcid')" />
         </div>
 
-
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 
@@ -66,6 +65,32 @@
                     class="text-sm text-gray-600"
                 >{{ __('Saved.') }}</p>
             @endif
+
+            @if (session('status') === 'orcid-verified')
+                <p
+                    x-data="{ show: true }"
+                    x-show="show"
+                    x-transition
+                    x-init="setTimeout(() => show = false, 2000)"
+                    class="text-sm text-gray-600"
+                >{{ __('ORCID Verified.') }}</p>
+            @endif
         </div>
     </form>
+		
+		@if($user->orcid_verified_at !=null)
+			<h3>ORCID verified!</h3>
+		@else
+
+			<h3>Unverified!</h3>
+				
+			<form action="{{ route('orcid.verify') }}" method="GET">
+				<div>
+						<label for="orcid_id">Your ORCID ID:</label>
+						<input type="text" name="orcid_id" id="orcid_id">
+				</div>
+				<button type="submit">Connect with ORCID</button>
+			</form>
+		@endif
+
 </section>

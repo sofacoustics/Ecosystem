@@ -21,6 +21,25 @@ class ProfileController extends Controller
         ]);
     }
 
+
+
+    /**
+     * Unlink ORCID with the User
+     */
+    public function orcidUnlink(ProfileUpdateRequest $request): RedirectResponse
+    {
+        $request->user()->fill($request->validated());
+
+        if ($request->user()->isDirty('email')) {
+            $request->user()->email_verified_at = null;
+        }
+				
+				$request->user()->orcid_verified_at = null;
+        $request->user()->save();
+
+        return Redirect::route('profile.edit')->with('status', 'orcid-unlinked');
+    }
+
     /**
      * Update the user's profile information.
      */

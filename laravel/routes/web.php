@@ -18,6 +18,8 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ToolController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\OrcidVerificationController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -105,5 +107,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// OrcidVerificationController
+Route::get('/orcid/verify', [OrcidVerificationController::class, 'verify'])->name('orcid.verify');
+Route::get('/orcid/callback', [OrcidVerificationController::class, 'callback'])->name('orcid.callback');
+Route::get('/orcid/success', [OrcidVerificationController::class, 'verificationSuccess'])->name('orcid.verification.success');
+Route::get('/orcid/failed', [OrcidVerificationController::class, 'verificationFailed'])->name('orcid.verification.failed');
+
 
 require __DIR__.'/auth.php';
