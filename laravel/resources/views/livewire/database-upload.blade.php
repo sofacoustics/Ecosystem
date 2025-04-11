@@ -185,21 +185,6 @@
 					data.uploading = true; // use this for input button state (enabled/disabled)
                     setStatus("Upload started");
 
-					// flat list of files to upload
-					let filenamesToUpload = $wire.pdatafilenames.flat();
-                    console.log("filenamesToUpload.length: " + filenamesToUpload.length);
-                    console.log("Example filenamesToUpload string: " + filenamesToUpload[0].name);
-
-                    // get filtered list of file objects
-					data.pendingFiles = data.allFiles.filter((file) => {
-						return filenamesToUpload.includes(file.name);
-					});
-                    console.log("data.pendingFiles.length: " + data.pendingFiles.length);
-                    console.log("data.allFiles.length: " + data.allFiles.length);
-
-					// set number of files to upload, so we can say we're finished
-					// when $this->uploads == $this->nFilesToUpload in Livewire component
-					$wire.set('nFilesToUpload', data.pendingFiles.length);
 
 					let uploads = Object.values($wire.uploads);
 					let offset = uploads.length;
@@ -376,6 +361,24 @@
                         console.log("fn_array (pdatafilenames): ", fn_array);
                         data.nFiltered = fn_array.flat().length; // since this is a multi-dimensional array, we need to flatten it first for length to count all elemets
 						console.log('$wire.pdatafilenames: ', $wire.pdatafilenames);
+
+                        // flat list of files to upload
+                        let filenamesToUpload = fn_array.flat();
+                        console.log("filenamesToUpload: " + filenamesToUpload);
+                        console.log("filenamesToUpload.length: " + filenamesToUpload.length);
+                        //console.log("Example filenamesToUpload string: " + filenamesToUpload[0].name);
+
+                        // get filtered list of file objects
+                        data.pendingFiles = data.allFiles.filter((file) => {
+                            return filenamesToUpload.includes(file.name);
+                        });
+                        console.log("data.pendingFiles.length: " + data.pendingFiles.length);
+                        console.log("data.allFiles.length: " + data.allFiles.length);
+
+                        // set number of files to upload, so we can say we're finished
+                        // when $this->uploads == $this->nFilesToUpload in Livewire component
+                        $wire.set('nFilesToUpload', data.pendingFiles.length);
+
                         setStatus('Filtering finished');
 					} else
 						console.log('piotrsFilter() - data parameter *does not* exist!');

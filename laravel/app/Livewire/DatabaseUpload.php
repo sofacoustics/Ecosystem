@@ -126,7 +126,6 @@ class DatabaseUpload extends Component
     {
         $this->setStatus("Resetting uploads");
         // clean up uploads
-        $this->nFilesToUpload = 0;
         foreach($this->filtered as $id => $file)
         {
             //$this->console("filtered[$id]: $file");
@@ -265,6 +264,10 @@ class DatabaseUpload extends Component
             sort($this->filtered);
             $this->calculatePending();
             $this->saved = [];
+        }
+        else if("$property" == "nFilesToUpload")
+        {
+            $this->setStatus("Updating nFilesToUpload to $value");
         }
         else
         {
