@@ -434,6 +434,44 @@
                     data.uploading = false;
                     setStatus("resetUpload()");
                 }
+
+                /* // possible code for reducing number of concurrent uploads (perplexity )
+                let maxParallelUploads = 2; // Maximum concurrent uploads
+                let uploadQueue = [];
+
+                function processQueue() {
+                    while (uploadQueue.length > 0 && maxParallelUploads > 0) {
+                        const { index, file } = uploadQueue.shift();
+                        maxParallelUploads--;
+                                            
+                        @this.upload(
+                            `files.${index}`, // Livewire property
+                            file,
+                            () => { 
+                                // Success handler
+                            },
+                            () => { 
+                                // Error handler
+                            },
+                            (progress) => { 
+                                // Progress updates
+                            },
+                            () => {
+                                maxParallelUploads++; // Free up a slot
+                                processQueue(); // Process next in queue
+                            }
+                        );
+                    }
+                }
+
+                // Add files to queue when selected
+                document.querySelector('input[type="file"]').addEventListener('change', (e) => {
+                        Array.from(e.target.files).forEach((file, index) => {
+                                    uploadQueue.push({ index, file });
+                                });
+                        processQueue();
+                    });
+                */
 			</script>
 		@endscript
 	</div>
