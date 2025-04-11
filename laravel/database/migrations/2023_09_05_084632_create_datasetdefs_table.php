@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('datasetdefs', function (Blueprint $table) {
           $table->id();
           $table->string('name', 100);
+					$table->string('description')->nullable();
           $table->unsignedBigInteger('database_id');
           $table->unsignedBigInteger('datafiletype_id');
           $table->string('bulk_upload_pattern_prefix')->nullable();
           $table->string('bulk_upload_pattern_id')->nullable();
           $table->string('bulk_upload_pattern_suffix')->nullable();
+					$table->string('bulk_upload_pattern_description')->nullable();
           $table->foreignId('widget_id')->nullable()->constrained();
           $table->foreign('database_id')->references('id')->on('databases')->onDelete('cascade');
           $table->foreign('datafiletype_id')->references('id')->on('datafiletypes')->onDelete('cascade');
