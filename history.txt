@@ -22,7 +22,6 @@ To be done:
 * Think about how to implement all the database functionality for tools
 
 Nice to have: 
-* Check user registration with ORCID
 * Layout: Show buttons as tabs
 * Trim spaces from the inputs
 * Add "Fill in with your name" at creators, publishers, and rightsholders.
@@ -94,6 +93,9 @@ User profile:
 =============
 
 * "ORCID" added. Syntax: String, max 20 characters. 
+* Link the profile with ORCID
+* Allow new databases only if the profile linked with ORCID
+
 
 
 Metadata status:
