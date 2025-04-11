@@ -48,7 +48,7 @@ class DatabaseUpload extends Component
     //   a two dimensional array,
     //     first dimension - index of pdatasetnames
     //     second dimension - index of datasetdefIds
-    public array $pdatafilenames= []; 
+    public array $pdatafilenames= [];
 
     public $progress;
     public $uploading;
@@ -342,10 +342,11 @@ class DatabaseUpload extends Component
                         $this->debug(2, "pdatafilenames key $datasetnameKey does not exist.");
                         continue;
                     }
-                    $datafileName = $this->pdatafilenames[$datasetnameKey][$datasetdefKey];
+                    // the pdatafilenames entries may include nested entries with paths
+                    $datafileNameWithPath = $this->pdatafilenames[$datasetnameKey][$datasetdefKey];
+                    // remove relative directory
+                    $datafileName = substr($datafileNameWithPath, strrpos($datafileNameWithPath, '/') + 1);
                     $this->debug(1, "Datafile name to look for in uploads: $datafileName");
-                    //
-                    //
                     //
                     foreach($this->uploads as $key => $upload)
                     {
@@ -404,7 +405,7 @@ class DatabaseUpload extends Component
                 }
 			}
         }
-        $this->setStatus("Saving not complete");
+        $this->setStatus("Saving now complete");
         $this->saved = []; // reset saved
         $this->uploaded = []; // reset uploaded
         $this->nFilesToUpload = 0;
@@ -541,7 +542,7 @@ class DatabaseUpload extends Component
     private function setStatus($status) 
     {
         $this->status = "$status";
-        $this->console("STATUS (Livewire): $status");
+        $this->console("Status (Livewire): $status");
     }
 
 }

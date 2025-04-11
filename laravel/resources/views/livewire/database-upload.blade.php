@@ -26,7 +26,8 @@
 		finished: false,
 		error: false,
 		cancelled: false,
-        status: ''
+        status: '',
+        directory: ''
 	}" id='alpineComponent'>
 		<label>Dataset name pattern
 			<input class="w-full" type="text" placeholder="E.g. name<ID>" id="name_pattern"
@@ -63,6 +64,7 @@
             <p>Status: {{ $status }}</p>
 			<p>nFilesToUpload: {{ $nFilesToUpload }}</p>
 			<h4>Alpine:</h4>
+            <p>Directory: <span x-text="directory"></span></p>
             <p>Status:  <span x-text="status"></span></p>
             <p>nFiltered: <span x-text="nFiltered"></span></p>
 			<p id="nUploaded" wire:ignore></p>
@@ -135,6 +137,14 @@
 					(e) => {
 						console.log('EVENT: directory-picker event listener:', Array.from(e.target.files));
 						console.log('EVENT: directory-picker event listener: length', e.target.files.length);
+                        const files = event.target.files;
+                        if (files.length > 0) {
+                            // Extract the first file's relative path and get the directory name
+                            const firstFilePath = files[0].webkitRelativePath;
+                            const directoryName = firstFilePath.split('/')[0]; // First segment is the directory name
+                            let data = Alpine.$data(document.getElementById('alpineComponent'));
+                            data.directory = directoryName;
+                     }
                         $wire.set("nFilesToUpload", 0);
 						$wire.set('nFilesSelected', e.target.files
 							.length
@@ -150,6 +160,8 @@
 
 				window.addEventListener('saved-to-database', event => {
 					console.log('EVENT: saved-to-database (window)');
+                    let data = Alpine.$data(document.getElementById('alpineComponent'));
+                    resetUpload();
 				});
 
 				$wire.on('saved-to-database', () => {
@@ -217,6 +229,7 @@
 					});
                     setStatus('Upload finished!?');
 				});
+
 				$js('piotrsFilter', (data) => {
 					if (data) {
                         resetUpload();
@@ -232,7 +245,7 @@
 							let fn_filter = fn_pattern.replace(/\[/g, "\\[");
 							fn_filter = fn_filter.replace(/\]/g, "\\]"); 
 							fn_filter = fn_filter.replace(/\^/g, "\\^");
-							fn_filter = fn_filter.replace(/\./g, "\\."); 
+							fn_filter = fn_filter.replace(/\./g, "\\.");
 							fn_filter = fn_filter.replace(/\$/g, "\\$"); 
 							fn_filter = fn_filter.replace(/\(/g, "\\(");
 							fn_filter = fn_filter.replace(/\)/g, "\\)"); 
@@ -245,7 +258,7 @@
 
 							let end_filter = fn_pattern.indexOf("ID>")+3; // find the end of the ID
 							let postfix = fn_pattern.substring(end_filter); // hole den postfix, d.h., text nach <ID> raus
-							postfix = postfix.replace(/\[/g, "\\["); 
+							postfix = postfix.replace(/\[/g, "\\[");
 							postfix = postfix.replace(/\]/g, "\\]"); 
 							postfix = postfix.replace(/\^/g, "\\^"); 
 							postfix = postfix.replace(/\./g, "\\.");
@@ -271,7 +284,7 @@
 
 						let name_array = [], fn_array = []; name_cnt = 0; skipped_cnt = 0;
 						for (let i = 0; i < data.allFiles.length; i++)
-						{   
+						{
 							if (mode == 1)
 							{   // we have a directory in the pattern
 								fn = data.allFiles[i].webkitRelativePath;
@@ -328,7 +341,7 @@
 							// Table - Summary row
 						newRow = tableBody.insertRow(-1);
 						cell = newRow.insertCell(-1);
-						cell.textContent = "Sum:"; 
+						cell.textContent = "Sum:";
 						cell = newRow.insertCell(-1); 
 						cell.textContent = name_cnt; // insert count of Names
 						for (let j=0; j<df_array.length; j++) // for each column
@@ -349,34 +362,52 @@
 							{
 									cell = newRow.insertCell(-1);
 									cell.textContent = fn_array[i][j]; // insert fn to the specific cell
-									if (fn_array[i][j]=="<NONE>") 
+									if (fn_array[i][j]=="<NONE>")
 									{ cell.style.backgroundcolor = "red"; // this does not work, I dont know why...
 									}
 							}
 						}
+                        // save dataset and datafile lists in Livewire
 						$wire.set('pdatasetnames', name_array);
                         console.log("name_array (pdatasetnames): ", name_array);
 						//console.log('$wire.pdatasetnames: ', $wire.pdatasetnames);
-						$wire.set('pdatafilenames', fn_array);
-                        console.log("fn_array (pdatafilenames): ", fn_array);
                         data.nFiltered = fn_array.flat().length; // since this is a multi-dimensional array, we need to flatten it first for length to count all elemets
-						console.log('$wire.pdatafilenames: ', $wire.pdatafilenames);
 
-                        // flat list of files to upload
+                        // flat list of files to upload. This is a relative path
+                        // from the directory chosen as input. E.g. P0002/3DSCAN/P0002_watertight.stl
                         let filenamesToUpload = fn_array.flat();
                         console.log("filenamesToUpload: " + filenamesToUpload);
                         console.log("filenamesToUpload.length: " + filenamesToUpload.length);
                         //console.log("Example filenamesToUpload string: " + filenamesToUpload[0].name);
 
-                        // get filtered list of file objects
-                        data.pendingFiles = data.allFiles.filter((file) => {
-                            return filenamesToUpload.includes(file.name);
-                        });
+                        // the data.allFiles 'name' is *just* the file name. There is a relative path,
+                        // but it also contains the parent folder. E.g. AXD-small/P0002/3DSCAN/P0002_watertight.stl
+                        console.log("allFiles: ", data.allFiles);
+                        $wire.set('pdatafilenames', fn_array);
+                        if(mode == 0) // flat
+                        {
+                            // get filtered list of file objects
+                            data.pendingFiles = data.allFiles.filter((file) => {
+                                return filenamesToUpload.includes(file.name);
+                            });
+                            console.log("fn_array (pdatafilenames): ", fn_array);
+                        }
+                        else // nested
+                        {
+                            // prepend filenamesToUpload with directory for comparison with allFiles
+                            let prefix = data.directory+'/';
+                            dirPrefixed = filenamesToUpload.map(item => prefix + item);
+                            console.log('dirPrefixed: ', dirPrefixed);
+                            data.pendingFiles = data.allFiles.filter((file) => {
+                                return dirPrefixed.includes(file.webkitRelativePath);
+                            });
+
+                        }
                         console.log("data.pendingFiles.length: " + data.pendingFiles.length);
                         console.log("data.allFiles.length: " + data.allFiles.length);
 
-                        // set number of files to upload, so we can say we're finished
-                        // when $this->uploads == $this->nFilesToUpload in Livewire component
+                        // set number of files to upload, so Livewire knows how many
+                        // files to expect.
                         $wire.set('nFilesToUpload', data.pendingFiles.length);
 
                         setStatus('Filtering finished');
