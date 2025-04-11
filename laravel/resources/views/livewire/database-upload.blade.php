@@ -135,6 +135,7 @@
 					(e) => {
 						console.log('EVENT: directory-picker event listener:', Array.from(e.target.files));
 						console.log('EVENT: directory-picker event listener: length', e.target.files.length);
+                        $wire.set("nFilesToUpload", 0);
 						$wire.set('nFilesSelected', e.target.files
 							.length
 							); // set immediately using $wire.set(), otherwise set when next $wire.$refresh or another action that triggers a refresh. See
@@ -185,7 +186,7 @@
                     setStatus("Upload started");
 
 					// flat list of files to upload
-					let filenamesToUpload = $wire.pdatasetfilenames.flat();
+					let filenamesToUpload = $wire.pdatafilenames.flat();
                     console.log("filenamesToUpload.length: " + filenamesToUpload.length);
                     console.log("Example filenamesToUpload string: " + filenamesToUpload[0].name);
 
@@ -368,13 +369,13 @@
 									}
 							}
 						}
-                        console.log("name_array: ", name_array);
 						$wire.set('pdatasetnames', name_array);
+                        console.log("name_array (pdatasetnames): ", name_array);
 						//console.log('$wire.pdatasetnames: ', $wire.pdatasetnames);
-                        console.log("fn_array: ", fn_array);
-						$wire.set('pdatasetfilenames', fn_array);
-                        data.nFiltered = fn_array.length;
-						console.log('$wire.pdatasetfilenames: ', $wire.pdatasetfilenames);
+						$wire.set('pdatafilenames', fn_array);
+                        console.log("fn_array (pdatafilenames): ", fn_array);
+                        data.nFiltered = fn_array.length; //jw:todo BUG: this is a multi-dimensional array. length only works for 1 dimension.
+						console.log('$wire.pdatafilenames: ', $wire.pdatafilenames);
                         setStatus('Filtering finished');
 					} else
 						console.log('piotrsFilter() - data parameter *does not* exist!');

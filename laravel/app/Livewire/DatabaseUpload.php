@@ -42,8 +42,13 @@ class DatabaseUpload extends Component
 
     public $overwriteExisting = false; // set to true, if existing datafiles should be overwritten.
 
-    public array $pdatasetnames= []; // array of dataset names
-    public array $pdatasetfilenames= []; // a two dimensional array, first dimension - index of piotrsNames, second dimension - index of datasetdefIds
+    // from Piotr's Javascript functions
+    //   array of dataset names. E.g. NH01
+    public array $pdatasetnames= [];
+    //   a two dimensional array,
+    //     first dimension - index of pdatasetnames
+    //     second dimension - index of datasetdefIds
+    public array $pdatafilenames= []; 
 
     public $progress;
     public $uploading;
@@ -119,10 +124,9 @@ class DatabaseUpload extends Component
 
     public function resetUploads()
     {
-        //dd("resetUploads()");
+        $this->setStatus("Resetting uploads");
         // clean up uploads
-        //$this->console("resetUploads()");
-
+        $this->nFilesToUpload = 0;
         foreach($this->filtered as $id => $file)
         {
             //$this->console("filtered[$id]: $file");
@@ -153,7 +157,6 @@ class DatabaseUpload extends Component
             $uploadList .= "$key ($originalName), ";
         }
         $this->calculateUploaded();
-        $this->setStatus("Resetting uploads");
     }
 
 
@@ -197,15 +200,15 @@ class DatabaseUpload extends Component
         $this->console("updatedPdatasetnames");
     }
 
-    public function updatedPdatasetfilenames($value, $key)
+    public function updatedPdatafilenames($value, $key)
     {
-        $nTotalElements = count($this->pdatasetfilenames, 1); // count multi-dimensional array
-        $nDatasets = count($this->pdatasetfilenames);
+        $nTotalElements = count($this->pdatafilenames, 1); // count multi-dimensional array
+        $nDatasets = count($this->pdatafilenames);
         $nDatafiles = $nTotalElements - $nDatasets;
         if($nDatafiles > 0)
             $this->canUpload = true;
         $this->nFilesFiltered = $nDatafiles; // number of datafiles minus number of datasets
-        $this->setStatus("\$this->pdatasetfilenames set to $this->nFilesFiltered entries");
+        $this->setStatus("\$this->pdatafilenames set to $this->nFilesFiltered entries");
     }
 
     // https://dev.to/zaxwebs/accessing-updated-index-in-livewire-48oc
@@ -316,27 +319,27 @@ class DatabaseUpload extends Component
                         $this->debug(1, "Since this overwriting existing datafiles is disabled, we will just remove the corresponding upload, if it exists.");
 
                     //jw:todo find out which datafile
-                    //dd($this->pdatasetfilenames);
-                    $this->debug(2, "Checking if datasetnameKey $datasetnameKey exists in pdatasetfilenames");
-                    if(array_key_exists($datasetnameKey, $this->pdatasetfilenames))
+                    //dd($this->pdatafilenames);
+                    $this->debug(2, "Checking if datasetnameKey $datasetnameKey exists in pdatafilenames");
+                    if(array_key_exists($datasetnameKey, $this->pdatafilenames))
                     {
-                        $this->debug(2, "-> datasetnameKey $datasetnameKey exists in pdatasetfilenames ($datasetname)");
+                        $this->debug(2, "-> datasetnameKey $datasetnameKey exists in pdatafilenames ($datasetname)");
 
-                        $this->debug(2, "Checking if pdatasetfilenames[$datasetnameKey] key $datasetdefKey exists.");
-                        if(!array_key_exists($datasetdefKey, $this->pdatasetfilenames[$datasetnameKey]))
+                        $this->debug(2, "Checking if pdatafilenames[$datasetnameKey] key $datasetdefKey exists.");
+                        if(!array_key_exists($datasetdefKey, $this->pdatafilenames[$datasetnameKey]))
                         {
-                            // this datasetdef has no corresponding datasetfilenames entry! continue;
-                            $this->debug(2, "pdatasetfilenames[$datasetnameKey] key $datasetdefKey does not exist.");
+                            // this datasetdef has no corresponding datafilenames entry! continue;
+                            $this->debug(2, "pdatafilenames[$datasetnameKey] key $datasetdefKey does not exist.");
                             continue;
                         }
-                        $this->debug(2, "pdatasetfilenames[$datasetnameKey] key $datasetdefKey exists.");
+                        $this->debug(2, "pdatafilenames[$datasetnameKey] key $datasetdefKey exists.");
                     }
                     else
                     {
-                        $this->debug(2, "pdatasetfilenames key $datasetnameKey does not exist.");
+                        $this->debug(2, "pdatafilenames key $datasetnameKey does not exist.");
                         continue;
                     }
-                    $datafileName = $this->pdatasetfilenames[$datasetnameKey][$datasetdefKey];
+                    $datafileName = $this->pdatafilenames[$datasetnameKey][$datasetdefKey];
                     $this->debug(1, "Datafile name to look for in uploads: $datafileName");
                     //
                     //
