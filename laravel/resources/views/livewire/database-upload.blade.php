@@ -374,7 +374,7 @@
 						//console.log('$wire.pdatasetnames: ', $wire.pdatasetnames);
 						$wire.set('pdatafilenames', fn_array);
                         console.log("fn_array (pdatafilenames): ", fn_array);
-                        data.nFiltered = fn_array.length; //jw:todo BUG: this is a multi-dimensional array. length only works for 1 dimension.
+                        data.nFiltered = fn_array.flat().length; // since this is a multi-dimensional array, we need to flatten it first for length to count all elemets
 						console.log('$wire.pdatafilenames: ', $wire.pdatafilenames);
                         setStatus('Filtering finished');
 					} else
