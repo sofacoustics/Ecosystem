@@ -70,7 +70,7 @@
 					@if($user->orcid_verified_at ==null)
 						<x-button type="submit" name="action" value="orcidLink">Link with ORCID to obtain write access</x-button>
 					@else
-						<x-button-alert type="submit" name="action" value="delete">Unlink ORCID</x-button>
+						<x-button-alert type="submit" name="action" value="orcidUnlink">Unlink ORCID</x-button>
 					@endif
 
 					@if (Session('error'))

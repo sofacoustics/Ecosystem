@@ -18,8 +18,6 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ToolController;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\OrcidVerificationController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes

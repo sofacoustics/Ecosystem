@@ -22,12 +22,15 @@ class ProfileController extends Controller
         ]);
     }
 
+    /**
+     * Select which action to process
+     */
 		public function process(ProfileUpdateRequest $request): RedirectResponse
     {
 			$action = $request->input('action');
 			
 			if ($action === 'update') { return $this->update($request); }
-			elseif ($action === 'delete') { return $this->orcidUnlink($request); }
+			elseif ($action === 'orcidUnlink') { return $this->orcidUnlink($request); }
 			elseif ($action === 'orcidLink') { return $this->orcidLink($request); }
 			else dd($action);
 		}
@@ -38,15 +41,16 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
 			
-        $request->user()->fill($request->validated());
+			$request->user()->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-				
-        $request->user()->save();
+			if ($request->user()->isDirty('email')) 
+			{
+				$request->user()->email_verified_at = null;
+			}
+			
+			$request->user()->save();
 
-        return Redirect::route('profile.edit')->with('status', 'Profile updated...');
+			return Redirect::route('profile.edit')->with('status', 'Profile updated...');
     }
 
     /**
@@ -54,16 +58,17 @@ class ProfileController extends Controller
      */
     public function orcidUnlink(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+			$request->user()->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-				
-				$request->user()->orcid_verified_at = null;
-        $request->user()->save();
+			if ($request->user()->isDirty('email')) 
+			{
+				$request->user()->email_verified_at = null;
+			}
+			
+			$request->user()->orcid_verified_at = null;
+			$request->user()->save();
 
-        return Redirect::route('profile.edit')->with('status', 'ORCID unlinked...');
+			return Redirect::route('profile.edit')->with('status', 'ORCID unlinked...');
     }
 
 
@@ -98,11 +103,7 @@ class ProfileController extends Controller
     {
 				$orcidFromForm = $request->input('orcid');
 				
-        if (!$orcidFromForm) {
-            return back()->withErrors(['orcid' => 'ORCID ID is required.']);
-        }
-
-        // Configuration for the ORCID API (Sandbox or Production)
+        // Configuration for the ORCID API 
         $orcidApiUrl = config('services.orcid.api_url'); 
         $orcidClientId = config('services.orcid.client_id');
         $orcidClientSecret = config('services.orcid.client_secret');
@@ -131,15 +132,12 @@ class ProfileController extends Controller
     public function callback(Request $request)
     {
         $code = $request->input('code');
-        //$orcidId = $request->input('orcid');
-				
         $error = $request->input('error');
 
         if ($error) {
             return redirect()->route('profile.edit')->withErrors(['orcid' => 'ORCID authorization failed: ' . $error]);
         }
 
-        //if (!$code || !$orcidId) {
 				if (!$code ) {
             return redirect()->route('profile.edit')->withErrors(['orcid' => 'Invalid ORCID authorization response.']);
         }
@@ -167,19 +165,13 @@ class ProfileController extends Controller
             $orcidFromToken = $accessTokenData['orcid'] ?? null;
 						$nameFromToken = $accessTokenData['name'] ?? null;
 
-						//dd([$accessToken, $orcidFromToken, $accessTokenData]);
-
             if ($accessToken && $orcidFromToken) {
-                // ORCID ID successfully verified!
-                // You can now associate this ORCID ID with the user in your database.
-                // You might want to store the access token for future API calls (with user's consent).
-
-                // Update the fields
+                // ORCID ID successfully verified! Update the fields
 								auth()->user()->update(['orcid' => $orcidFromToken]);
 								auth()->user()->update(['name' => $nameFromToken]);
                 auth()->user()->update(['orcid_verified_at' => now()]);
-
                 return redirect()->route('profile.edit')->with('status', 'ORCID Link successful...');;
+
             } else {
                 return redirect()->route('profile.edit')->withErrors(['orcid' => 'ORCID verification failed: Could not retrieve or match ORCID ID.']);
             }

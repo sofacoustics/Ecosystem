@@ -44,7 +44,10 @@ class DatabasePolicy
      */
     public function create(User $user): bool
     {
-        return $user->id != 0;
+        if($user->id != 0) 
+					if ($user->orcid_verified_at != null)
+						return true;
+				return false; 
     }
 
     /**
