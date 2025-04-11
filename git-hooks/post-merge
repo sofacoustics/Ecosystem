@@ -1,0 +1,21 @@
+#!/bin/sh
+
+echo "Running 'post-merge' hook"
+
+# Get the current branch name
+branch_name=$(git branch | grep "*" | sed "s/\* //")
+echo "branch: $branch_name"
+
+# we should be in the root folder of the git repository
+cd laravel
+
+echo "Running 'composer install'"
+composer install
+echo "Running 'artisan migrate'"
+./artisan migrate
+echo "Running ./artisan storage:unlink && ./artisan storage:link"
+./artisan storage:unlink && ./artisan storage:link
+echo "Running 'npm install and npm run build'"
+npm install && npm run build
+
+cd ..

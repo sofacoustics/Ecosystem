@@ -1,0 +1,122 @@
+*** Ecosystem ***
+
+To be done:
+* Ask JW: DatabasePolicy.php: what's the difference between ?User and User
+* Where can we (in RADAR Metadate) store the citation to the corresponding publication? 
+
+* Add "Admin" as a role to User table. Admins should be able to see and edit all data.
+* Add "ORCID" to the User 
+* Add "Description" to the Definition of each Datasetfile? 
+* Add confirmation on delete (JW)
+* Prepare metadata for RADAR
+* Check how to link optional documentation files with a database
+* Define download (single file, bulk)
+* Define various widgets
+* Implement the most important widgets
+* Implement the actual procedure to "Assign DOI"
+* Implement the actual procedure to "Publish with DOI"
+* Landing page: Include filter by Visible and DOI
+* Buld Upload: Check if duplicate files assigned to the same datafile
+* Buld Upload: Provide option to select datasets for the upload
+* Buld Upload: Cancel an upload
+* Buld Upload: Warn if a dataset already exists
+* Buld Upload: Automatic fill of the dataset description
+* Think about how to implement all the database functionality for tools
+
+Nice to have: 
+* Check user registration with ORCID
+* Layout: Show buttons as tabs
+* Trim spaces from the inputs
+* Add "Fill in with your name" at creators, publishers, and rightsholders.
+* Fork to a SONICOM Github repository. PM: I tried that, but it is more complex than I thought. Skipped for later. 
+* Audio View: add https://wavesurfer.xyz/
+
+
+DONE!
+=====
+
+Widgets & Services
+=======
+
+* Implement the seeder tables for various widgets and services
+* Image: rotation and reset (container does not expand yet)
+* Audio: basic player
+
+
+Comments
+========
+
+* show, delete, new, edit
+
+Datasets definition
+===================
+
+* New, Show, Delete, Edit
+* Widgets generally implemented
+* Multiple photos as a single datafile: user needs to create animated WEBP
+* "Non-spatial data (SOFA)" added
+* Definitions as a table
+
+
+Database
+==================
+
+* General check of the RADAR API
+* Retrieval of all databases from datathek
+* show and edit "Visible", "Assign DOI", "Publish with DOI"
+* Fake procedure to "Assign DOI"
+* Fake procedure for "Publish with DOI"
+
+
+Database landing page
+=====================
+
+Done: 
+* General implementation
+* Include Publication and Production Date for sorting
+* Include Last Modified for sorting
+* Include Visible for sorting
+
+Bulk upload
+===========
+
+Done: 
+* Check if a dataset already exists
+* Implement the actual Upload
+* Dataset name and datafile names linked by <ID>
+* Support for wildcard by <ANY> 
+* Brief statistics
+* Table
+
+Metadata status:
+================
+
+Done: 
+* Title: done.
+* ProductionYear: done.
+* Resource (& resourceType): done. Set to "Dataset" and "Sonicom Ecosystem", non-editable.
+* Language: done. 
+* Additional Title (& additionalTitleType): done as 0-1 (0-n for later).
+* PublicationYear: done.
+* Creator: done, but 0-n (should be 1-n). 
+* Description (& descriptionType): done as 0-1 (0-n for later).
+* Rights (& controlledRights and optional additionalRights): done.
+* Publisher: (& nameIdentifier, nameIdentifierScheme, schemeURI): done as 0-n.
+* SubjectArea (& controlledSubjectArea and optional additionalSubjectArea): done as 0-n. 
+* RightsHolder (& optional nameIdentifier, nameIdentifierScheme,  schemeURI): done as 0-n.
+* Keyword (& optional keywordScheme, schemeURI, valueURI, classificationCode): done as 0-n.
+
+To be done (tbd): 
+* Creator: add schemeURI.
+* Contributor (& contributorType, contributorName): tbd, 0-n. 
+* DataSource (& dataSourceDetail): tbd as 0-n.
+* FundingReference (& funderName, optional funderIdentifier, awardNumber, awardURI, awardTitle): tbd as 0-n. 
+* Identifier (& identifierType): to be created by RADAR. 
+
+For later: 
+* AlternateIdentifier (& alternateIdentifierType): tbd as 0-n, later. 
+* RelatedIdentifier (& relatedIdentifierType, relationType): tbd as 0-n, later. 
+* GeoLocation (& geoLocationCountry, geoLocationRegion, geoLocationPoint, geoLocationBox): tbd as 0-n, later. 
+* SoftwareType (& type, softwareName, optional alternativeSoftware): tbd as 0-n, later.
+* DataProcessing: tbd as 0-n. 
+* RelatedInformation (& relatedInformationType): tbd as 0-n. 
