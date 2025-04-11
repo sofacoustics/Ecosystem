@@ -16,13 +16,6 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
-        <!-- ORCID -->
-        <div class="mt-4">
-            <x-input-label for="orcid" :value="__('ORCID')" />
-            <x-text-input id="orcid" class="block mt-1 w-full" type="orcid" name="orcid" :value="old('orcid')" required autocomplete="orcid" />
-            <x-input-error :messages="$errors->get('orcid')" class="mt-2" />
-        </div>
-
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />

@@ -27,7 +27,7 @@ class ProfileController extends Controller
 			$action = $request->input('action');
 			
 			if ($action === 'update') { return $this->update($request); }
-			elseif ($action === 'orcidUnlink') { return $this->orcidUnlink($request); }
+			elseif ($action === 'delete') { return $this->orcidUnlink($request); }
 			elseif ($action === 'orcidLink') { return $this->orcidLink($request); }
 			else dd($action);
 		}

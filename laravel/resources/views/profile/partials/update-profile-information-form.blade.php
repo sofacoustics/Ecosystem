@@ -54,9 +54,9 @@
         <div>
             <x-input-label for="orcid" :value="__('ORCID')" />            
 							@if($user->orcid_verified_at ==null)
-								<x-text-input id="orcid" name="orcid" type="text" class="mt-1 block w-full" :value="old('orcid', $user->orcid)" required autofocus autocomplete="orcid" />
+								<x-text-input id="orcid" name="orcid" type="text" class="mt-1 block w-full" :value="old('orcid', $user->orcid)" autofocus autocomplete="orcid" />
 							@else
-								<x-text-input disabled id="orcid" name="orcid" type="text" class="mt-1 block w-full" :value="old('orcid', $user->orcid)" required autofocus autocomplete="orcid" />
+								<x-text-input disabled id="orcid" name="orcid" type="text" class="mt-1 block w-full" :value="old('orcid', $user->orcid)" autofocus autocomplete="orcid" />
 							@endif
             <x-input-error class="mt-2" :messages="$errors->get('orcid')" />
         </div>
@@ -68,9 +68,9 @@
         <div class="flex items-center gap-4">
 					<x-button type="submit" name="action" value="update">Update</x-button>
 					@if($user->orcid_verified_at ==null)
-						<x-button type="submit" name="action" value="orcidLink">Link ORCID</x-button>
+						<x-button type="submit" name="action" value="orcidLink">Link with ORCID to obtain write access</x-button>
 					@else
-						<x-button type="submit" name="action" value="orcidUnlink">Unlink ORCID</x-button>
+						<x-button-alert type="submit" name="action" value="delete">Unlink ORCID</x-button>
 					@endif
 
 					@if (Session('error'))
