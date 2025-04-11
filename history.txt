@@ -27,8 +27,6 @@ Nice to have:
 * Add "Fill in with your name" at creators, publishers, and rightsholders.
 * Fork to a SONICOM Github repository. PM: I tried that, but it is more complex than I thought. Skipped for later. 
 * Audio View: add https://wavesurfer.xyz/
-* Check ORCID via pattern
-* Check ORCID via https://info.orcid.org/documentation/api-tutorials/api-tutorial-get-and-authenticated-orcid-id/
 
 
 DONE!
