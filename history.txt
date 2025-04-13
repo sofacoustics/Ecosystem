@@ -2,14 +2,14 @@
 
 To be done:
 * Ask JW: DatabasePolicy.php: what's the difference between ?User and User
-* Ask JW: Is Spatie used for permissions? 
-* Where can we (in RADAR Metadate) store the citation to the corresponding publication? 
-* Add "Admin" as a role to User table. Admins should be able to see and edit all data.
+* Ask JW: Is Spatie used for permissions?
+* Clarify with JW how to add "Admin" as a role to User table. Admins should be able to see and edit all data.
 * Add confirmation on delete (JW)
 * Prepare metadata for RADAR
-* Check how to link optional documentation files with a database
+* Implement Docs = documentation files to be linked with tools and/or databases.
+* Implement Link of a database to a doc file (in RADAR via RelatedIdentifier)
+* Implement RelatedIdentifier to store citations of databases?
 * Define download (single file, bulk)
-* Define various widgets
 * Implement the most important widgets
 * Implement the actual procedure to "Assign DOI"
 * Implement the actual procedure to "Publish with DOI"
