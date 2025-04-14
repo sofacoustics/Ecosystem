@@ -129,6 +129,50 @@
 
 		@script
 			<script>
+                let maxParallelUploads = 2; // Maximum concurrent uploads
+                let uploadQueue = [];
+
+                function processQueue() {
+                    while (uploadQueue.length > 0 && maxParallelUploads > 0) {
+                        const { index, file } = uploadQueue.shift();
+                        maxParallelUploads--;
+                        let data = Alpine.$data(document.getElementById('alpineComponent'));
+
+                        @this.upload( 'uploads.' + index,
+                            file,
+                            () => { 
+                                /* Success handler */
+                             	data.nUploaded++;
+                                setStatus("File " + index + " now successfully uploaded");
+                                data.progressText = data.nUploaded + "/" + $wire.nFilesToUpload + " files successfully uploaded";
+                                maxParallelUploads++; // Free up a slot
+                                // if this is the last upload, set 'uploading' to false
+                                if(data.nUploaded == $wire.nFilesToUpload)
+                                {
+                                    data.uploading = false; // finished
+                                    setStatus("Uploading is now finished. You may save the files to the database!");
+                                }
+
+                                processQueue(); // Process next in queue
+                            },
+                            () => {
+                                /* Error handler */
+                                setStatus("Error " + index);
+                            },
+                            (progress) => {
+                                /* Progress updates */
+                                setStatus("Uploading " + index);
+                                data.progress = event.detail.progress;
+                            },
+                            () => {
+                                /* cancelled handler */
+                                setStatus("Cancelled " + index);
+                            }
+                        );
+                    }
+                }
+
+
 				////////////////////////////////////////////////////////////////////////////////
 				//	Events
 				////////////////////////////////////////////////////////////////////////////////
@@ -203,6 +247,10 @@
 					//console.log("doUpload() - existing upload count: ", offset);
 					// https://fly.io/laravel-bytes/multi-file-upload-livewire/
 					data.pendingFiles.forEach((file, index) => {
+
+                        uploadQueue.push({ index, file });
+
+/*
 						$wire.dispatch('upload file ', index);
 						console.log("doPiotrUpload(): uploading ", file, " (index: ", index, " offset+index: ", (
 							index + offset), ")");
@@ -226,7 +274,10 @@
                                 data.progress = event.detail.progress;
 							}
 						);
+                        */
 					});
+                    console.log("uploadQueue.length: ", uploadQueue.length);
+                    processQueue();
                     setStatus('Upload finished!?');
 				});
 
@@ -243,7 +294,7 @@
 							let fn_pattern = document.getElementById("fn_pattern"+df_array[i]).value;
 							fn_pattern = fn_pattern.split('\\').join('/');
 							let fn_filter = fn_pattern.replace(/\[/g, "\\[");
-							fn_filter = fn_filter.replace(/\]/g, "\\]"); 
+							fn_filter = fn_filter.replace(/\]/g, "\\]");
 							fn_filter = fn_filter.replace(/\^/g, "\\^");
 							fn_filter = fn_filter.replace(/\./g, "\\.");
 							fn_filter = fn_filter.replace(/\$/g, "\\$"); 
@@ -450,7 +501,7 @@
                             () => { 
                                 // Success handler
                             },
-                            () => { 
+                            () => {
                                 // Error handler
                             },
                             (progress) => { 
