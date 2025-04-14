@@ -26,7 +26,7 @@
 								
                 <div class="mb-4">
                     <label for="Description" class="{{ $labelClass }}">Description:</label>
-                    <input wire:model="description" type="text" id="description" class="{{ $inputClass }}" required />
+                    <input wire:model="description" type="text" id="description" class="{{ $inputClass }}" />
                     @error('description')
                         <span class="text-red-500">{{ $message }}</span>
                     @enderror

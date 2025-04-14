@@ -1,5 +1,5 @@
 {{--
-	A general purpose button
+	A red general purpose button
 
 	Parameters:
 
@@ -45,12 +45,9 @@
 	}
 
 	// button colors
-	$classColors = 'blue-500 bg-blue-500 hover:bg-blue-700 text-white';
+	$classColors = 'red-400 bg-red-400 hover:bg-red-600 text-white';
 	if ($disabled) {
 		$classColors = 'gray-400 bg-gray-400 text-white';
-	}
-	if ("$method" == 'DELETE') {
-		$classColors = 'red-400 bg-red-400 hover:bg-red-600 text-white';
 	}
 @endphp
 <div class="inline">

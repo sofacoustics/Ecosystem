@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
 				'orcid',
         'password',
+				'orcid_verified_at',
     ];
 
     /**
