@@ -14,6 +14,8 @@ function BRIRGeometry(SOFAfile)
 % for debug purpose comment function row above, and uncomment this one:
 % SOFAfile= 'hrtf_nh4.sofa';
 
+isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
+
 %jw:tmp logfile
 logfile="/home/sonicom/isf-sonicom-laravel/laravel/storage/app/tools/1/BRIRGeometry.log"
 fid = fopen(logfile, "w");
