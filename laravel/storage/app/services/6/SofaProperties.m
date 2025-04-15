@@ -1,7 +1,6 @@
-%SRIRGeometry - Function to load SOFA files, create and save visualizing 1 figure
+%SofaProperties - Function to load SOFA files, create and save visualizing 1 figure
 
-% #Author: Michael Mihocic: First version, loading and plotting a few figures, supporting a few conventions (31.08.2023)
-% #Author: Michael Mihocic: support of SRIRGeometry, SingleRoomMIMOSRIR SOFA files implemented (14.04.2025)
+% #Author: Michael Mihocic: SofaProperties extracted and stored (15.04.2025)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -10,14 +9,14 @@
 % Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 % See the License for the specific language governing  permissions and limitations under the License.
 
-function SRIRGeometry(SOFAfile)
+function SofaProperties(SOFAfile)
 % for debug purpose comment function row above, and uncomment this one:
 % SOFAfile= 'hrtf_nh4.sofa';
 
 isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
 
 %jw:tmp logfile
-logfile="/home/sonicom/isf-sonicom-laravel/laravel/storage/app/tools/1/SRIRGeometry.log"
+logfile="/home/sonicom/isf-sonicom-laravel/laravel/storage/app/tools/1/SofaProperties.log"
 fid = fopen(logfile, "w");
 s = pwd;
 disp(["pwd = " s]);
@@ -53,29 +52,29 @@ end
 %disp(['Loading: ' SOFAfile]);
 Obj=SOFAload(SOFAfile);
 
-if isoctave; fputs(fid, [ "About to plot\n"]); end
+if isoctave; fputs(fid, [ "About to extract details\n"]); end
 
-%% Plot a few figures
-switch Obj.GLOBAL_SOFAConventions
+%% Collect details
+data = {};
+data{1,1} = 'SOFA Conventions';
+data{1,2} = Obj.GLOBAL_SOFAConventions;
+data{2,1} = 'SOFA Conventions Version';
+data{2,2} = Obj.GLOBAL_SOFAConventionsVersion;
+data{3,1} = 'Description';
+data{3,2} = Obj.GLOBAL_Description;
+if isoctave; fputs(fid, [ "collected data from SOFA file\n"]); end
 
-    case 'SingleRoomSRIR', 'SingleRoomMIMOSRIR';
-        if isoctave; fputs(fid, [ "case SingleRoomSRIR or SingleRoomMIMOSRIR\n"]); end
-        [Obj] = SOFAupgradeConventions(Obj);
-        % figure('Name',SOFAfile);
-        if isoctave; fputs(fid, [ "just done SOFA upgrade\n"]); end
-        % SOFAplotHRTF(Obj,'ETCHorizontal',1);
-        SOFAplotGeometry(Obj);
-        if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
-        set(gcf, 'Name', 'SOFAfile')
-        if isoctave; fputs(fid, [ "renamed figure\n"]); end
-        view(45,30);
-        set(gcf, 'Position', [300, 500, 800, 500]);
-        if isoctave; fputs(fid, [ "just adapted view and position\n"]); end
-        print ("-r600", [SOFAfile '_1.png']);
-        %print ("-r600", '/tmp/hrtf_1.png');
-        if isoctave; fputs(fid, [ "just printed " SOFAfile "_1.png\n"]); end
-end
+% define header
+header = {'Name', 'Value'};
+% convert to table
+T = cell2table(data, 'VariableNames', header);
+% write to csv
+writetable(T, [SOFAfile "_1.csv\n"]);
+if isoctave; fputs(fid, [ "just saved SOFA details to " SOFAfile "_1.csv\n"]); end
 
+        % print ("-r600", [SOFAfile '_1.png'])
+        % %print ("-r600", '/tmp/hrtf_1.png');
+        % if isoctave; fputs(fid, [ "just printed " SOFAfile "_1.png\n"]); end
 
 %% Epilogue: (un)comment if you want to:
 disp('DONE');

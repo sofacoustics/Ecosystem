@@ -14,7 +14,7 @@ function HRIR3(SOFAfile)
 % SOFAfile= 'hrtf_nh4.sofa';
 
 %jw:tmp logfile
-logfile="/home/sonicom/isf-sonicom-laravel/laravel/storage/app/tools/1/CreateFigures.log"
+logfile="/home/sonicom/isf-sonicom-laravel/laravel/storage/app/tools/1/HRIR3.log"
 fid = fopen(logfile, "w");
 s = pwd;
 disp(["pwd = " s]);
@@ -65,20 +65,20 @@ switch Obj.GLOBAL_SOFAConventions
         fputs(fid, [ "just done SOFAplotHRTF\n"]);
         print ("-r600", [SOFAfile '_1.png']);
         %print ("-r600", '/tmp/hrtf_1.png');
-        fputs(fid, [ "just done print" SOFAfile "_1.png\n"]);
+        fputs(fid, [ "just printed " SOFAfile "_1.png\n"]);
         
 
         % plot magnitude spectrum in the median plane, channel 2
         figure('Name',SOFAfile);
         SOFAplotHRTF(Obj,'MagMedian',2);
         print ("-r600", [SOFAfile '_2.png']);
-        fputs(fid, [ "just written " SOFAfile "_2.png\n"]);
+        fputs(fid, [ "just printed " SOFAfile "_2.png\n"]);
 
         % plot non-normalized magnitude spectrum in the median plane, channel 1
         figure('Name',SOFAfile);
         SOFAplotHRTF(Obj,'MagMedian','nonormalization');
         print ("-r600", [SOFAfile '_3.png']);
-        fputs(fid, [ "just written " SOFAfile "_3.png\n"]);
+        fputs(fid, [ "just printed " SOFAfile "_3.png\n"]);
         % plot geometry
       %  SOFAplotGeometry(Obj);
       %  title(['Geometry SimpleFreeFieldHRIR, ' num2str(Obj.API.M) ' position(s)'])

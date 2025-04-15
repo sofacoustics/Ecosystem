@@ -1,7 +1,7 @@
-%SRIRGeometry - Function to load SOFA files, create and save visualizing 1 figure
+%DirectivityPolar - Function to load SOFA files, create and save visualizing 1 figure
 
 % #Author: Michael Mihocic: First version, loading and plotting a few figures, supporting a few conventions (31.08.2023)
-% #Author: Michael Mihocic: support of SRIRGeometry, SingleRoomMIMOSRIR SOFA files implemented (14.04.2025)
+% #Author: Michael Mihocic: support of Directivity SOFA files implemented (15.04.2025)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -10,14 +10,14 @@
 % Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 % See the License for the specific language governing  permissions and limitations under the License.
 
-function SRIRGeometry(SOFAfile)
+function DirectivityPolar(SOFAfile)
 % for debug purpose comment function row above, and uncomment this one:
 % SOFAfile= 'hrtf_nh4.sofa';
 
 isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
 
 %jw:tmp logfile
-logfile="/home/sonicom/isf-sonicom-laravel/laravel/storage/app/tools/1/SRIRGeometry.log"
+logfile="/home/sonicom/isf-sonicom-laravel/laravel/storage/app/tools/1/DirectivityPolar.log"
 fid = fopen(logfile, "w");
 s = pwd;
 disp(["pwd = " s]);
@@ -57,21 +57,17 @@ if isoctave; fputs(fid, [ "About to plot\n"]); end
 
 %% Plot a few figures
 switch Obj.GLOBAL_SOFAConventions
-
-    case 'SingleRoomSRIR', 'SingleRoomMIMOSRIR';
-        if isoctave; fputs(fid, [ "case SingleRoomSRIR or SingleRoomMIMOSRIR\n"]); end
-        [Obj] = SOFAupgradeConventions(Obj);
+    % maybe other directivity cases will follow
+    case 'FreeFieldDirectivityTF';
+        if isoctave; fputs(fid, [ "case FreeFieldDirectivityTF\n"]); end
         % figure('Name',SOFAfile);
-        if isoctave; fputs(fid, [ "just done SOFA upgrade\n"]); end
-        % SOFAplotHRTF(Obj,'ETCHorizontal',1);
+        fputs(fid, [ "just done figure\n"]);
         SOFAplotGeometry(Obj);
         if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
+        
         set(gcf, 'Name', 'SOFAfile')
         if isoctave; fputs(fid, [ "renamed figure\n"]); end
-        view(45,30);
-        set(gcf, 'Position', [300, 500, 800, 500]);
-        if isoctave; fputs(fid, [ "just adapted view and position\n"]); end
-        print ("-r600", [SOFAfile '_1.png']);
+        print ("-r600", [SOFAfile '_1.png'])
         %print ("-r600", '/tmp/hrtf_1.png');
         if isoctave; fputs(fid, [ "just printed " SOFAfile "_1.png\n"]); end
 end

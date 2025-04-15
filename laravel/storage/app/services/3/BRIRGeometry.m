@@ -58,78 +58,23 @@ if isoctave; fputs(fid, [ "About to plot\n"]); end
 %% Plot a few figures
 switch Obj.GLOBAL_SOFAConventions
     % differ cases, depending on SOFA conventions
-%     case 'SimpleFreeFieldHRIR'
-% 
-%         fputs(fid, [ "case SimpleFreeFieldHRIR\n"]);
-%         % plot ETC horizontal plane
-%         figure('Name',SOFAfile);
-%         fputs(fid, [ "just done figure\n"]);
-%         SOFAplotHRTF(Obj,'ETCHorizontal',1);
-%         fputs(fid, [ "just done SOFAplotHRTF\n"]);
-%         print ("-r600", [SOFAfile '_1.png']);
-%         %print ("-r600", '/tmp/hrtf_1.png');
-%         fputs(fid, [ "just done print" SOFAfile "_1.png\n"]);
-% 
-% 
-%         % plot magnitude spectrum in the median plane, channel 2
-% %        figure('Name',SOFAfile);
-% %        SOFAplotHRTF(Obj,'MagMedian',2);
-% %        print ("-r600", [SOFAfile '_2.png']);
-% %        fputs(fid, [ "just written " SOFAfile "_2.png\n"]);
-% 
-%         % plot non-normalized magnitude spectrum in the median plane, channel 1
-% %        figure('Name',SOFAfile);
-% %        SOFAplotHRTF(Obj,'MagMedian','nonormalization');
-% %        print ("-r600", [SOFAfile '_3.png']);
-% %        fputs(fid, [ "just written " SOFAfile "_3.png\n"]);
-%         % plot geometry
-%       %  SOFAplotGeometry(Obj);
-%       %  title(['Geometry SimpleFreeFieldHRIR, ' num2str(Obj.API.M) ' position(s)'])
-%       %  set(gcf, 'Name', SOFAfile);
-%       %  print ("-r600", [SOFAfile '_4.png']);
-% 
-%         % plot geometry, only show every 45th measurement
-%       %  index = 1:45:Obj.API.M;
-%       %  SOFAplotGeometry(Obj,index);
-%       %  title(['Geometry SimpleFreeFieldHRIR, reduced to ' num2str(size(index,2)) ' position(s)'])
-%       %  set(gcf, 'Name', SOFAfile);
-%       %  print ("-r600", [SOFAfile '_5.png']);
-% 
-%     case 'GeneralTF'
-%         fputs(fid, [ "case GeneralTF\n"]);
-%         % plot magnitude spectrum in the median plane, channel 1
-%         figure('Name',SOFAfile);
-%         SOFAplotHRTF(Obj,'MagMedian',1,'conversion2ir');
-%         print ("-r600", [SOFAfile '_1.png']);
-% 
-%         figure('Name',mfilename);
-%         SOFAplotHRTF(Obj,'MagMedian',1,'noconversion2ir');
-%         print ("-r600", [SOFAfile '_2.png']);
-% 
-% 
-%     case 'GeneralFIR'
-%         fputs(fid, [ "case GeneralFIR\n"]);
-%         SOFAplotGeometry(Obj);
-%         title(['Geometry GeneralFIR, ' num2str(Obj.API.R) ' receiver(s), ' num2str(Obj.API.M) ' position(s)'])
-%         set(gcf, 'Name', mfilename);
-%         print ("-r600", [SOFAfile '_1.png']);
-% 
-%     case 'AnnotatedReceiverAudio'
-%         % no plan yet for this convention ;-)
 
     case 'MultiSpeakerBRIR', 'SingleRoomMIMOSRIR';
         if isoctave; fputs(fid, [ "case SingleRoomMIMOSRIR\n"]); end
         [Obj] = SOFAupgradeConventions(Obj);
         % figure('Name',SOFAfile);
-        if isoctave; fputs(fid, [ "just done figure\n"]); end
+        if isoctave; fputs(fid, [ "just done SOFA upgrade\n"]); end
         % SOFAplotHRTF(Obj,'ETCHorizontal',1);
         SOFAplotGeometry(Obj);
+        if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
+        set(gcf, 'Name', 'SOFAfile')
+        if isoctave; fputs(fid, [ "renamed figure\n"]); end
         view(45,30);
         set(gcf, 'Position', [300, 500, 800, 500]);
-        if isoctave; fputs(fid, [ "just done SOFAplotHRTF\n"]); end
+        if isoctave; fputs(fid, [ "just adapted view and position\n"]); end
         print ("-r600", [SOFAfile '_1.png']);
         %print ("-r600", '/tmp/hrtf_1.png');
-        if isoctave; fputs(fid, [ "just done print" SOFAfile "_1.png\n"]); end
+        if isoctave; fputs(fid, [ "just printed " SOFAfile "_1.png\n"]); end
 end
 
 
