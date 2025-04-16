@@ -56,25 +56,63 @@ if isoctave; fputs(fid, [ "About to extract details\n"]); end
 
 %% Collect details
 data = {};
-data{1,1} = 'SOFA Conventions';
-data{1,2} = Obj.GLOBAL_SOFAConventions;
-data{2,1} = 'SOFA Conventions Version';
-data{2,2} = Obj.GLOBAL_SOFAConventionsVersion;
-data{3,1} = 'Description';
-data{3,2} = Obj.GLOBAL_Description;
+
+
+data{end+1,1} = 'Title';
+if isfield(Obj, 'GLOBAL_Title')
+    data{end,2} = Obj.GLOBAL_Title;
+else
+    data{end,2} = 'unknown';
+end
+
+data{end+1,1} = 'Conventions';
+if isfield(Obj, 'GLOBAL_SOFAConventions')
+    data{end,2} = Obj.GLOBAL_SOFAConventions;
+else
+    data{end,2} = 'unknown';
+end
+
+data{end+1,1} = 'Conventions Version';
+if isfield(Obj, 'GLOBAL_SOFAConventionsVersion')
+    data{end,2} = Obj.GLOBAL_SOFAConventionsVersion;
+else
+    data{end,2} = 'unknown';
+end
+
+data{end+1,1} = 'References';
+if isfield(Obj, 'GLOBAL_References')
+    data{end,2} = Obj.GLOBAL_References;
+else
+    data{end,2} = 'unknown';
+end
+
+data{end+1,1} = 'Author';
+if isfield(Obj, 'GLOBAL_AuthorContact')
+    data{end,2} = Obj.GLOBAL_AuthorContact;
+else
+    data{end,2} = 'unknown';
+end
+
+data{end+1,1} = 'Not existing';
+if isfield(Obj, 'GLOBAL_notexisting')
+    data{end,2} = Obj.GLOBAL_notexisting;
+else
+    data{end,2} = 'unknown';
+end
+
+% data{3,1} = 'Description';
+% data{3,2} = Obj.GLOBAL_Description;
 if isoctave; fputs(fid, [ "collected data from SOFA file\n"]); end
 
 % define header
 header = {'Name', 'Value'};
 % convert to table
 T = cell2table(data, 'VariableNames', header);
+if isoctave; fputs(fid, [ "converted data to table\n"]); end
 % write to csv
-writetable(T, [SOFAfile "_1.csv\n"]);
+writetable(T, string(SOFAfile) + '_1.csv', 'Delimiter', ';');
 if isoctave; fputs(fid, [ "just saved SOFA details to " SOFAfile "_1.csv\n"]); end
 
-        % print ("-r600", [SOFAfile '_1.png'])
-        % %print ("-r600", '/tmp/hrtf_1.png');
-        % if isoctave; fputs(fid, [ "just printed " SOFAfile "_1.png\n"]); end
 
 %% Epilogue: (un)comment if you want to:
 disp('DONE');
