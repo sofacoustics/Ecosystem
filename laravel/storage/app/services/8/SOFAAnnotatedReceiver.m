@@ -61,7 +61,7 @@ switch Obj.GLOBAL_SOFAConventions
     case 'FreeFieldDirectivityTF';
         if isoctave; fputs(fid, [ "case FreeFieldDirectivityTF\n"]); end
         % figure('Name',SOFAfile);
-        % fputs(fid, [ "just done figure\n"]);
+        fputs(fid, [ "just done figure\n"]);
         SOFAplotGeometry(Obj);
         if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
         

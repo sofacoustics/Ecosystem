@@ -1,7 +1,6 @@
-%DirectivityPolar - Function to load SOFA files, create and save visualizing 1 figure
+%Headphones - Function to load SOFA files, create and save visualizing 1 figure
 
-% #Author: Michael Mihocic: First version, loading and plotting a few figures, supporting a few conventions (31.08.2023)
-% #Author: Michael Mihocic: support of Directivity SOFA files implemented (15.04.2025)
+% #Author: Michael Mihocic: support of SimpleHeadphoneIR (16.04.2025)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -10,14 +9,14 @@
 % Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 % See the License for the specific language governing  permissions and limitations under the License.
 
-function DirectivityPolar(SOFAfile)
+function Headphones(SOFAfile)
 % for debug purpose comment function row above, and uncomment this one:
 % SOFAfile= 'hrtf_nh4.sofa';
 
 isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
 
 %jw:tmp logfile
-logfile="/home/sonicom/isf-sonicom-laravel/laravel/storage/app/tools/1/DirectivityPolar.log"
+logfile="/home/sonicom/isf-sonicom-laravel/laravel/storage/app/tools/1/Headphones.log"
 fid = fopen(logfile, "w");
 s = pwd;
 disp(["pwd = " s]);
@@ -58,11 +57,53 @@ if isoctave; fputs(fid, [ "About to plot\n"]); end
 %% Plot a few figures
 switch Obj.GLOBAL_SOFAConventions
     % maybe other directivity cases will follow
-    case 'FreeFieldDirectivityTF';
-        if isoctave; fputs(fid, [ "case FreeFieldDirectivityTF\n"]); end
-        % figure('Name',SOFAfile);
-        % fputs(fid, [ "just done figure\n"]);
-        SOFAplotGeometry(Obj);
+    case 'SimpleHeadphoneIR';
+        if isoctave; fputs(fid, [ "case Headphones\n"]); end
+        figure('Name',SOFAfile);
+        if isoctave; fputs(fid, [ "just done figure\n"]); end
+       
+
+hold on; box on;
+cols='bgrmky';
+
+%if ~isoctave
+if ~isoctave
+  if isfield(Obj, 'MeasurementDate')
+      meastime=[0; diff(Obj.MeasurementDate)]; % diff not working in Octave
+  else
+      meastime=diff(Obj.GLOBAL_DateCreated); % diff not working in Octave
+  end
+end
+
+for ii=1:Obj.API.M
+  plot(20*log10(abs(fft(squeeze(Obj.Data.IR(ii,1,:)),Obj.Data.SamplingRate))),cols(ii));
+  if ii>1
+    % if ~isoctave; 
+	if ~isoctave
+      leg{ii}=['#' num2str(ii) ':' num2str(meastime(ii)) ' seconds later']; 
+    else
+      leg{ii}=['#' num2str(ii)]; 
+    end
+  end
+end
+
+for ii=1:Obj.API.M
+  plot(20*log10(abs(fft(squeeze(Obj.Data.IR(ii,2,:)),Obj.Data.SamplingRate)))-20,cols(ii));  
+end
+
+xlim([-200 18200]);
+
+axis([-200 18200 -65 15]);
+leg{1}='#1, first measurement';
+legend(leg);
+title('Amplitude Spectra of Repeated Headphones Measurements (Left, Right)')
+xlabel('Frequency (Hz)')
+ylabel('Amplitude (dB)')
+
+
+
+
+
         if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
         
         set(gcf, 'Name', 'SOFAfile')
