@@ -155,9 +155,9 @@
 
                                 processQueue(); // Process next in queue
                             },
-                            () => {
+                            (error) => {
                                 /* Error handler */
-                                setStatus("Error " + index);
+                                setStatus("Error " + index + "(" + error + ")");
                             },
                             (progress) => {
                                 /* Progress updates */
