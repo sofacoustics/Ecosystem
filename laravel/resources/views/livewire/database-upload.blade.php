@@ -73,7 +73,7 @@
 				<div class="bg-gray-100">
 					{{-- <div wire:loading>Livewire communication with server</div> --}}
 					<x-message show="cancelled" timeout="2000">The upload has been cancelled</x-message>
-					<x-message show="error">Error: there was an error uploading</x-message>
+					<x-message type="error" show="error">Error: there was an error uploading. Please try again!</x-message>
 					<x-message show="uploading">Uploading to server</x-message>
 					{{-- <x-message show="finished" timeout="5000">Upload finished</x-message> --}}
 				</div>
@@ -133,6 +133,7 @@
                 let uploadQueue = [];
 
                 function processQueue() {
+                    //console.log('processQueue():start');
                     while (uploadQueue.length > 0 && maxParallelUploads > 0) {
                         const { index, file } = uploadQueue.shift();
                         maxParallelUploads--;
@@ -157,7 +158,9 @@
                             },
                             (error) => {
                                 /* Error handler */
-                                setStatus("Error " + index + "(" + error + ")");
+                                setStatus("Error " + index + " (" + error + ")");
+                                data.error = true;
+                                resetUpload();
                             },
                             (progress) => {
                                 /* Progress updates */
@@ -170,6 +173,7 @@
                             }
                         );
                     }
+                    //console.log('processQueue():end');
                 }
 
 
@@ -230,17 +234,33 @@
 				$wire.on('livewire-upload-start', () => {
 					console.log('EVENT: livewire-upload-start event triggered');
 				});
+
+                $wire.on('livewire-upload-error', () => {
+                    console.log('EVENT: livewire-upload-error');
+                });
+
+                window.addEventListener('livewire:error', event => {
+                    console.error('EVENT: livewire:error:', event.detail);
+                    console.log('EVENT: livewire:error:', event.detail);
+                });
+                
+                document.addEventListener('livewire:init', () => {
+                    Livewire.on('livewire-upload-error', (event) => {
+                        console.log('EVENT: livewire-upload-error', event.detail);
+                    });
+                });
+
 				////////////////////////////////////////////////////////////////////////////////
 				//	Functions
 				////////////////////////////////////////////////////////////////////////////////
 
 				$js('doPiotrUpload', (data) => {
                     resetUpload();
+                    data.error = false;
 					$wire.set('canUpload', false);
 					$wire.set('uploading', true); // set immediately. This is used within the Livewire component
 					data.uploading = true; // use this for input button state (enabled/disabled)
                     setStatus("Upload started");
-
 
 					let uploads = Object.values($wire.uploads);
 					let offset = uploads.length;
@@ -299,7 +319,7 @@
 							fn_filter = fn_filter.replace(/\./g, "\\.");
 							fn_filter = fn_filter.replace(/\$/g, "\\$"); 
 							fn_filter = fn_filter.replace(/\(/g, "\\(");
-							fn_filter = fn_filter.replace(/\)/g, "\\)"); 
+							fn_filter = fn_filter.replace(/\)/g, "\\)");
 							fn_filter = fn_filter.replace(/<NUM>/g, "[0-9]+"); 
 							fn_filter = fn_filter.replace(/<ANY>/g, ".+"); 
 							fn_filter = RegExp(fn_filter.replace(/<ID>/g, ".+"));
@@ -483,6 +503,8 @@
                     data.progressText = '';
                     data.nUploaded = 0;
                     data.uploading = false;
+                    uploadQueue = [];
+                    maxParallelUploads = 2; // Maximum concurrent uploads
                     setStatus("resetUpload()");
                 }
 
@@ -494,7 +516,7 @@
                     while (uploadQueue.length > 0 && maxParallelUploads > 0) {
                         const { index, file } = uploadQueue.shift();
                         maxParallelUploads--;
-                                            
+
                         @this.upload(
                             `files.${index}`, // Livewire property
                             file,
