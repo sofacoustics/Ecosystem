@@ -155,6 +155,7 @@ class DatabaseUpload extends Component
             $originalName = $file->getClientOriginalName();
             $uploadList .= "$key ($originalName), ";
         }
+        $this->uploading = false;
         $this->calculateUploaded();
     }
 

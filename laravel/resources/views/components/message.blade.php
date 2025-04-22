@@ -9,6 +9,7 @@
 @props([
     'timeout' => '',
     'show' => '',
+    'type' => '',
 ])
 @php
     $timeoutstring = '';
@@ -21,6 +22,7 @@
         <template x-if="{{ $show }}">
     @endif
     <div x-data="{ show: true }" x-show="show"
+        @if ($type === "error") class="bg-red-600" @endif
         @if ($timeoutstring != '') x-init="console.log('x-init x-message (timeoutstring={{ $timeoutstring }})'), setTimeout(() => show = false {{ $timeoutstring }})" @endif>
         {{ $slot }}
     </div>
