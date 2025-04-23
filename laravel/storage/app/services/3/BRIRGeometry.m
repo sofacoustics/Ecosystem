@@ -17,7 +17,7 @@ function BRIRGeometry(SOFAfile)
 isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
 
 %jw:tmp logfile
-logfile="/home/sonicom/isf-sonicom-laravel/laravel/storage/app/tools/1/BRIRGeometry.log"
+logfile="BRIRGeometry.log";
 fid = fopen(logfile, "w");
 s = pwd;
 disp(["pwd = " s]);
@@ -36,7 +36,10 @@ warning('off'); %jw:note disable all warnings
 %jw:note Check if function called with parameter. If not, use command line parameter^M
 if(exist("SOFAfile"))
 	if(length(SOFAfile)==0)
-		disp('The SOFA file name SOFAfile is empty');
+		disp('The SOFA file name SOFAfile is empty.');
+        if isoctave; fputs(fid, [ "The SOFA file name SOFAfile is empty.\n"]); end
+    else
+        if isoctave; fputs(fid, [ "File: " SOFAfile "\n"]); end
 	end
 else
 	% Use command line parameter for SOFAfile
@@ -46,6 +49,7 @@ else
 	fn = arg_list{1};
 	disp(fn);
 	SOFAfile = fn;
+    if isoctave; fputs(fid, [ "File: " SOFAfile " or " fn]); end
 end
 %disp(["SOFAfile = " SOFAfile]);
 
@@ -70,8 +74,11 @@ switch Obj.GLOBAL_SOFAConventions
         set(gcf, 'Name', 'SOFAfile')
         if isoctave; fputs(fid, [ "renamed figure\n"]); end
         view(45,30);
+		  if isoctave; fputs(fid, [ "adapted view\n"]); end
         set(gcf, 'Position', [300, 500, 800, 500]);
-        if isoctave; fputs(fid, [ "just adapted view and position\n"]); end
+        if isoctave; fputs(fid, [ "adapted position\n"]); end
+		        if isoctave; fputs(fid, [ "trying to print " SOFAfile "_1.png\n"]); end
+	  % plot(rand(10))
         print ("-r600", [SOFAfile '_1.png']);
         %print ("-r600", '/tmp/hrtf_1.png');
         if isoctave; fputs(fid, [ "just printed " SOFAfile "_1.png\n"]); end
