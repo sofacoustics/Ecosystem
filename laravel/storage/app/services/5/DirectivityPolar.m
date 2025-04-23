@@ -17,7 +17,7 @@ function DirectivityPolar(SOFAfile)
 isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
 
 %jw:tmp logfile
-logfile="/home/sonicom/isf-sonicom-laravel/laravel/storage/app/tools/1/DirectivityPolar.log"
+logfile="DirectivityPolar.log";
 fid = fopen(logfile, "w");
 s = pwd;
 disp(["pwd = " s]);

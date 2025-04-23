@@ -14,7 +14,7 @@ function HRIR3(SOFAfile)
 % SOFAfile= 'hrtf_nh4.sofa';
 
 %jw:tmp logfile
-logfile="/home/sonicom/isf-sonicom-laravel/laravel/storage/app/tools/1/HRIR3.log"
+logfile="HRIR3.log";
 fid = fopen(logfile, "w");
 s = pwd;
 disp(["pwd = " s]);

@@ -16,7 +16,7 @@ function SOFAAnnotatedReceiver(SOFAfile)
 isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
 
 %jw:tmp logfile
-logfile="/home/sonicom/isf-sonicom-laravel/laravel/storage/app/tools/1/SOFAAnnotatedReceiver.log";
+logfile="SOFAAnnotatedReceiver.log";
 fid = fopen(logfile, "w");
 s = pwd;
 disp(["pwd = " s]);

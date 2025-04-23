@@ -17,7 +17,7 @@ function SRIRGeometry(SOFAfile)
 isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
 
 %jw:tmp logfile
-logfile="/home/sonicom/isf-sonicom-laravel/laravel/storage/app/tools/1/SRIRGeometry.log"
+logfile="SRIRGeometry.log";
 fid = fopen(logfile, "w");
 s = pwd;
 disp(["pwd = " s]);
