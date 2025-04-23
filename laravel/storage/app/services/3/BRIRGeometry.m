@@ -35,20 +35,20 @@ warning('off'); %jw:note disable all warnings
 
 %jw:note Check if function called with parameter. If not, use command line parameter^M
 if(exist("SOFAfile"))
-	if(length(SOFAfile)==0)
-		disp('The SOFA file name SOFAfile is empty.');
+    if(length(SOFAfile)==0)
+        disp('The SOFA file name SOFAfile is empty.');
         if isoctave; fputs(fid, [ "The SOFA file name SOFAfile is empty.\n"]); end
     else
         if isoctave; fputs(fid, [ "File: " SOFAfile "\n"]); end
-	end
+    end
 else
-	% Use command line parameter for SOFAfile
-	% disp("SOFAfile does not exist");
-	disp(argv);
-	arg_list = argv();
-	fn = arg_list{1};
-	disp(fn);
-	SOFAfile = fn;
+    % Use command line parameter for SOFAfile
+    % disp("SOFAfile does not exist");
+    disp(argv);
+    arg_list = argv();
+    fn = arg_list{1};
+    disp(fn);
+    SOFAfile = fn;
     if isoctave; fputs(fid, [ "File: " SOFAfile " or " fn]); end
 end
 %disp(["SOFAfile = " SOFAfile]);
@@ -74,11 +74,14 @@ switch Obj.GLOBAL_SOFAConventions
         set(gcf, 'Name', 'SOFAfile')
         if isoctave; fputs(fid, [ "renamed figure\n"]); end
         view(45,30);
-		  if isoctave; fputs(fid, [ "adapted view\n"]); end
+        if isoctave; fputs(fid, [ "adapted view\n"]); end
         set(gcf, 'Position', [300, 500, 800, 500]);
         if isoctave; fputs(fid, [ "adapted position\n"]); end
-		        if isoctave; fputs(fid, [ "trying to print " SOFAfile "_1.png\n"]); end
-	  % plot(rand(10))
+        if isoctave; fputs(fid, [ "trying to print " SOFAfile "_1.png\n"]); end
+
+        % plot(rand(10))
+        print ("-r600", ['TESTPRINT_1.png']); % TO BE REMOVED
+        if isoctave; fputs(fid, [ "just printed TESTPRINT_1.png\n"]); end % TO BE REMOVED
         print ("-r600", [SOFAfile '_1.png']);
         %print ("-r600", '/tmp/hrtf_1.png');
         if isoctave; fputs(fid, [ "just printed " SOFAfile "_1.png\n"]); end
