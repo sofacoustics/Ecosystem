@@ -15,6 +15,18 @@
         status: '',
         directory: ''
 	}" id='alpineComponent'>
+	
+	<form wire:submit="save">
+		<h3>Select a directory with all your datafiles:</h3>
+		<div>
+			<x-button id="actual-directory-picker" x-bind:disabled="uploading" wire:ignore>Select a Directory</x-button>
+			<input id="directory-picker" type="file" webkitdirectory directory style="display:none"
+				x-bind:disabled="uploading"
+				x-on:change="allFiles = Array.from($event.target.files);">
+		</div>
+		<p id="numberofpickedfiles" wire:ignore><br></p>
+		<hr>
+		
 		<h3>Pattern for the datasets names:<h3>
 		<label>
 			<input class="w-full" type="text" placeholder="Must include <ID>, e.g., name<ID>. Must not be empty." id="name_pattern"
@@ -22,7 +34,7 @@
 		</label>
 		{{-- just working for one datasetdef at the moment --}}
 		<h3>Patterns for the datafile names:</h3>
-		<ol class="list-disc list-inside">
+		<ol>
 			@foreach ($database->datasetdefs as $index => $datasetdef)
 				<li>
 					<label>{{ $datasetdef->name }}:
@@ -41,71 +53,69 @@
 		</label>
 		<br>
 		
-		<form wire:submit="save">
-            <input id="directory-picker" type="file" webkitdirectory directory
-                x-bind:disabled="uploading"
-                x-on:change="allFiles = Array.from($event.target.files);">
-            <br>
-            <label>Would you like to overwrite existing files?
-                <input type="checkbox" wire:model.live="overwriteExisting">
-            </label>
-            <br>
-			<x-button wire:click="$js.piotrsFilter($data)" :disabled="$nFilesSelected == 0 || $uploading" class="flex items-center gap-1">Apply filter</x-button>
-			<x-button wire:loading:attr="disabled" wire:click="$js.doPiotrUpload($data)" :disabled="!$canUpload">Start upload</x-button>
-			<x-button :disabled="$nFilesToUpload > $nFilesUploaded || $nFilesToUpload === 0" type="submit">Save files to database</x-button>
-			{{-- STATUS --}}
-			<h3>STATUS</h3>
-			<h4>Livewire Properties:</h4>
-            <p>Status: {{ $status }}</p>
-			<p>nFilesToUpload: {{ $nFilesToUpload }}</p>
-			<h4>Alpine:</h4>
-            <p>Directory: <span x-text="directory"></span></p>
-            <p>Status:  <span x-text="status"></span></p>
-            <p>nFiltered: <span x-text="nFiltered"></span></p>
-			<p id="nUploaded" wire:ignore></p>
-			<p id="nUploadProgress" wire:ignore></p>
-			<div x-cloak>
-				<div class="bg-gray-100">
-					{{-- <div wire:loading>Livewire communication with server</div> --}}
-					<x-message show="cancelled" timeout="2000">The upload has been cancelled</x-message>
-					<x-message type="error" show="error">Error: there was an error uploading. Please try again!</x-message>
-					<x-message show="uploading">Uploading to server</x-message>
-					{{-- <x-message show="finished" timeout="5000">Upload finished</x-message> --}}
-				</div>
-			</div>
-			<div>
-		</form>
+		<x-button wire:click="$js.piotrsFilter($data)" :disabled="$nFilesSelected == 0 || $uploading" class="flex items-center gap-1">Apply filter</x-button>
+		<hr>
 
-        <p>Upload progress: <span x-text="progressText"></span></p>
-        <div class="relative h-2 mt-2 rounded-full bg-base-200">
-            <div
-                x-bind:style="'width: ' + progress + '%;'"
-                class="absolute top-0 left-0 h-full bg-orange-500 rounded-full">
-            </div>
-        </div>
-
-		<h3>Analysis results:</h3>
-		<p id="mode" wire:ignore></p>
-
-		<h3>Details:</h3>
-		<table id="results" class="w-full text-left even:bg-red odd:bg-green" wire:ignore>
-			<thead>
+		<small><p id="analysis-summary" wire:ignore><br></p></small>
+		<table id="results" class="w-full table-auto border border-slate-399" wire:ignore>
+			<thead class="bg-gray-50">
 				<tr>
-					<th>#</th>
-					<th>ID</th>
+					<th class="border p-2">#</th>
+					<th class="border p-2">ID</th>
 					@foreach ($database->datasetdefs as $datasetdef)
-						<th>{{ $datasetdef->name }}</th>
+						<th class="border p-2">{{ $datasetdef->name }}</th>
 					@endforeach
 				</tr>
 			</thead>
-			<tbody>
+			<tbody class="bg-white divide-y divide-gray-200 text-center">
 				<!-- Rows will be added here -->
 			</tbody>
 		</table>
 		<p id="skipped" wire:ignore></p>
+		<hr>
+
+		<label>Overwrite existing files?
+				<input type="checkbox" wire:model.live="overwriteExisting">
+		</label><br>
+		<x-button wire:loading:attr="disabled" wire:click="$js.doPiotrUpload($data)" :disabled="!$canUpload">Start upload</x-button>
+
+		<h3>Livewire Properties:</h3>
+			<p>Status: {{ $status }}</p>
+			<p>nFilesToUpload: {{ $nFilesToUpload }}</p>
+		<h3>Alpine:</h3>
+			<p>Directory: <span x-text="directory"></span></p>
+			<p>Status:  <span x-text="status"></span></p>
+			<p>nFiltered: <span x-text="nFiltered"></span></p>
+			<p id="nUploaded" wire:ignore></p>
+			<p id="nUploadProgress" wire:ignore></p>
+		<h3>Progress:</h3>
+			<div x-cloak>
+				<div class="bg-gray-100">
+					<x-message show="cancelled" timeout="2000">The upload has been cancelled</x-message>
+					<x-message type="error" show="error">Error: there was an error uploading. Please try again!</x-message>
+					<x-message show="uploading">Uploading to server</x-message>
+				</div>
+			</div>
+			<div>
+				<p>Upload progress: <span x-text="progressText"></span></p>
+				<div class="relative h-2 mt-2 rounded-full bg-base-200">
+					<div
+						x-bind:style="'width: ' + progress + '%;'"
+						class="absolute top-0 left-0 h-full bg-orange-500 rounded-full">
+					</div>
+			</div>
+
+		<x-button :disabled="$nFilesToUpload > $nFilesUploaded || $nFilesToUpload === 0" type="submit">Save files to database</x-button>
+
+	</form>
+
 
 		@script
-			<script>
+		<script>
+				// Link a fake directory picker with the actual one
+			document.querySelector('#actual-directory-picker').addEventListener('click', e =>
+			document.querySelector('#directory-picker').click());
+					
                 let maxParallelUploads = 2; // Maximum concurrent uploads
                 let uploadQueue = [];
 
@@ -161,19 +171,18 @@
 					"change",
 					(e) => {
 						console.log('EVENT: directory-picker event listener:', Array.from(e.target.files));
+						document.getElementById("numberofpickedfiles").innerHTML = "Number of picked files: " + e.target.files.length;
 						console.log('EVENT: directory-picker event listener: length', e.target.files.length);
-                        const files = event.target.files;
-                        if (files.length > 0) {
-                            // Extract the first file's relative path and get the directory name
-                            const firstFilePath = files[0].webkitRelativePath;
-                            const directoryName = firstFilePath.split('/')[0]; // First segment is the directory name
-                            let data = Alpine.$data(document.getElementById('alpineComponent'));
-                            data.directory = directoryName;
-                     }
-                        $wire.set("nFilesToUpload", 0);
-						$wire.set('nFilesSelected', e.target.files
-							.length
-							); // set immediately using $wire.set(), otherwise set when next $wire.$refresh or another action that triggers a refresh. See
+						const files = event.target.files;
+						if (files.length > 0) {
+								// Extract the first file's relative path and get the directory name
+							const firstFilePath = files[0].webkitRelativePath;
+							const directoryName = firstFilePath.split('/')[0]; // First segment is the directory name
+							let data = Alpine.$data(document.getElementById('alpineComponent'));
+							data.directory = directoryName;
+						}
+						$wire.set("nFilesToUpload", 0);
+						$wire.set('nFilesSelected', e.target.files.length); // set immediately using $wire.set(), otherwise set when next $wire.$refresh or another action that triggers a refresh. See
 					},
 					false,
 				);
@@ -301,7 +310,7 @@
 
 						let name_pattern = document.getElementById("name_pattern").value;
 				
-						s="<b>Skipped:</b><br>";
+						s="";
 						const tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
 						tableBody.innerHTML = "";
 
@@ -352,14 +361,15 @@
 								skipped_cnt++;
 							}
 						} // for all fns
+						if(s!="") s="<b>Skipped:</b><br>" + s;
 						document.getElementById("skipped").innerHTML = s;
 
 						mode_str=(mode)?("Nested"):("Flat");
-						str = "<b>Mode: " + mode_str + "</b><br>" +
-						  "<b>Matched:</b> " + String(fn_cnt.reduce((a, b) => a + b)) + " files<br>" +
-							"<b>Missing:</b> " + String(name_cnt * df_array.length - fn_cnt.reduce((a, b) => a + b)) + " files<br>" +
-							"<b>Skipped:</b> " + String(skipped_cnt) + " files<br>"; 
-						document.getElementById("mode").innerHTML = str;
+						str = "Analysis results:<br>" + 
+							"<b>Files matched:</b> " + String(fn_cnt.reduce((a, b) => a + b)) + " files<br>" +
+							"<b>Files missing:</b> " + String(name_cnt * df_array.length - fn_cnt.reduce((a, b) => a + b)) + " files<br>" +
+							"<b>Files skipped:</b> " + String(skipped_cnt) + " files<br>"; 
+						document.getElementById("analysis-summary").innerHTML = str;
 
 							// Table - Summary row
 						newRow = tableBody.insertRow(-1);

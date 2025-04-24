@@ -22,6 +22,7 @@ class DatabaseUpload extends Component
     public $datasetdefIds; // array of datasetdef ids
     public $datasets;
     public $datasetnamefilter;
+		public $datasetdescriptionfilter;
     public $datafilenamefilters= [];
     public $datasetsCount = 0;
 
