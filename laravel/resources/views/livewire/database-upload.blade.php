@@ -71,7 +71,37 @@
 				<!-- Rows will be added here -->
 			</tbody>
 		</table>
-		<p id="skipped" wire:ignore></p>
+		<div class="extendable-text-container"><small>
+			<p class="short-text" id="skipped" wire:ignore></p>
+			<p class="long-text" id="skipped-list" wire:ignore></p></small>
+		</div>
+		
+<style>
+.extendable-text-container {
+  position: relative; /* Needed for absolute positioning if you want */
+  width: 100%; /* Adjust as needed */
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.short-text {
+  cursor: pointer; /* Indicate it's interactive */
+}
+
+.long-text {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out; /* Smooth transition */
+  margin-top: 5px; /* Add some space when expanded */
+}
+
+.extendable-text-container:hover .long-text {
+  max-height: 100%; /* Adjust to accommodate your longer text */
+}
+</style>
+
+
+		
 		<hr>
 
 		<label>Overwrite existing files?
@@ -183,6 +213,9 @@
 						}
 						$wire.set("nFilesToUpload", 0);
 						$wire.set('nFilesSelected', e.target.files.length); // set immediately using $wire.set(), otherwise set when next $wire.$refresh or another action that triggers a refresh. See
+						document.getElementById("skipped").innerHTML = "";
+						document.getElementById("skipped-list").innerHTML = "";
+						document.getElementById("analysis-summary").innerHTML = "";
 					},
 					false,
 				);
@@ -361,9 +394,16 @@
 								skipped_cnt++;
 							}
 						} // for all fns
-						if(s!="") s="<b>Skipped:</b><br>" + s;
-						document.getElementById("skipped").innerHTML = s;
-
+						if(s!="") 
+						{
+							document.getElementById("skipped").innerHTML = "Hover to see the list of skipped files...";
+							document.getElementById("skipped-list").innerHTML = s;
+						}
+						else
+						{
+							document.getElementById("skipped").innerHTML = "No skipped files...";
+							document.getElementById("skipped-list").innerHTML = "";
+						}
 						mode_str=(mode)?("Nested"):("Flat");
 						str = "Analysis results:<br>" + 
 							"<b>Files matched:</b> " + String(fn_cnt.reduce((a, b) => a + b)) + " files<br>" +
