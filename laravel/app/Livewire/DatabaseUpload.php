@@ -375,6 +375,7 @@ class DatabaseUpload extends Component
                             else
                             {
                                 // create new Datafile
+                                $existing = false;
                                 if(!$datafile)
                                 {
                                     $this->debug(1, "Creating a new datafile for $originalName");
@@ -385,12 +386,17 @@ class DatabaseUpload extends Component
                                 }
                                 else
                                 {
+                                    $existing = true;
                                     $this->debug(1, "Overwrite existing datafile $datafile->id");
                                 }
 
                                 $datafile->name = "$originalName";
                                 //session()->flash('status', "Datafile (id=$datafile->id) is being saved to the database");
                                 $datafile->save(); // save so datafile has ID (necessary for saving file)
+                                if($existing) {
+                                    $this->debug(1, "Touching datafile to set 'updated_at'");
+                                    $datafile->touch(); // make sure 'updated_at' is set for existing, so DatafileObserver is triggered
+                                }
                                 $directory = $datafile->directory();
                                 $this->dispatch('saving-file', name: $datafile->name); // dispatch a browser event
                                 $this->dispatch('showFlashMessage', ['type' => 'success', 'message' => 'storeAs']);
