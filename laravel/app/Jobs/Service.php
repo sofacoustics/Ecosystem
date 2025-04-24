@@ -49,9 +49,12 @@ class Service implements ShouldQueue
         //$result = Process::quietly()->path($directory)->run($process); // run without output
         $result = Process::path($directory)->run($process); // run with output
         // write output to a service log file in the datafile directory
-        $datafilelogfile = $this->datafile->directory() . '/service-' . $service->id . '.log';
-        app('log')->info('Service::handle() - logging to file ' . Storage::disk('sonicom-data')->path($datafilelogfile));
+        $datafilelogfile = $this->datafile->directory() . '/service-' . $service->id . '.stdout';
+        $datafileerrorfile = $this->datafile->directory() . '/service-' . $service->id . '.stderr';
+        app('log')->info('Service::handle() - logging output to file ' . Storage::disk('sonicom-data')->path($datafilelogfile));
+        app('log')->info('Service::handle() - logging errors to file ' . Storage::disk('sonicom-data')->path($datafileerrorfile));
         Storage::disk('sonicom-data')->put($datafilelogfile, $result->output());
+        Storage::disk('sonicom-data')->put($datafileerrorfile, $result->errorOutput());
         if($result->successful())
             app('log')->info('Service::handle() - process finished successfully (exitCode: ' . $result->exitCode() . ')');
         if($result->failed())
