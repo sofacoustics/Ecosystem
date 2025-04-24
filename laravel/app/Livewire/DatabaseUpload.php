@@ -345,8 +345,14 @@ class DatabaseUpload extends Component
                     }
                     // the pdatafilenames entries may include nested entries with paths
                     $datafileNameWithPath = $this->pdatafilenames[$datasetnameKey][$datasetdefKey];
-                    // remove relative directory
-                    $datafileName = substr($datafileNameWithPath, strrpos($datafileNameWithPath, '/') + 1);
+                    // if there is a '/' in it
+                    if(strpos($datafileNameWithPath, '/') !== false)
+                    {
+                        // remove relative directory
+                        $datafileName = substr($datafileNameWithPath, strrpos($datafileNameWithPath, '/') + 1);
+                    }
+                    else
+                        $datafileName = $datafileNameWithPath;
                     $this->debug(1, "Datafile name to look for in uploads: $datafileName");
                     //
                     foreach($this->uploads as $key => $upload)
