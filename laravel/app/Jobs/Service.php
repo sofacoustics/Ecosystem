@@ -12,6 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Process;
+use Illuminate\Support\Facades\Storage;
 
 class Service implements ShouldQueue
 {
@@ -40,15 +41,22 @@ class Service implements ShouldQueue
         $service = $this->widget->service;
         app('log')->info('Service::handle() - $this->service->id = ' . $service->id);
         $directory=storage_path('app/services/' . $service->id);
-        app('log')->info('Service::handle() - $directory= ' . $directory);
-        app('log')->info('Service::handle() - $service->parameters= ' . $service->parameters);
+        app('log')->info('Service::handle() - $directory = ' . $directory);
+        app('log')->info('Service::handle() - $service->parameters = ' . $service->parameters);
         $process = $service->exe . ' ' . $service->parameters . ' "' . $this->datafile->absolutepath() . '"';
         app('log')->info('Service::handle() - $process = ' . $process);
         app('log')->info('Service::handle() - run process');
-        $result = Process::quietly()->path($directory)->run($process);
-        //$result = Process::quietly()->path($directory)->run($process);
-        app('log')->info('Service::handle() - process finished');
+        //$result = Process::quietly()->path($directory)->run($process); // run without output
+        $result = Process::path($directory)->run($process); // run with output
+        // write output to a service log file in the datafile directory
+        $datafilelogfile = $this->datafile->directory() . '/service-' . $service->id . '.log';
+        app('log')->info('Service::handle() - logging to file ' . Storage::disk('sonicom-data')->path($datafilelogfile));
+        Storage::disk('sonicom-data')->put($datafilelogfile, $result->output());
+        if($result->successful())
+            app('log')->info('Service::handle() - process finished successfully (exitCode: ' . $result->exitCode() . ')');
+        if($result->failed())
+            app('log')->info('Service::handle() - process failed (exitCode: ' . $result->exitCode() . ')');
         DatafileProcessed::dispatch($this->datafile->id);
         app('log')->info('Service::handle() - END');
-    }
+}
 }
