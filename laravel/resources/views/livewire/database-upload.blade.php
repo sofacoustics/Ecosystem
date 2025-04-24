@@ -1,18 +1,4 @@
 <div> {{-- component div:START --}}
-	<x-property name="Database">{{ $database->title }}</x-property>
-	<p>The {{ $database->title }} currently contains {{ $datasetsCount }}</p>
-	<ul class="list-disc list-inside">
-		@forelse($database->datasets as $dataset)
-			<li>
-				<x-dataset.list link='true' datafiles='true' :dataset="$dataset" />
-			</li>
-		@empty
-			<li>There are no datasets associated with this database</li>
-		@endforelse
-	</ul>
-	@if (count($database->datasets))
-		<x-button wire:click="resetDatasets" class="flex items-center gap-1">Reset Datasets</x-button>
-	@endif
 	<div x-data="{
 		allFiles: [],
 		filteredFiles: [],
@@ -29,23 +15,32 @@
         status: '',
         directory: ''
 	}" id='alpineComponent'>
-		<label>Dataset name pattern
-			<input class="w-full" type="text" placeholder="E.g. name<ID>" id="name_pattern"
+		<h3>Pattern for the datasets names:<h3>
+		<label>
+			<input class="w-full" type="text" placeholder="Must include <ID>, e.g., name<ID>. Must not be empty." id="name_pattern"
 				wire:model.blur="datasetnamefilter" />
 		</label>
 		{{-- just working for one datasetdef at the moment --}}
-		<ul class="list-disc list-inside">
+		<h3>Patterns for the datafile names:</h3>
+		<ol class="list-disc list-inside">
 			@foreach ($database->datasetdefs as $index => $datasetdef)
-				<li>{{ $datasetdef->name }}
-					<label>Datafile name pattern
-						<input class="w-full" type="text" placeholder="E.g. prefix<ID>.ext"
+				<li>
+					<label>{{ $datasetdef->name }}:
+						<input class="w-full" type="text" placeholder="Must include <ID> and may include <NUM> or <ANY>, e.g. prefix<ID>_maytest<ANY>.ext. Can be empty to exclude a datasetfile."
 							id="fn_pattern{{ $datasetdef->id }}" wire:model.blur="datafilenamefilters.{{ $datasetdef->id }}" />
 						{{-- https://www.perplexity.ai/search/how-can-i-access-and-update-ha-xiLcN4hYTKajSuuB3IMR4A --}}
 					</label>
 				</li>
-			@endforeach
-		</ul>
+			@endforeach 
+		</ol>
 
+		<h3>Pattern for the datasets descriptions (optional):<h3>
+		<label>
+			<input class="w-full" type="text" placeholder="Must include <ID>, e.g., name<ID>. Can be empty." id="description_pattern"
+				wire:model.blur="datasetdescriptionfilter" />
+		</label>
+		<br>
+		
 		<form wire:submit="save">
             <input id="directory-picker" type="file" webkitdirectory directory
                 x-bind:disabled="uploading"
@@ -78,24 +73,6 @@
 					{{-- <x-message show="finished" timeout="5000">Upload finished</x-message> --}}
 				</div>
 			</div>
-
-
-			{{--
-				<template x-for="(upl,index) in $wire.uploads" :key="index">
-					<span x-text="index + ': '"></span>
-					<span x-text="upl['fileName']"></span>
-				</template>
-				@foreach ($uploads as $i => $upl)
-					<div id="upload-progress" wire:key="$i">
-						<label>
-							<div>{{ $upl['fileName'] }}</div>
-							<div>{{ $upl['progress'] }}%</div>
-				  </label>
-						<progress max="100" wire:model="uploads.{{ $i }}.progress" />
-					</div>
-				@endforeach
-				--}}
-
 			<div>
 		</form>
 
@@ -270,31 +247,6 @@
 
                         uploadQueue.push({ index, file });
 
-/*
-						$wire.dispatch('upload file ', index);
-						console.log("doPiotrUpload(): uploading ", file, " (index: ", index, " offset+index: ", (
-							index + offset), ")");
-						// https://www.perplexity.ai/search/in-php-if-dd-displays-an-array-oyxbqrAVQPK_4xxPBLYF8Q?4=d#4
-						@this.upload(
-							'uploads.' + (index + offset),
-							file,
-							finish = (n) => {
-								data.nUploaded++;
-                                setStatus("Uploading " + index + " now finished");
-                                data.progressText = data.nUploaded + "/" + $wire.nFilesToUpload + " files successfully uploaded";
-                                // if this is the last upload, set 'uploading' to false
-                                if(data.nUploaded == $wire.nFilesToUpload)
-                                {
-                                    data.uploading = false; // finished
-                                    setStatus("Uploading is now finished. You may save the files to the database!");
-                                }
-							}, error = () => {},
-                            progress = (event) => {
-                                setStatus("Uploading " + index);
-                                data.progress = event.detail.progress;
-							}
-						);
-                        */
 					});
                     console.log("uploadQueue.length: ", uploadQueue.length);
                     processQueue();
@@ -508,43 +460,6 @@
                     setStatus("resetUpload()");
                 }
 
-                /* // possible code for reducing number of concurrent uploads (perplexity )
-                let maxParallelUploads = 2; // Maximum concurrent uploads
-                let uploadQueue = [];
-
-                function processQueue() {
-                    while (uploadQueue.length > 0 && maxParallelUploads > 0) {
-                        const { index, file } = uploadQueue.shift();
-                        maxParallelUploads--;
-
-                        @this.upload(
-                            `files.${index}`, // Livewire property
-                            file,
-                            () => { 
-                                // Success handler
-                            },
-                            () => {
-                                // Error handler
-                            },
-                            (progress) => { 
-                                // Progress updates
-                            },
-                            () => {
-                                maxParallelUploads++; // Free up a slot
-                                processQueue(); // Process next in queue
-                            }
-                        );
-                    }
-                }
-
-                // Add files to queue when selected
-                document.querySelector('input[type="file"]').addEventListener('change', (e) => {
-                        Array.from(e.target.files).forEach((file, index) => {
-                                    uploadQueue.push({ index, file });
-                                });
-                        processQueue();
-                    });
-                */
 			</script>
 		@endscript
 	</div>
