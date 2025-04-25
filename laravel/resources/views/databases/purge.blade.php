@@ -2,5 +2,5 @@
 	<x-slot name="header">
 		<x-database.header :database=$database />
 	</x-slot>
-	<livewire:database-upload :database=$database />
+	<livewire:database-purge :database=$database />
 </x-app-layout>

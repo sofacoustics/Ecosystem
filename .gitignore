@@ -4,3 +4,4 @@
 Session.vim
 laravel-jetstream
 .undodir
+/laravel/storage/app/tools/1/*.log

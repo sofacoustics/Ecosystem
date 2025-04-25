@@ -46,7 +46,10 @@
 @can('own', $database)
 	<x-button method="GET" action="{{ route('databases.visibility', [$database]) }}" class="inline">Manage Visibility</x-button>
 	@can('update', $database)
-			<x-button method="GET" action="{{ route('databases.edit', [$database]) }}" class="inline">Edit Metadata</x-button>
+		<x-button method="GET" action="{{ route('databases.edit', [$database]) }}" class="inline">Edit Metadata</x-button>
+		@if (count($database->datasets))
+			<x-button method="GET" action="{{ route('databases.purge', [$database->id]) }}" class="inline">Purge Database</x-button>
+		@endif
 	@endcan
 	@can('delete', $database)
 		<x-button method="DELETE" action="{{ route('databases.destroy', [$database->id]) }}" class="inline">Delete Database</x-button>

@@ -149,4 +149,11 @@ class DatabaseController extends Controller
             'database' => $database
         ]);
     }
+
+    public function purge(Database $database)
+    {
+        return view('databases.purge', [
+            'database' => $database
+        ]);
+    }
 }

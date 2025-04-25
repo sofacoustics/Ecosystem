@@ -1,18 +1,4 @@
 <div> {{-- component div:START --}}
-	<x-property name="Database">{{ $database->title }}</x-property>
-	<p>The {{ $database->title }} currently contains {{ $datasetsCount }}</p>
-	<ul class="list-disc list-inside">
-		@forelse($database->datasets as $dataset)
-			<li>
-				<x-dataset.list link='true' datafiles='true' :dataset="$dataset" />
-			</li>
-		@empty
-			<li>There are no datasets associated with this database</li>
-		@endforelse
-	</ul>
-	@if (count($database->datasets))
-		<x-button wire:click="resetDatasets" class="flex items-center gap-1">Reset Datasets</x-button>
-	@endif
 	<div x-data="{
 		allFiles: [],
 		filteredFiles: [],
@@ -29,110 +15,142 @@
         status: '',
         directory: ''
 	}" id='alpineComponent'>
-		<label>Dataset name pattern
-			<input class="w-full" type="text" placeholder="E.g. name<ID>" id="name_pattern"
+	
+	<form wire:submit="save">
+		<h3>Select a directory with all your datafiles:</h3>
+		<div>
+			<x-button id="actual-directory-picker" x-bind:disabled="uploading" wire:ignore>Select a Directory</x-button>
+			<input id="directory-picker" type="file" webkitdirectory directory style="display:none"
+				x-bind:disabled="uploading"
+				x-on:change="allFiles = Array.from($event.target.files);">
+		</div>
+		<p id="numberofpickedfiles" wire:ignore><br></p>
+		<hr>
+		
+		<h3>Pattern for the datasets names:<h3>
+		<label>
+			<input class="w-full" type="text" placeholder="Must include <ID>, e.g., name<ID>. Must not be empty." id="name_pattern"
 				wire:model.blur="datasetnamefilter" />
 		</label>
 		{{-- just working for one datasetdef at the moment --}}
-		<ul class="list-disc list-inside">
+		<h3>Patterns for the datafile names:</h3>
+		<ol>
 			@foreach ($database->datasetdefs as $index => $datasetdef)
-				<li>{{ $datasetdef->name }}
-					<label>Datafile name pattern
-						<input class="w-full" type="text" placeholder="E.g. prefix<ID>.ext"
+				<li>
+					<label>{{ $datasetdef->name }}:
+						<input class="w-full" type="text" placeholder="Must include <ID> and may include <NUM> or <ANY>, e.g. prefix<ID>_maytest<ANY>.ext. Can be empty to exclude a datasetfile."
 							id="fn_pattern{{ $datasetdef->id }}" wire:model.blur="datafilenamefilters.{{ $datasetdef->id }}" />
 						{{-- https://www.perplexity.ai/search/how-can-i-access-and-update-ha-xiLcN4hYTKajSuuB3IMR4A --}}
 					</label>
 				</li>
-			@endforeach
-		</ul>
+			@endforeach 
+		</ol>
 
-		<form wire:submit="save">
-            <input id="directory-picker" type="file" webkitdirectory directory
-                x-bind:disabled="uploading"
-                x-on:change="allFiles = Array.from($event.target.files);">
-            <br>
-            <label>Would you like to overwrite existing files?
-                <input type="checkbox" wire:model.live="overwriteExisting">
-            </label>
-            <br>
-			<x-button wire:click="$js.piotrsFilter($data)" :disabled="$nFilesSelected == 0 || $uploading" class="flex items-center gap-1">Apply filter</x-button>
-			<x-button wire:loading:attr="disabled" wire:click="$js.doPiotrUpload($data)" :disabled="!$canUpload">Start upload</x-button>
-			<x-button :disabled="$nFilesToUpload > $nFilesUploaded || $nFilesToUpload === 0" type="submit">Save files to database</x-button>
-			{{-- STATUS --}}
-			<h3>STATUS</h3>
-			<h4>Livewire Properties:</h4>
-            <p>Status: {{ $status }}</p>
-			<p>nFilesToUpload: {{ $nFilesToUpload }}</p>
-			<h4>Alpine:</h4>
-            <p>Directory: <span x-text="directory"></span></p>
-            <p>Status:  <span x-text="status"></span></p>
-            <p>nFiltered: <span x-text="nFiltered"></span></p>
-			<p id="nUploaded" wire:ignore></p>
-			<p id="nUploadProgress" wire:ignore></p>
-			<div x-cloak>
-				<div class="bg-gray-100">
-					{{-- <div wire:loading>Livewire communication with server</div> --}}
-					<x-message show="cancelled" timeout="2000">The upload has been cancelled</x-message>
-					<x-message show="error">Error: there was an error uploading</x-message>
-					<x-message show="uploading">Uploading to server</x-message>
-					{{-- <x-message show="finished" timeout="5000">Upload finished</x-message> --}}
-				</div>
-			</div>
+		<h3>Pattern for the datasets descriptions (optional):<h3>
+		<label>
+			<input class="w-full" type="text" placeholder="Must include <ID>, e.g., name<ID>. Can be empty." id="description_pattern"
+				wire:model.blur="datasetdescriptionfilter" />
+		</label>
+		<br>
+		
+		<x-button wire:click="$js.piotrsFilter($data)" :disabled="$nFilesSelected == 0 || $uploading" class="flex items-center gap-1">Apply filter</x-button>
+		<hr>
 
-
-			{{--
-				<template x-for="(upl,index) in $wire.uploads" :key="index">
-					<span x-text="index + ': '"></span>
-					<span x-text="upl['fileName']"></span>
-				</template>
-				@foreach ($uploads as $i => $upl)
-					<div id="upload-progress" wire:key="$i">
-						<label>
-							<div>{{ $upl['fileName'] }}</div>
-							<div>{{ $upl['progress'] }}%</div>
-				  </label>
-						<progress max="100" wire:model="uploads.{{ $i }}.progress" />
-					</div>
-				@endforeach
-				--}}
-
-			<div>
-		</form>
-
-        <p>Upload progress: <span x-text="progressText"></span></p>
-        <div class="relative h-2 mt-2 rounded-full bg-base-200">
-            <div
-                x-bind:style="'width: ' + progress + '%;'"
-                class="absolute top-0 left-0 h-full bg-orange-500 rounded-full">
-            </div>
-        </div>
-
-		<h3>Analysis results:</h3>
-		<p id="mode" wire:ignore></p>
-
-		<h3>Details:</h3>
-		<table id="results" class="w-full text-left even:bg-red odd:bg-green" wire:ignore>
-			<thead>
+		<small><p id="analysis-summary" wire:ignore><br></p></small>
+		<table id="results" class="w-full table-auto border border-slate-399" wire:ignore>
+			<thead class="bg-gray-50">
 				<tr>
-					<th>#</th>
-					<th>ID</th>
+					<th class="border p-2">#</th>
+					<th class="border p-2">ID</th>
 					@foreach ($database->datasetdefs as $datasetdef)
-						<th>{{ $datasetdef->name }}</th>
+						<th class="border p-2">{{ $datasetdef->name }}</th>
 					@endforeach
 				</tr>
 			</thead>
-			<tbody>
+			<tbody class="bg-white divide-y divide-gray-200 text-center">
 				<!-- Rows will be added here -->
 			</tbody>
 		</table>
-		<p id="skipped" wire:ignore></p>
+		<div class="extendable-text-container"><small>
+			<p class="short-text" id="skipped" wire:ignore></p>
+			<p class="long-text" id="skipped-list" wire:ignore></p></small>
+		</div>
+		
+<style>
+.extendable-text-container {
+  position: relative; /* Needed for absolute positioning if you want */
+  width: 100%; /* Adjust as needed */
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.short-text {
+  cursor: pointer; /* Indicate it's interactive */
+}
+
+.long-text {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out; /* Smooth transition */
+  margin-top: 5px; /* Add some space when expanded */
+}
+
+.extendable-text-container:hover .long-text {
+  max-height: 100%; /* Adjust to accommodate your longer text */
+}
+</style>
+
+
+		
+		<hr>
+
+		<label>Overwrite existing files?
+				<input type="checkbox" wire:model.live="overwriteExisting">
+		</label><br>
+		<x-button wire:loading:attr="disabled" wire:click="$js.doPiotrUpload($data)" :disabled="!$canUpload">Start upload</x-button>
+
+		<h3>Livewire Properties:</h3>
+			<p>Status: {{ $status }}</p>
+			<p>nFilesToUpload: {{ $nFilesToUpload }}</p>
+		<h3>Alpine:</h3>
+			<p>Directory: <span x-text="directory"></span></p>
+			<p>Status:  <span x-text="status"></span></p>
+			<p>nFiltered: <span x-text="nFiltered"></span></p>
+			<p id="nUploaded" wire:ignore></p>
+			<p id="nUploadProgress" wire:ignore></p>
+		<h3>Progress:</h3>
+			<div x-cloak>
+				<div class="bg-gray-100">
+					<x-message show="cancelled" timeout="2000">The upload has been cancelled</x-message>
+					<x-message type="error" show="error">Error: there was an error uploading. Please try again!</x-message>
+					<x-message show="uploading">Uploading to server</x-message>
+				</div>
+			</div>
+			<div>
+				<p>Upload progress: <span x-text="progressText"></span></p>
+				<div class="relative h-2 mt-2 rounded-full bg-base-200">
+					<div
+						x-bind:style="'width: ' + progress + '%;'"
+						class="absolute top-0 left-0 h-full bg-orange-500 rounded-full">
+					</div>
+			</div>
+
+		<x-button :disabled="$nFilesToUpload > $nFilesUploaded || $nFilesToUpload === 0" type="submit">Save files to database</x-button>
+
+	</form>
+
 
 		@script
-			<script>
+		<script>
+				// Link a fake directory picker with the actual one
+			document.querySelector('#actual-directory-picker').addEventListener('click', e =>
+			document.querySelector('#directory-picker').click());
+					
                 let maxParallelUploads = 2; // Maximum concurrent uploads
                 let uploadQueue = [];
 
                 function processQueue() {
+                    //console.log('processQueue():start');
                     while (uploadQueue.length > 0 && maxParallelUploads > 0) {
                         const { index, file } = uploadQueue.shift();
                         maxParallelUploads--;
@@ -155,9 +173,11 @@
 
                                 processQueue(); // Process next in queue
                             },
-                            () => {
+                            (error) => {
                                 /* Error handler */
-                                setStatus("Error " + index);
+                                setStatus("Error " + index + " (" + error + ")");
+                                data.error = true;
+                                resetUpload();
                             },
                             (progress) => {
                                 /* Progress updates */
@@ -170,6 +190,7 @@
                             }
                         );
                     }
+                    //console.log('processQueue():end');
                 }
 
 
@@ -180,19 +201,21 @@
 					"change",
 					(e) => {
 						console.log('EVENT: directory-picker event listener:', Array.from(e.target.files));
+						document.getElementById("numberofpickedfiles").innerHTML = "Number of picked files: " + e.target.files.length;
 						console.log('EVENT: directory-picker event listener: length', e.target.files.length);
-                        const files = event.target.files;
-                        if (files.length > 0) {
-                            // Extract the first file's relative path and get the directory name
-                            const firstFilePath = files[0].webkitRelativePath;
-                            const directoryName = firstFilePath.split('/')[0]; // First segment is the directory name
-                            let data = Alpine.$data(document.getElementById('alpineComponent'));
-                            data.directory = directoryName;
-                     }
-                        $wire.set("nFilesToUpload", 0);
-						$wire.set('nFilesSelected', e.target.files
-							.length
-							); // set immediately using $wire.set(), otherwise set when next $wire.$refresh or another action that triggers a refresh. See
+						const files = event.target.files;
+						if (files.length > 0) {
+								// Extract the first file's relative path and get the directory name
+							const firstFilePath = files[0].webkitRelativePath;
+							const directoryName = firstFilePath.split('/')[0]; // First segment is the directory name
+							let data = Alpine.$data(document.getElementById('alpineComponent'));
+							data.directory = directoryName;
+						}
+						$wire.set("nFilesToUpload", 0);
+						$wire.set('nFilesSelected', e.target.files.length); // set immediately using $wire.set(), otherwise set when next $wire.$refresh or another action that triggers a refresh. See
+						document.getElementById("skipped").innerHTML = "";
+						document.getElementById("skipped-list").innerHTML = "";
+						document.getElementById("analysis-summary").innerHTML = "";
 					},
 					false,
 				);
@@ -230,17 +253,33 @@
 				$wire.on('livewire-upload-start', () => {
 					console.log('EVENT: livewire-upload-start event triggered');
 				});
+
+                $wire.on('livewire-upload-error', () => {
+                    console.log('EVENT: livewire-upload-error');
+                });
+
+                window.addEventListener('livewire:error', event => {
+                    console.error('EVENT: livewire:error:', event.detail);
+                    console.log('EVENT: livewire:error:', event.detail);
+                });
+                
+                document.addEventListener('livewire:init', () => {
+                    Livewire.on('livewire-upload-error', (event) => {
+                        console.log('EVENT: livewire-upload-error', event.detail);
+                    });
+                });
+
 				////////////////////////////////////////////////////////////////////////////////
 				//	Functions
 				////////////////////////////////////////////////////////////////////////////////
 
 				$js('doPiotrUpload', (data) => {
                     resetUpload();
+                    data.error = false;
 					$wire.set('canUpload', false);
 					$wire.set('uploading', true); // set immediately. This is used within the Livewire component
 					data.uploading = true; // use this for input button state (enabled/disabled)
                     setStatus("Upload started");
-
 
 					let uploads = Object.values($wire.uploads);
 					let offset = uploads.length;
@@ -250,31 +289,6 @@
 
                         uploadQueue.push({ index, file });
 
-/*
-						$wire.dispatch('upload file ', index);
-						console.log("doPiotrUpload(): uploading ", file, " (index: ", index, " offset+index: ", (
-							index + offset), ")");
-						// https://www.perplexity.ai/search/in-php-if-dd-displays-an-array-oyxbqrAVQPK_4xxPBLYF8Q?4=d#4
-						@this.upload(
-							'uploads.' + (index + offset),
-							file,
-							finish = (n) => {
-								data.nUploaded++;
-                                setStatus("Uploading " + index + " now finished");
-                                data.progressText = data.nUploaded + "/" + $wire.nFilesToUpload + " files successfully uploaded";
-                                // if this is the last upload, set 'uploading' to false
-                                if(data.nUploaded == $wire.nFilesToUpload)
-                                {
-                                    data.uploading = false; // finished
-                                    setStatus("Uploading is now finished. You may save the files to the database!");
-                                }
-							}, error = () => {},
-                            progress = (event) => {
-                                setStatus("Uploading " + index);
-                                data.progress = event.detail.progress;
-							}
-						);
-                        */
 					});
                     console.log("uploadQueue.length: ", uploadQueue.length);
                     processQueue();
@@ -299,7 +313,7 @@
 							fn_filter = fn_filter.replace(/\./g, "\\.");
 							fn_filter = fn_filter.replace(/\$/g, "\\$"); 
 							fn_filter = fn_filter.replace(/\(/g, "\\(");
-							fn_filter = fn_filter.replace(/\)/g, "\\)"); 
+							fn_filter = fn_filter.replace(/\)/g, "\\)");
 							fn_filter = fn_filter.replace(/<NUM>/g, "[0-9]+"); 
 							fn_filter = fn_filter.replace(/<ANY>/g, ".+"); 
 							fn_filter = RegExp(fn_filter.replace(/<ID>/g, ".+"));
@@ -329,7 +343,7 @@
 
 						let name_pattern = document.getElementById("name_pattern").value;
 				
-						s="<b>Skipped:</b><br>";
+						s="";
 						const tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
 						tableBody.innerHTML = "";
 
@@ -380,14 +394,22 @@
 								skipped_cnt++;
 							}
 						} // for all fns
-						document.getElementById("skipped").innerHTML = s;
-
+						if(s!="") 
+						{
+							document.getElementById("skipped").innerHTML = "Hover to see the list of skipped files...";
+							document.getElementById("skipped-list").innerHTML = s;
+						}
+						else
+						{
+							document.getElementById("skipped").innerHTML = "No skipped files...";
+							document.getElementById("skipped-list").innerHTML = "";
+						}
 						mode_str=(mode)?("Nested"):("Flat");
-						str = "<b>Mode: " + mode_str + "</b><br>" +
-						  "<b>Matched:</b> " + String(fn_cnt.reduce((a, b) => a + b)) + " files<br>" +
-							"<b>Missing:</b> " + String(name_cnt * df_array.length - fn_cnt.reduce((a, b) => a + b)) + " files<br>" +
-							"<b>Skipped:</b> " + String(skipped_cnt) + " files<br>"; 
-						document.getElementById("mode").innerHTML = str;
+						str = "Analysis results:<br>" + 
+							"<b>Files matched:</b> " + String(fn_cnt.reduce((a, b) => a + b)) + " files<br>" +
+							"<b>Files missing:</b> " + String(name_cnt * df_array.length - fn_cnt.reduce((a, b) => a + b)) + " files<br>" +
+							"<b>Files skipped:</b> " + String(skipped_cnt) + " files<br>"; 
+						document.getElementById("analysis-summary").innerHTML = str;
 
 							// Table - Summary row
 						newRow = tableBody.insertRow(-1);
@@ -483,46 +505,11 @@
                     data.progressText = '';
                     data.nUploaded = 0;
                     data.uploading = false;
+                    uploadQueue = [];
+                    maxParallelUploads = 2; // Maximum concurrent uploads
                     setStatus("resetUpload()");
                 }
 
-                /* // possible code for reducing number of concurrent uploads (perplexity )
-                let maxParallelUploads = 2; // Maximum concurrent uploads
-                let uploadQueue = [];
-
-                function processQueue() {
-                    while (uploadQueue.length > 0 && maxParallelUploads > 0) {
-                        const { index, file } = uploadQueue.shift();
-                        maxParallelUploads--;
-                                            
-                        @this.upload(
-                            `files.${index}`, // Livewire property
-                            file,
-                            () => { 
-                                // Success handler
-                            },
-                            () => {
-                                // Error handler
-                            },
-                            (progress) => { 
-                                // Progress updates
-                            },
-                            () => {
-                                maxParallelUploads++; // Free up a slot
-                                processQueue(); // Process next in queue
-                            }
-                        );
-                    }
-                }
-
-                // Add files to queue when selected
-                document.querySelector('input[type="file"]').addEventListener('change', (e) => {
-                        Array.from(e.target.files).forEach((file, index) => {
-                                    uploadQueue.push({ index, file });
-                                });
-                        processQueue();
-                    });
-                */
 			</script>
 		@endscript
 	</div>

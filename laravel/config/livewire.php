@@ -68,7 +68,7 @@ return [
         //'rules' => null,       // Example: ['file', 'mimes:png,jpg']  | Default: ['required', 'file', 'max:12288'] (12MB)
         'rules' => ['required','file','max:1048576'], // 1 GiB
         'directory' => null,   // Example: 'tmp'                      | Default: 'livewire-tmp'
-        'middleware' => 'throttle:60,1',  // Example: 'throttle:5,1'             | Default: 'throttle:60,1' //jw:note Fix 429 Too many request error
+        'middleware' => 'throttle:600,1',  // Example: 'throttle:5,1'             | Default: 'throttle:60,1' //jw:note Fix 429 Too many request error
         'preview_mimes' => [   // Supported file types for temporary pre-signed file URLs...
             'png', 'gif', 'bmp', 'svg', 'wav', 'mp4',
             'mov', 'avi', 'wmv', 'mp3', 'm4a',

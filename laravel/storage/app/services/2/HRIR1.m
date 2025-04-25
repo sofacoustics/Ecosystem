@@ -14,7 +14,7 @@ function HRIR1(SOFAfile)
 % SOFAfile= 'hrtf_nh4.sofa';
 
 %jw:tmp logfile
-logfile="/home/sonicom/isf-sonicom-laravel/laravel/storage/app/tools/1/HRIR1.log"
+logfile="HRIR1.log";
 fid = fopen(logfile, "w");
 s = pwd;
 disp(["pwd = " s]);
@@ -65,7 +65,7 @@ switch Obj.GLOBAL_SOFAConventions
         fputs(fid, [ "just done SOFAplotHRTF\n"]);
         print ("-r600", [SOFAfile '_1.png']);
         %print ("-r600", '/tmp/hrtf_1.png');
-        fputs(fid, [ "just done print" SOFAfile "_1.png\n"]);
+        fputs(fid, [ "just printed " SOFAfile "_1.png\n"]);
         
 
         % plot magnitude spectrum in the median plane, channel 2
