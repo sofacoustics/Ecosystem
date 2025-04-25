@@ -332,7 +332,7 @@
 							postfix = postfix.replace(/\)/g, "\\)");
 							postfix = postfix.replace(/<NUM>/g, "[0-9]+");
 							postfix = RegExp(postfix.replace(/<ANY>/g, ".+"));
-							postfix_array[i]=postfix; 
+							postfix_array[i]=postfix;
 							let beg_id = fn_pattern.indexOf("<"); // zahl anfang: index von < in fn_pattern
 							beg_id_array[i]=beg_id;
 							console.log([fn_pattern, fn_filter, postfix, beg_id, end_filter]);
@@ -487,6 +487,12 @@
 					} else
 						console.log('piotrsFilter() - data parameter *does not* exist!');
 				});
+
+                //jw:note not used yet (no button), but works.
+                $js('cancelUpload', (data) => {
+                    console.log('User has cancelled the upload');
+                    resetUpload();
+                });
 
                 // set both Livewire, Alpine and inner HTML status.
                 function setStatus(string)
