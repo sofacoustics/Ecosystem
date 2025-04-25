@@ -54,7 +54,7 @@ class DatabaseUpload extends Component
     public $progress;
     public $uploading;
 
-    public $nFilesSelected = 0;
+    public $nFilesInDir = -1; // -1: directory not selected yet, 0: no files in the directory, >0: files found
     public $nFilesFiltered = 0;
     public $nFilesToUpload = 0;
     public $nFilesUploaded = 0;
@@ -63,22 +63,6 @@ class DatabaseUpload extends Component
 
     private $debugLevel = 0;
     private $debugIndent = 0;
-
-    /*
-    #[Computed]
-    public function existing()
-    {
-        $existing = ['bla'];
-        foreach($this->database->datasets as $dataset)
-        {
-            foreach($dataset->datafiles as $datafile)
-            {
-                $existing[] = $datafile->name;
-            }
-        }
-        return $existing;
-    }
-     */
 
     public $dto = null; // a DataTranfer object containing list of files to upload
 
