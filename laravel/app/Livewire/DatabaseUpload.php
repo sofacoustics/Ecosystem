@@ -43,14 +43,11 @@ class DatabaseUpload extends Component
 
     public $overwriteExisting = false; // set to true, if existing datafiles should be overwritten.
 
-    // from Piotr's Javascript functions
-    //   array of dataset names. E.g. NH01
-    public array $pdatasetnames= [];
-    //   a two dimensional array,
-    //     first dimension - index of pdatasetnames
-    //     second dimension - index of datasetdefIds
-    public array $pdatafilenames= [];
-
+    public array $pdatasetnames= []; // array of dataset names, e.g. NH01
+    public array $fdatafilenames= []; // a 2D array with filtered datafilenames, dim 1: index of pdatasetnames, dim 2: index of datasetdefIds
+    public array $pdatafilenames= []; // a 2D array with selected (=a subset of filtered) datafilenames, dim 1: index of pdatasetnames, dim 2: index of datasetdefIds
+		public $dirMode = 0;
+		
     public $progress;
     public $uploading;
 

@@ -13,7 +13,8 @@
 		error: false,
 		cancelled: false,
 		status: '',
-		directory: ''
+		directory: '',
+		dirMode: 0,
 		}" id='alpineComponent'>
 	
 	<form wire:submit="save">
@@ -250,45 +251,14 @@
 		
 		
 	$js('updateSelected', (data) => {
-		tableBody = document.getElementById('results').getElementsByTagName('tbody')[0];
-		let cnt = 0;
-		rows = tableBody.rows; 
-		let fn_array = $wire.get('pdatafilenames');
-		console.log(fn_array);
-		for (let i=1; i<rows.length; i++)
-			if(document.getElementById("check"+i).checked) 
-			{
-				fn = fn_array[i-1];
-				for (let col=0; col<fn.length; col++)
-				{
-					if(fn[col] != null)
-						rows[i].cells[col+2].textContent = fn[col]; 
-				}
-			}
-			else
-			{
-				for (let col=1; col<rows[0].cells.length; col++)
-				{
-					rows[i].cells[col].textContent = ""; 
-				}
-			}
+		_updateSelected();
 	});
 	
 		// On "Check All Datasets" or "Check None of the Datasets"
 	$js('checkAll', () => {
-		var checkBox = document.getElementById("checkAll");
-		tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
-		if (checkBox.checked == true)
-		{
-			for (let i=1; i<tableBody.rows.length; i++)
-				document.getElementById("check"+i).checked=true;
-		}
-		else
-		{
-			for (let i=1; i<tableBody.rows.length; i++)
-				document.getElementById("check"+i).checked=false;
-		}
+		_checkAll();
 	});
+
 	
 	
 		// Apply the filter and prepare a table with filenames for the upload
@@ -302,34 +272,44 @@
 			for (let i=0; i<df_array.length; i++)
 			{
 				let fn_pattern = document.getElementById("fn_pattern"+df_array[i]).value;
-				fn_pattern = fn_pattern.split('\\').join('/');
-				let fn_filter = fn_pattern.replace(/\[/g, "\\[");
-				fn_filter = fn_filter.replace(/\]/g, "\\]");
-				fn_filter = fn_filter.replace(/\^/g, "\\^");
-				fn_filter = fn_filter.replace(/\./g, "\\.");
-				fn_filter = fn_filter.replace(/\$/g, "\\$"); 
-				fn_filter = fn_filter.replace(/\(/g, "\\(");
-				fn_filter = fn_filter.replace(/\)/g, "\\)");
-				fn_filter = fn_filter.replace(/<NUM>/g, "[0-9]+"); 
-				fn_filter = fn_filter.replace(/<ANY>/g, ".+"); 
-				fn_filter = RegExp(fn_filter.replace(/<ID>/g, ".+"));
-				fn_filter_array[i]=fn_filter;
-				if (mode == 0 && fn_pattern.indexOf("/") >= 0) mode=1;
-				let end_filter = fn_pattern.indexOf("ID>")+3; // find the end of the ID
-				let postfix = fn_pattern.substring(end_filter); // hole den postfix, d.h., text nach <ID> raus
-				postfix = postfix.replace(/\[/g, "\\[");
-				postfix = postfix.replace(/\]/g, "\\]"); 
-				postfix = postfix.replace(/\^/g, "\\^"); 
-				postfix = postfix.replace(/\./g, "\\.");
-				postfix = postfix.replace(/\$/g, "\\$");
-				postfix = postfix.replace(/\(/g, "\\(");
-				postfix = postfix.replace(/\)/g, "\\)");
-				postfix = postfix.replace(/<NUM>/g, "[0-9]+");
-				postfix = RegExp(postfix.replace(/<ANY>/g, ".+"));
-				postfix_array[i]=postfix; 
-				let beg_id = fn_pattern.indexOf("<"); // zahl anfang: index von < in fn_pattern
-				beg_id_array[i]=beg_id;
-				console.log([fn_pattern, fn_filter, postfix, beg_id, end_filter]);
+				if (fn_pattern == "")
+				{		// empty pattern --> ignore
+					fn_filter_array[i]="";
+					postfix_array[i]="";
+					beg_id_array[i]=0;
+					console.log([i, 'ignored']);
+				}
+				else
+				{		// nonempty pattern --> create filters
+					fn_pattern = fn_pattern.split('\\').join('/');
+					let fn_filter = fn_pattern.replace(/\[/g, "\\[");
+					fn_filter = fn_filter.replace(/\]/g, "\\]");
+					fn_filter = fn_filter.replace(/\^/g, "\\^");
+					fn_filter = fn_filter.replace(/\./g, "\\.");
+					fn_filter = fn_filter.replace(/\$/g, "\\$"); 
+					fn_filter = fn_filter.replace(/\(/g, "\\(");
+					fn_filter = fn_filter.replace(/\)/g, "\\)");
+					fn_filter = fn_filter.replace(/<NUM>/g, "[0-9]+"); 
+					fn_filter = fn_filter.replace(/<ANY>/g, ".+"); 
+					fn_filter = RegExp(fn_filter.replace(/<ID>/g, ".+"));
+					fn_filter_array[i]=fn_filter;
+					if (mode == 0 && fn_pattern.indexOf("/") >= 0) mode=1;
+					let end_filter = fn_pattern.indexOf("ID>")+3; // find the end of the ID
+					let postfix = fn_pattern.substring(end_filter); // hole den postfix, d.h., text nach <ID> raus
+					postfix = postfix.replace(/\[/g, "\\[");
+					postfix = postfix.replace(/\]/g, "\\]"); 
+					postfix = postfix.replace(/\^/g, "\\^"); 
+					postfix = postfix.replace(/\./g, "\\.");
+					postfix = postfix.replace(/\$/g, "\\$");
+					postfix = postfix.replace(/\(/g, "\\(");
+					postfix = postfix.replace(/\)/g, "\\)");
+					postfix = postfix.replace(/<NUM>/g, "[0-9]+");
+					postfix = RegExp(postfix.replace(/<ANY>/g, ".+"));
+					postfix_array[i]=postfix; 
+					let beg_id = fn_pattern.indexOf("<"); // zahl anfang: index von < in fn_pattern
+					beg_id_array[i]=beg_id;
+					console.log([i, fn_pattern, fn_filter, postfix, beg_id, end_filter]);
+				}
 				dummy[i] = "<NONE>";
 				fn_cnt[i] = 0;
 			}
@@ -357,29 +337,32 @@
 				skipped=1;
 				for (let j=0; j<df_array.length; j++)
 				{
-					let hit = fn_filter_array[j].test(fn);
-					if (hit)
-					{
-						skipped=0;
-						let end_id = fn.substring(beg_id_array[j]).search(postfix_array[j])+beg_id_array[j]; // zahl ende: beginn von postfix gefunden in fn, beginnend mit beg_id, falls postfix im fn VOR <id> wäre
-						let id = fn.substring(beg_id_array[j],end_id); // <ID> gefunden
-						let name = dsn_pattern.replace("<ID>", id); // baue Name mit neuem ID zusammen
-							// Array
-						idx = dsn_array.indexOf(name); 
-						if (idx == -1)
-						{   // new item in the list
-							dsn_array[dsn_array.length] = name; // extend the name array
-							dsn_cnt++;
-							idx = dsn_array.length-1;
-							fn_array[dsn_array.length-1] = []; // extend the fn array with dummies
-							x=dummy; x[j]=fn; // prepare the correct row
-							fn_array[idx][j] = fn;
-							fn_cnt[j]++;
-						}
-						else
-						{	fn_array[idx][j] = fn; 
-							fn_cnt[j]++;
-						}
+					if(fn_filter_array[j]!="")
+					{		// if fn_filter not empty
+						let hit = fn_filter_array[j].test(fn);
+						if (hit)
+						{
+							skipped=0;
+							let end_id = fn.substring(beg_id_array[j]).search(postfix_array[j])+beg_id_array[j]; // zahl ende: beginn von postfix gefunden in fn, beginnend mit beg_id, falls postfix im fn VOR <id> wäre
+							let id = fn.substring(beg_id_array[j],end_id); // <ID> gefunden
+							let name = dsn_pattern.replace("<ID>", id); // baue Name mit neuem ID zusammen
+								// Array
+							idx = dsn_array.indexOf(name); 
+							if (idx == -1)
+							{   // new item in the list
+								dsn_array[dsn_array.length] = name; // extend the name array
+								dsn_cnt++;
+								idx = dsn_array.length-1;
+								fn_array[dsn_array.length-1] = []; // extend the fn array with dummies
+								x=dummy; x[j]=fn; // prepare the correct row
+								fn_array[idx][j] = fn;
+								fn_cnt[j]++;
+							}
+							else
+							{	fn_array[idx][j] = fn; 
+								fn_cnt[j]++;
+							}
+						} // if fn_filter not empty
 					} // if hit
 				} // for all fn_patterns
 				if(skipped) 
@@ -439,44 +422,18 @@
 			}
 			table = document.getElementById('results'); 
 			table.style.visibility = "visible"; // show the table
-			checkBox = document.getElementById("checkAll").checked; // select all
 
 				// save dataset and datafile lists in Livewire
-			$wire.set('pdatasetnames', dsn_array);
-			console.log("dsn_array (pdatasetnames): ", dsn_array);
-			data.nFiltered = fn_array.flat().length; // since this is a multi-dimensional array, we need to flatten it first for length to count all elemets
+			$wire.set('pdatasetnames', dsn_array); // save the dataset names 
+			$wire.set('pdatafilenames', fn_array); // save the selected filenames (assume all selected)
+			$wire.set('fdatafilenames', fn_array); // save the filenames 
+			$wire.set('dirMode', mode); // save the directory mode (0: flat, 1: nested)
 
-			// flat list of files to upload. This is a relative path
-			// from the directory chosen as input. E.g. P0002/3DSCAN/P0002_watertight.stl
-			let filenamesToUpload = fn_array.flat();
-			console.log("filenamesToUpload: " + filenamesToUpload);
-			console.log("filenamesToUpload.length: " + filenamesToUpload.length);
-			// the data.allFiles 'name' is *just* the file name. There is a relative path,
-			// but it also contains the parent folder. E.g. AXD-small/P0002/3DSCAN/P0002_watertight.stl
-			console.log("allFiles: ", data.allFiles);
-			$wire.set('pdatafilenames', fn_array);
-			if(mode == 0) 
-			{			// flat: get filtered list of file objects
-					data.pendingFiles = data.allFiles.filter((file) => {
-							return filenamesToUpload.includes(file.name);
-					});
-			}
-			else
-			{			// nested: prepend filenamesToUpload with directory for comparison with allFiles
-					let prefix = data.directory+'/';
-					dirPrefixed = filenamesToUpload.map(item => prefix + item);
-					console.log('dirPrefixed: ', dirPrefixed);
-					data.pendingFiles = data.allFiles.filter((file) => {
-							return dirPrefixed.includes(file.webkitRelativePath);
-					});
-
-			}
-			console.log("data.pendingFiles.length: " + data.pendingFiles.length);
-			console.log("data.allFiles.length: " + data.allFiles.length);
-
-			// set number of files to upload, so Livewire knows how many
-			// files to expect.
-			$wire.set('nFilesToUpload', data.pendingFiles.length);
+			data = _createPendingFiles(data, fn_array); // create the list with PendingFiles
+			
+				// select all Datasets in the table
+			document.getElementById("checkAll").checked = true; // select all
+			_checkAll();
 
 			setStatus('Filtering finished');
 		} else
@@ -512,6 +469,94 @@
 		////////////////////////////////////////////////////////////////////////////////
 		//	Javascript functions
 		////////////////////////////////////////////////////////////////////////////////
+
+	function _createPendingFiles(data, fn_array)
+	{
+		console.log("allFiles: ", data.allFiles);
+
+			// create list with pending files: data.pendingFiles
+		let filenamesToUpload = fn_array.flat(); // flat list of files to upload. This is a relative path from the directory chosen as input. E.g. P0002/3DSCAN/P0002_watertight.stl
+		data.nFiltered = fn_array.flat().length; // since this is a multi-dimensional array, we need to flatten it first for length to count all elemets
+		if(data.dirMode == 0) 
+		{			// flat: get filtered list of file objects
+			data.pendingFiles = data.allFiles.filter((file) => { // the data.allFiles 'name' is *just* the file name. There is a relative path, but it also contains the parent folder. E.g. AXD-small/P0002/3DSCAN/P0002_watertight.stl
+					return filenamesToUpload.includes(file.name);
+			});
+		}
+		else
+		{			// nested: prepend filenamesToUpload with directory for comparison with allFiles
+			let prefix = data.directory+'/';
+			dirPrefixed = filenamesToUpload.map(item => prefix + item);
+			data.pendingFiles = data.allFiles.filter((file) => {
+					return dirPrefixed.includes(file.webkitRelativePath);
+			});
+		}
+			// update the actual number of files to upload, so Livewire knows how many files to expect.
+		$wire.set('nFilesToUpload', data.pendingFiles.length);
+		
+		console.log("data.pendingFiles: " + data.pendingFiles);
+		console.log("nFilesToUpload: " + data.pendingFiles.length);
+		
+		return(data);
+	}
+	
+	function _checkAll()
+	{
+		var checkBox = document.getElementById("checkAll");
+		tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
+		if (tableBody.rows != null)
+		{
+			console.log('Tablebody.rows', tableBody.rows);
+			if (checkBox.checked == true)
+			{
+				for (let i=1; i<tableBody.rows.length; i++)
+					document.getElementById("check"+i).checked=true;
+			}
+			else
+			{
+				for (let i=1; i<tableBody.rows.length; i++)
+					document.getElementById("check"+i).checked=false;
+			}
+			_updateSelected();
+		}
+	}
+
+	function _updateSelected()
+	{
+		tableBody = document.getElementById('results').getElementsByTagName('tbody')[0];
+		rows = tableBody.rows; 
+		if (rows != null)
+		{
+			let fn_array = $wire.get('fdatafilenames');
+			let df_array = $wire.datasetdefIds;
+			let fn_cnt = new Array(df_array.length).fill(0);
+			let dsn_cnt = 0;
+			for (let i=1; i<rows.length; i++)
+				if(document.getElementById("check"+i).checked) 
+				{
+					dsn_cnt++;
+					fn = fn_array[i-1];
+					for (let col=0; col<fn.length; col++)
+					{
+						if(fn[col] != null)
+						{
+							rows[i].cells[col+2].textContent = fn[col]; 
+							fn_cnt[col]++;
+						}
+					}
+				}
+				else
+				{
+					for (let col=2; col<rows[0].cells.length; col++)
+					{
+						rows[i].cells[col].textContent = ""; 
+					}
+				}
+			rows[0].cells[1].textContent = dsn_cnt; 
+			for (let col=0; col<df_array.length; col++)
+				rows[0].cells[col+2].textContent = fn_cnt[col];
+		}
+	}
 
 	let maxParallelUploads = 2; // Maximum concurrent uploads
 
