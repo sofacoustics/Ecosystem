@@ -241,6 +241,7 @@
 		//	Livewire functions
 		////////////////////////////////////////////////////////////////////////////////
 		
+		// Apply the filter and prepare a table with filenames for the upload
 	$js('doFilter', (data) => {
 		if (data) {
 			resetUpload();
@@ -433,7 +434,7 @@
 			console.log('doFilter() - data parameter *does not* exist!');
 	});
 
-
+		// Process the upload
 	$js('doUpload', (data) => {
 		resetUpload();
 		data.error = false;
@@ -451,6 +452,13 @@
 		processQueue();
 		setStatus('Upload finished!?');
 	});
+	
+		// Cancel an upload (jw:note not used yet (no button), but works.)
+	$js('cancelUpload', (data) => {
+		console.log('User has cancelled the upload');
+		resetUpload();
+	});
+	
 
 		////////////////////////////////////////////////////////////////////////////////
 		//	Javascript functions
