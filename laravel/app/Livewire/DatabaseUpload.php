@@ -54,7 +54,7 @@ class DatabaseUpload extends Component
     public $progress;
     public $uploading;
 
-    public $nFilesSelected = -1; // -1: directory not selected yet, 0: no files in the directory, >0: files found
+    public $nFilesInDir = -1; // -1: directory not selected yet, 0: no files in the directory, >0: files found
     public $nFilesFiltered = 0;
     public $nFilesToUpload = 0;
     public $nFilesUploaded = 0;

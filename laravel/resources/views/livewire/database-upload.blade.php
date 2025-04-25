@@ -429,17 +429,14 @@
 			// but it also contains the parent folder. E.g. AXD-small/P0002/3DSCAN/P0002_watertight.stl
 			console.log("allFiles: ", data.allFiles);
 			$wire.set('pdatafilenames', fn_array);
-			if(mode == 0) // flat
-			{
-					// get filtered list of file objects
+			if(mode == 0) 
+			{			// flat: get filtered list of file objects
 					data.pendingFiles = data.allFiles.filter((file) => {
 							return filenamesToUpload.includes(file.name);
 					});
-					console.log("fn_array (pdatafilenames): ", fn_array);
 			}
-			else // nested
-			{
-					// prepend filenamesToUpload with directory for comparison with allFiles
+			else
+			{			// nested: prepend filenamesToUpload with directory for comparison with allFiles
 					let prefix = data.directory+'/';
 					dirPrefixed = filenamesToUpload.map(item => prefix + item);
 					console.log('dirPrefixed: ', dirPrefixed);
