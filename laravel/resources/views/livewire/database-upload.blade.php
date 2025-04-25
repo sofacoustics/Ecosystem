@@ -24,9 +24,9 @@
 				x-bind:disabled="uploading"
 				x-on:change="allFiles = Array.from($event.target.files);">
 		</div>
-		@if($nFilesSelected > 0)
-			<p>Files in the selected directory: {{ $nFilesSelected }}</p>
-		@elseif($nFilesSelected === 0)
+		@if($nFilesInDir > 0)
+			<p>Files in the selected directory: {{ $nFilesInDir }}</p>
+		@elseif($nFilesInDir === 0)
 			<p>No files in the selected directory.</p>
 		@endif
 		<br>
@@ -47,17 +47,18 @@
 				wire:model.blur="datasetdescriptionfilter" />
 		<br>
 		<div>
-			<x-button wire:click="$js.doFilter($data)" :disabled="$nFilesSelected < 1 || $uploading">Apply filter</x-button>
+			<x-button wire:click="$js.doFilter($data)" :disabled="$nFilesInDir < 1 || $uploading">Apply filter</x-button>
 		</div>
+		<p>Analysis results:</p>
+		<small><p id="analysis-summary" wire:ignore><br></p></small>
 		<br>
 		<hr>
 
 		<h3>3) Prepare the filtering results for data upload:</h3>
-		<small><p id="analysis-summary" wire:ignore><br></p></small>
 		<table id="results" class="w-full table-auto border border-slate-399" wire:ignore>
 			<thead class="bg-gray-50" >
 				<tr>
-					<th class="border p-2"><input type="checkbox" id="selectAll" wire:click="$js.selectAll()">: All</th>
+					<th class="border p-2"><input type="checkbox" id="checkAll" wire:click="$js.checkAll()">: All</th>
 					<th class="border p-2">ID</th>
 					@foreach ($database->datasetdefs as $datasetdef)
 						<th class="border p-2">{{ $datasetdef->name }}</th>
@@ -165,7 +166,7 @@
 				data.directory = directoryName;
 			}
 			$wire.set("nFilesToUpload", 0);
-			$wire.set('nFilesSelected', e.target.files.length); // set immediately using $wire.set(), otherwise set when next $wire.$refresh or another action that triggers a refresh. See
+			$wire.set('nFilesInDir', e.target.files.length); // set immediately using $wire.set(), otherwise set when next $wire.$refresh or another action that triggers a refresh. See
 			document.getElementById("skipped").innerHTML = "";
 			document.getElementById("skipped-list").innerHTML = "";
 			document.getElementById("analysis-summary").innerHTML = "";
@@ -248,10 +249,34 @@
 		////////////////////////////////////////////////////////////////////////////////
 		
 		
-
-		// On "Select All"
-	$js('selectAll', () => {
-		var checkBox = document.getElementById("selectAll");
+	$js('updateSelected', (data) => {
+		tableBody = document.getElementById('results').getElementsByTagName('tbody')[0];
+		let cnt = 0;
+		rows = tableBody.rows; 
+		let fn_array = $wire.get('pdatafilenames');
+		console.log(fn_array);
+		for (let i=1; i<rows.length; i++)
+			if(document.getElementById("check"+i).checked) 
+			{
+				fn = fn_array[i-1];
+				for (let col=0; col<fn.length; col++)
+				{
+					if(fn[col] != null)
+						rows[i].cells[col+2].textContent = fn[col]; 
+				}
+			}
+			else
+			{
+				for (let col=1; col<rows[0].cells.length; col++)
+				{
+					rows[i].cells[col].textContent = ""; 
+				}
+			}
+	});
+	
+		// On "Check All Datasets" or "Check None of the Datasets"
+	$js('checkAll', () => {
+		var checkBox = document.getElementById("checkAll");
 		tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
 		if (checkBox.checked == true)
 		{
@@ -264,6 +289,7 @@
 				document.getElementById("check"+i).checked=false;
 		}
 	});
+	
 	
 		// Apply the filter and prepare a table with filenames for the upload
 	$js('doFilter', (data) => {
@@ -376,7 +402,7 @@
 			}
 				// Display analysis summary
 			mode_str=(mode)?("Nested"):("Flat");
-			str = "Analysis results:<br>" + 
+			str = "" + 
 				"<b>Files matched:</b> " + String(fn_cnt.reduce((a, b) => a + b)) + " files<br>" +
 				"<b>Files missing:</b> " + String(dsn_cnt * df_array.length - fn_cnt.reduce((a, b) => a + b)) + " files<br>" +
 				"<b>Files skipped:</b> " + String(skipped_cnt) + " files<br>"; 
@@ -399,7 +425,7 @@
 			{
 				newRow = tableBody.insertRow(-1);
 				cell = newRow.insertCell(-1); 
-				cell.innerHTML = '<input type="checkbox" id="check' + (i+1) + '">: #' + (i+1); // insert the index
+				cell.innerHTML = '<input type="checkbox" id="check' + (i+1) + '" wire:click="$js.updateSelected($data)">: #' + (i+1); // insert checkbox for a dataset
 				cell = newRow.insertCell(-1); 
 				cell.textContent = dsn_array[i]; // insert Name to the table
 				for (let j=0; j<df_array.length; j++) // for each column
@@ -413,7 +439,7 @@
 			}
 			table = document.getElementById('results'); 
 			table.style.visibility = "visible"; // show the table
-			checkBox = document.getElementById("selectAll").checked; // select all
+			checkBox = document.getElementById("checkAll").checked; // select all
 
 				// save dataset and datafile lists in Livewire
 			$wire.set('pdatasetnames', dsn_array);
