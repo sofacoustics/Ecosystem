@@ -14,7 +14,7 @@
 		cancelled: false,
 		status: '',
 		directory: ''
-	}" id='alpineComponent'>
+		}" id='alpineComponent'>
 	
 	<form wire:submit="save">
 		<h3>1) Select a directory with all your datafiles:</h3>
@@ -34,7 +34,7 @@
 		
 		<h3>2) Apply filter on your datafiles:<h3>
 		<small>Pattern for the datasets names:</small>
-			<input class="w-full" type="text" placeholder="Must include <ID>, e.g., name<ID>. Must not be empty." id="name_pattern"
+			<input class="w-full" type="text" placeholder="Must include <ID>, e.g., name<ID>. Must not be empty." id="dsn_pattern"
 				wire:model.blur="datasetnamefilter" />
 		@foreach ($database->datasetdefs as $index => $datasetdef)
 			<small>#{{ $loop->index+1}}: Pattern for the datafile names of {{ $datasetdef->name }}:</small>
@@ -55,9 +55,9 @@
 		<h3>3) Prepare the filtering results for data upload:</h3>
 		<small><p id="analysis-summary" wire:ignore><br></p></small>
 		<table id="results" class="w-full table-auto border border-slate-399" wire:ignore>
-			<thead class="bg-gray-50">
+			<thead class="bg-gray-50" >
 				<tr>
-					<th class="border p-2">#</th>
+					<th class="border p-2"><input type="checkbox" id="selectAll" wire:click="$js.selectAll()">: All</th>
 					<th class="border p-2">ID</th>
 					@foreach ($database->datasetdefs as $datasetdef)
 						<th class="border p-2">{{ $datasetdef->name }}</th>
@@ -169,6 +169,11 @@
 			document.getElementById("skipped").innerHTML = "";
 			document.getElementById("skipped-list").innerHTML = "";
 			document.getElementById("analysis-summary").innerHTML = "";
+			tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
+			tableBody.innerHTML = "";
+			table = document.getElementById('results'); 
+			console.log('Table:', table.style);
+			table.style.visibility = "hidden";
 		},
 		false,
 	);
@@ -231,6 +236,7 @@
 			});
 	});
 
+	
 		////////////////////////////////////////////////////////////////////////////////
 		//	Global variables
 		////////////////////////////////////////////////////////////////////////////////
@@ -241,14 +247,31 @@
 		//	Livewire functions
 		////////////////////////////////////////////////////////////////////////////////
 		
+		
+
+		// On "Select All"
+	$js('selectAll', () => {
+		var checkBox = document.getElementById("selectAll");
+		tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
+		if (checkBox.checked == true)
+		{
+			for (let i=1; i<tableBody.rows.length; i++)
+				document.getElementById("check"+i).checked=true;
+		}
+		else
+		{
+			for (let i=1; i<tableBody.rows.length; i++)
+				document.getElementById("check"+i).checked=false;
+		}
+	});
+	
 		// Apply the filter and prepare a table with filenames for the upload
 	$js('doFilter', (data) => {
 		if (data) {
 			resetUpload();
 			setStatus('Filtering started');
 			mode = 0;
-			let df_array = $wire.datasetdefIds;
-			console.log('df_array', df_array);
+			let df_array = $wire.datasetdefIds; // get the dataset definition (=array with dataset filetypes)
 			let fn_filter_array = [], postfix_array = [], beg_id_array = [], dummy = [], fn_cnt = [];
 			for (let i=0; i<df_array.length; i++)
 			{
@@ -265,9 +288,7 @@
 				fn_filter = fn_filter.replace(/<ANY>/g, ".+"); 
 				fn_filter = RegExp(fn_filter.replace(/<ID>/g, ".+"));
 				fn_filter_array[i]=fn_filter;
-
 				if (mode == 0 && fn_pattern.indexOf("/") >= 0) mode=1;
-
 				let end_filter = fn_pattern.indexOf("ID>")+3; // find the end of the ID
 				let postfix = fn_pattern.substring(end_filter); // hole den postfix, d.h., text nach <ID> raus
 				postfix = postfix.replace(/\[/g, "\\[");
@@ -283,18 +304,19 @@
 				let beg_id = fn_pattern.indexOf("<"); // zahl anfang: index von < in fn_pattern
 				beg_id_array[i]=beg_id;
 				console.log([fn_pattern, fn_filter, postfix, beg_id, end_filter]);
-
 				dummy[i] = "<NONE>";
 				fn_cnt[i] = 0;
 			}
 
-			let name_pattern = document.getElementById("name_pattern").value;
+			let dsn_pattern = document.getElementById("dsn_pattern").value; // pattern of the dataset names
 	
 			s="";
 			const tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
 			tableBody.innerHTML = "";
 
-			let name_array = [], fn_array = []; name_cnt = 0; skipped_cnt = 0;
+			let dsn_array = []; // array with filtered dataset names
+			let fn_array = []; // 2D array of filtered filenames (outer dim: datasets, inner dim: datafile defs)
+			let dsn_cnt = 0; skipped_cnt = 0;
 			for (let i = 0; i < data.allFiles.length; i++)
 			{
 				if (mode == 1)
@@ -315,17 +337,16 @@
 						skipped=0;
 						let end_id = fn.substring(beg_id_array[j]).search(postfix_array[j])+beg_id_array[j]; // zahl ende: beginn von postfix gefunden in fn, beginnend mit beg_id, falls postfix im fn VOR <id> wäre
 						let id = fn.substring(beg_id_array[j],end_id); // <ID> gefunden
-						let name = name_pattern.replace("<ID>", id); // baue Name mit neuem ID zusammen
+						let name = dsn_pattern.replace("<ID>", id); // baue Name mit neuem ID zusammen
 							// Array
-						idx = name_array.indexOf(name); 
+						idx = dsn_array.indexOf(name); 
 						if (idx == -1)
 						{   // new item in the list
-							name_array[name_array.length] = name; // extend the name array
-							name_cnt++;
-							idx = name_array.length-1;
-							fn_array[name_array.length-1] = []; // extend the fn array with dummies
+							dsn_array[dsn_array.length] = name; // extend the name array
+							dsn_cnt++;
+							idx = dsn_array.length-1;
+							fn_array[dsn_array.length-1] = []; // extend the fn array with dummies
 							x=dummy; x[j]=fn; // prepare the correct row
-							//for (k=0; k<df_array.length; k++) fn_array[name_array.length-1][k] = x[k];
 							fn_array[idx][j] = fn;
 							fn_cnt[j]++;
 						}
@@ -341,6 +362,7 @@
 					skipped_cnt++;
 				}
 			} // for all fns
+			
 				// Display skipped filenames
 			if(s!="") 
 			{
@@ -356,7 +378,7 @@
 			mode_str=(mode)?("Nested"):("Flat");
 			str = "Analysis results:<br>" + 
 				"<b>Files matched:</b> " + String(fn_cnt.reduce((a, b) => a + b)) + " files<br>" +
-				"<b>Files missing:</b> " + String(name_cnt * df_array.length - fn_cnt.reduce((a, b) => a + b)) + " files<br>" +
+				"<b>Files missing:</b> " + String(dsn_cnt * df_array.length - fn_cnt.reduce((a, b) => a + b)) + " files<br>" +
 				"<b>Files skipped:</b> " + String(skipped_cnt) + " files<br>"; 
 			document.getElementById("analysis-summary").innerHTML = str;
 
@@ -365,7 +387,7 @@
 			cell = newRow.insertCell(-1);
 			cell.textContent = "Sum:";
 			cell = newRow.insertCell(-1); 
-			cell.textContent = name_cnt; // insert count of Names
+			cell.textContent = dsn_cnt; // insert count of Names
 			for (let j=0; j<df_array.length; j++) // for each column
 			{
 					cell = newRow.insertCell(-1);
@@ -373,13 +395,13 @@
 			}
 			
 				// Table - Filenames
-			for (let i=0; i<name_array.length; i++)
+			for (let i=0; i<dsn_array.length; i++)
 			{
 				newRow = tableBody.insertRow(-1);
 				cell = newRow.insertCell(-1); 
-				cell.textContent = i+1; // insert the index
+				cell.innerHTML = '<input type="checkbox" id="check' + (i+1) + '">: #' + (i+1); // insert the index
 				cell = newRow.insertCell(-1); 
-				cell.textContent = name_array[i]; // insert Name to the table
+				cell.textContent = dsn_array[i]; // insert Name to the table
 				for (let j=0; j<df_array.length; j++) // for each column
 				{
 					cell = newRow.insertCell(-1);
@@ -389,9 +411,13 @@
 					}
 				}
 			}
-									// save dataset and datafile lists in Livewire
-			$wire.set('pdatasetnames', name_array);
-			console.log("name_array (pdatasetnames): ", name_array);
+			table = document.getElementById('results'); 
+			table.style.visibility = "visible"; // show the table
+			checkBox = document.getElementById("selectAll").checked; // select all
+
+				// save dataset and datafile lists in Livewire
+			$wire.set('pdatasetnames', dsn_array);
+			console.log("dsn_array (pdatasetnames): ", dsn_array);
 			data.nFiltered = fn_array.flat().length; // since this is a multi-dimensional array, we need to flatten it first for length to count all elemets
 
 			// flat list of files to upload. This is a relative path
