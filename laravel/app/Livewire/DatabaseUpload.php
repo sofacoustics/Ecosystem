@@ -43,7 +43,8 @@ class DatabaseUpload extends Component
 
     public $overwriteExisting = false; // set to true, if existing datafiles should be overwritten.
 
-    public array $pdatasetnames= []; // array of dataset names, e.g. NH01
+		public array $fdatasetnames= []; // array with filtered dataset names, e.g. NH01
+    public array $pdatasetnames= []; // array with selected (=subset of filtered) dataset names
     public array $fdatafilenames= []; // a 2D array with filtered datafilenames, dim 1: index of pdatasetnames, dim 2: index of datasetdefIds
     public array $pdatafilenames= []; // a 2D array with selected (=a subset of filtered) datafilenames, dim 1: index of pdatasetnames, dim 2: index of datasetdefIds
 		public $dirMode = 0;
@@ -55,6 +56,8 @@ class DatabaseUpload extends Component
     public $nFilesFiltered = 0;
     public $nFilesToUpload = 0;
     public $nFilesUploaded = 0;
+		public $nSetsFiltered = 0; // Number of filtered datasets
+		public $nSetsSelected = 0; // Number of selected datasets (=subset of filtered datasets)
 
     public bool $canUpload = false; // set to true, if there are filtered files we can upload
 
@@ -250,7 +253,7 @@ class DatabaseUpload extends Component
         }
         else if("$property" == "nFilesToUpload")
         {
-            $this->setStatus("Updating nFilesToUpload to $value");
+            //$this->setStatus("Updating nFilesToUpload to $value");
         }
         else
         {

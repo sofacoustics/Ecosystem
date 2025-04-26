@@ -4,9 +4,8 @@
 		filteredFiles: [],
 		pendingFiles: [],
 		uploading: false,
-		nFiltered: 0,
+		nSelected: 0,
 		nUploaded: 0,
-		nSelected: -1,
 		progress: 0,
 		progressText: '',
 		finished: false,
@@ -15,6 +14,8 @@
 		status: '',
 		directory: '',
 		dirMode: 0,
+		nSetsFiltered: 0,
+		nSetsSelected: 0
 		}" id='alpineComponent'>
 	
 	<form wire:submit="save">
@@ -26,7 +27,7 @@
 				x-on:change="allFiles = Array.from($event.target.files);">
 		</div>
 		@if($nFilesInDir > 0)
-			<p>Files in the selected directory: {{ $nFilesInDir }}</p>
+			<p><b>Files found:</b> {{ $nFilesInDir }}</p>
 		@elseif($nFilesInDir === 0)
 			<p>No files in the selected directory.</p>
 		@endif
@@ -60,9 +61,16 @@
 			<thead class="bg-gray-50" >
 				<tr>
 					<th class="border p-2"><input type="checkbox" id="checkAll" wire:click="$js.checkAll()">: All</th>
-					<th class="border p-2">ID</th>
+					<th class="border p-2">Dataset Name</th>
 					@foreach ($database->datasetdefs as $datasetdef)
 						<th class="border p-2">{{ $datasetdef->name }}</th>
+					@endforeach
+				</tr>
+				<tr>
+					<th class="border p-2">Count:</th>
+					<th class="border p-2">-</th>
+					@foreach ($database->datasetdefs as $datasetdef)
+						<th class="border p-2">-</th>
 					@endforeach
 				</tr>
 			</thead>
@@ -110,7 +118,10 @@
 		<p>(Livewire) File to upload: {{ $nFilesToUpload }}</p>
 		<p>(Alpine) Directory: <span x-text="directory"></span></p>
 		<p>(Alpine) Status:  <span x-text="status"></span></p>
-		<p>(Alpine) Files filtered: <span x-text="nFiltered"></span></p>
+		<p>(Alpine) Directory mode: <span x-text="dirMode"></span></p>
+		<p>(Alpine) Datasets filtered: <span x-text="nSetsFiltered"></span></p>
+		<p>(Alpine) Datasets selected: <span x-text="nSetsSelected"></span></p>
+		<p>(Alpine) Files selected: <span x-text="nSelected"></span></p>
 		<p id="nUploaded" wire:ignore></p>
 		<p id="nUploadProgress" wire:ignore></p>
 
@@ -268,7 +279,7 @@
 			setStatus('Filtering started');
 			mode = 0;
 			let df_array = $wire.datasetdefIds; // get the dataset definition (=array with dataset filetypes)
-			let fn_filter_array = [], postfix_array = [], beg_id_array = [], dummy = [], fn_cnt = [];
+			let fn_filter_array = [], postfix_array = [], beg_id_array = [], dummy = [], fn_cnt_array = [];
 			for (let i=0; i<df_array.length; i++)
 			{
 				let fn_pattern = document.getElementById("fn_pattern"+df_array[i]).value;
@@ -311,18 +322,18 @@
 					console.log([i, fn_pattern, fn_filter, postfix, beg_id, end_filter]);
 				}
 				dummy[i] = "<NONE>";
-				fn_cnt[i] = 0;
+				fn_cnt_array[i] = 0;
 			}
-
-			let dsn_pattern = document.getElementById("dsn_pattern").value; // pattern of the dataset names
-	
-			s="";
-			const tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
+				// load the pattern of the dataset names
+			let dsn_pattern = document.getElementById("dsn_pattern").value; 
+				// clear the table
+			tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
 			tableBody.innerHTML = "";
 
+			s=""; // string with skipped files
 			let dsn_array = []; // array with filtered dataset names
 			let fn_array = []; // 2D array of filtered filenames (outer dim: datasets, inner dim: datafile defs)
-			let dsn_cnt = 0; skipped_cnt = 0;
+			let dsn_cnt = 0; skipped_cnt = 0; matched_cnt = 0; conflict_cnt = 0;
 			for (let i = 0; i < data.allFiles.length; i++)
 			{
 				if (mode == 1)
@@ -334,7 +345,7 @@
 				{	// we don't have a directory, use the filename
 					fn = data.allFiles[i].name;
 				}
-				skipped=1;
+				skipped=1; used=0;
 				for (let j=0; j<df_array.length; j++)
 				{
 					if(fn_filter_array[j]!="")
@@ -343,29 +354,40 @@
 						if (hit)
 						{
 							skipped=0;
+							if(!used) { used=1; matched_cnt++; }
 							let end_id = fn.substring(beg_id_array[j]).search(postfix_array[j])+beg_id_array[j]; // zahl ende: beginn von postfix gefunden in fn, beginnend mit beg_id, falls postfix im fn VOR <id> wäre
 							let id = fn.substring(beg_id_array[j],end_id); // <ID> gefunden
 							let name = dsn_pattern.replace("<ID>", id); // baue Name mit neuem ID zusammen
 								// Array
 							idx = dsn_array.indexOf(name); 
 							if (idx == -1)
-							{   // new item in the list
-								dsn_array[dsn_array.length] = name; // extend the name array
+							{   // new dataset name
+								dsn_array[dsn_array.length] = name; // extend the datasetname array
 								dsn_cnt++;
 								idx = dsn_array.length-1;
 								fn_array[dsn_array.length-1] = []; // extend the fn array with dummies
-								x=dummy; x[j]=fn; // prepare the correct row
+								x=dummy; x[j]=fn; // prepare the correct columns
 								fn_array[idx][j] = fn;
-								fn_cnt[j]++;
+								fn_cnt_array[j]++;
 							}
 							else
-							{	fn_array[idx][j] = fn; 
-								fn_cnt[j]++;
-							}
-						} // if fn_filter not empty
-					} // if hit
+							{		// existing dataset name
+								if (fn_array[idx][j] == null)
+								{		// new filename found
+									fn_array[idx][j] = fn;
+									fn_cnt_array[j]++;
+								}
+								else
+								{		// a conflict found
+									s = s + "Conflict in " + dsn_array[idx] + ": " + fn + " overwrote " + fn_array[idx][j] + "<br>";
+									fn_array[idx][j] = fn;
+									conflict_cnt++;
+								}
+							} // if new dataset found
+						} // if hit = filename matches the pattern
+					} // if fn_filter not empty
 				} // for all fn_patterns
-				if(skipped) 
+				if(skipped)
 				{
 					s = s + fn + "<br>";
 					skipped_cnt++;
@@ -375,7 +397,7 @@
 				// Display skipped filenames
 			if(s!="") 
 			{
-				document.getElementById("skipped").innerHTML = "Hover to see the list of skipped files...";
+				document.getElementById("skipped").innerHTML = "Hover to see the list of skipped/conflicting files...";
 				document.getElementById("skipped-list").innerHTML = s;
 			}
 			else
@@ -386,24 +408,22 @@
 				// Display analysis summary
 			mode_str=(mode)?("Nested"):("Flat");
 			str = "" + 
-				"<b>Files matched:</b> " + String(fn_cnt.reduce((a, b) => a + b)) + " files<br>" +
-				"<b>Files missing:</b> " + String(dsn_cnt * df_array.length - fn_cnt.reduce((a, b) => a + b)) + " files<br>" +
-				"<b>Files skipped:</b> " + String(skipped_cnt) + " files<br>"; 
+				"<b>Files matched:</b> " + String(matched_cnt) + " files (includes conflicting)<br>" +
+				"<b>Files conflicting:</b> " + String(conflict_cnt) + " files<br>" +
+				"<b>Files skipped:</b> " + String(skipped_cnt) + " files<br>" + 
+				"<b>Datasets matched</b>: " + String(dsn_cnt) + "<br>" + 
+				"<b>Datafiles with assigned files:</b> " + String(fn_cnt_array.reduce((a, b) => a + b)) + "<br>" + 
+				"<b>Datafiles empty:</b> " + String(dsn_cnt * df_array.length - fn_cnt_array.reduce((a, b) => a + b)) + "<br>";
 			document.getElementById("analysis-summary").innerHTML = str;
 
-				// Table - Summary row
-			newRow = tableBody.insertRow(-1);
-			cell = newRow.insertCell(-1);
-			cell.textContent = "Sum:";
-			cell = newRow.insertCell(-1); 
-			cell.textContent = dsn_cnt; // insert count of Names
+				// Table - Summary header
+			headers = document.getElementById('results').getElementsByTagName('th');
+			headers[df_array.length+3].textContent = dsn_cnt; // insert count of Names
 			for (let j=0; j<df_array.length; j++) // for each column
-			{
-					cell = newRow.insertCell(-1);
-					cell.textContent = fn_cnt[j]; // insert the count of fns
-			}
+				headers[df_array.length+4+j].textContent = fn_cnt_array[j]; // insert the count of fns
 			
 				// Table - Filenames
+			tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
 			for (let i=0; i<dsn_array.length; i++)
 			{
 				newRow = tableBody.insertRow(-1);
@@ -424,12 +444,13 @@
 			table.style.visibility = "visible"; // show the table
 
 				// save dataset and datafile lists in Livewire
-			$wire.set('pdatasetnames', dsn_array); // save the dataset names 
+			$wire.set('fdatasetnames', dsn_array); // save the filtered dataset names 
+			$wire.set('pdatasetnames', dsn_array); // save the selected dataset names (assume all selected)
+			$wire.set('fdatafilenames', fn_array); // save the filtered filenames 
 			$wire.set('pdatafilenames', fn_array); // save the selected filenames (assume all selected)
-			$wire.set('fdatafilenames', fn_array); // save the filenames 
 			$wire.set('dirMode', mode); // save the directory mode (0: flat, 1: nested)
-
-			data = _createPendingFiles(data, fn_array); // create the list with PendingFiles
+			$wire.set('nSetsFiltered', dsn_cnt); // number of filtered datasets
+			$wire.set("nFilesToUpload", fn_cnt_array.reduce((a, b) => a + b)); // number of filtered files (to be uploaded)
 			
 				// select all Datasets in the table
 			document.getElementById("checkAll").checked = true; // select all
@@ -442,6 +463,8 @@
 
 		// Process the upload
 	$js('doUpload', (data) => {
+		let fn_array = $wire.get('fdatafilenames');
+		data = _createPendingFiles(data, fn_array); // create the list with PendingFiles
 		resetUpload();
 		data.error = false;
 		$wire.set('canUpload', false);
@@ -476,7 +499,7 @@
 
 			// create list with pending files: data.pendingFiles
 		let filenamesToUpload = fn_array.flat(); // flat list of files to upload. This is a relative path from the directory chosen as input. E.g. P0002/3DSCAN/P0002_watertight.stl
-		data.nFiltered = fn_array.flat().length; // since this is a multi-dimensional array, we need to flatten it first for length to count all elemets
+		data.nSelected = fn_array.flat().length; // since this is a multi-dimensional array, we need to flatten it first for length to count all elemets
 		if(data.dirMode == 0) 
 		{			// flat: get filtered list of file objects
 			data.pendingFiles = data.allFiles.filter((file) => { // the data.allFiles 'name' is *just* the file name. There is a relative path, but it also contains the parent folder. E.g. AXD-small/P0002/3DSCAN/P0002_watertight.stl
@@ -509,13 +532,13 @@
 			console.log('Tablebody.rows', tableBody.rows);
 			if (checkBox.checked == true)
 			{
-				for (let i=1; i<tableBody.rows.length; i++)
-					document.getElementById("check"+i).checked=true;
+				for (let i=0; i<tableBody.rows.length; i++)
+					document.getElementById("check"+(i+1)).checked=true;
 			}
 			else
 			{
-				for (let i=1; i<tableBody.rows.length; i++)
-					document.getElementById("check"+i).checked=false;
+				for (let i=0; i<tableBody.rows.length; i++)
+					document.getElementById("check"+(i+1)).checked=false;
 			}
 			_updateSelected();
 		}
@@ -526,35 +549,46 @@
 		tableBody = document.getElementById('results').getElementsByTagName('tbody')[0];
 		rows = tableBody.rows; 
 		if (rows != null)
-		{
+		{ 
 			let fn_array = $wire.get('fdatafilenames');
+			let dsn_array = $wire.get('fdatasetnames');
 			let df_array = $wire.datasetdefIds;
-			let fn_cnt = new Array(df_array.length).fill(0);
+			let fn_cnt_array = new Array(df_array.length).fill(0);
 			let dsn_cnt = 0;
-			for (let i=1; i<rows.length; i++)
-				if(document.getElementById("check"+i).checked) 
-				{
-					dsn_cnt++;
-					fn = fn_array[i-1];
+			let pn_array = []; // 2D array of selected filenames (outer dim: datasets, inner dim: datafile defs)
+			for (let i=0; i<rows.length; i++)
+			{
+				fn = fn_array[i];
+				if(document.getElementById("check"+(i+1)).checked) 
+				{  // checked --> dataset selected
+					dsn_cnt++; // count the number of selected datasets
+					rows[i].cells[1].textContent = dsn_array[i]; // insert datasetname
+						// insert selected datafilenames
 					for (let col=0; col<fn.length; col++)
 					{
 						if(fn[col] != null)
 						{
-							rows[i].cells[col+2].textContent = fn[col]; 
-							fn_cnt[col]++;
+							rows[i].cells[col+2].textContent = fn[col];
+							fn_cnt_array[col]++; // count the number of datafiles in the corresponding datafiledef
 						}
 					}
 				}
 				else
-				{
-					for (let col=2; col<rows[0].cells.length; col++)
+				{  // dataset not selected
+					for (let col=0; col<(fn.length+1); col++)
 					{
-						rows[i].cells[col].textContent = ""; 
+						rows[i].cells[col+1].textContent = ""; // remove the datasetname and datasetfilenames
 					}
 				}
-			rows[0].cells[1].textContent = dsn_cnt; 
-			for (let col=0; col<df_array.length; col++)
-				rows[0].cells[col+2].textContent = fn_cnt[col];
+			}
+				// Table - Summary header
+			headers = document.getElementById('results').getElementsByTagName('th');
+			headers[df_array.length+3].textContent = dsn_cnt; // insert count of Names
+			for (let j=0; j<df_array.length; j++) // for each column
+				headers[df_array.length+4+j].textContent = fn_cnt_array[j]; // insert the count of fns
+				// Update Livewire variables
+			//$wire.set('nFilesToUpload', fn_cnt_array.reduce((a,b) => (a+b)));
+			//$wire.set('nSetsFiltered', dsn_cnt);
 		}
 	}
 
