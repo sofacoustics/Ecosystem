@@ -33,119 +33,123 @@
 		<br>
 		<hr>
 		
-		<h3>2) Apply filter on your datafiles:<h3>
-		<small>Pattern for the datasets names:</small>
-			<input class="w-full" type="text" placeholder="Must include <ID>, e.g., name<ID>. Must not be empty." id="dsn_pattern"
-				wire:model.blur="datasetnamefilter" />
-		@foreach ($database->datasetdefs as $index => $datasetdef)
-			<small>#{{ $loop->index+1}}: Pattern for the datafile names of {{ $datasetdef->name }}:</small>
-				<input class="w-full" type="text" placeholder="Must include <ID> and may include <NUM> or <ANY>, e.g. prefix<ID>_maytest<ANY>.ext. Can be empty to exclude a datasetfile."
-					id="fn_pattern{{ $datasetdef->id }}" wire:model.blur="datafilenamefilters.{{ $datasetdef->id }}" />
-				{{-- https://www.perplexity.ai/search/how-can-i-access-and-update-ha-xiLcN4hYTKajSuuB3IMR4A --}}
-		@endforeach 
-		<small>Pattern for the datasets descriptions (optional):</small>
-			<input class="w-full" type="text" placeholder="Must include <ID>, e.g., name<ID>. Can be empty." id="description_pattern"
-				wire:model.blur="datasetdescriptionfilter" />
-		<br>
-		<div>
-			<x-button wire:click="$js.doFilter($data)" :disabled="$nFilesInDir < 1 || $uploading">Apply filter</x-button>
-		</div>
-		<p>Analysis results:</p>
-		<small><p id="analysis-summary" wire:ignore><br></p></small>
-		<br>
-		<hr>
-
-		<h3>3) Prepare the filtering results for data upload:</h3>
-		<table id="results" class="w-full table-auto border border-slate-399" wire:ignore>
-			<thead class="bg-gray-50" >
-				<tr>
-					<th class="border p-2"><input type="checkbox" id="checkAll" wire:click="$js.checkAll($data)">: All</th>
-					<th class="border p-2">Dataset Name</th>
-					@foreach ($database->datasetdefs as $datasetdef)
-						<th class="border p-2">{{ $datasetdef->name }}</th>
-					@endforeach
-				</tr>
-				<tr>
-					<th class="border p-2">Count:</th>
-					<th class="border p-2">-</th>
-					@foreach ($database->datasetdefs as $datasetdef)
-						<th class="border p-2">-</th>
-					@endforeach
-				</tr>
-			</thead>
-			<tbody class="bg-white divide-y divide-gray-200 text-center">
-				<!-- Rows will be added here -->
-			</tbody>
-		</table>
-		<div class="extendable-text-container"><small>
-			<p class="short-text" id="skipped" wire:ignore></p>
-			<p class="long-text" id="skipped-list" wire:ignore></p></small>
-		
-			<style>
-				.extendable-text-container {
-					position: relative; /* Needed for absolute positioning if you want */
-					width: 100%; /* Adjust as needed */
-					border: 1px solid #ccc;
-					padding: 2px;
-				}
-
-				.short-text {
-					cursor: pointer; /* Indicate it's interactive */
-				}
-
-				.long-text {
-					max-height: 0;
-					overflow: hidden;
-					transition: max-height 0.3s ease-in-out; /* Smooth transition */
-					margin-top: 5px; /* Add some space when expanded */
-				}
-
-				.extendable-text-container:hover .long-text {
-					max-height: 100%; /* Adjust to accommodate your longer text */
-				}
-			</style>
-		</div>
-		<br>
-		<p>Files selected for upload: <span x-text="nFilesSelected"></span></p>
-		<hr>
-
-		<h3>4) Upload the datafiles:</h3>
-		<label>Overwrite existing files?
-				<input type="checkbox" wire:model.live="overwriteExisting">
-		</label><br>
-
-		<p>(Livewire) Status: {{ $status }}</p>
-		<p>(Livewire) File to upload: {{ $nFilesToUpload }}</p>
-		<p>(Alpine) Directory: <span x-text="directory"></span></p>
-		<p>(Alpine) Status:  <span x-text="status"></span></p>
-		<p>(Alpine) Directory mode: <span x-text="dirMode"></span></p>
-		<p id="nUploaded" wire:ignore></p>
-		<p id="nUploadProgress" wire:ignore></p>
-
-		<div x-cloak>
-			<div class="bg-gray-100">
-				<x-message show="cancelled" timeout="2000">The upload has been cancelled</x-message>
-				<x-message type="error" show="error">Error: there was an error uploading. Please try again!</x-message>
-				<x-message show="uploading">Uploading to server</x-message>
+		@if($nFilesInDir > 0)
+			<h3>2) Apply filter on your datafiles:<h3>
+			<small>Pattern for the datasets names:</small>
+				<input class="w-full" type="text" placeholder="Must include <ID>, e.g., name<ID>. Must not be empty." id="dsn_pattern"
+					wire:model.blur="datasetnamefilter" />
+			@foreach ($database->datasetdefs as $index => $datasetdef)
+				<small>#{{ $loop->index+1}}: Pattern for the datafile names of {{ $datasetdef->name }}:</small>
+					<input class="w-full" type="text" placeholder="Must include <ID> and may include <NUM> or <ANY>, e.g. prefix<ID>_maytest<ANY>.ext. Can be empty to exclude a datasetfile."
+						id="fn_pattern{{ $datasetdef->id }}" wire:model.blur="datafilenamefilters.{{ $datasetdef->id }}" />
+					{{-- https://www.perplexity.ai/search/how-can-i-access-and-update-ha-xiLcN4hYTKajSuuB3IMR4A --}}
+			@endforeach 
+			<small>Pattern for the datasets descriptions (optional):</small>
+				<input class="w-full" type="text" placeholder="Must include <ID>, e.g., name<ID>. Can be empty." id="description_pattern"
+					wire:model.blur="datasetdescriptionfilter" />
+			<br>
+			<div>
+				<x-button wire:click="$js.doFilter($data)" :disabled="$nFilesInDir < 1 || $uploading">Apply filter</x-button>
 			</div>
-		</div>
-		<div>
-			<p>Upload progress: <span x-text="progressText"></span></p>
-			<div class="relative h-2 mt-2 rounded-full bg-base-200">
-				<div
-					x-bind:style="'width: ' + progress + '%;'"
-					class="absolute top-0 left-0 h-full bg-orange-500 rounded-full">
-				</div>
-		</div>
-		<div>
-			<x-button wire:loading:attr="disabled" wire:click="$js.doUpload($data)" :disabled="!$canUpload">Start upload</x-button>
-		</div>
-		<br>
-		<hr>
-		
-		<h3>5) Save the uploaded datafiles to the database:</h3>
-		<x-button :disabled="$nFilesToUpload > $nFilesUploaded || $nFilesToUpload === 0" type="submit">Save files to database</x-button>
+			
+				<p>Analysis results:</p>
+				<small><p id="analysis-summary" wire:ignore><br></p></small>
+				<br>
+				<hr>
+				<h3>3) Prepare the filtering results for data upload:</h3>
+				<table id="results" wire:ignore class="w-full table-auto border border-slate-399" >
+					<thead class="bg-gray-50" >
+						<tr>
+							<th class="border p-2"><input type="checkbox" id="checkAll" wire:click="$js.checkAll($data)">: All</th>
+							<th class="border p-2">Dataset Name</th>
+							@foreach ($database->datasetdefs as $datasetdef)
+								<th class="border p-2">{{ $datasetdef->name }}</th>
+							@endforeach
+						</tr>
+						<tr>
+							<th class="border p-2">Count:</th>
+							<th class="border p-2">-</th>
+							@foreach ($database->datasetdefs as $datasetdef)
+								<th class="border p-2">-</th>
+							@endforeach
+						</tr>
+					</thead>
+					<tbody class="bg-white divide-y divide-gray-200 text-center">
+						<!-- Rows will be added here -->
+					</tbody>
+				</table>
+				<div class="extendable-text-container"><small>
+					<p class="short-text" id="skipped" wire:ignore></p>
+					<p class="long-text" id="skipped-list" wire:ignore></p></small>
+				
+					<style>
+						.extendable-text-container {
+							position: relative; /* Needed for absolute positioning if you want */
+							width: 100%; /* Adjust as needed */
+							border: 1px solid #ccc;
+							padding: 2px;
+						}
 
+						.short-text {
+							cursor: pointer; /* Indicate it's interactive */
+						}
+
+						.long-text {
+							max-height: 0;
+							overflow: hidden;
+							transition: max-height 0.3s ease-in-out; /* Smooth transition */
+							margin-top: 5px; /* Add some space when expanded */
+						}
+
+						.extendable-text-container:hover .long-text {
+							max-height: 100%; /* Adjust to accommodate your longer text */
+						}
+					</style>
+				</div>
+
+			@if($dirMode >= 0)
+				<br>
+				<p>Files selected for upload: <span x-text="nFilesSelected"></span></p>
+				<hr>
+
+				<h3>4) Upload the datafiles:</h3>
+				<label>Overwrite existing files?
+						<input type="checkbox" wire:model.live="overwriteExisting">
+				</label><br>
+
+				<div>
+					<x-button wire:loading:attr="disabled" wire:click="$js.doUpload($data)" :disabled="!$canUpload">Start upload</x-button>
+				</div>
+				<p> Status:  <span x-text="status"></span></p>
+				<p id="nUploaded" wire:ignore></p>
+				<p id="nUploadProgress" wire:ignore></p>
+
+				<div x-cloak>
+					<div class="bg-gray-100">
+						<x-message show="cancelled" timeout="2000">The upload has been cancelled</x-message>
+						<x-message type="error" show="error">Error: there was an error uploading. Please try again!</x-message>
+						<x-message show="uploading">Uploading to server</x-message>
+					</div>
+				</div>
+				<div>
+					<p>Upload progress: <span x-text="progressText"></span></p>
+					<div class="relative h-2 mt-2 rounded-full bg-base-200">
+						<div
+							x-bind:style="'width: ' + progress + '%;'"
+							class="absolute top-0 left-0 h-full bg-orange-500 rounded-full">
+						</div>
+				</div>
+				<br>
+				<hr>
+				
+				<h3>5) Save the uploaded datafiles to the database:</h3>
+				<x-button :disabled="$nFilesToUpload > $nFilesUploaded || $nFilesToUpload === 0" type="submit">Save files to database</x-button>
+
+				<p><small>(Livewire) Status: {{ $status }}</small></p>
+				<p><small>(Alpine) Directory: <span x-text="directory"></span></small></p>
+				<p><small>(Livewire) File to upload: {{ $nFilesToUpload }}</small></p>
+			@endif
+		@endif
 	</form>
 
 
@@ -165,6 +169,7 @@
 		"change",
 		(e) => {
 			//console.log('EVENT: directory-picker: files: ', Array.from(e.target.files));
+			resetUpload();
 			const files = event.target.files;
 			//console.log('EVENT: directory-picker: # of files', files.length);
 			if (files.length > 0) {
@@ -176,14 +181,14 @@
 			}
 			$wire.set("nFilesToUpload", 0);
 			$wire.set('nFilesInDir', e.target.files.length); // set immediately using $wire.set(), otherwise set when next $wire.$refresh or another action that triggers a refresh. See
-			document.getElementById("skipped").innerHTML = "";
-			document.getElementById("skipped-list").innerHTML = "";
-			document.getElementById("analysis-summary").innerHTML = "";
-			tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
-			tableBody.innerHTML = "";
-			table = document.getElementById('results'); 
-			//console.log('Table:', table.style);
-			table.style.visibility = "hidden";
+			a = document.getElementById("skipped");
+			if (a!=null) a.innerHTML = "";
+			a = document.getElementById("skipped-list");
+			if (a!=null) a.innerHTML = "";
+			a = document.getElementById("analysis-summary");
+			if (a!=null) a.innerHTML = "";
+			a = tableBody = document.getElementById('results');
+			if (a!=null) a.getElementsByTagName('tbody')[0].innerHTML = ""; 
 		},
 		false,
 	);
@@ -273,7 +278,6 @@
 	$js('doFilter', (data) => {
 		if (data) {
 			resetUpload();
-			//setStatus('Filtering started');
 			mode = 0;
 			let df_array = $wire.datasetdefIds; // get the dataset definition (=array with dataset filetypes)
 			let fn_filter_array = [], postfix_array = [], beg_id_array = [], dummy = [], fn_cnt_array = [];
@@ -447,9 +451,8 @@
 				// select all Datasets in the table
 			document.getElementById("checkAll").checked = true; // select all
 			data = _checkAll(data);
-
-			//setStatus('Filtering finished');
-		} else
+		} 
+		else
 			console.log('doFilter() - data parameter *does not* exist!');
 	});
 
@@ -462,7 +465,7 @@
 		$wire.set('canUpload', false);
 		$wire.set('uploading', true); // set immediately. This is used within the Livewire component
 		data.uploading = true; // use this for input button state (enabled/disabled)
-		setStatus("Upload started");
+		setStatus("Upload process started.");
 
 		let uploads = Object.values($wire.uploads);
 		let offset = uploads.length;
@@ -471,7 +474,7 @@
 		data.pendingFiles.forEach( (file, index) => { uploadQueue.push({ index, file }); } );
 		console.log("uploadQueue.length: ", uploadQueue.length);
 		processQueue();
-		setStatus('Upload finished!?');
+		setStatus('Upload process finished.');
 	});
 	
 		// Cancel an upload (jw:note not used yet (no button), but works.)
@@ -519,7 +522,7 @@
 	{
 		var checkBox = document.getElementById("checkAll");
 		tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
-		if (tableBody.rows != null)
+		if (tableBody.rows.length > 0)
 		{
 			//console.log('Tablebody.rows', tableBody.rows);
 			if (checkBox.checked == true)
@@ -581,13 +584,14 @@
 			headers[df_array.length+3].textContent = dsn_selected.length; // insert count of Names
 			for (let j=0; j<df_array.length; j++) // for each column
 				headers[df_array.length+4+j].textContent = fn_cnt_array[j]; // insert the count of fns
-				// Update Livewire variables
-			$wire.set('pdatasetnames', dsn_selected); // save the selected dataset names 
-			$wire.set('pdatafilenames', fn_selected); // save the selected filenames 
 				// Update Alpine variables
 			let data = Alpine.$data(document.getElementById('alpineComponent'));
 			const uniqueSet = new Set(fn_selected.flat());
-			data.nFilesSelected= uniqueSet.size;
+			data.nFilesSelected= uniqueSet.size; // save the number of unique files to upload
+				// Update Livewire variables
+			$wire.set('pdatasetnames', dsn_selected); // save the selected dataset names 
+			$wire.set('pdatafilenames', fn_selected); // save the selected filenames 
+			$wire.set('nFilesSelected', data.nFilesSelected); // number of unique files to upload
 		}
 		return data;
 	}
@@ -606,14 +610,14 @@
 				() => { 
 						/* Success handler */
 					data.nUploaded++;
-						setStatus("File " + index + " now successfully uploaded");
+						setStatus("File #" + index + " now successfully uploaded");
 						data.progressText = data.nUploaded + "/" + $wire.nFilesToUpload + " files successfully uploaded";
 						maxParallelUploads++; // Free up a slot
 						// if this is the last upload, set 'uploading' to false
 						if(data.nUploaded == $wire.nFilesToUpload)
 						{
 								data.uploading = false; // finished
-								setStatus("Uploading is now finished. You may save the files to the database!");
+								setStatus("Upload process finished. You may save the files to the database!");
 						}
 						processQueue(); // Process next in queue
 				},
@@ -625,12 +629,12 @@
 				},
 				(progress) => {
 						/* Progress updates */
-						setStatus("Uploading " + index);
+						setStatus("Uploading file #" + index);
 						data.progress = event.detail.progress;
 				},
 				() => {
 						/* cancelled handler */
-						setStatus("Cancelled " + index);
+						setStatus("Cancelled at file #" + index);
 				}
 			);
 		}
@@ -654,7 +658,7 @@
 		data.uploading = false;
 		uploadQueue = [];
 		maxParallelUploads = 2; // Maximum concurrent uploads
-		setStatus("resetUpload()");
+		setStatus("");
 	}
 
 	</script>

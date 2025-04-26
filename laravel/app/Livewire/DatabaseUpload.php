@@ -45,7 +45,7 @@ class DatabaseUpload extends Component
 
 		public array $dsnFiltered= []; // array with filtered dataset names, e.g. NH01
     public array $dfnFiltered= []; // a 2D array with filtered datafilenames, dim 1: index of pdatasetnames, dim 2: index of datasetdefIds
-		public $dirMode = 0;
+		public $dirMode = -1; // -1: filter not applied yet, 0: flat directory structure, 1: nested directory structure
     public array $pdatasetnames= []; // array with selected (=subset of dsnFiltered) dataset names
     public array $pdatafilenames= []; // a 2D array with selected (=a subset of dfnFiltered) datafilenames, dim 1: index of pdatasetnames, dim 2: index of datasetdefIds
 		
@@ -191,7 +191,9 @@ class DatabaseUpload extends Component
         $nDatasets = count($this->pdatafilenames);
         $nDatafiles = $nTotalElements - $nDatasets;
         if($nDatafiles > 0)
-            $this->canUpload = true;
+					$this->canUpload = true;
+				else
+					$this->canUpload = false;
         $this->nFilesFiltered = $nDatafiles; // number of datafiles minus number of datasets
         $this->setStatus("\$this->pdatafilenames set to $this->nFilesFiltered entries");
     }
