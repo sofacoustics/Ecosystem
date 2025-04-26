@@ -43,11 +43,11 @@ class DatabaseUpload extends Component
 
     public $overwriteExisting = false; // set to true, if existing datafiles should be overwritten.
 
-		public array $fdatasetnames= []; // array with filtered dataset names, e.g. NH01
-    public array $pdatasetnames= []; // array with selected (=subset of filtered) dataset names
-    public array $fdatafilenames= []; // a 2D array with filtered datafilenames, dim 1: index of pdatasetnames, dim 2: index of datasetdefIds
-    public array $pdatafilenames= []; // a 2D array with selected (=a subset of filtered) datafilenames, dim 1: index of pdatasetnames, dim 2: index of datasetdefIds
+		public array $dsnFiltered= []; // array with filtered dataset names, e.g. NH01
+    public array $dfnFiltered= []; // a 2D array with filtered datafilenames, dim 1: index of pdatasetnames, dim 2: index of datasetdefIds
 		public $dirMode = 0;
+    public array $pdatasetnames= []; // array with selected (=subset of dsnFiltered) dataset names
+    public array $pdatafilenames= []; // a 2D array with selected (=a subset of dfnFiltered) datafilenames, dim 1: index of pdatasetnames, dim 2: index of datasetdefIds
 		
     public $progress;
     public $uploading;
@@ -56,8 +56,8 @@ class DatabaseUpload extends Component
     public $nFilesFiltered = 0;
     public $nFilesToUpload = 0;
     public $nFilesUploaded = 0;
-		public $nSetsFiltered = 0; // Number of filtered datasets
-		public $nSetsSelected = 0; // Number of selected datasets (=subset of filtered datasets)
+		public $nDatasetsSelected = 0; // Number of selected datasets (=subset of filtered datasets)
+		public $nFilesSelected = 0; // Number of selected datafiles if uploaded
 
     public bool $canUpload = false; // set to true, if there are filtered files we can upload
 
