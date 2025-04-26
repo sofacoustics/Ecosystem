@@ -474,7 +474,7 @@
 		data.pendingFiles.forEach( (file, index) => { uploadQueue.push({ index, file }); } );
 		console.log("uploadQueue.length: ", uploadQueue.length);
 		processQueue();
-		setStatus('Upload process finished.');
+		setStatus('Leaving doUpload...');
 	});
 	
 		// Cancel an upload (jw:note not used yet (no button), but works.)
