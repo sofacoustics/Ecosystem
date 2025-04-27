@@ -190,8 +190,6 @@
 					@endcan
 					<b>Name</b>: <a href="{{ route('datasets.show', $dataset->id) }}">{{ $dataset->name }}</a>
 					@role('admin') <small>(ID: {{ $dataset->id }})</small> @endrole
-					<?php /*<x-dataset.list link='true' :dataset="$dataset" />*/
-					?>
 				</li>
 			@endforeach
 			</ul>

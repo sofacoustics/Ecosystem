@@ -33,7 +33,7 @@
 <x-button class="inline" method="GET" action="{{ route('databases.datasetdefs', $database->id) }}">Definition</x-button>
 
 @if(count($database->datasetdefs))
-	<x-button class="inline" method="GET" action="{{ route('databases.show', $database->id) }}">Datasets</x-button>
+	<x-button class="inline" method="GET" action="{{ route('databases.showdatasets', $database->id) }}">Datasets</x-button>
 @endif
 
 @if(count($database->datasets))
