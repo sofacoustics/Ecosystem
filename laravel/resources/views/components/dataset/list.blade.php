@@ -19,26 +19,18 @@
 	$nMissing = $nDatasetdefs - $nDatafiles;
 @endphp
 
+<b>Name</b>:
 @if ($link == 'true')
-	<a href="{{ route('datasets.show', $dataset->id) }}">
+	<a href="{{ route('datasets.show', $dataset->id) }}">{{ $dataset->name }}</a>
+@else
+	Name: {{ $dataset->name }}
 @endif
-Name: {{ $dataset->name }}
-@role('admin')
-	(ID: {{ $dataset->id }})
-@endrole
 @if ($datafiles == 'true' && $nMissing > 0)
-	<ul class="list-inside ml-8">
-		<li>
-			@if ($nMissing == 1)
-				There is 1 datafile missing!
-			@elseif($nMissing > 1)
-				There are {{ $nMissing }} datafiles missing!
-			@endif
-		</li>
-	</ul>
-@endif
-@if ($link)
-	</a>
+	@if ($nMissing == 1)
+		<small>There is 1 datafile missing!</small>
+	@elseif($nMissing > 1)
+		<small>There are {{ $nMissing }} datafiles missing!</small>
+	@endif
 @endif
 
 @role('admin') <small>(ID: {{ $dataset->id }})</small> @endrole

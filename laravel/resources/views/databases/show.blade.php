@@ -188,7 +188,10 @@
 						<x-button method="DELETE" class="inline" action="{{ route('datasets.destroy', [$dataset]) }}">Delete</x-button>
 						<x-button method="GET" class="inline" action="{{ route('datasets.edit', $dataset) }}" >Edit</x-button>
 					@endcan
-					<x-dataset.list link='true' :dataset="$dataset" />
+					<b>Name</b>: <a href="{{ route('datasets.show', $dataset->id) }}">{{ $dataset->name }}</a>
+					@role('admin') <small>(ID: {{ $dataset->id }})</small> @endrole
+					<?php /*<x-dataset.list link='true' :dataset="$dataset" />*/
+					?>
 				</li>
 			@endforeach
 			</ul>
