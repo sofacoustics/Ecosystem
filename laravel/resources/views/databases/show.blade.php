@@ -170,13 +170,6 @@
 	<hr>
 	
 	<h2>Datasets</h2>
-		@can('create', [App\Models\Dataset::class, $database])
-			@if(count($database->datasetdefs))
-				<x-button method="GET" class="inline" action="{{ route('databases.datasets.create', [$database->id]) }}">Upload</x-button>
-				<x-button method="GET" class="inline" action="{{ route('databases.upload', [$database->id]) }}">Bulk Upload</x-button>
-			@endif
-		@endcan
-	
 		@if(count($database->datasets)==0)
 			<p>No datasets found.</p>
 		@else
