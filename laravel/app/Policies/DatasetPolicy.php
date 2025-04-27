@@ -18,11 +18,17 @@ class DatasetPolicy
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the user can view the dataset.
      */
-    public function view(User $user, Dataset $dataset): bool
+    public function view(User $user, Dataset $dataset): Response
     {
-        return true;
+			$access = (($user->id === $dataset->database->user_id) || $dataset->database->visible);
+			return $access
+				? Response::allow()
+				: Response::deny('You can not view this dataset because it is not public and you do not own it! \n(' . 
+						$user->id . " " . $dataset->database->user_id . " " . $dataset->database->visible .")");
+						
+			//return true; 
     }
 
     /**
@@ -33,8 +39,6 @@ class DatasetPolicy
     public function create(User $user, Database $database): Response
     {
 			$access = ($user->id == $database->user_id && $database->radarstatus < 1);
-//				return true;
-	//		return false;
 			return $access
             ? Response::allow()
             : Response::deny('You can not create a dataset because it is not public and you do not own it!');

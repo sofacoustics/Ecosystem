@@ -57,11 +57,11 @@ class DatasetController extends Controller
     /**
      * Display the specified resource.
      */
-    //public function show(string $id)
     public function show(Dataset $dataset)
     {
-        //$dataset = \App\Models\Dataset::where('id', $id)->first();
-        return view('datasets.show', ['dataset' => $dataset]);
+			if (!($dataset->database->visible))
+				$this->authorize('view', $dataset);	// if database not visible, check if the user allowed to see the dataset
+			return view('datasets.show', ['dataset' => $dataset]);
     }
 
 
