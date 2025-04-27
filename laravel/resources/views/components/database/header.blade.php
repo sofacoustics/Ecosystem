@@ -36,6 +36,10 @@
 	<x-button class="inline" method="GET" action="{{ route('databases.show', $database->id) }}">Datasets</x-button>
 @endif
 
+@if(count($database->datasets))
+	<x-button class="inline" method="GET" action="{{ route('databases.download', $database->id) }}">Download</x-button>
+@endif
+
 @can('update', $database)
 	@if(count($database->datasetdefs))
 		<x-button method="GET" class="inline" action="{{ route('databases.datasets.create', [$database->id]) }}">Upload</x-button>

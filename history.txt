@@ -1,19 +1,17 @@
 *** Ecosystem ***
 
 To be done:
+* JW: Prepare metadata for RADAR and Implement the actual procedure to "Assign DOI"
 * Ask JW: DatabasePolicy.php: what's the difference between ?User and User
 * Ask JW: Is Spatie used for permissions?
-* Clarify with JW how to add "Admin" as a role to User table. Admins should be able to see and edit all data.
-* Add confirmation on delete (JW)
-* Prepare metadata for RADAR
+* Ask JW: How to add "Admin" as a role to User table. Admins should be able to see and edit all data.
+* PM: Define download (single file, bulk)
 * Implement Docs = documentation files to be linked with tools and/or databases.
 * Implement Link of a database to a doc file (in RADAR via RelatedIdentifier)
 * Implement RelatedIdentifier to store citations of databases?
-* Define download (single file, bulk)
-* Implement the most important widgets
-* Implement the actual procedure to "Assign DOI"
+* MM: Implement the most important widgets
 * Implement the actual procedure to "Publish with DOI"
-* Landing page: Include filter by Visible and DOI
+* Landing page: Include filter by Visible and Archived 
 * Bulk Upload: Cancel an upload
 * Bulk Upload: Warn if a dataset already exists
 * Think about how to implement all the database functionality for tools
@@ -25,6 +23,7 @@ Nice to have:
 * Fork to a SONICOM Github repository. PM: I tried that, but it is more complex than I thought. Skipped for later. 
 * Audio View: add https://wavesurfer.xyz/
 * Bulk Upload: Automatic fill of the dataset description
+* Add confirmation on delete
 
 
 

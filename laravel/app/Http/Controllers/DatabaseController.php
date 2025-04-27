@@ -27,7 +27,7 @@ class DatabaseController extends Controller
         //$this->middleware('auth', ['only' => ['create', 'edit']]);
         // Users must be authenticated for all functions except index and show.
         // Guests will be redirected to login page
-        $this->middleware('auth', ['except' => ['index', 'show', 'datasetdefs', 'radarShow']]);
+        $this->middleware('auth', ['except' => ['index', 'show', 'download', 'datasetdefs', 'radarShow']]);
     }
 
     /**
@@ -156,4 +156,11 @@ class DatabaseController extends Controller
             'database' => $database
         ]);
     }
+
+		public function download(Database $database)
+		{
+			return view('databases.download', [
+					'database' => $database
+			]);
+		}
 }
