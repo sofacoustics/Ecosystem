@@ -3,13 +3,18 @@
 			<x-database.header :database=$database />
 	</x-slot>
 	<h2>Metadata</h2>
-		<h3>
-			@auth
-				@can('update', $database)
-					<x-button method="GET" class="inline" action="{{ route('databases.creators', $database->id) }}">Edit</x-button>
-				@endcan
-			@endauth
-			Creators:</h3>
+		@can('update', $database)
+			@if(count($database->creators)>0)
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.creators', $database->id) }}">Edit</x-button></small>
+					Creators:</h3>
+			@else
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.creators', $database->id) }}">Add creators</x-button></small>
+				</h3>
+			@endif
+		@else
+			<h3>Creators:</h3>
+		@endcan
+		
 		<ul class="list-disc list-inside">
 			@forelse ($database->creators as $creator)
 			<li><b>Name</b>: {{ $creator->creatorName }}
@@ -20,17 +25,23 @@
 				@if ($creator->affiliationIdentifier != null) <b>{{ $creator->affiliationIdentifierScheme }}</b>: {{ $creator->affiliationIdentifier }}@endif 
 			</li>
 			@empty
-				<li>No creators defined.</li>
+				@cannot('update', $database)
+					<li>No creators defined.</li>
+				@endcan
 			@endforelse
 		</ul>
 
-		<h3>
-			@auth
-				@can('update', $database)
-					<x-button method="GET" class="inline" action="{{ route('databases.publishers', $database->id) }}">Edit</x-button>
-				@endcan
-			@endauth
-			Publishers:</h3>
+		@can('update', $database)
+			@if(count($database->publishers)>0)
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.publishers', $database->id) }}">Edit</x-button></small>
+					Publishers:</h3>
+			@else
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.publishers', $database->id) }}">Add publishers</x-button></small>
+				</h3>
+			@endif
+		@else
+			<h3>Publishers:</h3>
+		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($database->publishers as $publisher)
 			<li><b>Name</b>: {{ $publisher->publisherName }}
@@ -41,34 +52,46 @@
 				@endif
 			</li>
 			@empty
-				<li>No publishers defined.</li>
+				@cannot('update', $database)
+					<li>No publishers defined.</li>
+				@endcan
 			@endforelse
 		</ul>
 
-		<h3>
-			@auth
-				@can('update', $database)
-					<x-button method="GET" class="inline" action="{{ route('databases.subjectareas', $database->id) }}">Edit</x-button>
-				@endcan
-			@endauth
-			Subject Areas:</h3>
+		@can('update', $database)
+			@if(count($database->subjectareas)>0)
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.subjectareas', $database->id) }}">Edit</x-button></small>
+					Subject Areas:</h3>
+			@else
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.subjectareas', $database->id) }}">Add subject areas</x-button></small>
+				</h3>
+			@endif
+		@else
+			<h3>Subject Areas:</h3>
+		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($database->subjectareas as $subjectarea)
 			<li><b>{{ \App\Models\Database::subjectareaDisplay($subjectarea->controlledSubjectAreaIndex) }}</b>
 					@if ($subjectarea->additionalSubjectArea != null) ({{ $subjectarea->additionalSubjectArea }}) @endif
 			</li>
 			@empty
-				<li>No subject areas defined.</li>
+				@cannot('update', $database)
+					<li>No subject areas defined.</li>
+				@endcan
 			@endforelse
 		</ul>
 
-		<h3>
-			@auth
-				@can('update', $database)
-					<x-button method="GET" class="inline" action="{{ route('databases.rightsholders', $database->id) }}">Edit</x-button>
-				@endcan
-			@endauth
-			Rightsholders:</h3>
+		@can('update', $database)
+			@if(count($database->rightsholders)>0)
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.rightsholders', $database->id) }}">Edit</x-button></small>
+				Rightsholders:</h3>
+			@else
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.rightsholders', $database->id) }}">Add rightholders</x-button></small>
+				<h3>
+			@endif
+		@else
+			<h3>Rightsholders:</h3>			
+		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($database->rightsholders as $rightsholder)
 			<li><b>Name</b>: {{ $rightsholder->rightsholderName }}
@@ -79,17 +102,23 @@
 				@endif
 			</li>
 			@empty
-				<li>No rightsholder defined.</li>
+				@cannot('update', $database)
+					<li>No rightsholder defined.</li>
+				@endcan
 			@endforelse
 		</ul>
 
-		<h3>
-			@auth
-				@can('update', $database)
-					<x-button method="GET" class="inline" action="{{ route('databases.keywords', $database->id) }}">Edit</x-button>
-				@endcan
-			@endauth
-			Keywords:</h3>
+		@can('update', $database)
+			@if(count($database->rightsholders)>0)
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.keywords', $database->id) }}">Edit</x-button></small>
+				Keywords:</h3>
+			@else
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.keywords', $database->id) }}">Add keywords</x-button></small>
+				</h3>
+			@endif
+		@else
+			<h3>Keywords:</h3>
+		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($database->keywords as $keyword)
 			<li><b> {{ $keyword->keywordName }} </b> (
@@ -101,16 +130,16 @@
 				@if ($keyword->valueURI != null)</a> @endif )
 			</li>
 			@empty
-				<li>No keywords defined.</li>
+				@cannot('update', $database)
+					<li>No keywords defined.</li>
+				@endcan
 			@endforelse
 		</ul>
 
 		<h3>
-			@auth
-				@can('update', $database)
-					<x-button method="GET" class="inline" action="{{ route('databases.edit', $database->id) }}">Edit</x-button>
-				@endcan
-			@endauth
+			@can('update', $database)
+				<small><x-button method="GET" class="inline" action="{{ route('databases.edit', $database->id) }}">Edit</x-button></small>
+			@endcan
 			Other Metadata:</h3>
 		<ul class="list-disc list-inside">
 		
