@@ -14,6 +14,7 @@ class DatabaseCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
+		//dd('toArray');
         return parent::toArray($request);
     }
 }

@@ -14,9 +14,11 @@ class DatabaseResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+		//dd('DatabaseResource');
         return parent::toArray($request);
 //        return [
 //            'id' => $this->id,
+//			'parentId' => env("RADAR_WORKSPACE"),
 //            'name' => $this->name,
 //        ];
     }

@@ -66,7 +66,8 @@ Route::get('/databases/{database}/download', [DatabaseController::class, 'downlo
 Route::get('/databases/{database}/purge', [DatabaseController::class, 'purge'])->name('databases.purge');
 Route::get('/databases/{database}/showdatasets', [DatabaseController::class, 'showdatasets'])->name('databases.showdatasets');
 Route::get('/databases/{database}/comments', [CommentController::class, 'index'])->name('databases.comments');
-Route::get('/databases/{database}/datasets/bulkupload', [DatasetController::class, 'bulkupload'])->name('databases.datasets.bulkupload'); 
+Route::get('/databases/{database}/datasets/bulkupload', [DatasetController::class, 'bulkupload'])->name('databases.datasets.bulkupload');
+Route::get('/databases/{database}/publish', [DatabaseController::class, 'publish'])->name('databases.publish');
 
 // DATASET
 Route::resource('datasets', DatasetController::class);

@@ -170,4 +170,17 @@ class DatabaseController extends Controller
 					'database' => $database
 			]);
 		}
+    public function publish(Database $database)
+    {
+        // publish this database to RADAR and get DOI
+
+        // generate JSON
+        //$database->GenerateRadarJson();
+
+        // push to RADAR
+        //
+        return view('databases.publish', [
+            'database' => $database
+        ]);
+    }
 }

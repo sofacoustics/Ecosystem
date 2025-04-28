@@ -62,7 +62,7 @@ class Database extends Model
 
 		public function publishers()
 	{
-		return $this->hasMany(Publisher::class); 
+		return $this->hasMany(Publisher::class);
 	}
 		
 		public function subjectareas()
@@ -148,4 +148,22 @@ class Database extends Model
 		$rr = \App\Models\Radar\Metadataschema::where('name','subjectArea')->select('display')->get();
 				return $rr;
 	}
+
+	/**
+     * Define the json format of the model
+
+		https://dev.to/gbhorwood/laravel-powerful-json-with-jsonserialize-4fmh
+     */
+   public function jsonSerialize():Array
+   {
+       dd('jw:todo - maybe use jsonSerialize for RADAR rather than Resource API');
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            // cast seconds to minutes and seconds
+            'duration' => gmdate("i:s", $this->duration_seconds),
+            // a new value
+            'long_enough_for_radio_play' => $this->duration_seconds > 120 ? true: false,
+        ];
+    } // jsonSerialize
 }
