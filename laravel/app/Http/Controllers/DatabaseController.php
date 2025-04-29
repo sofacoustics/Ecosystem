@@ -6,11 +6,14 @@ use Carbon;
 
 use App\Models\User;
 use App\Models\Database;
+use App\Models\Datafile;
 use App\Models\Radardataset;
 use App\Models\Radardatasetresourcetype;
 
 use App\Http\Requests\StoreDatabaseRequest;
 use App\Http\Requests\UpdateDatabaseRequest;
+
+use Illuminate\Http\Request;
 
 use App\Data\RadardatasetData;
 use App\Data\RadardatasetpureData;
@@ -157,11 +160,49 @@ class DatabaseController extends Controller
         ]);
     }
 
-		public function download(Database $database)
+		public function download(Request $request, Database $database) 
 		{
-			return view('databases.download', [
-					'database' => $database
-			]);
+			$type = $request->input('type');  
+			if ($type === "json")
+			{
+				try 
+				{
+					$files = Datafile::join('datasets', 'datafiles.dataset_id', '=', 'datasets.id')
+						->join('databases','datasets.database_id', '=', 'databases.id')
+						->where('databases.id', '=', $database->id)
+            ->select('datafiles.*') // Select all order columns
+            ->get();
+
+					$fileData = $files->map(function ($file) { // Transform the data into a suitable format.  This is CRUCIAL.
+							return [
+									'datafile id' => $file->id,
+									'datafile type' => $file->datasetdef->name,
+									'dataset id' => $file->dataset->id,
+									'dataset name' => $file->dataset->name, 
+									'dataset description' => $file->dataset->description,
+									'database id' => $file->dataset->database->id,
+									'database name' => $file->dataset->database->title,
+									'URL' => asset($file->url()),
+							];
+					});
+					// Return the file data as a JSON response.
+					return response()->json([
+							'success' => true,
+							'message' => 'Files retrieved successfully.',
+							'data'    => $fileData,
+					], 200); // 200 OK
+				} 
+				catch (\Exception $e) 
+				{
+					// Handle any errors that occur during the process.
+					return response()->json([
+							'success' => false,
+							'message' => 'Failed to retrieve files: ' . $e->getMessage(),
+					], 500); // 500 Internal Server Error
+				}
+			}
+			else
+				return view('databases.download', ['database' => $database, 'type' => $type]);
 		}
 
 		public function showdatasets(Database $database)
