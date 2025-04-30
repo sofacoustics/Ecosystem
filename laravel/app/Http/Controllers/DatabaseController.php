@@ -176,6 +176,7 @@ class DatabaseController extends Controller
 					$fileData = $files->map(function ($file) { // Transform the data into a suitable format.  This is CRUCIAL.
 							return [
 									'datafile id' => $file->id,
+									'datafile name' => $file->name,
 									'datafile type' => $file->datasetdef->name,
 									'dataset id' => $file->dataset->id,
 									'dataset name' => $file->dataset->name, 
