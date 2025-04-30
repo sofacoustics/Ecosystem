@@ -13,6 +13,8 @@ use App\Models\Radardatasetresourcetype;
 use App\Http\Requests\StoreDatabaseRequest;
 use App\Http\Requests\UpdateDatabaseRequest;
 
+use App\Http\Resources\DatabaseResource;
+
 use Illuminate\Http\Request;
 
 use App\Data\RadardatasetData;
@@ -216,13 +218,22 @@ class DatabaseController extends Controller
     {
         // publish this database to RADAR and get DOI
 
-        // generate JSON
-        //$database->GenerateRadarJson();
+
+        // eager load relationships so they appear in serializeJson()
+        $database->load('creators',
+            'publishers',
+            'subjectareas',
+            'rightsholders',
+            'keywords',
+        );
+		$resource = new DatabaseResource($database);
+		$json = $resource->toJson(JSON_PRETTY_PRINT);
 
         // push to RADAR
         //
         return view('databases.publish', [
-            'database' => $database
+            'database' => $database,
+			'json' => $json,
         ]);
     }
 }

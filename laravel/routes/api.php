@@ -26,10 +26,23 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/databases', function () {
     return new DatabaseCollection(Database::all());
 });
+/*
 Route::get('/databases/{id}', function (string $id) {
     return new DatabaseResource(Database::findOrFail($id));
 });
-
+*/
+/*
+Route::get('/databases/{id}/{option?}', function (string $id) {
+    return new DatabaseResource(Database::findOrFail($id));
+});
+*/
+/*
+Route::get('/databases/{id}', function ($id) {
+    return (new DatabaseResource(Database::findOrFail($id)));
+});
+*/
+// Use Api controller so we can eager load databases
+Route::get('/databases/{database}', [ App\Http\Controllers\Api\DatabaseController::class, 'show']);
 
 ////////////////////////////////////////////////////////////////////////////////
 // RADAR API

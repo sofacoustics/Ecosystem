@@ -4,4 +4,9 @@
 	</x-slot>
 
 <p>Under construction (jw)</p>
+
+<p>JSON</p>
+<pre>
+{{ $json }}
+</pre>
 </x-app-layout>

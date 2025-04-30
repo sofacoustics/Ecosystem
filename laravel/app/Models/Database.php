@@ -16,7 +16,7 @@ class Database extends Model
 	use HasFactory;
 	protected $fillable = ['title', 'additionaltitle', 'additionaltitletype', 'description', 'descriptiontype',
 		'radardataset',
-		'productionyear', 'publicationyear', 'language', 'resourcetype', 'resource', 'datasources','software', 
+		'productionyear', 'publicationyear', 'language', 'resourcetype', 'resource', 'datasources','software',
 		'processing', 'relatedinformation', 'controlledrights', 'additionalrights', //'subjectAreas', 'publishers',
 		'creators', 'doi', 'visible', 'radarstatus',
 		'bulk_upload_dataset_name_filter',
@@ -26,7 +26,6 @@ class Database extends Model
 	protected $casts = [
 		'radardataset' => RadardatasetpureData::class,
 	];
-
 
 	protected static function booted()
 	{
@@ -55,7 +54,7 @@ class Database extends Model
 		return $this->hasMany(Datasetdef::class);
 	}
 
-		public function creators()
+	public function creators()
 	{
 		return $this->hasMany(Creator::class); 
 	}
@@ -72,7 +71,7 @@ class Database extends Model
 
 		public function rightsholders()
 	{
-		return $this->hasMany(Rightsholder::class); 
+		return $this->hasMany(Rightsholder::class);
 	}
 
 		public function keywords()
@@ -82,7 +81,7 @@ class Database extends Model
 
 		public function comments()
 	{
-		return $this->hasMany(Comment::class); 
+		return $this->hasMany(Comment::class);
 	}
 
 	public function radardataset(): HasOne
@@ -142,28 +141,10 @@ class Database extends Model
 			$result = \App\Models\Radar\Metadataschema::where('id', $subjectareaindex)->select('display')->get();
 			return $result[0]->attributes['display'];
 		}
-		
+
 		static function subjectareasList()
 	{
 		$rr = \App\Models\Radar\Metadataschema::where('name','subjectArea')->select('display')->get();
 				return $rr;
 	}
-
-	/**
-     * Define the json format of the model
-
-		https://dev.to/gbhorwood/laravel-powerful-json-with-jsonserialize-4fmh
-     */
-   public function jsonSerialize():Array
-   {
-       dd('jw:todo - maybe use jsonSerialize for RADAR rather than Resource API');
-        return [
-            'id' => $this->id,
-            'title' => $this->title,
-            // cast seconds to minutes and seconds
-            'duration' => gmdate("i:s", $this->duration_seconds),
-            // a new value
-            'long_enough_for_radio_play' => $this->duration_seconds > 120 ? true: false,
-        ];
-    } // jsonSerialize
 }
