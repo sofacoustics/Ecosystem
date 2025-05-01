@@ -147,6 +147,8 @@
 
 				<p><small>(Livewire) Status: {{ $status }}</small></p>
 				<p><small>(Alpine) Directory: <span x-text="directory"></span></small></p>
+				<p><small>(Alpine) Mode: <span x-text="dirMode"></span></small></p>
+				<p><small>(Livewire) Mode: {{ $dirMode }}</small></p>
 				<p><small>(Livewire) File to upload: {{ $nFilesToUpload }}</small></p>
 			@endif
 		@endif
@@ -278,7 +280,7 @@
 	$js('doFilter', (data) => {
 		if (data) {
 			resetUpload();
-			mode = 0;
+			data.dirMode = 0;
 			let df_array = $wire.datasetdefIds; // get the dataset definition (=array with dataset filetypes)
 			let fn_filter_array = [], postfix_array = [], beg_id_array = [], dummy = [], fn_cnt_array = [];
 			for (let i=0; i<df_array.length; i++)
@@ -305,7 +307,7 @@
 					fn_filter = fn_filter.replace(/<ANY>/g, ".+"); 
 					fn_filter = RegExp(fn_filter.replace(/<ID>/g, ".+"));
 					fn_filter_array[i]=fn_filter;
-					if (mode == 0 && fn_pattern.indexOf("/") >= 0) mode=1;
+					if (data.dirMode == 0 && fn_pattern.indexOf("/") >= 0) data.dirMode=1;
 					let end_filter = fn_pattern.indexOf("ID>")+3; // find the end of the ID
 					let postfix = fn_pattern.substring(end_filter); // hole den postfix, d.h., text nach <ID> raus
 					postfix = postfix.replace(/\[/g, "\\[");
@@ -337,7 +339,7 @@
 			let dsn_cnt = 0; skipped_cnt = 0; matched_cnt = 0; conflict_cnt = 0;
 			for (let i = 0; i < data.allFiles.length; i++)
 			{
-				if (mode == 1)
+				if (data.dirMode == 1)
 				{   // we have a directory in the pattern
 					fn = data.allFiles[i].webkitRelativePath;
 					fn = fn.substring(fn.indexOf("/")+1); // remove the root directory
@@ -407,7 +409,7 @@
 				document.getElementById("skipped-list").innerHTML = "";
 			}
 				// Display analysis summary
-			mode_str=(mode)?("Nested"):("Flat");
+			mode_str=(data.dirMode)?("Nested"):("Flat");
 			str = "" + 
 				"<b>Files matched:</b> " + String(matched_cnt) + " files (includes conflicting)<br>" +
 				"<b>Files conflicting:</b> " + String(conflict_cnt) + " files<br>" +
@@ -447,7 +449,7 @@
 				// save variables in Livewire for upload procedure
 			$wire.set('dsnFiltered', dsn_array); // save the filtered dataset names 
 			$wire.set('dfnFiltered', fn_array); // save the filtered filenames
-			$wire.set('dirMode', mode); // save the directory mode (0: flat, 1: nested)
+			$wire.set('dirMode', data.dirMode); // save the directory dirMode (0: flat, 1: nested)
 				// select all Datasets in the table
 			document.getElementById("checkAll").checked = true; // select all
 			data = _checkAll(data);
@@ -503,11 +505,14 @@
 		}
 		else
 		{			// nested: prepend filenamesToUpload with directory for comparison with allFiles
+			console.log("nested: ", data.allFiles);
+			console.log('data.directory: ', data.directory);
 			let prefix = data.directory+'/';
 			dirPrefixed = filenamesToUpload.map(item => prefix + item);
 			data.pendingFiles = data.allFiles.filter((file) => {
 					return dirPrefixed.includes(file.webkitRelativePath);
 			});
+			console.log('data.pendingFiles: ', data.pendingFiles);
 		}
 			// update the actual number of files to upload, so Livewire knows how many files to expect.
 		$wire.set('nFilesToUpload', data.pendingFiles.length);
