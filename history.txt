@@ -5,7 +5,6 @@ To be done:
 * Ask JW: DatabasePolicy.php: what's the difference between ?User and User
 * Ask JW: Is Spatie used for permissions?
 * Ask JW: How to add "Admin" as a role to User table. Admins should be able to see and edit all data.
-* PM: Fix the bug not being able to bulk upload datasets which names already exist
 * Implement Docs = documentation files to be linked with tools and/or databases.
 * Implement Link of a database to a doc file (in RADAR via RelatedIdentifier)
 * Implement RelatedIdentifier to store citations of databases?
@@ -95,6 +94,8 @@ Done:
 * Table
 * Bulk Upload: Check if duplicate files assigned to the same datafile
 * Bulk Upload: Provide option to select datasets for the upload
+* Bug fix: not being able to bulk upload datasets which names already exist
+
 
 
 User profile:

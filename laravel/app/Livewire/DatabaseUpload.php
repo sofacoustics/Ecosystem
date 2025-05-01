@@ -270,149 +270,142 @@ class DatabaseUpload extends Component
 
     public function save()
     {
-        $this->setStatus("Saving: there are " . count($this->uploads)." uploads to save");
-		if(count($this->uploads))
-        {
-			// Create the datasets and their datafiles
-            $this->debug(1, "There are ".count($this->pdatasetnames)." datasets to save");
-			foreach($this->pdatasetnames as $datasetnameKey => $datasetname)
-            {
-                $this->debug(1, "Dataset $datasetnameKey: $datasetname", 1);
-                // Create dataset if it doesn't exist1
-                if(!Dataset::where('name', "$datasetname")->exists())
-                {
-                    $this->debug(1, "Creating dataset");
-                    // create the dataset
-                    $dataset = new Dataset();
-                    $dataset->name = "$datasetname";
-                    $dataset->description = "Bulk uploaded dataset";
-                    $dataset->database_id = $this->database->id;
-                    $dataset->save();
-                }
-                else
-                {
-                    $this->debug(1, "Using existing dataset");
-                    $dataset = Dataset::where('name', "$datasetname")->first();
-                }
+			$this->setStatus("Saving: there are " . count($this->uploads)." uploads to save");
+			if(count($this->uploads))
+			{
+					// Create the datasets and their datafiles
+				$this->debug(1, "There are ".count($this->pdatasetnames)." datasets to save");
+				foreach($this->pdatasetnames as $datasetnameKey => $datasetname)
+				{
+					$this->debug(1, "Dataset $datasetnameKey: $datasetname", 1);
+						// Create dataset if it doesn't exist1
+					if(!Dataset::where('name', "$datasetname")->where('database_id', $this->database->id)->exists())
+					{
+						$this->debug(1, "Creating dataset");
+						$this->setStatus("Creating dataset");
+							// create the dataset
+						$dataset = new Dataset();
+						$dataset->name = "$datasetname";
+						$dataset->description = "Bulk uploaded dataset";
+						$dataset->database_id = $this->database->id;
+						$dataset->save();
+					}
+					else
+					{
+						$this->debug(1, "Using existing dataset");
+						$this->setStatus("Using existing ");
+						$dataset = Dataset::where('name', "$datasetname")->where('database_id', $this->database->id)->first();
+					}
 
-                // create one datafile for each datasetdef
-                $this->debug(1, "There are ".count($this->datasetdefIds)." datafiles to set");
-                foreach($this->datasetdefIds as $datasetdefKey => $datasetdefId)
-                {
-                    $this->debug(1, "Datasetdef $datasetdefId", 2);
-                    //jw:todo validate file!!!
-                    $datafile = Datafile::where('datasetdef_id', $datasetdefId)
-                        ->where('dataset_id', "$dataset->id")
-                        ->first();
-                    if($datafile)
-                        $this->debug(1, "A datafile for the datasetdef $datasetdefId already exists in the database (id: $datafile->id)");
-                    if($datafile && !$this->overwriteExisting)
-                        $this->debug(1, "Since this overwriting existing datafiles is disabled, we will just remove the corresponding upload, if it exists.");
+						// create one datafile for each datasetdef
+					$this->debug(1, "There are ".count($this->datasetdefIds)." datafiles to set");
+					foreach($this->datasetdefIds as $datasetdefKey => $datasetdefId)
+					{
+						$this->debug(1, "Datasetdef $datasetdefId", 2);
+						//jw:todo validate file!!!
+						$datafile = Datafile::where('datasetdef_id', $datasetdefId)
+							->where('dataset_id', "$dataset->id")
+							->first();
+						if($datafile)
+							$this->debug(1, "A datafile for the datasetdef $datasetdefId already exists in the database (id: $datafile->id)");
+						if($datafile && !$this->overwriteExisting)
+							$this->debug(1, "Since this overwriting existing datafiles is disabled, we will just remove the corresponding upload, if it exists.");
 
-                    //jw:todo find out which datafile
-                    //dd($this->pdatafilenames);
-                    $this->debug(2, "Checking if datasetnameKey $datasetnameKey exists in pdatafilenames");
-                    if(array_key_exists($datasetnameKey, $this->pdatafilenames))
-                    {
-                        $this->debug(2, "-> datasetnameKey $datasetnameKey exists in pdatafilenames ($datasetname)");
+						$this->debug(2, "Checking if datasetnameKey $datasetnameKey exists in pdatafilenames");
+						if(array_key_exists($datasetnameKey, $this->pdatafilenames))
+						{
+							$this->debug(2, "-> datasetnameKey $datasetnameKey exists in pdatafilenames ($datasetname)");
+							$this->debug(2, "Checking if pdatafilenames[$datasetnameKey] key $datasetdefKey exists.");
+							if(!array_key_exists($datasetdefKey, $this->pdatafilenames[$datasetnameKey]))
+							{		// this datasetdef has no corresponding datafilenames entry! continue;
+								$this->debug(2, "pdatafilenames[$datasetnameKey] key $datasetdefKey does not exist.");
+								continue; // pdatafilenames[$datasetnameKey] key $datasetdefKey does not exist -> continue with next datasetdefId
+							}
+							$this->debug(2, "pdatafilenames[$datasetnameKey] key $datasetdefKey exists.");
+						}
+						else
+						{
+							$this->debug(2, "pdatafilenames key $datasetnameKey does not exist.");
+							continue; // pdatafilenames key $datasetnameKey does not exist -> continue with next datasetdefId
+						}
+							// the pdatafilenames entries may include nested entries with paths
+						$datafileNameWithPath = $this->pdatafilenames[$datasetnameKey][$datasetdefKey];
+							// if there is a '/' in it
+						if(strpos($datafileNameWithPath, '/') !== false)
+						{		// remove relative directory
+							$datafileName = substr($datafileNameWithPath, strrpos($datafileNameWithPath, '/') + 1);
+						}
+						else
+							$datafileName = $datafileNameWithPath;
+						$this->debug(1, "Datafile name to look for in uploads: $datafileName");
 
-                        $this->debug(2, "Checking if pdatafilenames[$datasetnameKey] key $datasetdefKey exists.");
-                        if(!array_key_exists($datasetdefKey, $this->pdatafilenames[$datasetnameKey]))
-                        {
-                            // this datasetdef has no corresponding datafilenames entry! continue;
-                            $this->debug(2, "pdatafilenames[$datasetnameKey] key $datasetdefKey does not exist.");
-                            continue;
-                        }
-                        $this->debug(2, "pdatafilenames[$datasetnameKey] key $datasetdefKey exists.");
-                    }
-                    else
-                    {
-                        $this->debug(2, "pdatafilenames key $datasetnameKey does not exist.");
-                        continue;
-                    }
-                    // the pdatafilenames entries may include nested entries with paths
-                    $datafileNameWithPath = $this->pdatafilenames[$datasetnameKey][$datasetdefKey];
-                    // if there is a '/' in it
-                    if(strpos($datafileNameWithPath, '/') !== false)
-                    {
-                        // remove relative directory
-                        $datafileName = substr($datafileNameWithPath, strrpos($datafileNameWithPath, '/') + 1);
-                    }
-                    else
-                        $datafileName = $datafileNameWithPath;
-                    $this->debug(1, "Datafile name to look for in uploads: $datafileName");
-                    //
-                    foreach($this->uploads as $key => $upload)
-                    {
-                        //if(!isset($upload['fileRef']))
-                        //    continue; // it may be that the fileRef is not set, although, e.g. fileName is. (see Javascript)
-                        $file = $upload; //$upload['fileRef'];
-                        $this->debug(2, "Processing upload $key");
-                        $originalName = $file->getClientOriginalName();
-                        if("$originalName" == "")
-                            $this->error('trying to create a datafile with an empty name');
-                        else if("$originalName" == "$datafileName")
-                        {
-                            $this->debug(1, "Upload match found (upload key $key)");
-                            if($datafile && !$this->overwriteExisting)
-                            {
-                                $this->debug(1, "Skipping existing datafile $datafile->id since overwriteExisting is false");
-                                // do nothing except remove upload at end
-                            }
-                            else
-                            {
-                                // create new Datafile
-                                $existing = false;
-                                if(!$datafile)
-                                {
-                                    $this->debug(1, "Creating a new datafile for $originalName");
-                                    $datafile = new Datafile();
-                                    // set mandatory fields
-                                    $datafile->dataset_id = $dataset->id;
-                                    $datafile->datasetdef_id = $datasetdefId;
-                                }
-                                else
-                                {
-                                    $existing = true;
-                                    $this->debug(1, "Overwrite existing datafile $datafile->id");
-                                }
+						foreach($this->uploads as $key => $upload)
+						{
+							$file = $upload; 
+							$this->debug(2, "Processing upload $key");
+							$originalName = $file->getClientOriginalName();
+							if("$originalName" == "")
+									$this->error('trying to create a datafile with an empty name');
+							else if("$originalName" == "$datafileName")
+							{
+								$this->debug(1, "Upload match found (upload key $key)");
+								if($datafile && !$this->overwriteExisting)
+								{		// file already exists, but overwrite not selected -> skip this file
+									$this->debug(1, "Skipping existing datafile $datafile->id since overwriteExisting is false");
+								}
+								else
+								{		// create new Datafile or overwrite
+									$existing = false;
+									if(!$datafile)
+									{		// create a new datafile
+										$this->debug(1, "Creating a new datafile for $originalName");
+										$datafile = new Datafile();
+											// set mandatory fields
+										$datafile->dataset_id = $dataset->id;
+										$datafile->datasetdef_id = $datasetdefId;
+									}
+									else
+									{		// overwrite existing datafile
+										$existing = true;
+										$this->debug(1, "Overwrite existing datafile $datafile->id");
+									}
 
-                                $datafile->name = "$originalName";
-                                //session()->flash('status', "Datafile (id=$datafile->id) is being saved to the database");
-                                $datafile->save(); // save so datafile has ID (necessary for saving file)
-                                if($existing) {
-                                    $this->debug(1, "Touching datafile to set 'updated_at'");
-                                    $datafile->touch(); // make sure 'updated_at' is set for existing, so DatafileObserver is triggered
-                                }
-                                $directory = $datafile->directory();
-                                $this->dispatch('saving-file', name: $datafile->name); // dispatch a browser event
-                                $this->dispatch('showFlashMessage', ['type' => 'success', 'message' => 'storeAs']);
-                                //session()->flash('status', "Datafile $datafile->name is being saved to disk");
-                                // Save the file to disk (moving from temporary location)
-                                $file->storeAs("$directory", "$datafile->name", 'sonicom-data');
-                                //$this->validate();
-                                //jw:todo add to 'saved' and remove from '$uploads'
-                                $this->saved[] = $originalName;
-                            }
-                            // clean up
-                            $this->debug(1, "Deleting temporary uploaded file and removing $key entry from upload list");
-                            $file->delete();
-                            unset($this->uploads[$key]);
-                            $this->nFilesUploaded = count($this->uploads);
-                            break;
-                        }
-                    }
-                }
-			}
-        }
-        $this->setStatus("Saving now complete");
-        $this->saved = []; // reset saved
-        $this->uploaded = []; // reset uploaded
-        $this->nFilesToUpload = 0;
-        $this->uploading = false;
-        $this->refresh();
-        $this->debug(1, "save(): finished", 0);
-        $this->dispatch('saved-to-database');
+									$datafile->name = "$originalName";
+									$datafile->save(); // save so datafile has ID (necessary for saving file)
+									
+									if($existing) 
+									{
+										$this->debug(1, "Touching datafile to set 'updated_at'");
+										$datafile->touch(); // touch the file to reset 'updated_at' and trigger DatafileObserver
+									}
+									$directory = $datafile->directory();
+									$this->dispatch('saving-file', name: $datafile->name); // dispatch a browser event
+									$this->dispatch('showFlashMessage', ['type' => 'success', 'message' => 'storeAs']);
+										// Save the file to disk (=move from temporary location)
+									$file->storeAs("$directory", "$datafile->name", 'sonicom-data');
+									//jw:todo add to 'saved' and remove from '$uploads'
+									$this->saved[] = $originalName;
+								}
+									// clean up
+								$this->debug(1, "Deleting temporary uploaded file and removing $key entry from upload list");
+								$file->delete();
+								unset($this->uploads[$key]);
+								$this->nFilesUploaded = count($this->uploads);
+								break;
+							} // if filename is good
+						} // foreach datafile
+					} // foreach dataset def
+				} // foreach dataset
+			} // if upload>0
+			
+			$this->setStatus("Saving now complete");
+			$this->saved = []; // reset saved
+			$this->uploaded = []; // reset uploaded
+			$this->nFilesToUpload = 0;
+			$this->uploading = false;
+			$this->refresh();
+			$this->debug(1, "save(): finished", 0);
+			$this->dispatch('saved-to-database');
     }
 
     public function render()
