@@ -17,7 +17,7 @@ class Database extends Model
 	protected $fillable = ['title', 'additionaltitle', 'additionaltitletype', 'description', 'descriptiontype',
 		'radardataset',
 		'productionyear', 'publicationyear', 'language', 'resourcetype', 'resource', 'datasources','software',
-		'processing', 'relatedinformation', 'controlledrights', 'additionalrights', //'subjectAreas', 'publishers',
+		'processing', 'relatedinformation', 'controlledrights', 'additionalrights', 
 		'creators', 'doi', 'visible', 'radarstatus',
 		'bulk_upload_dataset_name_filter',
 		'user_id', '_token', '_method', 'submit'];
@@ -46,7 +46,7 @@ class Database extends Model
 
 	public function user(): BelongsTo
 	{
-		return $this->belongsTo(User::class); //jw:note Specifying this relationship connects the column user_id with the User table
+		return $this->belongsTo(User::class); // Specifying this relationship connects the column user_id with the User table
 	}
 
 	public function datasetdefs(): HasMany

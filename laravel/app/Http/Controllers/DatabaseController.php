@@ -29,7 +29,6 @@ class DatabaseController extends Controller
     public function __construct()
     {
         // https://laracasts.com/discuss/channels/general-discussion/apply-middleware-for-certain-methods?page=0
-        //$this->middleware('auth', ['only' => ['create', 'edit']]);
         // Users must be authenticated for all functions except index and show.
         // Guests will be redirected to login page
         $this->middleware('auth', ['except' => ['index', 'show', 'download', 'showdatasets', 'datasetdefs', 'radarShow']]);
@@ -38,10 +37,49 @@ class DatabaseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $databases = \App\Models\Database::all();
-        return view('databases.index', ['allDatabases' => $databases]);
+			$type = $request->input('type');  
+			if ($type === "json")
+			{
+				try 
+				{
+					$databases = Database::where('databases.visible', '=', 1) // get visible databases only
+						->select('databases.*') // Select all order columns
+						->get();
+
+					$data = $databases->map(function ($database) { // Transform the data into a suitable format.  This is CRUCIAL.
+							return [
+									'database id' => $database->id,
+									'URL' => url()->current() . '/' . $database->id . '/download?type=json',
+									'database title' => $database->title,
+									'database production year' => $database->productionyear,
+									'database publication year' => $database->publicationyear,
+									'database description' => $database->description,
+									'database description type' => $database->descriptiontype,
+							];
+					});
+					// Return the file data as a JSON response.
+					return response()->json([
+							'success' => true,
+							'message' => 'Files retrieved successfully.',
+							'data'    => $data,
+					], 200); // 200 OK
+				} 
+				catch (\Exception $e) 
+				{
+					// Handle any errors that occur during the process.
+					return response()->json([
+							'success' => false,
+							'message' => 'Failed to retrieve files: ' . $e->getMessage(),
+					], 500); // 500 Internal Server Error
+				}
+			}
+			else
+			{
+				$databases = \App\Models\Database::all();
+				return view('databases.index', ['allDatabases' => $databases]);
+			}
     }
 
     /**
@@ -167,13 +205,20 @@ class DatabaseController extends Controller
 			$type = $request->input('type');  
 			if ($type === "json")
 			{
+				if (!($database->visible))
+				{
+					return response()->json([
+							'success' => false,
+							'message' => 'Database not visible.',
+					], 500); // 500 Internal Server Error
+				}
 				try 
 				{
 					$files = Datafile::join('datasets', 'datafiles.dataset_id', '=', 'datasets.id')
 						->join('databases','datasets.database_id', '=', 'databases.id')
 						->where('databases.id', '=', $database->id)
-            ->select('datafiles.*') // Select all order columns
-            ->get();
+						->select('datafiles.*') // Select all order columns
+						->get();
 
 					$fileData = $files->map(function ($file) { // Transform the data into a suitable format.  This is CRUCIAL.
 							return [
@@ -184,7 +229,7 @@ class DatabaseController extends Controller
 									'dataset name' => $file->dataset->name, 
 									'dataset description' => $file->dataset->description,
 									'database id' => $file->dataset->database->id,
-									'database name' => $file->dataset->database->title,
+									'database title' => $file->dataset->database->title,
 									'URL' => asset($file->url()),
 							];
 					});
