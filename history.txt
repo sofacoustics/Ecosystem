@@ -6,8 +6,6 @@ To be done:
 * Ask JW: Is Spatie used for permissions?
 * Ask JW: How to add "Admin" as a role to User table. Admins should be able to see and edit all data.
 * PM: Fix the bug not being able to bulk upload datasets which names already exist
-* PM: implement the download client for JSON
-* PM: implement the ZIP format for download
 * Implement Docs = documentation files to be linked with tools and/or databases.
 * Implement Link of a database to a doc file (in RADAR via RelatedIdentifier)
 * Implement RelatedIdentifier to store citations of databases?
@@ -36,6 +34,10 @@ Download
 
 * General interface created
 * JSON format created
+* Example client for Matlab/Octave implemented
+* Download of the database list implemented
+* Example client to display database list for Matlab/Octave implemented
+
 
 Widgets & Services
 =======
