@@ -1,24 +1,16 @@
-@if(!empty($csvRows))
-    <table class="min-w-full border border-gray-300 rounded">
-        <thead>
-            <tr>
-                @foreach ($csvRows[0] as $header)
-                    <th class="px-2 py-1 bg-gray-100 border">{{ $header }}</th>
-                @endforeach
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (array_slice($csvRows, 1) as $row)
-                <tr>
-                    @foreach ($row as $cell)
-                        <td class="px-2 py-1 border">{{ $cell }}</td>
-                    @endforeach
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-@else
-    <div class="text-red-500 p-2">
-        CSV-Daten konnten nicht geladen werden ({{ $csvPath ?? 'Unbekannter Pfad' }})
-    </div>
-@endif
+<div>
+	<p>Internal path: {{ $fullPath }}</p>
+	<p>Size: {{ $fileSizeInBytes }} bytes 
+		@if($fileSizeInKilobytes > 0)
+		= {{ $fileSizeInKilobytes }} kbytes 
+			@if($fileSizeInMegabytes > 0)
+				= {{ $fileSizeInMegabytes }} MB 
+				@if($fileSizeInGigabytes)
+					= {{ $fileSizeInGigabytes }} GB
+				@endif
+			@endif
+		@endif
+	</p>
+	<p>Date created: {{ $created_at }}</p>
+	<p>Date updated: {{ $updated_at }}</p>
+</div>

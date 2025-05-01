@@ -44,6 +44,7 @@ Widgets & Services
 * Implement the seeder tables for various widgets and services
 * Image: rotation and reset (container does not expand yet)
 * Audio: basic player
+* Properties: file size, internal path, date created, data updated
 
 
 Comments
