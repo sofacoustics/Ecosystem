@@ -6,3 +6,4 @@ laravel-jetstream
 .undodir
 /laravel/storage/app/services/*/*.log
 
+/octave/temp
