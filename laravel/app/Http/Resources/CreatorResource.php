@@ -31,16 +31,24 @@ class CreatorResource extends JsonResource
 					]
 				];
 			}
+			// prepare nameIdentifier
+			$nameIdentifier = [ 'nameIdentifier' => [] ];
+			if($this->nameIdentifier != "")
+			{
+				$nameIdentifier = [
+					'nameIdentifier' => [
+						'value' => $this->nameIdentifier,
+						'schemeURI' => Creator::schemeURI($this->nameIdentifierSchemeIndex),
+						'nameIdentifierScheme' => Creator::nameIdentifierScheme($this->nameIdentifierSchemeIndex),
+					]
+				];
+			}
 
 			return [
 				'creatorName' => $this->creatorName,
 				'givenName' => $this->givenName,
 				'familyName' => $this->familyName,
-				'nameIdentifier' => [
-					'value' => $this->nameIdentifier,
-					'schemeURI' => Creator::schemeURI($this->nameIdentifierSchemeIndex),
-					'nameIdentifierScheme' => Creator::nameIdentifierScheme($this->nameIdentifierSchemeIndex),
-				],
+				...$nameIdentifier,
 				...$creatorAffiliation,
 			];
 		}
