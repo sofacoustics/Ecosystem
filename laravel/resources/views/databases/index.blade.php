@@ -20,16 +20,10 @@
 	<livewire:database-table-filter />
 
 	<br>
-	<p><small> 
-		<a href="{{ url()->current() . '?type=json' }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-block">
-			Download
-		</a></small>
-		the database list in JSON format.
-	</p>
-	<p><small>
-		<button id="copyButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Copy</button></small>
+	<p>
+		Database list in JSON format: <a href="{{ url()->current() . '?type=json' }}">{{ url()->current() . '?type=json' }}</a> 
+		<img id="copyButton" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 2em; display: inline-block;">
 		<input type="text" id="textToCopy" value="{{ url()->current() . '?type=json' }}" class="hidden">
-		the link to the database list to the clipboard.
 	</p>
 		<script>
 		document.getElementById('copyButton').addEventListener('click', function() {
@@ -38,7 +32,7 @@
 
 				// Use the Clipboard API to copy the text
 				navigator.clipboard.writeText(textToCopy).then(function() {
-						alert('URL copied to the clipboard');
+						alert(textToCopy + '\ncopied to the clipboard...');
 				}).catch(function(err) {
 						console.error('Failed to copy text: ', err);
 						alert('Failed to copy text. Please copy manually.'); // Inform the user

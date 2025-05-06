@@ -39,16 +39,13 @@
 			</table>
 			
 			<br>
-			<p><small> 
-				<a href="{{ route('databases.download', ['database' => $database->id, 'type' => 'json']) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-block">
-					Download
-				</a></small>
-				the datafile list in JSON format.
-			</p>
-			<p><small>
-				<button id="copyButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Copy</button></small>
+			<p>
+				Datafile list in JSON format: 
+				<a href="{{ route('databases.download', ['database' => $database->id, 'type' => 'json']) }}">
+				{{ route('databases.download', ['database' => $database->id, 'type' => 'json']) }}
+				</a>
+				<img id="copyButton" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 2em; display: inline-block;">
 				<input type="text" id="textToCopy" value="{{ route('databases.download', ['database' => $database->id, 'type' => 'json']) }}" class="hidden">
-				the link to the datafile list to the clipboard.
 			</p>
 				<script>
 				document.getElementById('copyButton').addEventListener('click', function() {
@@ -57,7 +54,7 @@
 
 						// Use the Clipboard API to copy the text
 						navigator.clipboard.writeText(textToCopy).then(function() {
-								alert('URL copied to the clipboard');
+								alert(textToCopy + '\ncopied to the clipboard...');
 						}).catch(function(err) {
 								console.error('Failed to copy text: ', err);
 								alert('Failed to copy text. Please copy manually.'); // Inform the user
