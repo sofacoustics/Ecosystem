@@ -5,6 +5,7 @@ To be done:
 * Ask JW: DatabasePolicy.php: what's the difference between ?User and User
 * Ask JW: Is Spatie used for permissions?
 * Ask JW: How to add "Admin" as a role to User table. Admins should be able to see and edit all data.
+* PM: Check for unique dataset names in a database (important for the download!)
 * Implement Docs = documentation files to be linked with tools and/or databases.
 * Implement Link of a database to a doc file (in RADAR via RelatedIdentifier)
 * Implement RelatedIdentifier to store citations of databases?
@@ -23,6 +24,8 @@ Nice to have:
 * Audio View: add https://wavesurfer.xyz/
 * Bulk Upload: Automatic fill of the dataset description
 * Add confirmation on delete
+* Show comments as a table
+
 
 
 DONE!
