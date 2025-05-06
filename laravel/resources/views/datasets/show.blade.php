@@ -26,19 +26,17 @@
     </div>
 
     @if (count($dataset->datafiles) < count($dataset->database->datasetdefs))
-        <p>According to the dataset definition, the following
-            {{ count($dataset->database->datasetdefs) - count($dataset->datafiles) }} files are missing:</p>
+			<p>According to the dataset definition, the following
+					{{ count($dataset->database->datasetdefs) - count($dataset->datafiles) }} files are missing:</p>
 
-        <ul class="list-disc list-inside">
-            @foreach ($dataset->missing_datafiles() as $missing)
-                {{-- <div wire:key="{{ $missing->id }}"> --}}
-                <li>
-                    <x-datasetdef.list :datasetdef="$missing" /> missing-id={{ $missing->id }}
-                    <livewire:datafile-upload :dataset=$dataset :datasetdef=$missing :wire:key="$missing->id" />
-                </li>
-                {{-- </div> --}}
-            @endforeach
-        </ul>
+			<ul class="list-disc list-inside">
+				@foreach ($dataset->missing_datafiles() as $missing)
+					<li>
+						<x-datasetdef.list :datasetdef="$missing" />
+						<livewire:datafile-upload :dataset=$dataset :datasetdef=$missing :wire:key="$missing->id" />
+					</li>
+				@endforeach
+			</ul>
     @endif
 
 </x-app-layout>
