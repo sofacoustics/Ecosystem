@@ -45,7 +45,7 @@ class DatasetdefForm extends Component
 		if($this->widget_id == null)
 			$this->widget_id = 1; // default widget
 		
-		assert($this->database->id == $this->datasetdef->id);
+		assert($this->database->id == $this->datasetdef->database_id);
 
 		$this->datafiletypes = \App\Models\Datafiletype::all();
 		$this->widgets = \App\Models\Widget::all(); //jw:todo get widgets based on datafiletype
