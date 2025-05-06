@@ -39,14 +39,15 @@
 				<input class="w-full" type="text" placeholder="Must include <ID>, e.g., name<ID>. Must not be empty." id="dsn_pattern"
 					wire:model.blur="datasetnamefilter" />
 			@foreach ($database->datasetdefs as $index => $datasetdef)
-				<small>#{{ $loop->index+1}}: Pattern for the datafile names of {{ $datasetdef->name }}:</small>
+				<small>#{{ $loop->index+1}}: Pattern for the datafile names of <b>{{ $datasetdef->name }}</b>:</small>
 					<input class="w-full" type="text" placeholder="Must include <ID> and may include <NUM> or <ANY>, e.g. prefix<ID>_maytest<ANY>.ext. Can be empty to exclude a datasetfile."
 						id="fn_pattern{{ $datasetdef->id }}" wire:model.blur="datafilenamefilters.{{ $datasetdef->id }}" />
 					{{-- https://www.perplexity.ai/search/how-can-i-access-and-update-ha-xiLcN4hYTKajSuuB3IMR4A --}}
 			@endforeach 
-			<small>Pattern for the datasets descriptions (optional):</small>
+			<?php /*<small>Pattern for the datasets descriptions (optional):</small>
 				<input class="w-full" type="text" placeholder="Must include <ID>, e.g., name<ID>. Can be empty." id="description_pattern"
-					wire:model.blur="datasetdescriptionfilter" />
+					wire:model.blur="datasetdescriptionfilter" /> */
+			?>
 			<br>
 			<div>
 				<x-button wire:click="$js.doFilter($data)" :disabled="$nFilesInDir < 1 || $uploading">Apply filter</x-button>
