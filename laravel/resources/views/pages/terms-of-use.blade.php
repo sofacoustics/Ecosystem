@@ -2081,17 +2081,16 @@ mso-fareast-language:DE'><o:p>&nbsp;</o:p></span></p>
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-GB style='font-family:"Palatino Linotype",serif;mso-fareast-font-family:
 "Times New Roman";mso-bidi-font-family:Arial;mso-ansi-language:EN-GB;
-mso-fareast-language:DE'>The Research Data Repository (<b>Repository</b>)
-NAME is offered by <span class=SpellE>Österreichische</span> Akademie der <span
+mso-fareast-language:DE'>The SONICOM Ecosystem Research Data Repository (<b>Repository</b>)
+is offered by <span class=SpellE>Österreichische</span> Akademie der <span
 class=SpellE>Wissenschaften</span> (Austrian Academy of Sciences; <span
-class=SpellE>OeAW</span>), to make available research results related to <span
-class=SpellE>OeAW</span> and</span><span lang=EN-GB style='font-family:"Palatino Linotype",serif;
+class=SpellE>OeAW</span>), to make available research results related to spatial hearing and</span><span lang=EN-GB style='font-family:"Palatino Linotype",serif;
 mso-ansi-language:EN-GB'> to provide archiving infrastructure for and access to
 digital research data. The Repository offers the following <b
 style='mso-bidi-font-weight:normal'>Services</b>, according to FAIR
 principles: Archiving, Web-Publication, Metadata-Assignment and -Dissemination
 (OAI-PMH), Digital Object Identifier, API, Linked open data, Integration of
-ROR, GND</span><span lang=EN-GB style='font-family:"Palatino Linotype",serif;
+ROR and ORCID.</span><span lang=EN-GB style='font-family:"Palatino Linotype",serif;
 mso-fareast-font-family:"Times New Roman";mso-bidi-font-family:Arial;
 mso-ansi-language:EN-GB;mso-fareast-language:DE'><o:p></o:p></span></p>
 
@@ -2988,7 +2987,7 @@ clear=all style='mso-special-character:line-break;page-break-before:always'>
 <p class=MsoNormal><span style='font-family:"Palatino Linotype",serif;
 mso-ansi-language:DE-AT'><o:p>&nbsp;</o:p></span></p>
 
-<p class=MsoTitle><span lang=EN-US>Annex 2: List of <span class=SpellE>Suprocessors</span></span></p>
+<p class=MsoTitle><span lang=EN-US>Annex 2: List of <span class=SpellE>Subprocessors</span></span></p>
 
 <p class=MsoNormal><span lang=DE style='font-family:"Palatino Linotype",serif'><o:p>&nbsp;</o:p></span></p>
 
@@ -3258,9 +3257,6 @@ style='mso-ansi-language:EN-US'>Contact of the controller: <o:p></o:p></span></h
 EN-US'>Acoustics Research Institute of the <span class=SpellE>OeAW</span>, <span
 class=SpellE>Dominikanerbastei</span> 16, Vienna, Austria; E-Mail: piotr.majdak@oeaw.ac.at.<o:p></o:p></span></p>
 
-<p class=MsoNormal style='margin-bottom:0cm'><span class=MsoHyperlink><span
-lang=EN-US style='mso-ansi-language:EN-US'><o:p><span style='text-decoration:
- none'>&nbsp;</span></o:p></span></span></p>
 
 <h1 style='text-align:justify;mso-list:none;tab-stops:35.4pt'><span lang=EN-GB>Contact
 of the data protection officer:</span></h1>
