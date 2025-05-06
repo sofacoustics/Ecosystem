@@ -169,27 +169,6 @@
 
 	<hr>
 	
-	<h2>Datasets</h2>
-		@if(count($database->datasets)==0)
-			<p>No datasets found.</p>
-		@else
-			<p><b>{{ count($database->datasets) }}</b> datasets found:</p>
-			<ul class="list-disc list-inside">
-			@foreach($database->datasets as $dataset)
-				<li>
-					@can('update', [App\Models\Dataset::class, $dataset])
-						<x-button method="DELETE" class="inline" action="{{ route('datasets.destroy', [$dataset]) }}">Delete</x-button>
-						<x-button method="GET" class="inline" action="{{ route('datasets.edit', $dataset) }}" >Edit</x-button>
-					@endcan
-					<b>Name</b>: <a href="{{ route('datasets.show', $dataset->id) }}">{{ $dataset->name }}</a>
-					@role('admin') <small>(ID: {{ $dataset->id }})</small> @endrole
-				</li>
-			@endforeach
-			</ul>
-		@endif
-
-	<hr>
-	
 	<h2>Comments</h2>
 		@if(count($database->comments)==0)
 			<p>No comments found.</p>
@@ -209,9 +188,9 @@
 			@endforeach
 			</ul>
 		@endif
-		@auth
+		@can('create', \App\Models\Database::class)
 			<x-button method="GET" class="inline" action="{{ route('databases.comments', $database->id) }}">Add a comment</x-button>
-		@endauth
+		@endcan
 
 	<hr>
 

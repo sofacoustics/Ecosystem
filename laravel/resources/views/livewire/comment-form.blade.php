@@ -6,7 +6,7 @@
     $buttonClass = 'bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white';
 @endphp
 <div>
-    @can('update', $database)
+    @can('create', \App\Models\Database::class)
         @if ($comment)
             <h3>Edit a comment:</h3>
         @else
