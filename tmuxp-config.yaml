@@ -28,7 +28,7 @@ windows:
     suppress_history: false
     panes:
       - sudo supervisorctl status
-      - cd laravel && npm run dev
+      - echo "If you need the npm dev server, then run 'cd laravel && npm run dev'"
   - window_name: storage
     layout: even-vertical
     suppress_history: false
