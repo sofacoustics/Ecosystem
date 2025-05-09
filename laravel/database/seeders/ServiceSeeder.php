@@ -31,21 +31,21 @@ class ServiceSeeder extends Seeder
 			Service::create(array(
                     'name' => 'Octave: BRIR Geometry',
                     'description' => 'Plot BRIR Geometry.',
-                    'exe' => 'octave-cli',
+                    'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
                     'parameters' => 'BRIRGeometry.m'
                 )
             );
 			Service::create(array(
                    'name' => 'Octave: SRIR Geometry',
                    'description' => 'Plot SRIR Geometry.',
-                   'exe' => 'octave-cli',
+                    'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
                    'parameters' => 'SRIRGeometry.m'
                )
             );
 			Service::create(array(
                    'name' => 'Octave: Directivities Polar',
                    'description' => 'Plot the directivities as polar plots.',
-                   'exe' => 'octave-cli',
+                   'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
                    'parameters' => 'DirectivityPolar.m'
                )
             );
