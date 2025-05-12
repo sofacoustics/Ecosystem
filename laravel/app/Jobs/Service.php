@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Datafile;
+use App\Models\Service as ServiceModel;
 use App\Models\Widget;
 use App\Events\DatafileProcessed;
 
@@ -18,48 +19,55 @@ class Service implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    private ServiceModel $service;
+
     /**
      * Create a new job instance.
      */
     public function __construct(
         public Widget $widget,
         public Datafile $datafile
-    ) {}
+    ) {
+        $this->service = $this->widget->service;
+    }
 
     /**
      * Execute the job.
      */
     public function handle(): void
     {
+        ////////////////////////////////////////////////////////////////////////////////
         //
-        //jw:note When you modify a 'Job', you must restart the queue (./artisan queue:restart) since
-        //jw:note otherwise your changes won't be used (old version cached).
+        //  Note:
         //
-        app('log')->info('Service::handle() - START');
-        app('log')->info('Service::handle() - $this->widget->id = ' . $this->widget->id);
-        app('log')->info('Service::handle() - $this->datafile->id = ' . $this->datafile->id);
-        $service = $this->widget->service;
-        app('log')->info('Service::handle() - $this->service->id = ' . $service->id);
-        $directory=storage_path('app/services/' . $service->id);
-        app('log')->info('Service::handle() - $directory = ' . $directory);
-        app('log')->info('Service::handle() - $service->parameters = ' . $service->parameters);
-        $process = $service->exe . ' ' . $service->parameters . ' "' . $this->datafile->absolutepath() . '"';
-        app('log')->info('Service::handle() - $process = ' . $process);
-        app('log')->info('Service::handle() - run process');
-        //$result = Process::quietly()->path($directory)->run($process); // run without output
+        //  When you modify a 'Job', you must restart the queue
+        //
+        //      ./artisan queue:restart
+        //
+        //  since otherwise your changes won't be used (old version cached).
+        //
+        ////////////////////////////////////////////////////////////////////////////////
+        $log = "Service::handle()\n";
+        $widget_id=$this->widget->id;
+        $service_id = $this->service->id;
+        $datafile_id = $this->datafile->id;
+        $directory=storage_path('app/services/' . $this->service->id);
+        $log .= "  widget=$widget_id, service=$service_id, datafile=$datafile_id, directory=$directory\n";
+        $process = $this->service->exe . ' ' . $this->service->parameters . ' "' . $this->datafile->absolutepath() . '"';
+        $log .= "  process=$process\n";
         $result = Process::path($directory)->run($process); // run with output
         // write output to a service log file in the datafile directory
-        $datafilelogfile = $this->datafile->directory() . '/service-' . $service->id . '.stdout';
-        $datafileerrorfile = $this->datafile->directory() . '/service-' . $service->id . '.stderr';
-        app('log')->info('Service::handle() - logging output to file ' . Storage::disk('sonicom-data')->path($datafilelogfile));
-        app('log')->info('Service::handle() - logging errors to file ' . Storage::disk('sonicom-data')->path($datafileerrorfile));
+        $datafilelogfile = $this->datafile->directory() . '/service-' . $this->service->id . '.stdout';
+        $datafileerrorfile = $this->datafile->directory() . '/service-' . $this->service->id . '.stderr';
+        $log .= "  logging output to file " . Storage::disk('sonicom-data')->path($datafilelogfile) . "\n";
+        $log .= "  logging errors to file " . Storage::disk('sonicom-data')->path($datafileerrorfile) . "\n";
         Storage::disk('sonicom-data')->put($datafilelogfile, $result->output());
         Storage::disk('sonicom-data')->put($datafileerrorfile, $result->errorOutput());
         if($result->successful())
-            app('log')->info('Service::handle() - process finished successfully (exitCode: ' . $result->exitCode() . ')');
+            $log .= "  process finished successfully (exitCode: " . $result->exitCode() . ")\n";
         if($result->failed())
-            app('log')->info('Service::handle() - process failed (exitCode: ' . $result->exitCode() . ')');
+            $log .= "  process failed (exitCode: " . $result->exitCode() . ")\n";
         DatafileProcessed::dispatch($this->datafile->id);
-        app('log')->info('Service::handle() - END');
-}
+        app('log')->info($log); // log all in one go so it doesn't get interspersed with other log messages
+    }
 }

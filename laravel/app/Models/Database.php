@@ -66,7 +66,7 @@ class Database extends Model
 		
 		public function subjectareas()
 	{
-		return $this->hasMany(SubjectArea::class); 
+		return $this->hasMany(SubjectArea::class);
 	}
 
 		public function rightsholders()
@@ -76,7 +76,7 @@ class Database extends Model
 
 		public function keywords()
 	{
-		return $this->hasMany(Keyword::class); 
+		return $this->hasMany(Keyword::class);
 	}
 
 		public function comments()

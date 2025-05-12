@@ -7,7 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 use App\Models\Radar;
 
-class PublisherResource extends JsonResource
+class RightsholderResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,7 +19,7 @@ class PublisherResource extends JsonResource
 		if ($request->has('format') && $request->input('format') == 'radar')
         {
             return [
-                'value' => $this->publisherName,
+                'value' => $this->rightsholderName,
                 'nameIdentifierScheme' => Radar::nameIdentifierScheme($this->nameIdentifierSchemeIndex),
 				'nameIdentifier' => $this->nameIdentifierSchemeIndex == 0 ? null : $this->nameIdentifier,
                 'schemeURI' => $this->nameIdentifierSchemeIndex == 0 ? null : Radar::schemeURI($this->nameIdentifierSchemeIndex),
