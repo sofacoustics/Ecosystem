@@ -5,13 +5,13 @@ To be done:
 * Ask JW: DatabasePolicy.php: what's the difference between ?User and User
 * Ask JW: Is Spatie used for permissions?
 * Ask JW: How to add "Admin" as a role to User table. Admins should be able to see and edit all data.
+* PM: Implement Metadata for Tools (use polymorphic [one-to-many] relations)
 * Implement Docs = documentation files to be linked with tools and/or databases.
 * Implement Link of a database to a doc file (in RADAR via RelatedIdentifier)
 * Implement RelatedIdentifier to store citations of databases?
 * MM: Implement the most important widgets
 * Implement the actual procedure to "Publish with DOI"
 * Bulk Upload: Cancel an upload
-* Think about how to implement all the database functionality for tools (and maybe scenarios?)
 
 Nice to have: 
 * Layout: Show buttons as tabs
@@ -28,6 +28,10 @@ Nice to have:
 
 DONE!
 =====
+
+Tools
+=====
+* Index table implemented
 
 Download
 ========

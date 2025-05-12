@@ -12,14 +12,29 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tools', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('description');
-            $table->string('radar_id')->nullable();
-            $table->string('filename')->nullable();
-            $table->string('linkdoc')->nullable();
-            $table->string('linkcode')->nullable();
-            $table->timestamps();
+					$table->id();
+					$table->string('filename')->nullable();
+					$table->string('title');
+					$table->string('additionaltitle')->nullable();
+					$table->integer('additionaltitletype')->nullable();
+					$table->string('description')->nullable();
+					$table->integer('descriptiontype')->nullable();
+					$table->string('productionyear')->nullable();
+					$table->string('publicationyear')->nullable();
+					$table->string('language')->nullable();
+					$table->integer('resourcetype')->nullable();
+					$table->string('resource')->nullable();
+					$table->string('datasources')->nullable();
+					$table->string('software')->nullable();
+					$table->string('processing')->nullable();
+					$table->string('relatedinformation')->nullable();
+					$table->integer('controlledrights');
+					$table->string('additionalrights')->nullable();
+					$table->unsignedBigInteger('user_id');
+					$table->string('doi')->nullable(); // Adding DOI
+					$table->unsignedInteger('radarstatus')->nullable(); // Adding RADAR Status
+					$table->timestamps();
+					$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
