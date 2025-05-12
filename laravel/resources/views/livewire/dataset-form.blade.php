@@ -10,17 +10,19 @@
 <div>
     <form wire:submit.prevent="save">
         <div class="mb-4">
-            <label for="Name" class="{{ $labelClass }}">Name</label>
+            <label for="Name" class="{{ $labelClass }}">Name (*):</label>
             <input wire:model="name" type="text" id="name"
-                class="{{ $inputClass }}" required />
+							placeholder="Must be filename compatible, i.e., the following characters are not allowed: &lt;&gt;:&quot;/\|?*"
+							class="{{ $inputClass }}" required />
             @error('name')
                 <span class="text-red-500">{{ $message }}</span>
             @enderror
         </div>
         <div class="mb-4">
-            <label for="Name" class="{{ $labelClass }}">Description</label>
+            <label for="Name" class="{{ $labelClass }}">Description:</label>
             <input wire:model="description" type="text" id="description"
-                class="{{ $inputClass }}"/>
+							placeholder="Optional"
+							class="{{ $inputClass }}"/>
             @error('description')
                 <span class="text-red-500">{{ $message }}</span>
             @enderror

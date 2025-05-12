@@ -22,6 +22,7 @@ class DatasetForm extends Component
 	protected $messages = [
 		'name.required' => 'The name cannot be empty.',
 		'name.unique' => 'There is already a dataset with this name in your database. Choose an other name.',
+		'name.not_regex' => 'The name must not contain any of the following characters: <>:&"/\\|?*',
 	];
 
 	public function mount($dataset = null)
@@ -39,14 +40,15 @@ class DatasetForm extends Component
 	public function save()
 	{
 			$isNew = !$this->dataset;
-
+			$regex = 'not_regex:/[<>:&\"\\\|\?\*\/]/i';  // must not contain <>:&"\|?*/
 			if($isNew)
 			{		// create
 				$this->validate([ 'name' => [ 
 					'required',  // must be provided
 					Rule::unique('datasets','name')->where(
 						function ($query) {
-							return $query->where('database_id', $this->database->id); }) // must be different than other names from this database
+							return $query->where('database_id', $this->database->id); }), // must be different than other names from this database
+					$regex, // prohibit special characters 
 					]
 				]);
 				$this->dataset = new Dataset();
@@ -63,7 +65,8 @@ class DatasetForm extends Component
 					'required', // must be given
 					Rule::unique('datasets','name')->ignore($this->dataset->id)->where(
 						function ($query) {
-							return $query->where('database_id', $this->database->id); }) // must be different than other names from this database
+							return $query->where('database_id', $this->database->id); }), // must be different than other names from this database
+					$regex, // prohibit special characters 
 					]
 				]);
 				$this->dataset->name = $this->name;

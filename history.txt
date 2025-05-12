@@ -11,8 +11,7 @@ To be done:
 * MM: Implement the most important widgets
 * Implement the actual procedure to "Publish with DOI"
 * Bulk Upload: Cancel an upload
-* Bulk Upload: Warn if a dataset already exists
-* Think about how to implement all the database functionality for tools
+* Think about how to implement all the database functionality for tools (and maybe scenarios?)
 
 Nice to have: 
 * Layout: Show buttons as tabs
@@ -24,8 +23,7 @@ Nice to have:
 * Add confirmation on delete
 * Show comments as a table
 * Landing page: Include filter by Visible and Archived
-
-
+* Bulk Upload: Warn if a dataset already exists
 
 
 DONE!
@@ -86,12 +84,13 @@ Done:
 * Include Last Modified for sorting
 * Include Visible for sorting
 
-Upload
-======
+Upload & Datasets
+=================
 
 Done: 
 * Upload (create a new dataset, edit an existing)
 * Check for unique dataset names in a database (important for the download!)
+* Dataset Name must not contain <>:&"\|?*/
 
 Bulk upload
 ===========
