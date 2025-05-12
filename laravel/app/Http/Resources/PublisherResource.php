@@ -5,6 +5,8 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use App\Models\Radar;
+
 class PublisherResource extends JsonResource
 {
     /**
@@ -14,6 +16,18 @@ class PublisherResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+		if ($request->has('format') && $request->input('format') == 'radar')
+        {
+            return [
+                'value' => $this->publisherName,
+                'nameIdentifierScheme' => Radar::nameIdentifierScheme($this->nameIdentifierSchemeIndex),
+				'nameIdentifier' => $this->nameIdentifierSchemeIndex == 0 ? null : $this->nameIdentifier,
+                'schemeURI' => $this->nameIdentifierSchemeIndex == 0 ? null : Radar::schemeURI($this->nameIdentifierSchemeIndex),
+            ];
+		}
+		else
+		{
+			return parent::toArray($request);
+		}
     }
 }

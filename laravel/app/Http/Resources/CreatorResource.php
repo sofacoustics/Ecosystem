@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-use App\Models\Creator;
+use App\Models\Radar;
 
 class CreatorResource extends JsonResource
 {
@@ -38,8 +38,8 @@ class CreatorResource extends JsonResource
 				$nameIdentifier = [
 					'nameIdentifier' => [
 						'value' => $this->nameIdentifier,
-						'schemeURI' => Creator::schemeURI($this->nameIdentifierSchemeIndex),
-						'nameIdentifierScheme' => Creator::nameIdentifierScheme($this->nameIdentifierSchemeIndex),
+						'schemeURI' => Radar::schemeURI($this->nameIdentifierSchemeIndex),
+						'nameIdentifierScheme' => Radar::nameIdentifierScheme($this->nameIdentifierSchemeIndex),
 					]
 				];
 			}

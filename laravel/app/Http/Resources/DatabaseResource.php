@@ -34,6 +34,9 @@ class DatabaseResource extends JsonResource
 					],
 					'productionYear' => $this->productionyear,
 					'publicationYear' => $this->publicationyear,
+					'publishers' => [
+						'publisher' => PublisherResource::collection($this->whenLoaded('publishers')),
+					],
 				],
 			];
 			return $data;
