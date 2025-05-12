@@ -5,13 +5,11 @@ To be done:
 * Ask JW: DatabasePolicy.php: what's the difference between ?User and User
 * Ask JW: Is Spatie used for permissions?
 * Ask JW: How to add "Admin" as a role to User table. Admins should be able to see and edit all data.
-* PM: Check for unique dataset names in a database (important for the download!)
 * Implement Docs = documentation files to be linked with tools and/or databases.
 * Implement Link of a database to a doc file (in RADAR via RelatedIdentifier)
 * Implement RelatedIdentifier to store citations of databases?
 * MM: Implement the most important widgets
 * Implement the actual procedure to "Publish with DOI"
-* Landing page: Include filter by Visible and Archived 
 * Bulk Upload: Cancel an upload
 * Bulk Upload: Warn if a dataset already exists
 * Think about how to implement all the database functionality for tools
@@ -25,6 +23,8 @@ Nice to have:
 * Bulk Upload: Automatic fill of the dataset description
 * Add confirmation on delete
 * Show comments as a table
+* Landing page: Include filter by Visible and Archived
+
 
 
 
@@ -86,6 +86,13 @@ Done:
 * Include Last Modified for sorting
 * Include Visible for sorting
 
+Upload
+======
+
+Done: 
+* Upload (create a new dataset, edit an existing)
+* Check for unique dataset names in a database (important for the download!)
+
 Bulk upload
 ===========
 
@@ -96,8 +103,8 @@ Done:
 * Support for wildcard by <ANY> 
 * Brief statistics
 * Table
-* Bulk Upload: Check if duplicate files assigned to the same datafile
-* Bulk Upload: Provide option to select datasets for the upload
+* Check if duplicate files assigned to the same datafile
+* Provide option to select datasets for the upload
 * Bug fix: not being able to bulk upload datasets which names already exist
 
 
