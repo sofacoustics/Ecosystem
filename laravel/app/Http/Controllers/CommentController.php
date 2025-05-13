@@ -3,18 +3,27 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use App\Models\Comment;
 use App\Models\Database;
 
 class CommentController extends Controller
 {
-	/*public function index(Database $database)
+	public function index($id)
 	{
-		dd($database);
-		$comments = Comment::with('database')->get();
-		return view('databases.comments.index', compact('comments','database'));
+		$route = Route::current();
+		if($route->named('databases.comments'))
+		{
+			$commentable = Database::find($id);
+			return view('databases.comments.index', ['database' =>$commentable]);
+		}
+		else
+		{
+			$commentable = Tool::find($id);
+			return view('tools.comments.index', ['tool' =>$commentable]);
+		}
 	}
-	*/
+	
 	public function edit(Comment $comment)
 	{
 		if($comment->commentable_type === 'App\Models\Database')

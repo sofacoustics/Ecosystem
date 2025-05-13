@@ -8,7 +8,9 @@ use App\Models\Comment;
 
 class CommentForm extends Component
 {
+	public $comment;
 	public $commentable;
+	public $commentable_id;
 	public $commentable_type;
 	public $user_id;
 	public $text;
@@ -55,7 +57,7 @@ class CommentForm extends Component
 
 		session()->flash('message', $isNew ? 'comment created successfully.' : 'comment updated successfully.');
 
-		if($commentable_type === 'App\Models\Database')
+		if($this->commentable_type === 'App\Models\Database')
 			return redirect()->route('databases.show',[ 'database' => $this->commentable->id ]);
 		else
 			return redirect()->route('tools.show',[ 'tool' => $this->commentable->id ]);
