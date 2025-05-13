@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 use App\Data\RadardatasetpureData;
 use App\Models\Radar\Metadataschema;
@@ -79,9 +80,9 @@ class Database extends Model
 		return $this->hasMany(Keyword::class);
 	}
 
-		public function comments()
+		public function comments(): MorphMany
 	{
-		return $this->hasMany(Comment::class);
+		return $this->morphMany(Comment::class, 'commentable');
 	}
 
 	public function radardataset(): HasOne

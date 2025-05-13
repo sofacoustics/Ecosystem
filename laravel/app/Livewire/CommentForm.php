@@ -8,9 +8,8 @@ use App\Models\Comment;
 
 class CommentForm extends Component
 {
-	public $database;
-	public $comment;
-	public $database_id;
+	public $commentable;
+	public $commentable_type;
 	public $user_id;
 	public $text;
 
@@ -19,19 +18,19 @@ class CommentForm extends Component
 		'text' => 'required',
 	];
 
-	public function mount($database, $comment = null)
+	public function mount($commentable, $comment = null)
 	{
-		$this->database = $database;
+		$this->commentable = $commentable;
+		$this->commentable_id = $commentable->id;
+		$this->commentable_type = get_class($commentable);
 		if($comment)
 		{
 			$this->comment = $comment;
-			$this->database_id = $comment->database_id;
 			$this->user_id = $comment->user_id;
 			$this->text = $comment->text;
 		}
 		else
 		{
-			$this->database_id = $this->database->id;
 			$this->user_id = auth()->id();
 		}
 	}
@@ -47,23 +46,25 @@ class CommentForm extends Component
 			$this->comment = new Comment();
 		}
 		
-		$this->comment->database_id = $this->database_id;
+		$this->comment->commentable_id = $this->commentable_id;
+		$this->comment->commentable_type = $this->commentable_type;
 		$this->comment->user_id = $this->user_id;
 		$this->comment->text = $this->text;
 
 		$this->comment->save();
 
-    session()->flash('message', $isNew ? 'comment created successfully.' : 'comment updated successfully.');
+		session()->flash('message', $isNew ? 'comment created successfully.' : 'comment updated successfully.');
 
-		//$user = \App\Models\User::where('id', $database->user_id)->first();
-		return redirect()->route('databases.show',[ 'database' => $this->database->id ]);
-		//route('databases.show', $database->id) 
+		if($commentable_type === 'App\Models\Database')
+			return redirect()->route('databases.show',[ 'database' => $this->commentable->id ]);
+		else
+			return redirect()->route('tools.show',[ 'tool' => $this->commentable->id ]);
 
     //return redirect()->route('databases.comments', $this->database);
 	}
 
 	public function render()
 	{
-			return view('livewire.comment-form');
+			return view('livewire.comment-form', ['comment' => $this->comment]);
 	}
 }

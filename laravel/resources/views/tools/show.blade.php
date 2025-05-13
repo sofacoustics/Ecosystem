@@ -1,6 +1,6 @@
 <x-app-layout>
 <x-slot name="header">
-        <x-tools.header :tool=$tool />
+	<x-tools.header :tool=$tool />
 </x-slot>
 
 	<h2>Metadata</h2>
@@ -8,7 +8,6 @@
 		<p><b>Description:</b> {{ $tool->description }}</p>
 		<p><b>File Name:</b> {{ $tool->filename }}</p>
 
-	<?php   /*
 	<h2>Comments</h2>
 		@if(count($tool->comments)==0)
 			<p>No comments found.</p>
@@ -31,7 +30,6 @@
 		@can('create', \App\Models\Tool::class)
 			<x-button method="GET" class="inline" action="{{ route('tool.comments', $tool->id) }}">Add a comment</x-button>
 		@endcan
-		*/   ?>
 
 
 @env('local')

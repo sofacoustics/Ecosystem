@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-						$table->unsignedBigInteger('database_id');
+						$table->unsignedBigInteger('commentable_id');
+						$table->string('commentable_type');
 						$table->unsignedBigInteger('user_id');
 						$table->string('text');
             $table->timestamps();
 							// link tables
-						$table->foreign('database_id')->references('id')->on('databases')->onDelete('cascade');
+						//$table->foreign('database_id')->references('id')->on('databases')->onDelete('cascade');
         });
     }
 
