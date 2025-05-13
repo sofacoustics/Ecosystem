@@ -5,7 +5,7 @@ function databaseDownload(databaseID, downloadPath)
 %   databaseID: ID of the database, see databaseList
 %   downloadPath: Local directory where the files will be downloaded.
 %
-% The local structure will be: downloadPath\datasetName\datasetType\DatafileName
+% The local structure will be: downloadPath\datasetName\datasetDefName\DatafileName
 
 %% Check if the download path exists
 if ~isfolder(downloadPath)
