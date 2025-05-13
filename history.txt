@@ -1,17 +1,23 @@
 *** Ecosystem ***
 
-To be done:
-* JW: Prepare metadata for RADAR and Implement the actual procedure to "Assign DOI"
-* Ask JW: DatabasePolicy.php: what's the difference between ?User and User
-* Ask JW: Is Spatie used for permissions?
-* Ask JW: How to add "Admin" as a role to User table. Admins should be able to see and edit all data.
+To be done before we go live:
+* JW: Implement the minimal procedure to "Assign DOI"
+* PM: Implement the actual procedure to "assign DOI"
+* JW: Implement the minimal procedure to "Publish with DOI"
+* PM: Implement the actual procedure to "Publish with DOI"
+* JW: Add obligatory email confirmation when a user registers
 * PM: Implement Metadata for Tools (use polymorphic [one-to-many] relations)
-* Implement Docs = documentation files to be linked with tools and/or databases.
-* Implement Link of a database to a doc file (in RADAR via RelatedIdentifier)
-* Implement RelatedIdentifier to store citations of databases?
+* PM: Migrate and publish the repo
+* JW/PM: Workflow for the test and live server
+* Implement a way to link documentation files with databases (in RADAR via RelatedIdentifier)
+* Implement RelatedIdentifier to store citations of databases
 * MM: Implement the most important widgets
-* Implement the actual procedure to "Publish with DOI"
+
+To be done after we go live: 
+* JW: Add "Admin" as a role to the User interface. Admins should be able to see and edit all data
+* JW: Clean up the User related code
 * Bulk Upload: Cancel an upload
+* JW: Clean up the Code in the repo
 
 Nice to have: 
 * Layout: Show buttons as tabs
@@ -66,6 +72,8 @@ Datasets definition
 * "Non-spatial data (SOFA)" added
 * Definitions as a table
 * "Description" added to the Definition of each Datasetfile.
+* Check for unique definition names in a database (important for the download!)
+* Definition name must not contain <>:&"\|?*/
 
 
 

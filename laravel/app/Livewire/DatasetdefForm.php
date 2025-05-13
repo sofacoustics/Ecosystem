@@ -3,6 +3,8 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Illuminate\Validation\Rule;
+
 
 use App\Models\Datasetdef;
 use App\Models\Datafiletype;
@@ -20,9 +22,10 @@ class DatasetdefForm extends Component
 	public $datafiletypes; // get from Datafiletyp
 	public $widgets; // get from Widgets
 
-	protected $rules = [
-		'name' => 'required',
-		'datafiletype_id' => 'required',
+	protected $messages = [
+		'name.required' => 'The name cannot be empty.',
+		'name.unique' => 'There is already a dataset definition with this name in your database. Choose an other name.',
+		'name.not_regex' => 'The name must not contain any of the following characters: <>:&"/\\|?*',
 	];
 
 	public function mount($database, $datasetdef = null)
@@ -54,13 +57,31 @@ class DatasetdefForm extends Component
 
 	public function save()
 	{
-		$this->validate();
-
+		$regex = 'not_regex:/[<>:&\"\\\|\?\*\/]/i';  // must not contain <>:&"\|?*/
 		$isNew = !$this->datasetdef;
 
 		if($isNew)
 		{
+			$this->validate([ 'name' => [ 
+					'required',  // must be provided
+					Rule::unique('datasetdefs','name')->where(
+						function ($query) {
+							return $query->where('database_id', $this->database->id); }), // must be different than other names from this database
+					$regex, // prohibit special characters 
+					]
+				]);
 			$this->datasetdef = new Datasetdef();
+		}
+		else
+		{
+			$this->validate([ 'name' => [ 
+					'required',  // must be provided
+					Rule::unique('datasetdefs','name')->where(
+						function ($query) {
+							return $query->where('database_id', $this->database->id); }), // must be different than other names from this database
+					$regex, // prohibit special characters 
+					]
+				]);
 		}
 
 		$this->datasetdef->name = $this->name;
