@@ -27,6 +27,6 @@
 			@endforelse
 	</ul>
 
-	<livewire:subjectarea-form :database=$database />
+	<livewire:subject-area-form :database=$database />
 
 </x-app-layout>

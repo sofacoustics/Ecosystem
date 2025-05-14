@@ -62,6 +62,6 @@ class SubjectAreaForm extends Component
 
 	public function render()
 	{
-			return view('livewire.subjectarea-form');
+		return view('livewire.subject-area-form');
 	}
 }

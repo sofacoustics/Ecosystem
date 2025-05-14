@@ -7,6 +7,6 @@
     </x-slot>
     <div>
 
-			<livewire:subjectarea-form :database="$subjectarea->database" :subjectarea=$subjectarea />
+			<livewire:subject-area-form :database="$subjectarea->database" :subjectarea=$subjectarea />
     </div>
 </x-app-layout>
