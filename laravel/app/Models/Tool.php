@@ -59,7 +59,12 @@ class Tool extends Model
 		return Storage::disk('sonicom-data')->url($this->path());
 	}
 
-
+	public function filesize()
+	{
+		$fullPath = $this->absolutepath();
+		return filesize($fullPath);
+	}
+	
 	/**
 	 * Return the publicly available asset we can then use in HTML code.
 	 *

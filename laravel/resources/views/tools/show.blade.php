@@ -4,10 +4,25 @@
 </x-slot>
 
 	<h2>Metadata</h2>
-		<p><b>Title:</b> {{ $tool->title}}</p>
 		<p><b>Description:</b> {{ $tool->description }}</p>
-		<p><b>File Name:</b> <a href="{{ asset($tool->url()) }}" download>{{ $tool->filename }}</a></p>
-
+		@if($tool->filename)
+			<p><b>File Name:</b> <a href="{{ asset($tool->url()) }}" download>{{ $tool->filename }}</a></p>
+			<p>File Size: {{ $tool->filesize() }} bytes 
+				@if($tool->filesize() > 10240)
+				= {{ round($tool->filesize() / 1024, 2) }} kbytes 
+					@if($tool->filesize() > (1024*10240))
+						= {{ round($tool->filesize() / 1024 / 1024, 2)  }} MB 
+						@if($tool->filesize() > (1024*102410240))
+							= {{ round($tool->filesize() / 1024 / 1024 / 1024, 2) }} GB
+						@endif
+					@endif
+				@endif
+			</p>
+		@else
+			<p><b>File Name:</b> file not provided yet, upload a file</p>
+		@endif
+		<p>Tool created: {{ $tool->created_at }}</p>
+		<p>Tool updated: {{ $tool->updated_at }}</p>
 	<h2>Comments</h2>
 		@if(count($tool->comments)==0)
 			<p>No comments found.</p>
