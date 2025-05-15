@@ -1,6 +1,6 @@
 <x-app-layout>
 	<x-slot name="header">
-		<x-tools.header :tool="$commentable" />
+		<x-tool.header :tool="$commentable" />
 	</x-slot>
 	
 	<h3>New comment:</h3>

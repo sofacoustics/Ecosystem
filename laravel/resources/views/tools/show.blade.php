@@ -1,6 +1,6 @@
 <x-app-layout>
 <x-slot name="header">
-	<x-tools.header :tool=$tool />
+	<x-tool.header :tool=$tool />
 </x-slot>
 
 	<h2>Metadata</h2>
