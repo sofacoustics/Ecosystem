@@ -38,6 +38,7 @@ DONE!
 Tools
 =====
 * Index table implemented
+* Show, Edit, Upload, Download implemented
 
 Download
 ========
