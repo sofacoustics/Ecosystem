@@ -32,7 +32,7 @@ class ToolUpload extends Component
 	{
 			// Handle the cancellation
 		\Log::info("ToolUpload::handleCancelUpload()");
-	//dd('handleCancelUpload()');
+		//dd('handleCancelUpload()');
 			// For example, reset any related properties or perform cleanup
 	}
 
@@ -40,9 +40,12 @@ class ToolUpload extends Component
 	{
 		//dd(true);
 		\Log::info("updatedFile()");
-		try {
+		try 
+		{
 			$this->save();
-		} catch (\Illuminate\Validation\ValidationException $e) {
+		} 
+		catch (\Illuminate\Validation\ValidationException $e) 
+		{
 			\Log::info("validation failed");
 			//dd($e);
 			\Log::info("deleting file");
@@ -71,12 +74,12 @@ class ToolUpload extends Component
 		\Log::info("ToolUpload::save()");
 
 		$this->authorize('update', $this->tool); // check if tool can be modified
+		$this->tool->removefile(); // if there was already a file --> remove the old one
 		$this->tool->filename = $this->file->getClientOriginalName();
     $this->tool->save(); // save the tool filename
 		$filename = $this->file->getClientOriginalName();
 		$directory = $this->tool->directory();
 		$this->dispatch('showFlashMessage', ['type' => 'success', 'message' => 'storeAs']);
-		
 		$this->file->storeAs("$directory", "$filename", 'sonicom-data');
 			// clean up
 		$this->file->delete();

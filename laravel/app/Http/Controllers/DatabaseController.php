@@ -85,12 +85,12 @@ class DatabaseController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        $this->authorize('create', Database::class);
-        // https://pusher.com/blog/laravel-mvc-use/#controllers-creating-our-controller
-        return view('databases.create');
-    }
+		public function create()
+		{
+			$this->authorize('create', Database::class);
+			// https://pusher.com/blog/laravel-mvc-use/#controllers-creating-our-controller
+			return view('databases.create');
+		}
 
     /**
      * Store a newly created resource in storage.

@@ -20,7 +20,7 @@ class Tool extends Model
 	public function directory() : string
 	{
 		$tool_id = $this->id;
-		$directory = "tools/".$tool_id;
+		$directory = "tools/".$tool_id; // We store in the same directory as the data, but in a subdirectory /tools 
 		return $directory;
 	}
 
@@ -74,6 +74,14 @@ class Tool extends Model
 			return $this->url().$suffix.'?'.filemtime($pathwithsuffix);
 		else
 				return "";
+	}
+	
+	public function removefile()
+	{
+		if ($this->filename)
+			Storage::disk('sonicom-data')->deleteDirectory($this->directory()); 
+		$this->filename = null;
+		$this->save();
 	}
 	
 	public function comments(): MorphMany
