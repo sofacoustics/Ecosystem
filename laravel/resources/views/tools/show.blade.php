@@ -27,8 +27,8 @@
 			@endforeach
 			</ul>
 		@endif
-		@can('create', \App\Models\Tool::class)
-			<x-button method="GET" class="inline" action="{{ route('tool.comments', $tool->id) }}">Add a comment</x-button>
+		@can('create', \App\Models\Database::class)
+			<x-button method="GET" class="inline" action="{{ route('tools.comments', $tool->id) }}">Add a comment</x-button>
 		@endcan
 
 

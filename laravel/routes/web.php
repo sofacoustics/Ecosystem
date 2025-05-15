@@ -94,6 +94,7 @@ Route::resource('comments', CommentController::class);
 Route::resource('widgets', WidgetController::class);
 /// TOOLS
 Route::resource('tools', ToolController::class);
+Route::get('/tools/{tool}/comments', [CommentController::class, 'index'])->name('tools.comments');
 /// SERVICEs
 Route::resource('services', ServiceController::class);
 
