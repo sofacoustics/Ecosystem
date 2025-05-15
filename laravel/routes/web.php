@@ -95,9 +95,11 @@ Route::resource('widgets', WidgetController::class);
 /// TOOLS
 Route::resource('tools', ToolController::class);
 Route::get('/tools/{tool}/comments', [CommentController::class, 'index'])->name('tools.comments');
+Route::get('/tools/{tool}/upload', [ToolController::class, 'upload'])->name('tools.upload');
+Route::get('/tools/{tool}/doi', [ToolController::class, 'doi'])->name('tools.doi');
+
 /// SERVICEs
 Route::resource('services', ServiceController::class);
-
 
 /// Backend (Filament)
 #Route::group(['middleware' => ['role:admin']], function() {

@@ -15,7 +15,7 @@
 	}
 @endphp
 
-<h2 class="font-semibold text-xl text-gray-800 leading-tight">
+<h2 class="font-semibold text-xl text-gray-800 leading-tight">Database: 
 	<a href="{{ route('databases.show', $database->id) }}">{{ $database->title }} ({{ $database->productionyear }})</a>
 	@role('admin')
 			<small>(ID: {{ $database->id }})</small>

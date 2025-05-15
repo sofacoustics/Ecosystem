@@ -6,7 +6,7 @@
 	<h2>Metadata</h2>
 		<p><b>Title:</b> {{ $tool->title}}</p>
 		<p><b>Description:</b> {{ $tool->description }}</p>
-		<p><b>File Name:</b> {{ $tool->filename }}</p>
+		<p><b>File Name:</b> <a href="{{ asset($tool->url()) }}" download>{{ $tool->filename }}</a></p>
 
 	<h2>Comments</h2>
 		@if(count($tool->comments)==0)

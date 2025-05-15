@@ -4,7 +4,7 @@
 			The SONICOM Ecosystem contains {{ @count($allTools) }} tools
 		</h2>
 		@can('create', \App\Models\Database::class)
-			<x-button method="GET" action="{{ route('databases.create') }}" class="inline">
+			<x-button method="GET" action="{{ route('tools.create') }}" class="inline">
 				Add a New Tool
 			</x-button>
 		@endcan				
