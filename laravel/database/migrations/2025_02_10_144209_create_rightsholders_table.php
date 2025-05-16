@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('rightsholders', function (Blueprint $table) {
 					$table->id();
-						$table->unsignedBigInteger('commentable_id');
-						$table->string('commentable_type');
+						$table->unsignedBigInteger('rightsholderable_id');
+						$table->string('rightsholderable_type');
 					$table->string('rightsholderName');
 					$table->string('nameIdentifier')->nullable();
 					$table->unsignedInteger('nameIdentifierSchemeIndex')->nullable();

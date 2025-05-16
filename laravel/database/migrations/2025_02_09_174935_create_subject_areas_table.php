@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('subject_areas', function (Blueprint $table) {
             $table->id();
-						$table->unsignedBigInteger('commentable_id');
-						$table->string('commentable_type');
+						$table->unsignedBigInteger('subjectareaable_id');
+						$table->string('subjectareaable_type');
 						$table->unsignedInteger('controlledSubjectAreaIndex');
 						$table->string('additionalSubjectArea')->nullable();
 						$table->timestamps();

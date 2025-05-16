@@ -97,8 +97,29 @@ class Tool extends Model
 		return $this->morphMany(Comment::class, 'commentable');
 	}
 
-	public function creators(): HasMany
+	public function creators()
 	{
-			return $this->hasMany(Creator::class);
+		return $this->morphMany(Creator::class, 'creatorable');
 	}
+
+	public function publishers()
+	{
+		return $this->morphMany(Publisher::class, 'publisherable');
+	}
+		
+	public function subjectareas()
+	{
+		return $this->morphMany(SubjectArea::class, 'subjectareaable');
+	}
+
+	public function rightsholders()
+	{
+		return $this->morphMany(Rightsholder::class, 'rightsholderable');
+	}
+
+	public function keywords()
+	{
+		return $this->morphMany(Keyword::class, 'keywordable');
+	}
+
 }

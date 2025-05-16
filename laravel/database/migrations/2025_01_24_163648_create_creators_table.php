@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('creators', function (Blueprint $table) {
 							// create columns
             $table->id();
-						$table->unsignedBigInteger('commentable_id');
-						$table->string('commentable_type');
+						$table->unsignedBigInteger('creatorable_id');
+						$table->string('creatorable_type');
 						$table->string('creatorName');
 						$table->string('givenName')->nullable();
 						$table->string('familyName')->nullable();

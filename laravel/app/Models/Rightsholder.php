@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class Rightsholder extends Radar
 {
 	use HasFactory;
-	protected $fillable = ['id', 'commentable_id', 'commentable_type', ];
+	protected $fillable = ['id', 'rightsholderable_id', 'rightsholderable_type', ];
 	
-	public function commentable(): MorphTo
+	public function rightsholdertable(): MorphTo
 	{
 		return $this->morphTo(); 
 	}

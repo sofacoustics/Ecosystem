@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('keywords', function (Blueprint $table) {
             $table->id();
-						$table->unsignedBigInteger('commentable_id');
-						$table->string('commentable_type');
+						$table->unsignedBigInteger('keywordable_id');
+						$table->string('keywordable_type');
 						$table->string('keywordName');
 						$table->unsignedInteger('keywordSchemeIndex')->nullable();
 						$table->string('schemeURI')->nullable();

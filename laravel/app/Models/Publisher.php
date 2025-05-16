@@ -12,9 +12,9 @@ use App\Models\Creator;
 class Publisher extends Model
 {
 	use HasFactory;
-	protected $fillable = ['id', 'commentable_id', 'commentable_type', ];
+	protected $fillable = ['id', 'publisherable_id', 'publisherable_type', ];
 	
-	public function commentable(): MorphTo
+	public function publisherable(): MorphTo
 	{
 		return $this->morphTo(); 
 	}

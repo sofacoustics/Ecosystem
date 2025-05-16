@@ -14,22 +14,22 @@ class SubjectAreaSeeder extends Seeder
     public function run(): void
     {
        SubjectArea::create(array(
-				'commentable_id' => 1,
-				'commentable_type' => 'App\Models\Database',
+				'subjectareaable_id' => 1,
+				'subjectareaable_type' => 'App\Models\Database',
         'controlledSubjectAreaIndex' => 15,
         'additionalSubjectArea' => null,
         ));
 
        SubjectArea::create(array(
-				'commentable_id' => 1,
-				'commentable_type' => 'App\Models\Database',
+				'subjectareaable_id' => 1,
+				'subjectareaable_type' => 'App\Models\Database',
         'controlledSubjectAreaIndex' => 46,
         'additionalSubjectArea' => 'sonicom ecosystem',
         ));
 
        SubjectArea::create(array(
-				'commentable_id' => 2,
-				'commentable_type' => 'App\Models\Database',
+				'subjectareaable_id' => 2,
+				'subjectareaable_type' => 'App\Models\Database',
         'controlledSubjectAreaIndex' => 40,
         'additionalSubjectArea' => null,
         ));

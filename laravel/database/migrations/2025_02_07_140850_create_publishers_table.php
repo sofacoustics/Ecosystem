@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('publishers', function (Blueprint $table) {
             $table->id();
-						$table->unsignedBigInteger('commentable_id');
-						$table->string('commentable_type');
+						$table->unsignedBigInteger('publisherable_id');
+						$table->string('publisherable_type');
 						$table->string('publisherName');
 						$table->string('nameIdentifier')->nullable();
 						$table->unsignedInteger('nameIdentifierSchemeIndex')->nullable();

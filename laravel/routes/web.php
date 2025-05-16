@@ -97,6 +97,11 @@ Route::resource('tools', ToolController::class);
 Route::get('/tools/{tool}/comments', [CommentController::class, 'index'])->name('tools.comments');
 Route::get('/tools/{tool}/upload', [ToolController::class, 'upload'])->name('tools.upload');
 Route::get('/tools/{tool}/doi', [ToolController::class, 'doi'])->name('tools.doi');
+Route::get('/tools/{tool}/creators', [CreatorController::class, 'index'])->name('tools.creators');
+Route::get('/tools/{tool}/publishers', [PublisherController::class, 'index'])->name('tools.publishers');
+Route::get('/tools/{tool}/subjectareas', [SubjectAreaController::class, 'index'])->name('tools.subjectareas');
+Route::get('/tools/{tool}/rightsholders', [RightsholderController::class, 'index'])->name('tools.rightsholders');
+Route::get('/tools/{tool}/keywords', [KeywordController::class, 'index'])->name('tools.keywords');
 
 /// SERVICEs
 Route::resource('services', ServiceController::class);

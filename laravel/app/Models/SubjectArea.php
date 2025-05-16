@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class SubjectArea extends Model
 {
 	use HasFactory;
-	protected $fillable = ['id', 'commentable_id', 'commentable_type', ];
+	protected $fillable = ['id', 'subjectareaable_id', 'subjectareaable_type', ];
 	
-	public function commentable(): MorphTo
+	public function subjectareaable(): MorphTo
 	{
 		return $this->morphTo(); 
 	}

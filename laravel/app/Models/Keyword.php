@@ -15,9 +15,9 @@ const keywordSchemeCategories = [
 class Keyword extends Model
 {
 	use HasFactory;
-	protected $fillable = ['id', 'commentable_id', 'commentable_type', ];
+	protected $fillable = ['id', 'keywordable_id', 'keywordable_type', ];
 	
-	public function commentable(): MorphTo
+	public function keywordable(): MorphTo
 	{
 		return $this->morphTo(); 
 	}

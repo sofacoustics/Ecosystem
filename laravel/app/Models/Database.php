@@ -57,30 +57,30 @@ class Database extends Model
 
 	public function creators()
 	{
-		return $this->morphMany(Creator::class, 'commentable');
+		return $this->morphMany(Creator::class, 'creatorable');
 	}
 
-		public function publishers()
+	public function publishers()
 	{
-		return $this->morphMany(Publisher::class, 'commentable');
+		return $this->morphMany(Publisher::class, 'publisherable');
 	}
 		
-		public function subjectareas()
+	public function subjectareas()
 	{
-		return $this->morphMany(SubjectArea::class, 'commentable');
+		return $this->morphMany(SubjectArea::class, 'subjectareaable');
 	}
 
-		public function rightsholders()
+	public function rightsholders()
 	{
-		return $this->morphMany(Rightsholder::class, 'commentable');
+		return $this->morphMany(Rightsholder::class, 'rightsholderable');
 	}
 
-		public function keywords()
+	public function keywords()
 	{
-		return $this->morphMany(Keyword::class, 'commentable');
+		return $this->morphMany(Keyword::class, 'keywordable');
 	}
 
-		public function comments(): MorphMany
+	public function comments(): MorphMany
 	{
 		return $this->morphMany(Comment::class, 'commentable');
 	}
@@ -90,62 +90,62 @@ class Database extends Model
 		return $this->hasOne(Radardataset::class);
 	}
 
-		static function resourcetypeDisplay($resourcetype)
-		{
-			$result = \App\Models\Radar\Metadataschema::where('id', $resourcetype)->select('display')->get();
-			return $result[0]->attributes['display'];
-		}
+	static function resourcetypeDisplay($resourcetype)
+	{
+		$result = \App\Models\Radar\Metadataschema::where('id', $resourcetype)->select('display')->get();
+		return $result[0]->attributes['display'];
+	}
 		
-		static function resourcetypesList()
+	static function resourcetypesList()
 	{
 		$rr = \App\Models\Radar\Metadataschema::where('name','resourceType')->select('display')->get();
-				return $rr;
+		return $rr;
 	}
-		static function additionaltitletypeDisplay($additionaltitletype)
-		{
-			$result = \App\Models\Radar\Metadataschema::where('id', $additionaltitletype)->select('display')->get();
-			return $result[0]->attributes['display'];
-		}
+	static function additionaltitletypeDisplay($additionaltitletype)
+	{
+		$result = \App\Models\Radar\Metadataschema::where('id', $additionaltitletype)->select('display')->get();
+		return $result[0]->attributes['display'];
+	}
 		
-		static function additionaltitletypesList()
+	static function additionaltitletypesList()
 	{
 		$rr = \App\Models\Radar\Metadataschema::where('name','additionalTitleType')->select('display')->get();
-				return $rr;
+		return $rr;
 	}
 		
-		static function descriptiontypeDisplay($descriptiontype)
-		{
-			$result = \App\Models\Radar\Metadataschema::where('id', $descriptiontype)->select('display')->get();
-			return $result[0]->attributes['display'];
-		}
-		
-		static function descriptiontypesList()
+	static function descriptiontypeDisplay($descriptiontype)
+	{
+		$result = \App\Models\Radar\Metadataschema::where('id', $descriptiontype)->select('display')->get();
+		return $result[0]->attributes['display'];
+	}
+	
+	static function descriptiontypesList()
 	{
 		$rr = \App\Models\Radar\Metadataschema::where('name','descriptionType')->select('display')->get();
-				return $rr;
+		return $rr;
 	}
 
-		static function controlledrightsDisplay($controlledrights)
-		{
-			$result = \App\Models\Radar\Metadataschema::where('id', $controlledrights)->select('display')->get();
-			return $result[0]->attributes['display'];
-		}
+	static function controlledrightsDisplay($controlledrights)
+	{
+		$result = \App\Models\Radar\Metadataschema::where('id', $controlledrights)->select('display')->get();
+		return $result[0]->attributes['display'];
+	}
 		
-		static function controlledrightsList()
+	static function controlledrightsList()
 	{
 		$rr = \App\Models\Radar\Metadataschema::where('name','controlledRights')->select('display')->get();
-				return $rr;
+		return $rr;
 	}
 
-		static function subjectareaDisplay($subjectareaindex)
-		{
-			$result = \App\Models\Radar\Metadataschema::where('id', $subjectareaindex)->select('display')->get();
-			return $result[0]->attributes['display'];
-		}
+	static function subjectareaDisplay($subjectareaindex)
+	{
+		$result = \App\Models\Radar\Metadataschema::where('id', $subjectareaindex)->select('display')->get();
+		return $result[0]->attributes['display'];
+	}
 
-		static function subjectareasList()
+	static function subjectareasList()
 	{
 		$rr = \App\Models\Radar\Metadataschema::where('name','subjectArea')->select('display')->get();
-				return $rr;
+		return $rr;
 	}
 }
