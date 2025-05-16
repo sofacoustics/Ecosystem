@@ -62,7 +62,10 @@ class Tool extends Model
 	public function filesize()
 	{
 		$fullPath = $this->absolutepath();
-		return filesize($fullPath);
+		if(file_exists($fullPath))
+			return filesize($fullPath);
+		else
+			return null;
 	}
 	
 	/**

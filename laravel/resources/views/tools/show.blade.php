@@ -5,9 +5,9 @@
 
 	<h2>Metadata</h2>
 		<p><b>Description:</b> {{ $tool->description }}</p>
-		@if($tool->filename)
+		@if($tool->filesize())
 			<p><b>File Name:</b> <a href="{{ asset($tool->url()) }}" download>{{ $tool->filename }}</a></p>
-			<p>File Size: {{ $tool->filesize() }} bytes 
+			<p><b>File Size:</b> {{ $tool->filesize() }} bytes 
 				@if($tool->filesize() > 10240)
 				= {{ round($tool->filesize() / 1024, 2) }} kbytes 
 					@if($tool->filesize() > (1024*10240))
