@@ -13,14 +13,15 @@ return new class extends Migration
     {
         Schema::create('rightsholders', function (Blueprint $table) {
 					$table->id();
-					$table->unsignedBigInteger('database_id');
+						$table->unsignedBigInteger('commentable_id');
+						$table->string('commentable_type');
 					$table->string('rightsholderName');
 					$table->string('nameIdentifier')->nullable();
 					$table->unsignedInteger('nameIdentifierSchemeIndex')->nullable();
 					$table->string('schemeURI')->nullable();
 					$table->timestamps();
 						// link tables
-					$table->foreign('database_id')->references('id')->on('databases')->onDelete('cascade');
+					//$table->foreign('database_id')->references('id')->on('databases')->onDelete('cascade');
         });
     }
 

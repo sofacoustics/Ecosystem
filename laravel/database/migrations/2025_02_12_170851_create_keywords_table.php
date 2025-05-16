@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('keywords', function (Blueprint $table) {
             $table->id();
-						$table->unsignedBigInteger('database_id');
+						$table->unsignedBigInteger('commentable_id');
+						$table->string('commentable_type');
 						$table->string('keywordName');
 						$table->unsignedInteger('keywordSchemeIndex')->nullable();
 						$table->string('schemeURI')->nullable();
@@ -21,7 +22,7 @@ return new class extends Migration
 						$table->string('classificationCode')->nullable();
             $table->timestamps();
 							// link tables
-						$table->foreign('database_id')->references('id')->on('databases')->onDelete('cascade');
+						//$table->foreign('database_id')->references('id')->on('databases')->onDelete('cascade');
         });
     }
 

@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('creators', function (Blueprint $table) {
 							// create columns
             $table->id();
-						$table->unsignedBigInteger('database_id');
+						$table->unsignedBigInteger('commentable_id');
+						$table->string('commentable_type');
 						$table->string('creatorName');
 						$table->string('givenName')->nullable();
 						$table->string('familyName')->nullable();
@@ -25,7 +26,7 @@ return new class extends Migration
 						$table->string('affiliationIdentifier')->nullable();
             $table->timestamps();
 							// link tables
-						$table->foreign('database_id')->references('id')->on('databases')->onDelete('cascade');
+						//$table->foreign('database_id')->references('id')->on('databases')->onDelete('cascade');
         });
     }
 

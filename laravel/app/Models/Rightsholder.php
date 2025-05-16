@@ -4,15 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Rightsholder extends Radar
 {
-    use HasFactory;
-		protected $fillable = ['id', 'database_id'];
-		
-		public function database(): BelongsTo
-    {
-        return $this->belongsTo(Database::class); 
-    }
+	use HasFactory;
+	protected $fillable = ['id', 'commentable_id', 'commentable_type', ];
+	
+	public function commentable(): MorphTo
+	{
+		return $this->morphTo(); 
+	}
 }

@@ -57,27 +57,27 @@ class Database extends Model
 
 	public function creators()
 	{
-		return $this->hasMany(Creator::class); 
+		return $this->morphMany(Creator::class, 'commentable');
 	}
 
 		public function publishers()
 	{
-		return $this->hasMany(Publisher::class);
+		return $this->morphMany(Publisher::class, 'commentable');
 	}
 		
 		public function subjectareas()
 	{
-		return $this->hasMany(SubjectArea::class);
+		return $this->morphMany(SubjectArea::class, 'commentable');
 	}
 
 		public function rightsholders()
 	{
-		return $this->hasMany(Rightsholder::class);
+		return $this->morphMany(Rightsholder::class, 'commentable');
 	}
 
 		public function keywords()
 	{
-		return $this->hasMany(Keyword::class);
+		return $this->morphMany(Keyword::class, 'commentable');
 	}
 
 		public function comments(): MorphMany

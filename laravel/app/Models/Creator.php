@@ -5,16 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Creator extends Radar
 {
-    use HasFactory;
-		
-		protected $fillable = ['id', 'database_id'];
+	use HasFactory;
+	
+	protected $fillable = ['id', 'commentable_id', 'commentable_type', ];
 
-		public function database(): BelongsTo
-    {
-        return $this->belongsTo(Database::class);
-    }
+	public function commentable(): MorphTo
+	{
+		return $this->morphTo(); 
+	}
 }
