@@ -1,12 +1,8 @@
-{{--
-    Edit creators
---}}
 <x-app-layout>
-    <x-slot name="header">
-        <x-database.header :database="$creator->database" />
-    </x-slot>
-    <div>
-
-			<livewire:creator-form :database="$creator->database" :creator=$creator />
-    </div>
+	<x-slot name="header">
+		<x-tool.header :tool="$commentable" />
+	</x-slot>
+	<div>
+		<livewire:creator-form :tool="$creator->tool" :creator=$creator />
+	</div>
 </x-app-layout>

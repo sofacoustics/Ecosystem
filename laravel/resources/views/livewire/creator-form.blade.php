@@ -6,7 +6,7 @@
 	$buttonClass = 'bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white';
 @endphp
 <div>
-	@can('update', $database)
+
 		@if ($creator)
 			<h3>Edit a creator:</h3>
 		@else
@@ -90,5 +90,4 @@
 			</div>
 
 		</form>
-	@endcan
 </div>
