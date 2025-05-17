@@ -6,14 +6,6 @@
 		$database   The database
 		$dataset    The dataset ($database does not need to be set)
 --}}
-@php
-	if (isset($datafile)) {
-		$dataset = $datafile->dataset;
-	}
-	if (isset($dataset)) {
-		$database = $dataset->database;
-	}
-@endphp
 
 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Database: 
 	<a href="{{ route('databases.show', $database->id) }}">{{ $database->title }} ({{ $database->productionyear }})</a>

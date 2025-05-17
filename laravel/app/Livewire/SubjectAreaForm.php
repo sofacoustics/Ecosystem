@@ -8,9 +8,10 @@ use App\Models\SubjectArea;
 
 class SubjectAreaForm extends Component
 {
-	public $database;
+	public $subjectareaable;
+	public $subjectareaable_id;
+	public $subjectareaable_type;
 	public $subjectarea;
-	public $database_id;
 	public $controlledSubjectAreaIndex;
 	public $additionalSubjectArea;
 
@@ -19,19 +20,21 @@ class SubjectAreaForm extends Component
 		'controlledSubjectAreaIndex' => 'required',
 	];
 
-	public function mount($database, $subjectarea = null)
+	public function mount($subjectareaable, $subjectarea = null)
 	{
-		$this->database = $database;
+		$this->subjectareaable = $subjectareaable;
 		if($subjectarea)
 		{
 			$this->subjectarea = $subjectarea;
-			$this->database_id = $subjectarea->database_id;
+			$this->subjectareaable_id = $subjectarea->subjectareaable_id;
+			$this->subjectareaable_type = $subjectarea->subjectareaable_type;
 			$this->controlledSubjectAreaIndex = $subjectarea->controlledSubjectAreaIndex-15;
 			$this->additionalSubjectArea = $subjectarea->additionalSubjectArea;
 		}
 		else
 		{
-			$this->database_id = $this->database->id;
+			$this->subjectareaable_id = $subjectareaable->id;
+			$this->subjectareaable_type = get_class($subjectareaable);
 		}
 	}
 
@@ -46,7 +49,8 @@ class SubjectAreaForm extends Component
 			$this->subjectarea = new SubjectArea();
 		}
 		
-		$this->subjectarea->database_id = $this->database->id;
+		$this->subjectarea->subjectareaable_id = $this->subjectareaable_id;
+		$this->subjectarea->subjectareaable_type = $this->subjectareaable_type;
 		if (empty($this->controlledSubjectAreaIndex))
 		{	 $this->subjectarea->controlledSubjectAreaIndex = 46; } // 46 = Other in RADAR 9.1
 		else
@@ -57,7 +61,11 @@ class SubjectAreaForm extends Component
 
     session()->flash('message', $isNew ? 'subject area created successfully.' : 'subject area updated successfully.');
 
-    return redirect()->route('databases.subjectareas', $this->database);
+		if($this->subjectareaable_type === 'App\Models\Database')
+			return redirect()->route('databases.subjectareas',[ 'database' => $this->subjectareaable->id ]);
+		else
+			return redirect()->route('tools.subjectareas',[ 'tool' => $this->subjectareaable->id ]);
+		
 	}
 
 	public function render()

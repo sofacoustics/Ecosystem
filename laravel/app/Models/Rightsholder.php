@@ -12,7 +12,7 @@ class Rightsholder extends Radar
 	use HasFactory;
 	protected $fillable = ['id', 'rightsholderable_id', 'rightsholderable_type', ];
 	
-	public function rightsholdertable(): MorphTo
+	public function rightsholderable(): MorphTo
 	{
 		return $this->morphTo(); 
 	}

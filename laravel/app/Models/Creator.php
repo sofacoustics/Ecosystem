@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class Creator extends Radar
 {
 	use HasFactory;
-	
 	protected $fillable = ['id', 'creatorable_id', 'creatorable_type'];
 
 	public function creatorable(): MorphTo

@@ -8,9 +8,10 @@ use App\Models\Publisher;
 
 class PublisherForm extends Component
 {
-	public $database;
+	public $publisherable;
+	public $publisherable_id;
+	public $publisherable_type;
 	public $publisher;
-	public $database_id;
 	public $publisherName;
 	public $nameIdentifier;
 	public $nameIdentifierSchemeIndex;
@@ -21,13 +22,14 @@ class PublisherForm extends Component
 		'publisherName' => 'required',
 	];
 
-	public function mount($database, $publisher = null)
+	public function mount($publisherable, $publisher = null)
 	{
-		$this->database = $database;
+		$this->publisherable = $publisherable;
 		if($publisher)
 		{
 			$this->publisher = $publisher;
-			$this->database_id = $publisher->database_id;
+			$this->publisherable_id = $publisher->publisherable_id;
+			$this->publisherable_type = $publisher->publisherable_type;
 			$this->publisherName = $publisher->publisherName;
 			$this->nameIdentifier = $publisher->nameIdentifier;
 			$this->nameIdentifierSchemeIndex = $publisher->nameIdentifierSchemeIndex;
@@ -35,7 +37,8 @@ class PublisherForm extends Component
 		}
 		else
 		{
-			$this->database_id = $this->database->id;
+			$this->publisherable_id = $publisherable->id;
+			$this->publisherable_type = get_class($publisherable);
 		}
 	}
 
@@ -50,7 +53,8 @@ class PublisherForm extends Component
 			$this->publisher = new Publisher();
 		}
 		
-		$this->publisher->database_id = $this->database->id;
+		$this->publisher->publisherable_id = $this->publisherable_id;
+		$this->publisher->publisherable_type = $this->publisherable_type;
 		$this->publisher->publisherName = $this->publisherName;
 		$this->publisher->nameIdentifier = $this->nameIdentifier;
 		if (empty($this->nameIdentifierSchemeIndex) and !empty($this->nameIdentifier))
@@ -63,7 +67,10 @@ class PublisherForm extends Component
 
     session()->flash('message', $isNew ? 'publisher created successfully.' : 'publisher updated successfully.');
 
-    return redirect()->route('databases.publishers', $this->database);
+		if($this->publisherable_type === 'App\Models\Database')
+			return redirect()->route('databases.publishers',[ 'database' => $this->publisherable->id ]);
+		else
+			return redirect()->route('tools.publishers',[ 'tool' => $this->publisherable->id ]);
 	}
 
 	public function render()

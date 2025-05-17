@@ -8,9 +8,10 @@ use App\Models\Keyword;
 
 class KeywordForm extends Component
 {
-	public $database;
+	public $keywordable;
+	public $keywordable_id;
+	public $keywordable_type;
 	public $keyword;
-	public $database_id;
 	public $keywordName;
 	public $keywordSchemeIndex;
 	public $schemeURI;
@@ -22,13 +23,14 @@ class KeywordForm extends Component
 		'keywordName' => 'required',
 	];
 
-	public function mount($database, $keyword = null)
+	public function mount($keywordable, $keyword = null)
 	{
-		$this->database = $database;
+		$this->keywordable = $keywordable;
 		if($keyword)
 		{
 			$this->keyword = $keyword;
-			$this->database_id = $keyword->database_id;
+			$this->keywordable_id = $keyword->keywordable_id;
+			$this->keywordable_type = $keyword->keywordable_type;
 			$this->keywordName = $keyword->keywordName;
 			$this->keywordSchemeIndex = $keyword->keywordSchemeIndex;
 			$this->schemeURI = $keyword->schemeURI;
@@ -37,7 +39,8 @@ class KeywordForm extends Component
 		}
 		else
 		{
-			$this->database_id = $this->database->id;
+			$this->keywordable_id = $keywordable->id;
+			$this->keywordable_type = get_class($keywordable);
 		}
 	}
 
@@ -52,7 +55,9 @@ class KeywordForm extends Component
 			$this->keyword = new Keyword();
 		}
 		
-		$this->keyword->database_id = $this->database->id;
+		$this->keyword->keywordable_id = $this->keywordable_id;
+		$this->keyword->keywordable_type = $this->keywordable_type;
+
 		if (empty($this->keywordSchemeIndex))
 		{	 $this->keyword->keywordSchemeIndex = 0; } // 0 = Other
 		else
@@ -66,7 +71,10 @@ class KeywordForm extends Component
 
     session()->flash('message', $isNew ? 'keyword created successfully.' : 'keyword updated successfully.');
 
-    return redirect()->route('databases.keywords', $this->database);
+		if($this->keywordable_type === 'App\Models\Database')
+			return redirect()->route('databases.keywords',[ 'database' => $this->keywordable->id ]);
+		else
+			return redirect()->route('tools.keywords',[ 'tool' => $this->keywordable->id ]);
 	}
 
 	public function render()

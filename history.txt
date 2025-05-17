@@ -51,7 +51,7 @@ Download
 
 
 Widgets & Services
-=======
+==================
 
 * Implement the seeder tables for various widgets and services
 * Image: rotation and reset (container does not expand yet)
@@ -79,13 +79,14 @@ Datasets definition
 
 
 Database
-==================
+========
 
 * General check of the RADAR API
 * Retrieval of all databases from datathek
 * show and edit "Visible", "Assign DOI", "Publish with DOI"
 * Fake procedure to "Assign DOI"
 * Fake procedure for "Publish with DOI"
+* Adapted for metadata working with Tools
 
 
 Database landing page
@@ -121,8 +122,8 @@ Done:
 
 
 
-User profile:
-=============
+User profile
+============
 
 * "ORCID" added. Syntax: String, max 20 characters. 
 * Link the profile with ORCID
@@ -130,8 +131,8 @@ User profile:
 
 
 
-Metadata status:
-================
+Metadata status
+===============
 
 Done: 
 * Title: done.
@@ -147,17 +148,18 @@ Done:
 * SubjectArea (& controlledSubjectArea and optional additionalSubjectArea): done as 0-n. 
 * RightsHolder (& optional nameIdentifier, nameIdentifierScheme,  schemeURI): done as 0-n.
 * Keyword (& optional keywordScheme, schemeURI, valueURI, classificationCode): done as 0-n.
+* DataSource: done as 0-1 (0-n for later).
 
 To be done (tbd): 
-* Creator: add schemeURI.
-* Contributor (& contributorType, contributorName): tbd, 0-n. 
-* DataSource (& dataSourceDetail): tbd as 0-n.
+* RelatedIdentifier (& relatedIdentifierType, relationType): tbd as 0-n, later. 
 * FundingReference (& funderName, optional funderIdentifier, awardNumber, awardURI, awardTitle): tbd as 0-n. 
 * Identifier (& identifierType): to be created by RADAR. 
+* Contributor (& contributorType, contributorName): tbd, 0-n. 
 
 For later: 
+* DataSource (& dataSourceDetail): tbd as 0-n.
+* Creator: add schemeURI.
 * AlternateIdentifier (& alternateIdentifierType): tbd as 0-n, later. 
-* RelatedIdentifier (& relatedIdentifierType, relationType): tbd as 0-n, later. 
 * GeoLocation (& geoLocationCountry, geoLocationRegion, geoLocationPoint, geoLocationBox): tbd as 0-n, later. 
 * SoftwareType (& type, softwareName, optional alternativeSoftware): tbd as 0-n, later.
 * DataProcessing: tbd as 0-n. 

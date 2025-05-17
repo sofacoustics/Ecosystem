@@ -8,9 +8,10 @@ use App\Models\Rightsholder;
 
 class RightsholderForm extends Component
 {
-	public $database;
+	public $rightsholderable;
+	public $rightsholderable_id;
+	public $rightsholderable_type;
 	public $rightsholder;
-	public $database_id;
 	public $rightsholderName;
 	public $nameIdentifier;
 	public $nameIdentifierSchemeIndex;
@@ -21,13 +22,14 @@ class RightsholderForm extends Component
 		'rightsholderName' => 'required',
 	];
 
-	public function mount($database, $rightsholder = null)
+	public function mount($rightsholderable, $rightsholder = null)
 	{
-		$this->database = $database;
+		$this->rightsholderable = $rightsholderable;
 		if($rightsholder)
 		{
 			$this->rightsholder = $rightsholder;
-			$this->database_id = $rightsholder->database_id;
+			$this->rightsholderable_id = $rightsholder->rightsholderable_id;
+			$this->rightsholderable_type = $rightsholder->rightsholderable_type;
 			$this->rightsholderName = $rightsholder->rightsholderName;
 			$this->nameIdentifier = $rightsholder->nameIdentifier;
 			$this->nameIdentifierSchemeIndex = $rightsholder->nameIdentifierSchemeIndex;
@@ -35,7 +37,8 @@ class RightsholderForm extends Component
 		}
 		else
 		{
-			$this->database_id = $this->database->id;
+			$this->rightsholderable_id = $rightsholderable->id;
+			$this->rightsholderable_type = get_class($rightsholderable);
 		}
 	}
 
@@ -50,7 +53,8 @@ class RightsholderForm extends Component
 			$this->rightsholder = new Rightsholder();
 		}
 		
-		$this->rightsholder->database_id = $this->database->id;
+		$this->rightsholder->rightsholderable_id = $this->rightsholderable_id;
+		$this->rightsholder->rightsholderable_type = $this->rightsholderable_type;
 		$this->rightsholder->rightsholderName = $this->rightsholderName;
 		$this->rightsholder->nameIdentifier = $this->nameIdentifier;
 		if (empty($this->nameIdentifierSchemeIndex) and !empty($this->nameIdentifier))
@@ -63,7 +67,10 @@ class RightsholderForm extends Component
 
     session()->flash('message', $isNew ? 'rightsholder created successfully.' : 'rightsholder updated successfully.');
 
-    return redirect()->route('databases.rightsholders', $this->database);
+		if($this->rightsholderable_type === 'App\Models\Database')
+			return redirect()->route('databases.rightsholders',[ 'database' => $this->rightsholderable ]);
+		else
+			return redirect()->route('tools.rightsholders',[ 'tool' => $this->rightsholderable ]);
 	}
 
 	public function render()
