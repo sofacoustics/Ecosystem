@@ -178,14 +178,6 @@ class DatabaseController extends Controller
         ]);
     }
 
-    public function creators(Database $database)
-    {
-
-        return view('databases.creators.index', [
-            'database' => $database
-        ]);
-    }
-
     public function upload(Database $database)
     {
         return view('databases.upload', [

@@ -8,9 +8,10 @@ use App\Models\Creator;
 
 class CreatorForm extends Component
 {
-	public $database;
+	public $creatorable;
+	public $creatorable_id;
+	public $creatorable_type;
 	public $creator;
-	public $database_id;
 	public $creatorName;
 	public $givenName;
 	public $familyName;
@@ -20,18 +21,18 @@ class CreatorForm extends Component
 	public $affiliationIdentifier;
 	public $affiliationIdentifierScheme;
 
-
 	protected $rules = [
 		'creatorName' => 'required',
 	];
 
-	public function mount($database, $creator = null)
+	public function mount($creatorable, $creator = null)
 	{
-		$this->database = $database;
+		$this->creatorable = $creatorable;
 		if($creator)
 		{
 			$this->creator = $creator;
-			$this->database_id = $creator->database_id;
+			$this->creatorable_id = $creator->creatorable_id;
+			$this->creatorable_type = $creator->creatorable_type;
 			$this->creatorName = $creator->creatorName;
 			$this->givenName = $creator->givenName;
 			$this->familyName = $creator->familyName;
@@ -43,7 +44,8 @@ class CreatorForm extends Component
 		}
 		else
 		{
-			$this->database_id = $this->database->id;
+			$this->creatorable_id = $creatorable->id;
+			$this->creatorable_type = get_class($creatorable);
 		}
 	}
 
@@ -58,7 +60,9 @@ class CreatorForm extends Component
 			$this->creator = new Creator();
 		}
 		
-		$this->creator->database_id = $this->database->id;
+		$this->creator->creatorable_id = $this->creatorable_id;
+		$this->creator->creatorable_type = $this->creatorable_type;
+
 		$this->creator->creatorName = $this->creatorName;
 		$this->creator->givenName = $this->givenName;
 		$this->creator->familyName = $this->familyName;
@@ -75,7 +79,11 @@ class CreatorForm extends Component
 
     session()->flash('message', $isNew ? 'creator created successfully.' : 'creator updated successfully.');
 
-    return redirect()->route('databases.creators', $this->database);
+		if($this->creatorable_type === 'App\Models\Database')
+			return redirect()->route('databases.creators',[ 'database' => $this->creatorable ]);
+		else
+			return redirect()->route('tools.creators',[ 'tool' => $this->creatorable ]);
+		
 	}
 
 	public function render()

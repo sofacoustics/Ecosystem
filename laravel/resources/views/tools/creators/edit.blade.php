@@ -1,8 +1,8 @@
 <x-app-layout>
 	<x-slot name="header">
-		<x-tool.header :tool="$commentable" />
+		<x-tool.header :tool="$creatorable" />
 	</x-slot>
 	<div>
-		<livewire:creator-form :tool="$creator->tool" :creator=$creator />
+		<livewire:creator-form :creatorable="$creator->creatorable" :creator=$creator />
 	</div>
 </x-app-layout>

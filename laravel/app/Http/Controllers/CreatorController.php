@@ -16,22 +16,22 @@ class CreatorController extends Controller
 		$route = Route::current();
 		if($route->named('databases.creators'))
 		{
-			$commentable = Database::find($id);
-			return view('databases.creators.index', ['commentable' =>$commentable]);
+			$creatorable = Database::find($id);
+			return view('databases.creators.index', ['creatorable' =>$creatorable]);
 		}
 		else
 		{
-			$commentable = Tool::find($id);
-			return view('tools.creators.index', ['commentable' =>$commentable]);
+			$creatorable = Tool::find($id);
+			return view('tools.creators.index', ['creatorable' =>$creatorable]);
 		}
 	}
 
 	public function edit(Creator $creator)
 	{
-		if($creator->commentable_type === 'App\Models\Database')
-			return view('databases.creators.edit', ['commentable' =>$creator->commentable, 'creator' => $creator]);
+		if($creator->creatorable_type === 'App\Models\Database')
+			return view('databases.creators.edit', ['creatorable' =>$creator->creatorable, 'creator' => $creator]);
 		else
-			return view('tools.creators.edit', ['commentable' =>$creator->commentable, 'creator' => $creator]);
+			return view('tools.creators.edit', ['creatorable' =>$creator->creatorable, 'creator' => $creator]);
 	}
 	
 	public function destroy(Creator $creator)

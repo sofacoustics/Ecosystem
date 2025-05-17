@@ -11,7 +11,7 @@ class Creator extends Radar
 {
 	use HasFactory;
 	
-	protected $fillable = ['id', 'creatorable_id', 'creatorable_type', ];
+	protected $fillable = ['id', 'creatorable_id', 'creatorable_type'];
 
 	public function creatorable(): MorphTo
 	{
