@@ -6,10 +6,10 @@ To be done before we go live:
 * JW: Implement the minimal procedure to "Publish with DOI"
 * PM: Implement the actual procedure to "Publish with DOI"
 * JW: Add obligatory email confirmation when a user registers
+* PM: Implement RelatedIdentifier (to store citations of databases and other features)
 * PM: Migrate and publish the repo
 * JW/PM: Workflow for the test and live server
-* Implement a way to link documentation files with databases (in RADAR via RelatedIdentifier)
-* Implement RelatedIdentifier to store citations of databases
+* PM: Implement a way to link documentation files with databases (in RADAR via RelatedIdentifier)
 * MM: Implement the most important widgets
 
 To be done after we go live: 

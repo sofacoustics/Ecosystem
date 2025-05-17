@@ -139,7 +139,11 @@
 	<h2>Metadata</h2>
 		<p><b>Description:</b> {{ $tool->description }}</p>
 		@if($tool->filesize())
-			<p><b>File Name:</b> <a href="{{ asset($tool->url()) }}" download>{{ $tool->filename }}</a></p>
+			<p>
+				<b>File Name:</b> <a href="{{ asset($tool->url()) }}" download>{{ $tool->filename }}</a>
+				<img id="copyButton" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 2em; display: inline-block;">
+				<input type="text" id="textToCopy" value="{{ asset($tool->url()) }}" class="hidden">
+			</p>
 			<p><b>File Size:</b> {{ $tool->filesize() }} bytes 
 				@if($tool->filesize() > 10240)
 				= {{ round($tool->filesize() / 1024, 2) }} kbytes 
@@ -154,8 +158,8 @@
 		@else
 			<p><b>File Name:</b> file not provided yet, upload a file</p>
 		@endif
-		<p>Tool created: {{ $tool->created_at }}</p>
-		<p>Tool updated: {{ $tool->updated_at }}</p>
+		<p>Date created: {{ $tool->created_at }}</p>
+		<p>Date updated: {{ $tool->updated_at }}</p>
 	<h2>Comments</h2>
 		@if(count($tool->comments)==0)
 			<p>No comments found.</p>
@@ -178,6 +182,22 @@
 		@can('create', \App\Models\Tool::class)
 			<x-button method="GET" class="inline" action="{{ route('tools.comments', $tool->id) }}">Add a comment</x-button>
 		@endcan
+
+<script>
+document.getElementById('copyButton').addEventListener('click', function() {
+		// Get the text from the input field
+		var textToCopy = document.getElementById('textToCopy').value;
+
+		// Use the Clipboard API to copy the text
+		navigator.clipboard.writeText(textToCopy).then(function() {
+				alert(textToCopy + '\ncopied to the clipboard...');
+		}).catch(function(err) {
+				console.error('Failed to copy text: ', err);
+				alert('Failed to copy text. Please copy manually.'); // Inform the user
+		});
+});
+</script>
+
 
 
 @env('local')

@@ -15,7 +15,9 @@
   {{ \App\Models\User::find($tool->user_id)->name }}
 </x-property>
 
+@if($tool->filename)
 	<x-button method="GET" class="inline" action="{{ asset($tool->url()) }}">Download</x-button>
+@endif
 
 @can('update', $tool)
 	<x-button method="GET" class="inline" action="{{ route('tools.upload', [$tool->id]) }}">Upload</x-button>
