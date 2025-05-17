@@ -11,7 +11,7 @@
   {{ $tool->additionaltitle }}
 </x-property>
 
-<x-property name="Ecosystem Manager">
+<x-property name="Manager at the Ecosystem">
   {{ \App\Models\User::find($tool->user_id)->name }}
 </x-property>
 

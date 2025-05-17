@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Models\Publisher;
 use App\Models\Database;
+use App\Models\Tool;
 
 class PublisherController extends Controller
 {

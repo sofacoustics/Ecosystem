@@ -6,7 +6,6 @@ To be done before we go live:
 * JW: Implement the minimal procedure to "Publish with DOI"
 * PM: Implement the actual procedure to "Publish with DOI"
 * JW: Add obligatory email confirmation when a user registers
-* PM: Implement Metadata for Tools (use polymorphic [one-to-many] relations)
 * PM: Migrate and publish the repo
 * JW/PM: Workflow for the test and live server
 * Implement a way to link documentation files with databases (in RADAR via RelatedIdentifier)
@@ -39,6 +38,8 @@ Tools
 =====
 * Index table implemented
 * Show, Edit, Upload, Download implemented
+* Metadata for Tools implemented (using polymorphic [one-to-many] relations)
+
 
 Download
 ========

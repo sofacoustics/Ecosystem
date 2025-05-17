@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Models\Database;
 use App\Models\Keyword;
+use App\Models\Tool;
 
 class KeywordController extends Controller
 {

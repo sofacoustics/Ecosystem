@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Models\Rightsholder;
 use App\Models\Database;
+use App\Models\Tool;
 
 class RightsholderController extends Controller
 {

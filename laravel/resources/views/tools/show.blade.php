@@ -72,7 +72,7 @@
 		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($tool->subjectareas as $subjectarea)
-			<li><b>{{ \App\Models\Tool::subjectareaDisplay($subjectarea->controlledSubjectAreaIndex) }}</b>
+			<li><b>{{ \App\Models\Database::subjectareaDisplay($subjectarea->controlledSubjectAreaIndex) }}</b>
 					@if ($subjectarea->additionalSubjectArea != null) ({{ $subjectarea->additionalSubjectArea }}) @endif
 			</li>
 			@empty
