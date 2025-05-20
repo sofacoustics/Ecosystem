@@ -7,7 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 use App\Models\Database;
 
-class SubjectAreaResource extends JsonResource
+class RadarSubjectAreaResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,6 +16,11 @@ class SubjectAreaResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
-    }
+		$controlledSubjectArea = Database::subjectareaValue($this->controlledSubjectAreaIndex);
+
+		return [
+			'controlledSubjectAreaName' => $controlledSubjectArea,
+			'additionalSubjectAreaname' => $this->additionalSubjectArea,
+		];
+	}
 }

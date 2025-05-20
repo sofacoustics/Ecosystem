@@ -3,10 +3,8 @@
 			<x-database.header :database=$database />
 	</x-slot>
 
-<p>Under construction (jw)</p>
-
-<p>JSON</p>
-<pre>
-{{ $json }}
-</pre>
+<p>{{ $body }}</p>
+@if($database->radar_id != null)
+<p>RADAR Dataset ID: {{ $database->radar_id }}</p>
+@endif
 </x-app-layout>

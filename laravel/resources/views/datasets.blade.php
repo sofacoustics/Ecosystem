@@ -4,14 +4,22 @@
             Datasets
         </h2>
     </x-slot>
-    <p>The following RADAR datasets are available</p>
+    <p>The following RADAR {{ count($datasets) }} datasets are available</p>
     <ul>
-    @if (isset($datasets->data))
-        @foreach ($datasets->data as $dataset)
-        <li> {{ $dataset->descriptiveMetadata->title }} </li>
-        @endforeach
-    @else
-        <p>There are not datasets in this workspace!</p>    
-    @endif
+		@if (isset($datasets))
+			@foreach ($datasets as $dataset)
+				<li> {{ $dataset->descriptiveMetadata->title }} </li>
+			@endforeach
+			{{--
+			@foreach ($datasets as $dataset)
+			<li> {{ $dataset['descriptiveMetadata']['title'] }} </li>
+			@endforeach
+			--}}
+		@else
+			<p>There are not datasets in this workspace!</p>
+		@endif
+		@if("$error" != "")
+			<p>ERROR: {{ $error }}</p>
+		@endif
     </ul>
 </x-app-layout>

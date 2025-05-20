@@ -36,8 +36,7 @@ class RadarController extends Controller
     public function __construct()
     {
         $this->workspace = env("RADAR_WORKSPACE");
-        $baseurl = env("RADAR_BASEURL");
-        $this->apiurl = $baseurl."/radar/api";
+        $this->apiurl = env("RADAR_BASEURL")."/radar/api";
 
         // Store RADAR credentials in the .env file
         $response = Http::post($this->apiurl."/tokens", [
@@ -49,71 +48,70 @@ class RadarController extends Controller
         ]);
 
         $response->throw(); // Throw an exception if a client or server error occurred...
-        $body = json_decode($response->body(),true); //jw:todo do we need this 'preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $body)); function?
+		$body = json_decode($response->body(),true); //jw:todo do we need this 'preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $body)); function?
+		//dd($body);
         $this->access_token = $body['access_token'];
-        $this->refresh_token = $body['refresh_token'];
+		$this->refresh_token = $body['refresh_token'];
     }
 
     /*
      * Make a GET request to the RADAR API with the specified endpoint and
      * return the response body.
      */
-    public function get(string $endpoint) : String
+    public function get(string $endpoint)
     {
         $url = $this->apiurl.$endpoint;
-        $response = Http::withOptions([
-            'debug' => false,
-        ])->withToken($this->access_token)
-          ->get("$url");
-
-        $response->throw(); // Throw an exception if a client or server error occurred...
-
-        return $response->body();
+        $response = Http::withToken($this->access_token)->get("$url");
+		return $this->ensureUTF8($response);
     }
 
     /*
      * Make a PUT request to the RADAR API with the specified endpoint and
      * return the response body.
      */
-    public function put(string $endpoint, string $json) : String
+    public function put(string $endpoint, array $json)
     {
-        //jw:todo
         $url = $this->apiurl.$endpoint;
-        //dd($url);
-        //dd($this->access_token);
-        //dd($json);
-        $response = Http::withOptions([
-            'debug' => false,
-        ])->withToken($this->access_token)
-          ->put("$url", json_decode($json,true));
-        $body = json_decode($response->body(),true);
-//        if($response['statusCode'] == 400)
-        //print_r($response); // note that this will write to the 'response'!!!
-        if($response->status() != 200)
-        {
-            //dd(false);
-            //dd($response->body());
-            if(array_key_exists("exception", $body))
-            {
-                //jw:todo do something
-                //abort(404, $body['exception']);
-                //dd($body['exception']);
-                return back()->withError($body['exception'])->withInput();
-            }
-            //dd(json_decode($response->body(),true));
-        }
+		$response = Http::withToken($this->access_token)->put("$url", $json);
+        return $this->ensureUTF8($response);
+    }
 
-
-        //dd($json);
-        //$response = Http::withHeaders([
-        //                'Authorization' => 'Bearer ' . $token
-        //                      ])->put('https://api.example.com/api/v1/groups/' . $request->input('id'), [
-        //                                      'name' => $request->input('name')
-        //                                      ]);
-        return $response->body();
+    /*
+     * Make a POST request to the RADAR API with the specified endpoint and
+     * return the response body.
+     */
+    public function post(string $endpoint, array $json)
+	{
+		$url = $this->apiurl.$endpoint;
+        $response = Http::withToken($this->access_token)->post($url, $json);
+		//$response->throw(); // Throw an exception if a client or server error occurred...
+        return $this->ensureUTF8($response);
     }
 
     ////////////////////////////////////////////////////////////////////////////////
     // Private
-    ////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////
+
+	/*
+	 * Ensure that encoding is UTF-8. Reencode if necessary (RADAR has been returning
+	 * ISO-8859-1, even if requesting UTF-8
+	 */
+	private function ensureUTF8(\Illuminate\Http\Client\Response $response)
+	{
+		$contentType = $response->getHeader('Content-Type'); // e.g., "text/html; charset=ISO-8859-1"
+		$charset = null;
+		if (preg_match('/charset=([a-zA-Z0-9\-]+)/i', $contentType[0], $matches)) {
+			    $charset = $matches[1];
+		}
+		if($charset != null)
+		{
+			$content = $response->body(); // Get raw body
+			$utf8Content = mb_convert_encoding($content, 'UTF-8', $charset); // Convert encoding
+
+			return response($utf8Content, $response->getStatusCode())
+					->withHeaders($response->headers())
+					->header('Content-Type', 'application/json; charset=UTF-8');
+		}
+		return response($response->body(), $response->getStatusCode())->withHeaders($response->headers());
+	}
 }

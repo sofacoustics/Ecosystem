@@ -1,3 +1,11 @@
+{{--
+
+Parameters:
+
+	database
+	user
+
+--}}
 <x-app-layout>
 	<x-slot name="header">
 			<x-database.header :database=$database />
@@ -195,7 +203,7 @@
 
 @env('local')
 	<div class="text-xs">
-		<p>Uploaded by: {{ $user->name }}<br>
+		<p>Uploaded by: {{ $database->user->name }}<br>
 		Created: {{ $database->created_at }}<br>
 		Updated: {{ $database->updated_at }}</p>
 	</div>

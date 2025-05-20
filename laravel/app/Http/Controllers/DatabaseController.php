@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Carbon;
 
+use App\Http\Controllers\Api\Radar\DatasetController as RadardatasetController;
+
 use App\Models\User;
 use App\Models\Database;
 use App\Models\Datafile;
@@ -14,8 +16,12 @@ use App\Http\Requests\StoreDatabaseRequest;
 use App\Http\Requests\UpdateDatabaseRequest;
 
 use App\Http\Resources\DatabaseResource;
+use App\Http\Resources\RightsholderResource;
+use App\Http\Resources\Json\JsonResource;
+
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 use App\Data\RadardatasetData;
 use App\Data\RadardatasetpureData;
@@ -251,11 +257,37 @@ class DatabaseController extends Controller
 					'database' => $database
 			]);
 		}
+
+
+	/*
+	 * Publish this database to RADAR and get DOI
+	 */
     public function publish(Database $database)
     {
-        // publish this database to RADAR and get DOI
+		// We already have a RADAR ID.
+		if($database->radar_id != null)
+		{
+			$radardataset = new RadardatasetController;
+			$response = $radardataset->get("/datasets/$database->radar_id");
+			$body = $response->content();
+			$json = "";
+			$lastErrorMsg = "";
+			if($response->status() != '200')
+				$lastErrorMsg = $response->status();
+
+			$body = "The RADAR dataset for this database already exists!";
+
+			return view('databases.publish', [
+				'database' => $database,
+				'json' => $json,
+				'body' => $body,
+				'lastErrorMsg' => $lastErrorMsg
+			]);
+
+		}
 
 
+		// get Database in RADAR formatted array
         // eager load relationships so they appear in serializeJson()
         $database->load('creators',
             'publishers',
@@ -263,14 +295,53 @@ class DatabaseController extends Controller
             'rightsholders',
             'keywords',
         );
-		$resource = new DatabaseResource($database);
-		$json = $resource->toJson(JSON_PRETTY_PRINT);
 
-        // push to RADAR
-        //
-        return view('databases.publish', [
-            'database' => $database,
-			'json' => $json,
-        ]);
-    }
+		$resource = new DatabaseResource($database);
+		$radarDatasetArray = $resource->toArray(request()); // route called with ?format=radar
+		$json = $resource->toJson(JSON_PRETTY_PRINT);
+		$array = json_decode($json, true);
+
+		// push to RADAR
+		$radardataset = new RadardatasetController;
+		$response = $radardataset->create($radarDatasetArray); // requires an array, not JSON. Expect 201 status on success
+
+		// process response
+		$body = $response->content();
+		$array = json_decode($body, true); // 'true' == associative array
+		$message = $array['message'];
+		$status = $array['status'];
+		
+
+		if($status != 201)	
+		{
+			//dd("Failed: $message");
+			//
+			$body = "There has been an error. The API called returned the following message: $message (status: $status)";
+		}
+		else
+		{
+			$lastErrorMsg = json_last_error_msg();
+			if(is_array($array) && array_key_exists('id', $array))
+			{
+				$radarDatasetId = $array['id'];
+				if($radarDatasetId != "")
+				{
+					$database->radar_id = $radarDatasetId;
+					$database->save();
+				}
+			}
+				//return response()->json(['message' => 'Success'], $response->status());
+				//
+			$body = "You have successfully created the RADAR dataset for this database! (status: $status)";
+		}
+		return view('databases.publish', [
+			'database' => $database,
+			'body' => $body
+		]);
+}
+
+	////////////////////////////////////////////////////////////////////////////////	
+	// Private
+	////////////////////////////////////////////////////////////////////////////////
+
 }

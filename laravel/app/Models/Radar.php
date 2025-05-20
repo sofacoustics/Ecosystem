@@ -13,6 +13,12 @@ const nameIdentifierSchemeCategories = [
 	'ORCID',
 	'ROR' ];
 
+// These are the values that RADAR accespts
+const nameIdentifierSchemeCategoryValues = [
+	'OTHER',
+	'ORCID',
+	'ROR' ];
+
 const schemeURICategories = [
 	'Other',
 	'http://orcid.org/',
@@ -30,6 +36,15 @@ class Radar extends Model
         if($x<0) $x=0;
         return nameIdentifierSchemeCategories[$x];
     }
+
+    public static function nameIdentifierSchemeValue($x)
+    {
+        if($x == null) $x=0;
+        if($x>2) $x=2;
+        if($x<0) $x=0;
+        return nameIdentifierSchemeCategoryValues[$x];
+    }
+
 
     public static function schemeURI($x)
     {

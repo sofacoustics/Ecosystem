@@ -38,8 +38,6 @@ Route::get('/dashboard', function () {
 // SONICOM
 /// RADAR
 Route::get('/radar', [RadarController::class, 'index'])->name('radar');
-Route::get('/radar/dataset/{id}', [RadarController::class, 'dataset']);
-Route::get('/radar/get/{id}', [RadarController::class, 'get']);
 
 /// ABOUT etc
 Route::view('/about', 'pages.about')->name('about');

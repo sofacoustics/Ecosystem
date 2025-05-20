@@ -8,110 +8,30 @@ use Illuminate\Support\Facades\Http; // guzzle
 use Illuminate\Support\Facades\Storage;
 
 use App\Http\Controllers\Api\Radar\RadarController as RadarapiController;
+use App\Http\Controllers\Api\Radar\DatasetController as RadarDatasetController;
 
+/*
+ * Access RADAR info via controller and return views
+ */
 class RadarController extends Controller
 {
-    var $access_token; // the access token for accessing RADAR
-    var $workspace;
-    var $baseurl;
-
-    var $radar;
-
-    public function __construct()
-    {
-
-        // Get valid access token
-//        $response = Http::post("$this->baseurl/radar/api/tokens", [
-//            'clientId'        => 'institut-fuer-schallforschung',
-//            'clientSecret'    => '7yb§cwEtfb',
-//            'userName'        => 'jonathanstuefer',
-//            'userPassword'    => 'ZtbI2ljoVKzL1yWDfK8Z',
-//            'redirectUrl'     => 'https://www.oeaw.ac.at/isf'
-//        ]);
-
-        //var $workspace = "RDJBmjTacaxKwSGW"; // Karlsruhe
-        //var $baseurl = 'https://test.radar-service.eu'; // Karlsruhe
-        $this->workspace = env("RADAR_WORKSPACE");
-        $this->baseurl = env("RADAR_BASEURL");
-        $this->dataseturl = $this->baseurl."/radar/api/datasets";
-
-        $this->radar = new RadarapiController; // this controller can be used for RADAR API calls
-
-        // Store RADAR credentials in the .env file
-        $response = Http::post($this->baseurl."/radar/api/tokens", [
-            'clientId'        => env("RADAR_CLIENTID"),
-            'clientSecret'    => env("RADAR_CLIENTSECRET"),
-            'userName'        => env("RADAR_USERNAME"),
-            'userPassword'    => env("RADAR_USERPASSWORD"),
-            'redirectUrl'     => env("RADAR_REDIRECTURL"),
-        ]);
-
-        $response->throw(); // Throw an exception if a client or server error occurred...
-        $body = json_decode($response->body(),true);
-        $this->access_token = $body['access_token'];
-    }
-
 	/*
 	* List all datasets
 	*/
     public function index() : View
-    {
-        $body = $this->radar->get("/datasets");
-        $datasets = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $body));
+	{
+		//jw:todo implement pagination, since this returns a *maximum* of 20 records!
+		$radar = new RadarDatasetController;
+		$response = $radar->index();
+		$error = '';
+		if($response->status() != 200)
+			$error = 'There was an error (status: ' . $response->status() . ')';
+		$body = $response->content();
+        //$datasets = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $body));
+		$array = json_decode($body); //jw:note if you specify 'true', then you have to access is via $array['data']. If you don't, then you can access if via $array->data
         return view('datasets', [
-            'datasets' => $datasets
+			'datasets' => $array->data,
+			'error' => $error
         ]);
-
-
-        /*
-        $response = Http::withOptions([
-            'debug' => false,
-        ])->withToken($this->access_token)
-        ->get("$this->baseurl/radar/api/datasets/?query=parentId:$this->workspace");
-
-        $response->throw(); // Throw an exception if a client or server error occurred...
-
-        $datasets = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $response->body()));
-
-        //Storage::disk('data')->put('test.txt', 'some test text written from laravel :-)');
-
-        return view('datasets', [ 
-            'datasets' => $datasets
-        ]);
-         */
-    }
-
-    public function dataset(string $id) : String
-    {
-        $this->_get($this->dataseturl."/$id");
-    }
-
-    public function get(string $id) : Void
-    {
-        $this->_get($this->dataseturl."/$id");
-        //dd($id);
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////
-    // Private
-    ////////////////////////////////////////////////////////////////////////////////
-    /*
-     * Request a 'GET' with the specified URL amd return the body.
-     */
-    private function _get(string $url) : String
-    {
-        $response = Http::withOptions([
-            'debug' => false,
-        ])->withToken($this->access_token)
-        ->get("$url");
-
-        $response->throw(); // Throw an exception if a client or server error occurred...
-
-        $body = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $response->body()));
-
-        //Storage::disk('data')->put('test.txt', 'some test text written from laravel :-)');
-
-        dd($body);
-        return "$body";
     }
 }
