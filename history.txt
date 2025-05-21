@@ -1,4 +1,5 @@
-*** Ecosystem ***
+*** Ecosystem *** 
+(on https://github.com/sofacoustics/Ecosystem)
 
 To be done before we go live:
 * JW: Implement the minimal procedure to "Assign DOI"
