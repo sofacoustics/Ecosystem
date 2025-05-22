@@ -4,7 +4,7 @@
 	</x-slot>
 	<h3>Creators</h3>
 	<p>Persons or institutions responsible for creating the tool:</p>
-	<x-creators.list :creatorable=$creatorable />
+	<x-creator.list :creatorable=$creatorable />
 
 	<livewire:creator-form :creatorable="$creatorable" />
 
