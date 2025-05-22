@@ -413,7 +413,7 @@ class DatabaseController extends Controller
 		return view('databases.radar', [
 			'database' => $database,
 			'radar' => $content,
-			'title' => 'RADAR Info'
+			'tabTitle' => 'RADAR Info'
 		]);
 	}
 

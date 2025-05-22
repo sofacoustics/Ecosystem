@@ -1,6 +1,6 @@
 <x-app-layout>
 	<x-slot name="header">
-			<x-database.header :database=$database />
+			<x-database.header :database=$database tabTitle='Definition'/>
 	</x-slot>
 	@if(count($database->datasetdefs)>0)		
 		<h3>Each dataset is defined as followed:</h3>

@@ -1,9 +1,12 @@
 <x-app-layout>
 	<x-slot name="header">
-			<x-database.header :database=$database />
+			<x-database.header :database=$database :tabTitle=$tabTitle />
 	</x-slot>
 
-	<h2>RADAR Info</h2>
+	@if(isset($tabTitle))
+		<h2>{{ $tabTitle }}</h2>
+	@endif
+	@section('tabTitle', " | " . $tabTitle)
 	<p>ID: @if(isset($radar['id'])){{ $radar['id'] }}@endif</p>
 	<p>State: @if(isset($radar['state'])){{ $radar['state'] }}@endif</p>
 	<p>DOI: @if(isset($radar['descriptiveMetadata']['identifier']['value'])){{ $radar['descriptiveMetadata']['identifier']['value'] }}@endif</p>

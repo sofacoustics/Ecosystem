@@ -1,6 +1,6 @@
 <x-app-layout>
 	<x-slot name="header">
-		<x-database.header :database=$database />
+		<x-database.header :database=$database tabTitle='Download'/>
 	</x-slot>
 	<h3>Database ID: {{ $database->id }}
 	<h3>Datafile list:</h3>

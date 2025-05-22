@@ -1,6 +1,6 @@
 <x-app-layout>
 	<x-slot name="header">
-			<x-database.header :database=$database />
+			<x-database.header :database=$database tabTitle="Edit Metadata"/>
 	</x-slot>
 <!--  <p>laravel\resources\views\databases\edit.blade.php</p> --!>
 	@if (count($errors) > 0)

@@ -8,7 +8,7 @@ Parameters:
 --}}
 <x-app-layout>
 	<x-slot name="header">
-			<x-database.header :database=$database />
+			<x-database.header :database=$database/>
 	</x-slot>
 	<h2>Metadata</h2>
 		@can('update', $database)

@@ -11,12 +11,12 @@ use App\Http\Controllers\Api\Radar\RadarController as RadarapiController;
 use App\Http\Controllers\Api\Radar\DatasetController as RadarDatasetController;
 
 /*
- * Access RADAR info via controller and return views
+ * Access RADAR API via controller and return views
  */
 class RadarController extends Controller
 {
 	/*
-	* List all datasets
+	* List all datasets in the SONICOM RADAR workspace.
 	*/
     public function index() : View
 	{

@@ -1,6 +1,6 @@
 <x-app-layout>
 	<x-slot name="header">
-			<x-database.header :database=$database />
+			<x-database.header :database=$database tabTitle='Datasets'/>
 	</x-slot>
 
 	<h2>Datasets</h2>

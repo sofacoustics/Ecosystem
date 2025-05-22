@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <x-database.header :dataset="$dataset" />
+		<x-database.header :dataset="$dataset" tabTitle="Dataset | {{ $dataset->name }}"/>
     </x-slot>
     <h2>
         Dataset: {{ $dataset->name }} @role('admin')

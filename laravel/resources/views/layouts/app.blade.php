@@ -7,14 +7,16 @@
 		<link rel="icon" type="image/x-icon" href="{{ asset('images/favicon.ico') }}">
 
 		{{--
-			
+
 			Set the title
 
-			The header.blade.php uses @section('title', "the title we want to display") to set a different one from 
+			The header.blade.php uses @section('pageTitle', "the title we want to display") to set a different one from
 			the default, which we set here to config('app.name')
 
+			Additionally, a view can then set the 'tabTitle'
+
 		--}}
-		<title> @yield('title', config('app.name')) </title>
+		<title> @yield('pageTitle', config('app.name')) @yield('tabTitle') </title>
 
 		<!-- Fonts -->
 		<link rel="preconnect" href="https://fonts.bunny.net">
