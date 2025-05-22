@@ -80,7 +80,7 @@ class RadarController extends Controller
      * Make a POST request to the RADAR API with the specified endpoint and
      * return the response body.
      */
-    public function post(string $endpoint, array $json)
+    public function post(string $endpoint, array $json = null)
 	{
 		$url = $this->apiurl.$endpoint;
         $response = Http::withToken($this->access_token)->post($url, $json);

@@ -52,6 +52,7 @@ Route::view('/terms-of-use', 'pages.terms-of-use')->name('terms-of-use');
 Route::resource('databases', DatabaseController::class);
 Route::get('/databases/{database}/visibility', [DatabaseController::class, 'visibility'])->name('databases.visibility');
 Route::get('/databases/{database}/radar', [DatabaseController::class, 'radarShow'])->name('databases.radar');
+Route::get('/databases/{database}/radar', [DatabaseController::class, 'radar'])->name('databases.radar'); // display RADAR stuff for testing API
 Route::get('/databases/{database}/radar/edit', [DatabaseController::class, 'radarEdit'])->name('databases.radar.edit');
 Route::get('/databases/{database}/datasetdefs', [DatabaseController::class, 'datasetdefs'])->name('databases.datasetdefs');
 Route::get('/databases/{database}/creators', [CreatorController::class, 'index'])->name('databases.creators');
@@ -66,6 +67,11 @@ Route::get('/databases/{database}/showdatasets', [DatabaseController::class, 'sh
 Route::get('/databases/{database}/comments', [CommentController::class, 'index'])->name('databases.comments');
 Route::get('/databases/{database}/datasets/bulkupload', [DatasetController::class, 'bulkupload'])->name('databases.datasets.bulkupload');
 Route::get('/databases/{database}/publish', [DatabaseController::class, 'publish'])->name('databases.publish');
+// access RADAR API
+Route::get('/databases/{database}/doi', [DatabaseController::class, 'doi'])->name('databases.doi');
+Route::post('/databases/{database}/radarcreate', [DatabaseController::class, 'radarcreate'])->name('databases.radarcreate');
+Route::post('/databases/{database}/startreview', [DatabaseController::class, 'startreview'])->name('databases.startreview');
+Route::post('/databases/{database}/endreview', [DatabaseController::class, 'endreview'])->name('databases.endreview');
 
 // DATASET
 Route::resource('datasets', DatasetController::class);

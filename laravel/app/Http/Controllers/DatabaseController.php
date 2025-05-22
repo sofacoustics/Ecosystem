@@ -37,7 +37,7 @@ class DatabaseController extends Controller
         // https://laracasts.com/discuss/channels/general-discussion/apply-middleware-for-certain-methods?page=0
         // Users must be authenticated for all functions except index and show.
         // Guests will be redirected to login page
-        $this->middleware('auth', ['except' => ['index', 'show', 'download', 'showdatasets', 'datasetdefs', 'radarShow']]);
+        $this->middleware('auth', ['except' => ['index', 'show', 'download', 'showdatasets', 'datasetdefs', 'radarShow', 'radar']]);
     }
 
     /**
@@ -312,7 +312,7 @@ class DatabaseController extends Controller
 		$status = $array['status'];
 		
 
-		if($status != 201)	
+		if($status != 201)
 		{
 			//dd("Failed: $message");
 			//
@@ -338,7 +338,84 @@ class DatabaseController extends Controller
 			'database' => $database,
 			'body' => $body
 		]);
-}
+	}
+
+	public function startreview(Database $database)
+	{
+		//jw:todo check metadata validity!
+		$radardataset = new RadardatasetController;
+		$response = $radardataset->startreview($database);
+		if($response->status() != 200)
+			return redirect()->back()->with('error', 'There was an error starting the review (status: '.$response->status().')');
+		return redirect()->back()->with([
+			'message' => 'We\'ve successfully starting the review!',
+			'api-status' => $response->status()
+		]);
+	}
+
+	public function endreview(Database $database)
+	{
+		$radardataset = new RadardatasetController;
+		$response = $radardataset->endreview($database);
+		if($response->status() != 200)
+			return redirect()->back()->with('error', 'There was an error ending the review (status: '.$response->status().')');
+		return redirect()->back()->with([
+			'message' => 'We\'ve successfully ended the review!',
+			'api-status' => $response->status()
+		]);
+	}
+
+	public function doi(Database $database)
+	{
+		$radardataset = new RadardatasetController;
+		$response = $radardataset->doi($database);
+		if($response->status() != 200)
+			return redirect()->back()->with('error', 'There was an error retrieving the DOI (status: '.$response->status().')');
+		return redirect()->back()->with('message', 'We\'ve successfully retrieved the DOI!');
+	}
+
+
+	public function radarcreate(Database $database)
+	{
+		$radardataset = new RadardatasetController;
+		$response = $radardataset->create($database);
+		if($response->status() != 201)
+		{
+			return redirect()->back()->with('error', 'There was an error creating the dataset (status: '.$response->status().')');
+		}
+		// get radar_id
+		$content = json_decode($response->content(), true);
+		$id = $content['id'];
+		// save radar_id
+		$database->radar_id = $id;
+		$database->save();
+		return redirect()->back()->with('message', 'We\'ve successfully created the dataset!');
+	}
+
+	/*
+	 * Display RADAR status
+	 */
+	public function radar(Database $database)
+	{
+		$radardataset = new RadardatasetController;
+		$response = $radardataset->read($database);
+		$content = json_decode($response->content(), true);
+
+		/*
+		$radar['id'] = $database->radar_id; // either something or null
+
+		$radar['state'] = $content->state ?? "";
+		$radar['doi'] = $content->descriptiveMetadata?->identifier?->value ?? "";
+		$radar['size'] = $content->technicalMetadata->size ?? 'EMPTY';
+		$radar =>
+		 */
+
+		return view('databases.radar', [
+			'database' => $database,
+			'radar' => $content,
+			'title' => 'RADAR Info'
+		]);
+	}
 
 	////////////////////////////////////////////////////////////////////////////////	
 	// Private

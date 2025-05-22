@@ -14,6 +14,9 @@
 	@endrole
 </h2>
 
+{{-- Set the HTML <title> here, overriding the default, which is defined in app.blade.php --}}
+@section('title', "$database->title database - ".getenv('APP_NAME'));
+
 <x-property name="Additional Title">
   {{ $database->additionaltitle }}
 </x-property>

@@ -12,6 +12,9 @@ use App\Http\Resources\RadarDatabaseResource;
 
 use App\Models\Database;
 
+/*
+ * Access the RADAR API and return Json response
+ */
 class DatasetController extends RadarController
 {
     /**
@@ -22,6 +25,67 @@ class DatasetController extends RadarController
 		$response = $this->get("/datasets");
 		return JsonResponse::fromJsonString($response->content());
     }
+
+
+	/*
+	 *
+	 * RADAR Docs:
+	 *
+	 *	Review	POST	/datasets/{id}/startreview		200, 401, 403, 404, 422, 500
+	 *
+	 */
+	public function startreview(Database $database)
+	{
+		$endpoint = "/datasets/$database->radar_id/startreview";
+		$response = $this->post($endpoint);
+		return JsonResponse::fromJsonString($response->content());
+	}
+
+	/*
+	 *
+	 * RADAR Docs:
+	 *
+	 *	Pending	POST	/datasets/{id}/endreview		200, 401, 403, 404, 422, 500
+	 *
+	 */
+	public function endreview(Database $database)
+	{
+		$endpoint = "/datasets/$database->radar_id/endreview";
+		$response = $this->post($endpoint);
+		return JsonResponse::fromJsonString($response->content());
+	}
+
+	/*
+	 *
+	 * RADAR Docs:
+	 *
+	 *	Retrieve DOI from dataset	GET	/datasets/{id}/doi		200, 401, 403, 404, 422, 500
+	 *
+	 */
+	public function doi(Database $database)
+	{
+		$endpoint = "/datasets/$database->radar_id/doi";
+		$response = $this->get($endpoint);
+		return JsonResponse::fromJsonString($response->content());
+	}
+
+	/*
+	 *
+	 * RADAR Docs:
+	 *
+	 *	Read	GET	/datasets/{id}		200, 401, 403, 404, 500
+	 *
+	 */
+	public function read(Database $database)
+	{
+		if($database->radar_id == null || "$database->radar_id" == "")
+			return response()->json([
+				'message' => 'There is no RADAR dataset for this database'
+			], 404);
+		$endpoint = "/datasets/$database->radar_id";
+		$response = $this->get($endpoint);
+		return JsonResponse::fromJsonString($response->content());
+	}
 
 
     /**
