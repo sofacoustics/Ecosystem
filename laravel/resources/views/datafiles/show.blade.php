@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <x-slot name="header">
-            <x-database.header :datafile="$datafile" />
+			<x-database.header :datafile="$datafile" tabTitle="Datafile | {{ $datafile->name }}"/>
         </x-slot>
         <x-property name="Dataset">
             <a href="{{ route('datasets.show', $datafile->dataset->id) }}">{{ $datafile->dataset->name }}</a><br>
