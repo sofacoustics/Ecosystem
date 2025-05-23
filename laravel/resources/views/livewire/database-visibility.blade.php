@@ -41,8 +41,17 @@
           <button wire:click="assignDOI" wire:confirm="Are you sure to assign a DOI to your database? This operation cannot be reverted!"
                     class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">
                 Assign DOI
-            </button> {{ $status }}
-    <p>Note that this does not publish your database with that DOI yet: 
+            </button>
+			@if($status)
+				<x-alert title='Info!' color='blue'>{{ $status }}</x-alert>
+			@endif
+			@if($warning)
+				<x-alert title='Warning!'>{{ $warning }}</x-alert>
+			@endif
+			@if($error)
+				<x-alert title='Error!'>{{ $error }}</x-alert>
+			@endif
+    <p>Note that this does not publish your database with that DOI yet:
         The datafiles will <b>not</b> be transfered to the Datathek yet, and the link between the DOI and your data will be invalid yet.</p>
     <p>Note also that even with DOI assigned, you will be able to hide your database within the Ecosystem.</p>
 @else

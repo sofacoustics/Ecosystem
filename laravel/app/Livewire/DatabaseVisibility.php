@@ -4,7 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Database;
 
-use App\Http\Controllers\Api\Radar\DatasetController as RadardatasetController;
+use App\Http\Controllers\Api\Radar\DatasetController as RadardatasetapiController;
 use App\Http\Resources\DatabaseResource;
 
 use Illuminate\Http\JsonResponse;
@@ -23,6 +23,8 @@ class DatabaseVisibility extends Component
 	public $visible;
 	public $doi;
 	public $status; // set messages to be viewed in view
+	public $warning;
+	public $error; // set error messages to be viewed in view
 	public $radarstatus;
 
 	protected $rules = [
@@ -61,36 +63,99 @@ class DatabaseVisibility extends Component
 				$this->visible = $this->database->visible;
 				$this->js('window.location.reload()'); 
     }
-
+	
     public function assignDOI()
 	{
 		$this->status = "Started DOI assignment";
-		// create RADAR dataset
-		$radardataset = new RadardatasetController;
-		$response = $radardataset->create($this->database); // requires an array, not JSON. Expect 201 status on success
-		if($response->status() == 201)
+		$this->error = "";
+		$this->warning = "";
+		$radar = new RadardatasetapiController;
+		if($this->database->radar_id == null)
 		{
-			$radar_id = $this->getJsonValue('id', $response);
-			$this->database->radar_id = $radar_id;
-			$this->database->save();
-			$this->status = "RADAR dataset created (id: $radar_id)";
-		}
-		else if($response->status() == 200)
-		{
-			$this->status = 'RADAR dataset already exists ('.$this->database->radar_id.')';
+			$this->status = 'Creating RADAR dataset';
+			$response = $radar->create($this->database);
+			$content = json_decode($response->content());
+			if($response->status() != 201)
+			{
+				$this->error = "Failed to create dataset: ".$content->message;
+				return;
+			}
+			else
+			{
+				$this->database->radar_id = $content->id;
+				$this->database->save();
+				$this->status = "RADAR dataset ($content->id) successfully created: ".$content->message;
+			}
 		}
 		else
 		{
-			$this->status = "RADAR status code ". $response->status();
+			$response = $radar->update($this->database);
+			$content = json_decode($response->content());
+			if($response->status() != 200)
+			{
+				$this->error = "RADAR metadata update failed: $content->exception";
+				return;
+			}
+			// validate metadata
+			$response = $radar->metadataValidate($this->database);
+			$content = json_decode($response->content());
+			if($response->status() != 200)
+			{
+				$this->error = "There was an error validating the metadata: $content->exception";
+				return;
+			}
+			if($content->details != "Validation successful")
+			{
+				$this->error = "The current metadata is incomplete or incorrect: $content->details";
+				return;
+			}
+			$this->status = "The current metadata is valid";
 		}
-
-		$this->status .= ' TODO: assign DOI';
-		//jw:tod get DOI
-		/*
-		$this->database->doi = "testDOI";
+		$response = $radar->read($this->database);
+		$content = json_decode($response->content());
+		if($response->status() != 200)
+		{
+			$this->error = "There was an error reading dataset data from RADAR: $content->message";
+			return;
+		}
+		else
+		{
+			$this->status = "Successfully read dataset data from RADAR";
+		}
+		if($content->state == "PENDING")
+		{
+			$this->status = "We need to publish this dataset first";
+			$response = $radar->startreview($this->database);
+			$content = json_decode($response->content());
+			$exception = $content?->exception;
+			if($response->status() != 200 || isset($exception))
+			{
+				$this->error = "Starting review of this dataset failed: $content->exception";
+				return;
+			}
+			$this->status = "Review process started";
+		}
+		$response = $radar->doi($this->database);
+		$content = json_decode($response->content());
+		if($response->status() != 200)
+		{
+			$this->error = "There was an error retrieving the DOI: $content->exception";
+			return;
+		}
+		$doi = $response->content(); // just the DOI (json_decode() returns null)
+		$this->status = "Successfully retrieved DOI ($doi).";
+		$this->database->doi = $doi;
 		$this->database->save();
-		$this->doi = $this->database->doi;
-		*/
+		$this->doi = $doi;
+		// stop review process
+		$response = $radar->endreview($this->database);
+		$content = json_decode($response->content());
+		if($response->status() != 200)
+		{
+			$this->error = "Failed to stop review process: $content->exception";
+			return;
+		}
+		$this->status = "Successfully stopped review proceess.";
     }
 
     public function submitToPublish()

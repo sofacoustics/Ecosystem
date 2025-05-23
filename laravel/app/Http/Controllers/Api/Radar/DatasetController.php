@@ -13,7 +13,7 @@ use App\Http\Resources\RadarDatabaseResource;
 use App\Models\Database;
 
 /*
- * Access the RADAR API and return Json response
+ * Access the RADAR API and return JsonResponse
  */
 class DatasetController extends RadarController
 {
@@ -33,8 +33,12 @@ class DatasetController extends RadarController
 	 *
 	 *	Review	POST	/datasets/{id}/startreview		200, 401, 403, 404, 422, 500
 	 *
+	 *	Returns:
+	 *
+	 *
+	 *
 	 */
-	public function startreview(Database $database)
+	public function startreview(Database $database) : JsonResponse
 	{
 		$endpoint = "/datasets/$database->radar_id/startreview";
 		$response = $this->post($endpoint);
@@ -48,7 +52,7 @@ class DatasetController extends RadarController
 	 *	Pending	POST	/datasets/{id}/endreview		200, 401, 403, 404, 422, 500
 	 *
 	 */
-	public function endreview(Database $database)
+	public function endreview(Database $database) : JsonResponse
 	{
 		$endpoint = "/datasets/$database->radar_id/endreview";
 		$response = $this->post($endpoint);
@@ -61,11 +65,16 @@ class DatasetController extends RadarController
 	 *
 	 *	Retrieve DOI from dataset	GET	/datasets/{id}/doi		200, 401, 403, 404, 422, 500
 	 *
+	 * Return
+	 *
+	 *  Returns just the DOI as the body
+	 *
 	 */
-	public function doi(Database $database)
+	public function doi(Database $database) : JsonResponse
 	{
 		$endpoint = "/datasets/$database->radar_id/doi";
 		$response = $this->get($endpoint);
+		//return new JsonResponse($response);
 		return JsonResponse::fromJsonString($response->content());
 	}
 
@@ -87,13 +96,45 @@ class DatasetController extends RadarController
 		return JsonResponse::fromJsonString($response->content());
 	}
 
+	/**
+	 *
+	 * Validate XML metadata	GET	/datasets/{id}/metadata/validate		200, 401, 403, 404, 500*
+	 *
+	 */
+	public function metadataValidate(Database $database) : JsonResponse
+	{
+		$endpoint = "/datasets/$database->radar_id/metadata/validate";
+		$response = $this->get($endpoint);
+		return JsonResponse::fromJsonString($response->content());
+	}
+
+	/**
+	 * Set metadata correction	POST	/datasets/{id}/metadata-correction		200, 401, 403, 404, 422, 500
+	 */
+	public function update(Database $database) : JsonResponse
+	{
+		// get Database in RADAR formatted array
+        // eager load relationships so they appear in serializeJson()
+        $database->load('creators',
+            'publishers',
+            'subjectareas',
+            'rightsholders',
+            'keywords',
+        );
+		$resource = new RadarDatabaseResource($database);
+		$arrayBody = $resource->toArray(request()); // route called with ?format=radar
+		$endpoint = "/datasets/$database->radar_id";
+		$response = $this->put($endpoint, $arrayBody);
+		return JsonResponse::fromJsonString($response->content());
+	}
+
 
     /**
 	 * Create a RADAR dataset from an Ecosystem Database
 	 *
 	 *  'database'	The database to use
 	 *
-	 * Response 
+	 * Response
 	 *
 	 *	Success:	status code 201 and 'id' => 'RADAR ID', 'message' => 'Success', 'status' => '201'
 	 *				status code 200, if our database already exists (done nothing)
@@ -146,14 +187,6 @@ class DatasetController extends RadarController
     {
 		$response = $this->get("/datasets/$id");
 		return $response;
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
     }
 
     /**

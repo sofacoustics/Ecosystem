@@ -237,7 +237,7 @@ class DatabaseController extends Controller
 							'message' => 'Files retrieved successfully.',
 							'data'    => $fileData,
 					], 200); // 200 OK
-				} 
+				}
 				catch (\Exception $e) 
 				{
 					// Handle any errors that occur during the process.
