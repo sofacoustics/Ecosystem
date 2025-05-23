@@ -424,3 +424,5 @@ Jonnie uses git attibututes and smudge/clean filters to convert to 4 space tabs 
 We're using Tailwind CSS.
 
 If you want to convert a HEX color into a Tailwind color, you could use this site: <https://nearest-tailwind-color.netlify.app/>
+
+Modified by Jonnie
