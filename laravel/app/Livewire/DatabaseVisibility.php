@@ -145,6 +145,7 @@ class DatabaseVisibility extends Component
 		$doi = $response->content(); // just the DOI (json_decode() returns null)
 		$this->status = "Successfully retrieved DOI ($doi).";
 		$this->database->doi = $doi;
+		$this->database->radarstatus = 1;
 		$this->database->save();
 		$this->doi = $doi;
 		// stop review process
