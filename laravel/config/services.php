@@ -33,8 +33,8 @@ return [
 
 		'orcid' => [
 			'api_url' => env('ORCID_API_URL', 'https://orcid.org/'), // Adjust for sandbox: 'https://sandbox.orcid.org/v3.0'
-			'client_id' => env('ORCID_CLIENT_ID','APP-ZAFY90IXB479CBHL'),
-			'client_secret' => env('ORCID_CLIENT_SECRET', 'bf28b3a3-d5d7-47e0-aa1f-ca38830d3ba2'),
+			'client_id' => env('ORCID_CLIENT_ID'),
+			'client_secret' => env('ORCID_CLIENT_SECRET'),
 			// 'redirect' => env('ORCID_REDIRECT_URI', '/orcid/callback'), // You'll define the route
 ],
 
