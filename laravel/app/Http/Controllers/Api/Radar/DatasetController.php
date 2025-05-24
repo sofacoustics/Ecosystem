@@ -128,7 +128,6 @@ class DatasetController extends RadarController
 		return JsonResponse::fromJsonString($response->content());
 	}
 
-
     /**
 	 * Create a RADAR dataset from an Ecosystem Database
 	 *

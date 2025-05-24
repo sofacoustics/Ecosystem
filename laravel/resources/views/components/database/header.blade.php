@@ -32,7 +32,6 @@
 @if(isset($tabTitle))
 	@section('tabTitle', " | " . $tabTitle)
 @endif
-
 <x-property name="Additional Title">
   {{ $database->additionaltitle }}
 </x-property>
