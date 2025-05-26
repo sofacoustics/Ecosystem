@@ -149,7 +149,7 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.relatedidentifiers', $database->id) }}">Edit</x-button></small>
 				Relations:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.relatedidentifiers', $database->id) }}">Add keywords</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.relatedidentifiers', $database->id) }}">Add relations</x-button></small>
 				</h3>
 			@endif
 		@else
@@ -158,9 +158,9 @@ Parameters:
 		<ul class="list-disc list-inside">
 			@forelse ($database->relatedidentifiers as $relatedidentifier)
 			<li>
-				<b>{{ \App\Models\Database::relationtypeDisplay($relatedidentifier->relationtype) }}:</b> 
-				{{ $relatedidentifier->relatedidentifier }} 
-				({{ \App\Models\Database::relatedidentifiertypeDisplay($relatedidentifier->relatedidentifiertype) }}).
+				<b>{{ \App\Models\Database::relationDisplay($relatedidentifier->relationtype) }}:</b> 
+				{{ $relatedidentifier->name }} 
+				({{ \App\Models\Database::relatedidentifierDisplay($relatedidentifier->relatedidentifiertype) }}).
 			</li>
 			@empty
 				@cannot('update', $database)

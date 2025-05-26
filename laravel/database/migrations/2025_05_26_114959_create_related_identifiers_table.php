@@ -15,7 +15,7 @@ return new class extends Migration
 			$table->id();
 			$table->unsignedBigInteger('relatedidentifierable_id');
 			$table->string('relatedidentifierable_type');
-			$table->string('relatedidentifier');
+			$table->string('name');
 			$table->unsignedInteger('relatedidentifiertype');
 			$table->unsignedInteger('relationtype');
 			$table->timestamps();

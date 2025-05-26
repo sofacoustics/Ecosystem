@@ -21,7 +21,7 @@ class Database extends Model
 	protected $fillable = ['title', 'additionaltitle', 'additionaltitletype', 'description', 'descriptiontype',
 		'radardataset',
 		'productionyear', 'publicationyear', 'language', 'resourcetype', 'resource', 'datasources','software',
-		'processing', 'relatedinformation', 'controlledrights', 'additionalrights', 
+		'processing', 'controlledrights', 'additionalrights', 
 		'creators', 'doi', 'visible', 'radarstatus',
 		'bulk_upload_dataset_name_filter',
 		'user_id', '_token', '_method', 'submit'];
@@ -168,32 +168,32 @@ class Database extends Model
 		return \App\Models\Radar\Metadataschema::list('subjectArea');
 	}
 
-	static function relatedidentifiertypeValue($relatedidentifiertypeindex)
+	static function relatedidentifierValue($relatedidentifiertypeindex)
 	{
 		return \App\Models\Radar\Metadataschema::value($relatedidentifiertypeindex);
 	}
 
-	static function relatedidentifiertypeList()
+	static function relatedidentifierList()
 	{
 		return \App\Models\Radar\Metadataschema::list('relatedIdentifierType');
 	}
 
-	static function relatedidentifiertypeDisplay($relatedidentifiertypeindex)
+	static function relatedidentifierDisplay($relatedidentifiertypeindex)
 	{
 		return \App\Models\Radar\Metadataschema::display($relatedidentifiertypeindex);
 	}
 
-	static function relationtypeValue($relationtypeindex)
+	static function relationValue($relationtypeindex)
 	{
 		return \App\Models\Radar\Metadataschema::value($relationtypeindex);
 	}
 
-	static function relationtypeList()
+	static function relationList()
 	{
 		return \App\Models\Radar\Metadataschema::list('relationType');
 	}
 
-	static function relationtypeDisplay($relationtypeindex)
+	static function relationDisplay($relationtypeindex)
 	{
 		return \App\Models\Radar\Metadataschema::display($relationtypeindex);
 	}
