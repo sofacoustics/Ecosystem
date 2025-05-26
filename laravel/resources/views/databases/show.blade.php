@@ -117,7 +117,7 @@ Parameters:
 		</ul>
 
 		@can('update', $database)
-			@if(count($database->rightsholders)>0)
+			@if(count($database->keywords)>0)
 				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.keywords', $database->id) }}">Edit</x-button></small>
 				Keywords:</h3>
 			@else
@@ -142,6 +142,33 @@ Parameters:
 				@endcan
 			@endforelse
 		</ul>
+
+
+		@can('update', $database)
+			@if(count($database->relatedidentifiers)>0)
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.relatedidentifiers', $database->id) }}">Edit</x-button></small>
+				Relations:</h3>
+			@else
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.relatedidentifiers', $database->id) }}">Add keywords</x-button></small>
+				</h3>
+			@endif
+		@else
+			<h3>Relations:</h3>
+		@endcan
+		<ul class="list-disc list-inside">
+			@forelse ($database->relatedidentifiers as $relatedidentifier)
+			<li>
+				<b>{{ \App\Models\Database::relationtypeDisplay($relatedidentifier->relationtype) }}:</b> 
+				{{ $relatedidentifier->relatedidentifier }} 
+				({{ \App\Models\Database::relatedidentifiertypeDisplay($relatedidentifier->relatedidentifiertype) }}).
+			</li>
+			@empty
+				@cannot('update', $database)
+					<li>No relations defined.</li>
+				@endcan
+			@endforelse
+		</ul>
+
 
 		<h3>
 			@can('update', $database)

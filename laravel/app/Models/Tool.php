@@ -122,4 +122,9 @@ class Tool extends Model
 		return $this->morphMany(Keyword::class, 'keywordable');
 	}
 
+	public function relatedidentifiers()
+	{
+		return $this->morphMany(RelatedIdentifier::class, 'relatedidentifierable');
+	}
+
 }

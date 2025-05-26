@@ -7,8 +7,7 @@ To be done before we go live:
 * JW: Implement the minimal procedure to "Publish with DOI"
 * PM: Implement the actual procedure to "Publish with DOI"
 * JW: Add obligatory email confirmation when a user registers
-* PM: Implement RelatedIdentifier (to store citations of databases and other features)
-* PM: Migrate and publish the repo
+* PM: Implement Edit and New RelatedIdentifier (to store citations of databases and other features)
 * JW/PM: Workflow for the test and live server
 * PM: Implement a way to link documentation files with databases (in RADAR via RelatedIdentifier)
 * MM: Implement the most important widgets
@@ -152,9 +151,9 @@ Done:
 * RightsHolder (& optional nameIdentifier, nameIdentifierScheme,  schemeURI): done as 0-n.
 * Keyword (& optional keywordScheme, schemeURI, valueURI, classificationCode): done as 0-n.
 * DataSource: done as 0-1 (0-n for later).
+* RelatedIdentifier (& relatedIdentifierType, relationType): tbd as 0-n, later. 
 
 To be done (tbd): 
-* RelatedIdentifier (& relatedIdentifierType, relationType): tbd as 0-n, later. 
 * FundingReference (& funderName, optional funderIdentifier, awardNumber, awardURI, awardTitle): tbd as 0-n. 
 * Identifier (& identifierType): to be created by RADAR. 
 * Contributor (& contributorType, contributorName): tbd, 0-n. 

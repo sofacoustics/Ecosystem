@@ -7,6 +7,7 @@ use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\SubjectAreaController;
 use App\Http\Controllers\RightsholderController;
 use App\Http\Controllers\KeywordController;
+use App\Http\Controllers\RelatedIdentifierController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\DatafileController;
@@ -60,6 +61,7 @@ Route::get('/databases/{database}/publishers', [PublisherController::class, 'ind
 Route::get('/databases/{database}/subjectareas', [SubjectAreaController::class, 'index'])->name('databases.subjectareas');
 Route::get('/databases/{database}/rightsholders', [RightsholderController::class, 'index'])->name('databases.rightsholders');
 Route::get('/databases/{database}/keywords', [KeywordController::class, 'index'])->name('databases.keywords');
+Route::get('/databases/{database}/relatedidentifiers', [RelatedIdentifierController::class, 'index'])->name('databases.relatedidentifiers');
 Route::get('/databases/{database}/update', [DatabaseController::class, 'upload'])->name('databases.upload');
 Route::get('/databases/{database}/download', [DatabaseController::class, 'download'])->name('databases.download');
 Route::get('/databases/{database}/purge', [DatabaseController::class, 'purge'])->name('databases.purge');
@@ -91,6 +93,8 @@ Route::resource('subjectareas', SubjectAreaController::class);
 Route::resource('rightsholders', RightsholderController::class);
 // Keywords
 Route::resource('keywords', KeywordController::class);
+// Keywords
+Route::resource('relatedidentifiers', RelatedIdentifierController::class);
 // Comments
 Route::resource('comments', CommentController::class);
 
@@ -106,6 +110,7 @@ Route::get('/tools/{tool}/publishers', [PublisherController::class, 'index'])->n
 Route::get('/tools/{tool}/subjectareas', [SubjectAreaController::class, 'index'])->name('tools.subjectareas');
 Route::get('/tools/{tool}/rightsholders', [RightsholderController::class, 'index'])->name('tools.rightsholders');
 Route::get('/tools/{tool}/keywords', [KeywordController::class, 'index'])->name('tools.keywords');
+Route::get('/tools/{tool}/relatedidentifiers', [RelatedIdentifierController::class, 'index'])->name('tools.relatedidentifiers');
 
 /// SERVICEs
 Route::resource('services', ServiceController::class);

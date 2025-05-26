@@ -136,6 +136,33 @@
 			@endforelse
 		</ul>
 
+		@can('update', $tool)
+			@if(count($tool->relatedidentifiers)>0)
+				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.relatedidentifiers', $tool->id) }}">Edit</x-button></small>
+				Relations:</h3>
+			@else
+				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.relatedidentifiers', $tool->id) }}">Add keywords</x-button></small>
+				</h3>
+			@endif
+		@else
+			<h3>Relations:</h3>
+		@endcan
+		<ul class="list-disc list-inside">
+			@forelse ($tool->relatedidentifiers as $relatedidentifier)
+			<li>
+				<b>{{ \App\Models\Database::relationtypeDisplay($relatedidentifier->relationtype) }}:</b> 
+				{{ $relatedidentifier->relatedidentifier }} 
+				({{ \App\Models\Database::relatedidentifiertypeDisplay($relatedidentifier->relatedidentifiertype) }}).
+			</li>
+			@empty
+				@cannot('update', $tool)
+					<li>No relations defined.</li>
+				@endcan
+			@endforelse
+		</ul>
+
+
+
 	<h2>Metadata</h2>
 		<p><b>Description:</b> {{ $tool->description }}</p>
 		@if($tool->filesize())
