@@ -14,7 +14,7 @@ class SubjectAreaForm extends Component
 	public $subjectarea;
 	public $controlledSubjectAreaIndex;
 	public $additionalSubjectArea;
-
+	public $base_id; 
 
 	protected $rules = [
 		'controlledSubjectAreaIndex' => 'required',
@@ -22,13 +22,16 @@ class SubjectAreaForm extends Component
 
 	public function mount($subjectareaable, $subjectarea = null)
 	{
+		$base_id = (\App\Models\Radar\Metadataschema::where('name', 'subjectArea')->first()->id);
+
 		$this->subjectareaable = $subjectareaable;
+		$this->base_id = $base_id;
 		if($subjectarea)
 		{
 			$this->subjectarea = $subjectarea;
 			$this->subjectareaable_id = $subjectarea->subjectareaable_id;
 			$this->subjectareaable_type = $subjectarea->subjectareaable_type;
-			$this->controlledSubjectAreaIndex = $subjectarea->controlledSubjectAreaIndex-15;
+			$this->controlledSubjectAreaIndex = $subjectarea->controlledSubjectAreaIndex - $base_id;
 			$this->additionalSubjectArea = $subjectarea->additionalSubjectArea;
 		}
 		else
@@ -48,13 +51,16 @@ class SubjectAreaForm extends Component
 		{
 			$this->subjectarea = new SubjectArea();
 		}
-		
 		$this->subjectarea->subjectareaable_id = $this->subjectareaable_id;
 		$this->subjectarea->subjectareaable_type = $this->subjectareaable_type;
-		if (empty($this->controlledSubjectAreaIndex))
-		{	 $this->subjectarea->controlledSubjectAreaIndex = 46; } // 46 = Other in RADAR 9.1
+		if ($this->controlledSubjectAreaIndex == null)
+		{		// Other if not defined
+			$this->subjectarea->controlledSubjectAreaIndex = (\App\Models\Radar\Metadataschema::where('name', 'subjectArea')->where('value', 'OTHER')->first()->id); 
+		}
 		else
-		{	 $this->subjectarea->controlledSubjectAreaIndex = $this->controlledSubjectAreaIndex+15; }
+		{	 
+			$this->subjectarea->controlledSubjectAreaIndex = $this->controlledSubjectAreaIndex + ($this->base_id); 
+		}
 		$this->subjectarea->additionalSubjectArea = $this->additionalSubjectArea;
 
 		$this->subjectarea->save();
