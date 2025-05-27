@@ -84,6 +84,13 @@ class DatasetController extends RadarController
 	 *
 	 *	Read	GET	/datasets/{id}		200, 401, 403, 404, 500
 	 *
+	 *	Returns
+	 *
+	 *		If the dataset does not exist, then it returns
+	 *		
+	 *		'statusCode' => 404
+	 *		'content ' => {"message":"There is no RADAR dataset for this database"}
+	 *
 	 */
 	public function read(Database $database)
 	{
