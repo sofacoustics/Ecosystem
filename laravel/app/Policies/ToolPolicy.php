@@ -56,7 +56,7 @@ class ToolPolicy
 	{
 		// this is called from the controller edit function, when $this->authorize($tool) is called.
 		if (isset($user->id))
-			$enable = ($user->id == $tool->user_id) && ($tool->radarstatus < 1); // allow only for owners and if not submitted for persistent publication
+			$enable = ($user->id == $tool->user_id) && ($tool->radarstatus < 2); // allow only for owners and if not submitted for persistent publication
 		else
 			$enable = false; // do not allow if non-authorized
 		return $enable
@@ -70,7 +70,7 @@ class ToolPolicy
 	 */
 	public function delete(User $user, Tool $tool): Response
 	{
-		return ($user->id == $tool->user_id) && ($tool->radarstatus < 1) // allow only for owners and if not submitted for persistent publication
+		return ($user->id == $tool->user_id) && ($tool->radarstatus < 2) // allow only for owners and if not submitted for persistent publication
 			? Response::allow()
 			: Response::deny('You may not delete this tool, since you do not own it!');
 

@@ -16,57 +16,69 @@
 		$database = $datafile->dataset->database;
 
 ?>
-<h2 class="font-semibold text-xl text-gray-800 leading-tight">Database:
-	<a href="{{ route('databases.show', $database->id) }}">{{ $database->title }} ({{ $database->productionyear }})</a>
-	@role('admin')
-			<small>(ID: {{ $database->id }})</small>
-	@endrole
-</h2>
 
 {{-- Set the HTML <title> here, overriding the default, which is defined in app.blade.php --}}
 @if(isset($pageTitle))
 	@section('pageTitle', "$pageTitle")
 @else
-	@section('pageTitle', "$database->title")
+	@section('pageTitle', "Database: $database->title")
 @endif
 @if(isset($tabTitle))
 	@section('tabTitle', " | " . $tabTitle)
 @endif
-<x-property name="Additional Title">
-  {{ $database->additionaltitle }}
-</x-property>
 
-<x-property name="Manager at the Ecosystem">
-  {{ \App\Models\User::find($database->user_id)->name }}
-</x-property>
+<h2 class="font-semibold text-xl text-gray-800 leading-tight">Database:
+	<a href="{{ route('databases.show', $database->id) }}">{{ $database->title }}</a> ({{ $database->productionyear }})
+</h2>
 
-<x-button class="inline" method="GET" action="{{ route('databases.datasetdefs', $database->id) }}">Definition</x-button>
-
-@if(count($database->datasetdefs))
-	<x-button class="inline" method="GET" action="{{ route('databases.showdatasets', $database->id) }}">Datasets</x-button>
-@endif
-
-@if(count($database->datasets))
-	<x-button class="inline" method="GET" action="{{ route('databases.download', $database->id) }}">Download</x-button>
-@endif
-
-@can('update', $database)
-	@if(count($database->datasetdefs))
-		<x-button method="GET" class="inline" action="{{ route('databases.datasets.create', [$database->id]) }}">Upload</x-button>
-		<x-button method="GET" class="inline" action="{{ route('databases.upload', [$database->id]) }}">Bulk Upload</x-button>
+<p>
+	@if($database->additionaltitle)
+		<x-property name="Subtitle">
+			{{ $database->additionaltitle }}
+		</x-property>
 	@endif
-@endcan
 
-@can('own', $database)
-	<x-button method="GET" action="{{ route('databases.visibility', [$database]) }}" class="inline">Manage Visibility</x-button>
+	@if($database->doi)
+		<x-property name="DOI">
+			<a href="{{ $database->doi }}">{{ $database->doi }}</a>
+		</x-property>
+	@endif
+</p>
+
+<p>
+	<x-button class="inline" method="GET" action="{{ route('databases.datasetdefs', $database->id) }}">Definition</x-button>
+
+	@if(count($database->datasetdefs))
+		<x-button class="inline" method="GET" action="{{ route('databases.showdatasets', $database->id) }}">Datasets</x-button>
+	@endif
+
+	@if(count($database->datasets))
+		<x-button class="inline" method="GET" action="{{ route('databases.download', $database->id) }}">Download</x-button>
+	@endif
+
 	@can('update', $database)
-		<x-button method="GET" action="{{ route('databases.edit', [$database]) }}" class="inline">Edit Metadata</x-button>
-		@if (count($database->datasets))
-			<x-button method="GET" action="{{ route('databases.purge', [$database->id]) }}" class="inline">Purge Database</x-button>
+		@if(count($database->datasetdefs))
+			<x-button method="GET" class="inline" action="{{ route('databases.datasets.create', [$database->id]) }}">Upload</x-button>
+			<x-button method="GET" class="inline" action="{{ route('databases.upload', [$database->id]) }}">Bulk Upload</x-button>
 		@endif
 	@endcan
-	@can('delete', $database)
-		<x-button method="DELETE" action="{{ route('databases.destroy', [$database->id]) }}" class="inline">Delete Database</x-button>
+
+	@can('own', $database)
+		<x-button method="GET" action="{{ route('databases.visibility', [$database]) }}" class="inline">Manage Visibility</x-button>
+		@can('update', $database)
+			<x-button method="GET" action="{{ route('databases.edit', [$database]) }}" class="inline">Edit Metadata</x-button>
+			@if (count($database->datasets))
+				<x-button method="GET" action="{{ route('databases.purge', [$database->id]) }}" class="inline">Purge Database</x-button>
+			@endif
+		@endcan
+		@can('delete', $database)
+			<x-button method="DELETE" action="{{ route('databases.destroy', [$database->id]) }}" class="inline">Delete Database</x-button>
+		@endcan
+		<?php /* <x-button method="GET" action="{{ route('databases.publish', [$database]) }}" class="inline">Publish to RADAR</x-button> */ ?>
 	@endcan
-	<?php /* <x-button method="GET" action="{{ route('databases.publish', [$database]) }}" class="inline">Publish to RADAR</x-button> */ ?>
-@endcan
+</p>
+
+<p>
+	<small><b>Ecosystem ID:</b> {{ $database->id }}</small>
+</p>
+

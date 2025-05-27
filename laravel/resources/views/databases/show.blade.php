@@ -10,6 +10,7 @@ Parameters:
 	<x-slot name="header">
 			<x-database.header :database=$database/>
 	</x-slot>
+	
 	<h2>Metadata</h2>
 		@can('update', $database)
 			@if(count($database->creators)>0)
@@ -228,12 +229,12 @@ Parameters:
 
 	<hr>
 
-@env('local')
-	<div class="text-xs">
-		<p>Uploaded by: {{ $database->user->name }}<br>
+<div class="text-xs">
+	<p>
+		Uploaded by: {{ $user->name }}<br>
 		Created: {{ $database->created_at }}<br>
-		Updated: {{ $database->updated_at }}</p>
-	</div>
-@endenv
+		Updated: {{ $database->updated_at }}
+	</p>
+</div>
 
 </x-app-layout>

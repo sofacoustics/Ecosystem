@@ -1,7 +1,15 @@
+{{--
+
+Parameters:
+
+	tool
+	user
+
+--}}
 <x-app-layout>
-<x-slot name="header">
-	<x-tool.header :tool=$tool />
-</x-slot>
+	<x-slot name="header">
+		<x-tool.header :tool=$tool />
+	</x-slot>
 
 	<h2>Metadata</h2>
 		@can('update', $tool)
@@ -226,10 +234,12 @@ document.getElementById('copyButton').addEventListener('click', function() {
 </script>
 
 
-
-@env('local')
-    <ul class="list-disc list-inside">
-    </div>
-@endenv
+<div class="text-xs">
+	<p>
+		Uploaded by: {{ $user->name }}<br>
+		Created: {{ $tool->created_at }}<br>
+		Updated: {{ $tool->updated_at }}
+	</p>
+</div>
 
 </x-app-layout>

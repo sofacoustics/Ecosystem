@@ -25,7 +25,7 @@ class DatabaseVisibility extends Component
 	public $status; // set messages to be viewed in view
 	public $warning;
 	public $error; // set error messages to be viewed in view
-	public $radarstatus;
+	public $radarstatus; // null or 0: nothing happened with RADAR yet; 1: DOI assigned; 2: Requested publication, curator notified; 3: Database persistently published.
 
 	protected $rules = [
 	];
@@ -161,7 +161,7 @@ class DatabaseVisibility extends Component
 
     public function submitToPublish()
     {
-				$this->database->radarstatus=1;
+				$this->database->radarstatus=2;
 				$this->database->save();
 				$this->radarstatus = $this->database->radarstatus;
 				$this->js('window.location.reload()');
@@ -169,7 +169,7 @@ class DatabaseVisibility extends Component
 
     public function approve() // Emulate the curator approving the publication at the Datathek
     {
-				$this->database->radarstatus=2;
+				$this->database->radarstatus=3;
 				$this->database->save();
 				$this->radarstatus = $this->database->radarstatus;
     }

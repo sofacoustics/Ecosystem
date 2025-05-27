@@ -2,7 +2,6 @@
 (on https://github.com/sofacoustics/Ecosystem)
 
 To be done before we go live:
-* PM: Display DOI when available in the header
 * PM: Check input of "production year"
 * PM: Subject Areas: remove from the interface
 * PM: Resource: implement a selection of “Model”, “Physical Object”, “Software”, “Text”, and “Other” for Tools and disable for Databases
@@ -10,6 +9,7 @@ To be done before we go live:
 * PM: Description: provide a single entry for General (=RADAR: Other), Abstract, Method, and Technical Remarks. Create the edit field as resizable multiline fields. 
 * PM: Fix Language to "eng". 
 * PM: Implement the actual procedure to "assign DOI", do not forget the two fixed subject areas
+* PM: Adapt Tools to "assign DOI"
 * JW: Implement the minimal procedure to "Publish with DOI"
 * PM: Add “published_at” to tables databases and tools with date of publication when doing "Publish with DOI"
 * PM: Implement the actual procedure to "Publish with DOI"
@@ -17,6 +17,7 @@ To be done before we go live:
 * JW/PM: Workflow for the test and live server
 * MM: Implement the most important widgets
 * PM: Logging of all downloads
+* Implement the possibility to revoke a DOI (=delete the entry at RADAR). Required to correct metadata. 
 
 To be done after we go live:
 * JW: Add "Admin" as a role to the User interface. Admins should be able to see and edit all data
@@ -36,7 +37,8 @@ Nice to have:
 * Show comments as a table
 * Landing page: Include filter by Visible and Archived
 * Bulk Upload: Warn if a dataset already exists
-* PM: Improve the way of linking tools, documentation, and databases (via RelatedIdentifier)
+* Improve the way of linking tools, documentation, and databases (via RelatedIdentifier)
+* Allow metadata editing after publication? RADAR supports metadata correction after publication. Implement. 
 
 
 DONE!
@@ -48,7 +50,6 @@ Tools
 * Show, Edit, Upload, Download implemented
 * Metadata for Tools implemented (using polymorphic [one-to-many] relations)
 
-
 Download
 ========
 
@@ -58,7 +59,6 @@ Download
 * Download of the database list implemented
 * Example client to display database list for Matlab/Octave implemented
 
-
 Widgets & Services
 ==================
 
@@ -66,7 +66,6 @@ Widgets & Services
 * Image: rotation and reset (container does not expand yet)
 * Audio: basic player
 * Properties: file size, internal path, date created, data updated
-
 
 Comments
 ========
@@ -85,8 +84,6 @@ Datasets definition
 * Check for unique definition names in a database (important for the download!)
 * Definition name must not contain <>:&"\|?*/
 
-
-
 Database
 ========
 
@@ -96,6 +93,7 @@ Database
 * Fake procedure to "Assign DOI"
 * Fake procedure for "Publish with DOI"
 * Adapted for metadata working with Tools
+* DOI: when available, displayed in the header
 
 
 Database landing page
@@ -129,16 +127,12 @@ Done:
 * Provide option to select datasets for the upload
 * Bug fix: not being able to bulk upload datasets which names already exist
 
-
-
 User profile
 ============
 
 * "ORCID" added. Syntax: String, max 20 characters. 
 * Link the profile with ORCID
 * Allow new databases only if the profile linked with ORCID
-
-
 
 Metadata status
 ===============

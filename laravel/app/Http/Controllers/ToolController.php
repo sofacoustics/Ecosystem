@@ -16,7 +16,7 @@ class ToolController extends Controller
 	{
 			// Users must be authenticated for all functions except index and show.
 			// Guests will be redirected to login page
-			$this->middleware('auth', ['except' => ['index', 'show']]);
+		$this->middleware('auth', ['except' => ['index', 'show']]);
 	}
 
 	/**
@@ -24,8 +24,8 @@ class ToolController extends Controller
 	 */
 	public function index()
 	{
-			$tools = \App\Models\Tool::all();
-			return view('tools.index', ['allTools' => $tools]);
+		$tools = \App\Models\Tool::all();
+		return view('tools.index', ['allTools' => $tools]);
 	}		
 	
 	/**
@@ -33,7 +33,8 @@ class ToolController extends Controller
 	 */
 	public function show(Tool $tool)
 	{
-			return view('tools.show',[ 'tool' => $tool]);
+		$user = \App\Models\User::where('id', $tool->user_id)->first();
+		return view('tools.show',['tool' => $tool,  'user' => $user ]);
 	}
 	
 	public function create()

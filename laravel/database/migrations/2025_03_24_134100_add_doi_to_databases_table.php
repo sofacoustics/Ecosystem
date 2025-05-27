@@ -14,11 +14,7 @@ return new class extends Migration
         Schema::table('databases', function (Blueprint $table) {
 					$table->boolean('visible')->nullable(); // Adding flag for the database being visible in the Ecosystem to others
 					$table->string('doi')->nullable(); // Adding DOI
-					// Adding RADAR Status null oder
-					// 0: nichts im Bezug auf RADAR gemacht
-					// 1: DOI assigned.
-					// 2: Database persistently published.
-					$table->unsignedInteger('radarstatus')->nullable(); 
+					$table->unsignedInteger('radarstatus')->nullable(); // null or 0: nothing happened with RADAR yet; 1: DOI assigned; 2: Requested publication, curator notified; 3: Database persistently published.
 		});
     }
 
