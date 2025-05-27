@@ -2,14 +2,21 @@
 (on https://github.com/sofacoustics/Ecosystem)
 
 To be done before we go live:
-* JW: Implement the minimal procedure to "Assign DOI"
-* PM: Implement the actual procedure to "assign DOI"
+* PM: Display DOI when available in the header
+* PM: Check input of "production year"
+* PM: Subject Areas: remove from the interface
+* PM: Resource: implement a selection of “Model”, “Physical Object”, “Software”, “Text”, and “Other” for Tools and disable for Databases
+* PM: Additional Title: fix to Subtitle, if available, show in the header
+* PM: Description: provide a single entry for General (=RADAR: Other), Abstract, Method, and Technical Remarks. Create the edit field as resizable multiline fields. 
+* PM: Fix Language to "eng". 
+* PM: Implement the actual procedure to "assign DOI", do not forget the two fixed subject areas
 * JW: Implement the minimal procedure to "Publish with DOI"
+* PM: Add “published_at” to tables databases and tools with date of publication when doing "Publish with DOI"
 * PM: Implement the actual procedure to "Publish with DOI"
 * JW: Add obligatory email confirmation when a user registers
 * JW/PM: Workflow for the test and live server
-* PM: Implement a way to link documentation files with databases (in RADAR via RelatedIdentifier)
 * MM: Implement the most important widgets
+* PM: Logging of all downloads
 
 To be done after we go live:
 * JW: Add "Admin" as a role to the User interface. Admins should be able to see and edit all data
@@ -29,6 +36,7 @@ Nice to have:
 * Show comments as a table
 * Landing page: Include filter by Visible and Archived
 * Bulk Upload: Warn if a dataset already exists
+* PM: Improve the way of linking tools, documentation, and databases (via RelatedIdentifier)
 
 
 DONE!
