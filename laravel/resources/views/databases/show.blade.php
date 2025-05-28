@@ -67,6 +67,7 @@ Parameters:
 			@endforelse
 		</ul>
 
+		<?php /*
 		@can('update', $database)
 			@if(count($database->subjectareas)>0)
 				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.subjectareas', $database->id) }}">Edit</x-button></small>
@@ -88,7 +89,7 @@ Parameters:
 					<li>No subject areas defined.</li>
 				@endcan
 			@endforelse
-		</ul>
+		</ul> */ ?>
 
 		@can('update', $database)
 			@if(count($database->rightsholders)>0)

@@ -2,7 +2,7 @@
 (on https://github.com/sofacoustics/Ecosystem)
 
 To be done before we go live:
-* PM: Subject Areas: remove from the interface
+* PM: Publication Year: remove from the interface. Set default to "unknown"
 * PM: Resource: implement a selection of “Model”, “Physical Object”, “Software”, “Text”, and “Other” for Tools and disable for Databases
 * PM: Additional Title: fix to Subtitle, if available, show in the header
 * PM: Description: provide a single entry for General (=RADAR: Other), Abstract, Method, and Technical Remarks. Create the edit field as resizable multiline fields. 
@@ -48,6 +48,7 @@ Tools
 * Index table implemented
 * Show, Edit, Upload, Download implemented
 * Metadata for Tools implemented (using polymorphic [one-to-many] relations)
+* Subject Areas removed from the interface
 
 Download
 ========
@@ -93,6 +94,7 @@ Database
 * Fake procedure for "Publish with DOI"
 * Adapted for metadata working with Tools
 * DOI: when available, displayed in the header
+* Subject Areas removed from the interface
 
 
 Database landing page
@@ -147,7 +149,7 @@ Done:
 * Description (& descriptionType): done as 0-1 (0-n for later).
 * Rights (& controlledRights and optional additionalRights): done.
 * Publisher: (& nameIdentifier, nameIdentifierScheme, schemeURI): done as 0-n.
-* SubjectArea (& controlledSubjectArea and optional additionalSubjectArea): done as 0-n. 
+* SubjectArea (& controlledSubjectArea and optional additionalSubjectArea): done as 0-n. Removed from the interface because fixed when translating to RADAR. 
 * RightsHolder (& optional nameIdentifier, nameIdentifierScheme,  schemeURI): done as 0-n.
 * Keyword (& optional keywordScheme, schemeURI, valueURI, classificationCode): done as 0-n.
 * DataSource: done as 0-1 (0-n for later).

@@ -67,6 +67,7 @@ Parameters:
 			@endforelse
 		</ul>
 
+		<?php /*
 		@can('update', $tool)
 			@if(count($tool->subjectareas)>0)
 				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.subjectareas', $tool->id) }}">Edit</x-button></small>
@@ -88,7 +89,7 @@ Parameters:
 					<li>No subject areas defined.</li>
 				@endcan
 			@endforelse
-		</ul>
+		</ul> */ ?>
 
 		@can('update', $tool)
 			@if(count($tool->rightsholders)>0)
