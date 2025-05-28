@@ -67,18 +67,7 @@ Parameters:
 			@endforelse
 		</ul>
 
-		<?php /*
-		@can('update', $database)
-			@if(count($database->subjectareas)>0)
-				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.subjectareas', $database->id) }}">Edit</x-button></small>
-					Subject Areas:</h3>
-			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.subjectareas', $database->id) }}">Add subject areas</x-button></small>
-				</h3>
-			@endif
-		@else
-			<h3>Subject Areas:</h3>
-		@endcan
+		<h3>Subject Areas:</h3>
 		<ul class="list-disc list-inside">
 			@forelse ($database->subjectareas as $subjectarea)
 			<li><b>{{ \App\Models\Database::subjectareaDisplay($subjectarea->controlledSubjectAreaIndex) }}</b>
@@ -89,7 +78,7 @@ Parameters:
 					<li>No subject areas defined.</li>
 				@endcan
 			@endforelse
-		</ul> */ ?>
+		</ul>
 
 		@can('update', $database)
 			@if(count($database->rightsholders)>0)

@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Database;
+use App\Models\SubjectArea;
 
 use Livewire\Component;
 
@@ -40,80 +41,94 @@ class DatabaseForm extends Component
 		'productionyear.regex' => 'Production year must be either YYYY or YYYY-YYYY or the string "unknown".',
 	];
 
-    public function mount($database = null)
-    {
-        if($database) 
-        {
-            $this->database = $database;
-            $this->title = $database->title;
-						$this->additionaltitle = $database->additionaltitle;
-						if ($database->additionaltitletype == null)
-							$this->additionaltitletype = null;
-						else
-							$this->additionaltitletype = $database->additionaltitletype-72;
-            $this->description = $database->description;
-						if ($database->descriptiontype == null)
-							$this->descriptiontype = null;
-						else
-							$this->descriptiontype = $database->descriptiontype-76;
-						$this->productionyear = $database->productionyear;
-						$this->publicationyear = $database->publicationyear;
-						$this->language = $database->language;
-						$this->datasources = $database->datasources;
-						$this->software = $database->software;
-						$this->processing = $database->processing;
-						$this->relatedinformation = $database->relatedinformation;
-						$this->controlledrights = $database->controlledrights-47;
-						$this->additionalrights = $database->additionalrights;
-        }
-				else
-				{
-					$this->language = "eng"; 
-					$this->controlledrights = 0; // CC BY
-					$this->additionaltitletype = 0; // Subtitle
-				}
-    }
+	public function mount($database = null)
+	{
+		if($database) 
+		{
+			$this->database = $database;
+			$this->title = $database->title;
+			$this->additionaltitle = $database->additionaltitle;
+			if ($database->additionaltitletype == null)
+				$this->additionaltitletype = null;
+			else
+				$this->additionaltitletype = $database->additionaltitletype-72;
+			$this->description = $database->description;
+			if ($database->descriptiontype == null)
+				$this->descriptiontype = null;
+			else
+				$this->descriptiontype = $database->descriptiontype-76;
+			$this->productionyear = $database->productionyear;
+			$this->publicationyear = $database->publicationyear;
+			$this->language = $database->language;
+			$this->datasources = $database->datasources;
+			$this->software = $database->software;
+			$this->processing = $database->processing;
+			$this->relatedinformation = $database->relatedinformation;
+			$this->controlledrights = $database->controlledrights-47;
+			$this->additionalrights = $database->additionalrights;
+		}
+		else
+		{
+			$this->language = "eng"; 
+			$this->controlledrights = 0; // CC BY
+			$this->additionaltitletype = 0; // Subtitle
+			$this->publicationyear = "unknown"; // dummy, will be set by RADAR when Publishing
+		}
+	}
 
-    public function save()
-    {
+	public function save()
+	{
 
-        $this->validate();
+		$this->validate();
 
-        $isNew = !$this->database;
+		$isNew = !$this->database;
 
-        if($isNew)
-        {
-            $this->database = new Database();
-            $this->database->user_id = auth()->id();
-        }
+		if($isNew)
+		{
+			$this->database = new Database();
+			$this->database->user_id = auth()->id();
+		}
 
-        $this->database->title = $this->title;
-        $this->database->additionaltitle = $this->additionaltitle;
-				if ($this->additionaltitletype == null) { $this->database->additionaltitletype = null; }
-					else { $this->database->additionaltitletype = $this->additionaltitletype+72; }
-        $this->database->description = $this->description;
-				if ($this->descriptiontype == null) { $this->database->descriptiontype = null; }
-					else { $this->database->descriptiontype = $this->descriptiontype+76; }
-        $this->database->productionyear = strtolower($this->productionyear);
-        $this->database->publicationyear = $this->publicationyear;
-        $this->database->language = $this->language;
-        $this->database->resourcetype = 3; // fix to Dataset 
-        $this->database->resource = "SONICOM Ecosystem"; // fix 
-        $this->database->datasources = $this->datasources;
-        $this->database->software = $this->software;
-        $this->database->processing = $this->processing;
-        $this->database->relatedinformation = $this->relatedinformation;
-        $this->database->controlledrights = $this->controlledrights+47;
-        $this->database->additionalrights = $this->additionalrights;
+		$this->database->title = $this->title;
+		$this->database->additionaltitle = $this->additionaltitle;
+		if ($this->additionaltitletype == null) { $this->database->additionaltitletype = null; }
+			else { $this->database->additionaltitletype = $this->additionaltitletype+72; }
+		$this->database->description = $this->description;
+		if ($this->descriptiontype == null) { $this->database->descriptiontype = null; }
+			else { $this->database->descriptiontype = $this->descriptiontype+76; }
+		$this->database->productionyear = strtolower($this->productionyear);
+		$this->database->publicationyear = $this->publicationyear;
+		$this->database->language = $this->language;
+		$this->database->resourcetype = 3; // fix to Dataset 
+		$this->database->resource = "SONICOM Ecosystem"; // fix 
+		$this->database->datasources = $this->datasources;
+		$this->database->software = $this->software;
+		$this->database->processing = $this->processing;
+		$this->database->relatedinformation = $this->relatedinformation;
+		$this->database->controlledrights = $this->controlledrights+47;
+		$this->database->additionalrights = $this->additionalrights;
 
-        $this->database->save();
+		$this->database->save();
+		
+		$sa = new SubjectArea(); 
+		$sa->subjectareaable_id = $this->database->id; 
+		$sa->subjectareaable_type = "App\Models\Database"; 
+		$sa->controlledSubjectAreaIndex = 33; // Life Sciences
+		$sa->save(); 
 
-        session()->flash('message', $isNew ? 'Database created successfully.' : 'Database updated successfully.');
-        return redirect()->route('databases.show', $this->database);
-    }
+		$sa = new SubjectArea(); 
+		$sa->subjectareaable_id = $this->database->id; 
+		$sa->subjectareaable_type = "App\Models\Database"; 
+		$sa->controlledSubjectAreaIndex = 46; // Other
+		$sa->additionalSubjectArea = "SONICOM Ecosystem"; 
+		$sa->save(); 
 
-    public function render()
-    {
-        return view('livewire.database-form');
-    }
+		session()->flash('message', $isNew ? 'Database created successfully.' : 'Database updated successfully.');
+		return redirect()->route('databases.show', $this->database);
+	}
+
+	public function render()
+	{
+		return view('livewire.database-form');
+	}
 }

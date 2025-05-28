@@ -67,18 +67,7 @@ Parameters:
 			@endforelse
 		</ul>
 
-		<?php /*
-		@can('update', $tool)
-			@if(count($tool->subjectareas)>0)
-				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.subjectareas', $tool->id) }}">Edit</x-button></small>
-					Subject Areas:</h3>
-			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.subjectareas', $tool->id) }}">Add subject areas</x-button></small>
-				</h3>
-			@endif
-		@else
-			<h3>Subject Areas:</h3>
-		@endcan
+		<h3>Subject Areas:</h3>
 		<ul class="list-disc list-inside">
 			@forelse ($tool->subjectareas as $subjectarea)
 			<li><b>{{ \App\Models\Database::subjectareaDisplay($subjectarea->controlledSubjectAreaIndex) }}</b>
@@ -89,7 +78,7 @@ Parameters:
 					<li>No subject areas defined.</li>
 				@endcan
 			@endforelse
-		</ul> */ ?>
+		</ul> 
 
 		@can('update', $tool)
 			@if(count($tool->rightsholders)>0)
@@ -172,7 +161,7 @@ Parameters:
 
 
 
-	<h2>Metadata</h2>
+	<h2>Other Metadata</h2>
 		<p><b>Description:</b> {{ $tool->description }}</p>
 		@if($tool->filesize())
 			<p>
@@ -196,6 +185,17 @@ Parameters:
 		@endif
 		<p>Date created: {{ $tool->created_at }}</p>
 		<p>Date updated: {{ $tool->updated_at }}</p>
+		
+		@if ($tool->productionyear != null) <li><b>Production Year</b>: {{ $tool->productionyear }}</li>@endif
+		@if ($tool->publicationyear != null) <li><b>Publication Year</b>: {{ $tool->publicationyear }}</li>@endif 
+			@if ($tool->resourcetype != null) <li><b>Resource Type ({{ \App\Models\Database::resourcetypeDisplay($tool->resourcetype) }})</b>
+				@if ($tool->resource != null) : {{ $tool->resource }}@endif 
+			</li>@endif  
+			@if ($tool->controlledrights != null) <li><b>Rights:</b> {{ \App\Models\Database::controlledrightsDisplay($tool->controlledrights) }}
+				@if ($tool->additionalrights != null) ({{ $tool->additionalrights }})</li>@endif 
+			</li>@endif 
+		
+		
 	<h2>Comments</h2>
 		@if(count($tool->comments)==0)
 			<p>No comments found.</p>

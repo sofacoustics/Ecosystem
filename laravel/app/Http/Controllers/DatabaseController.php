@@ -59,10 +59,10 @@ class DatabaseController extends Controller
 								'database id' => $database->id,
 								'URL' => url()->current() . '/' . $database->id . '/download?type=json',
 								'database title' => $database->title,
+								'database subtitle' => $database->additionaltitle,
 								'database production year' => $database->productionyear,
-								'database publication year' => $database->publicationyear,
-								'database description' => $database->description,
-								'database description type' => $database->descriptiontype,
+								'database created date' => $database->created_at,
+								'database updated date' => $database->updated_at,
 						];
 				});
 				// Return the file data as a JSON response.

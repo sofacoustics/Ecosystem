@@ -2,11 +2,9 @@
 (on https://github.com/sofacoustics/Ecosystem)
 
 To be done before we go live:
-* PM: Publication Year: remove from the interface. Set default to "unknown"
 * PM: Resource: implement a selection of “Model”, “Physical Object”, “Software”, “Text”, and “Other” for Tools and disable for Databases
 * PM: Additional Title: fix to Subtitle, if available, show in the header
 * PM: Description: provide a single entry for General (=RADAR: Other), Abstract, Method, and Technical Remarks. Create the edit field as resizable multiline fields. 
-* PM: Fix Language to "eng". 
 * PM: Implement the actual procedure to "assign DOI", do not forget the two fixed subject areas
 * PM: Adapt Tools to "assign DOI"
 * JW: Implement the minimal procedure to "Publish with DOI"
@@ -24,6 +22,7 @@ To be done after we go live:
 * Bulk Upload: Cancel an upload
 * JW: Clean up the Code in the repo
 * JW: Subject area 'agriculture' doesn't work. It doesn't get caught by the metadata check
+* PM: Implement download of a list of tools
 
 Nice to have: 
 * Layout: Show buttons as tabs
@@ -49,6 +48,8 @@ Tools
 * Show, Edit, Upload, Download implemented
 * Metadata for Tools implemented (using polymorphic [one-to-many] relations)
 * Subject Areas removed from the interface
+* Publication Year: removed from the interface. Set default to "unknown"
+* Language: removed from the interface. Set default to "eng". 
 
 Download
 ========
@@ -95,7 +96,8 @@ Database
 * Adapted for metadata working with Tools
 * DOI: when available, displayed in the header
 * Subject Areas removed from the interface
-
+* Publication Year: removed from the interface. Set default to "unknown"
+* Language: removed from the interface. Set default to "eng". 
 
 Database landing page
 =====================
@@ -142,9 +144,9 @@ Done:
 * Title: done.
 * ProductionYear: done. Input checked for YYYY, YYYY-YYYY, or "unknown" (case insensitive).
 * Resource (& resourceType): done. Set to "Dataset" and "Sonicom Ecosystem", non-editable.
-* Language: done. 
+* Language: done. Removed from the interface because fixed to "eng". 
 * Additional Title (& additionalTitleType): done as 0-1 (0-n for later).
-* PublicationYear: done.
+* PublicationYear: done. Remove from the interface because should be set by RADAR.
 * Creator: done, but 0-n (should be 1-n). 
 * Description (& descriptionType): done as 0-1 (0-n for later).
 * Rights (& controlledRights and optional additionalRights): done.

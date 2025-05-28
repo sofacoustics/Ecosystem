@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Tool;
+use App\Models\SubjectArea;
 
 use Livewire\Component;
 
@@ -37,80 +38,94 @@ class ToolForm extends Component
 		'productionyear.regex' => 'Production year must be either YYYY or YYYY-YYYY or the string "unknown".',
 	];
 
-    public function mount($tool = null)
-    {
-        if($tool) 
-        {
-            $this->tool = $tool;
-            $this->title = $tool->title;
-						$this->additionaltitle = $tool->additionaltitle;
-						if ($tool->additionaltitletype == null)
-							$this->additionaltitletype = null;
-						else
-							$this->additionaltitletype = $tool->additionaltitletype-72;
-            $this->description = $tool->description;
-						if ($tool->descriptiontype == null)
-							$this->descriptiontype = null;
-						else
-							$this->descriptiontype = $tool->descriptiontype-76;
-						$this->productionyear = $tool->productionyear;
-						$this->publicationyear = $tool->publicationyear;
-						$this->language = $tool->language;
-						$this->datasources = $tool->datasources;
-						$this->software = $tool->software;
-						$this->processing = $tool->processing;
-						$this->relatedinformation = $tool->relatedinformation;
-						$this->controlledrights = $tool->controlledrights-47;
-						$this->additionalrights = $tool->additionalrights;
-        }
-				else
-				{
-					$this->language = "eng"; 
-					$this->controlledrights = 0; // CC BY
-					$this->additionaltitletype = 0; // Subtitle
-				}
-    }
+	public function mount($tool = null)
+	{
+		if($tool) 
+		{
+			$this->tool = $tool;
+			$this->title = $tool->title;
+			$this->additionaltitle = $tool->additionaltitle;
+			if ($tool->additionaltitletype == null)
+				$this->additionaltitletype = null;
+			else
+				$this->additionaltitletype = $tool->additionaltitletype-72;
+			$this->description = $tool->description;
+			if ($tool->descriptiontype == null)
+				$this->descriptiontype = null;
+			else
+				$this->descriptiontype = $tool->descriptiontype-76;
+			$this->productionyear = $tool->productionyear;
+			$this->publicationyear = $tool->publicationyear;
+			$this->language = $tool->language;
+			$this->datasources = $tool->datasources;
+			$this->software = $tool->software;
+			$this->processing = $tool->processing;
+			$this->relatedinformation = $tool->relatedinformation;
+			$this->controlledrights = $tool->controlledrights-47;
+			$this->additionalrights = $tool->additionalrights;
+		}
+		else
+		{
+			$this->language = "eng"; 
+			$this->controlledrights = 0; // CC BY
+			$this->additionaltitletype = 0; // Subtitle
+			$this->publicationyear = "unknown"; // dummy, will be set by RADAR when Publishing
+		}
+	}
 
-    public function save()
-    {
+	public function save()
+	{
 
-        $this->validate();
+		$this->validate();
 
-        $isNew = !$this->tool;
+		$isNew = !$this->tool;
 
-        if($isNew)
-        {
-            $this->tool = new Tool();
-            $this->tool->user_id = auth()->id();
-        }
+		if($isNew)
+		{
+				$this->tool = new Tool();
+				$this->tool->user_id = auth()->id();
+		}
 
-        $this->tool->title = $this->title;
-        $this->tool->additionaltitle = $this->additionaltitle;
-				if ($this->additionaltitletype == null) { $this->tool->additionaltitletype = null; }
-					else { $this->tool->additionaltitletype = $this->additionaltitletype+72; }
-        $this->tool->description = $this->description;
-				if ($this->descriptiontype == null) { $this->tool->descriptiontype = null; }
-					else { $this->tool->descriptiontype = $this->descriptiontype+76; }
-        $this->tool->productionyear = strtolower($this->productionyear);
-        $this->tool->publicationyear = $this->publicationyear;
-        $this->tool->language = $this->language;
-        $this->tool->resourcetype = 3; // fix to Dataset 
-        $this->tool->resource = "SONICOM Ecosystem"; // fix 
-        $this->tool->datasources = $this->datasources;
-        $this->tool->software = $this->software;
-        $this->tool->processing = $this->processing;
-        $this->tool->relatedinformation = $this->relatedinformation;
-        $this->tool->controlledrights = $this->controlledrights+47;
-        $this->tool->additionalrights = $this->additionalrights;
+		$this->tool->title = $this->title;
+		$this->tool->additionaltitle = $this->additionaltitle;
+		if ($this->additionaltitletype == null) { $this->tool->additionaltitletype = null; }
+			else { $this->tool->additionaltitletype = $this->additionaltitletype+72; }
+		$this->tool->description = $this->description;
+		if ($this->descriptiontype == null) { $this->tool->descriptiontype = null; }
+			else { $this->tool->descriptiontype = $this->descriptiontype+76; }
+		$this->tool->productionyear = strtolower($this->productionyear);
+		$this->tool->publicationyear = $this->publicationyear;
+		$this->tool->language = $this->language;
+		$this->tool->resourcetype = 3; // fix to Dataset 
+		$this->tool->resource = "SONICOM Ecosystem"; // fix 
+		$this->tool->datasources = $this->datasources;
+		$this->tool->software = $this->software;
+		$this->tool->processing = $this->processing;
+		$this->tool->relatedinformation = $this->relatedinformation;
+		$this->tool->controlledrights = $this->controlledrights+47;
+		$this->tool->additionalrights = $this->additionalrights;
 
-        $this->tool->save();
+		$this->tool->save();
 
-        session()->flash('message', $isNew ? 'Tool created successfully.' : 'Tool updated successfully.');
-        return redirect()->route('tools.show', $this->tool);
-    }
+		$sa = new SubjectArea(); 
+		$sa->subjectareaable_id = $this->tool->id; 
+		$sa->subjectareaable_type = "App\Models\Tool"; 
+		$sa->controlledSubjectAreaIndex = 33; // Life Sciences
+		$sa->save(); 
 
-    public function render()
-    {
-        return view('livewire.tool-form');
-    }
+		$sa = new SubjectArea(); 
+		$sa->subjectareaable_id = $this->tool->id; 
+		$sa->subjectareaable_type = "App\Models\Tool"; 
+		$sa->controlledSubjectAreaIndex = 46; // Other
+		$sa->additionalSubjectArea = "SONICOM Ecosystem"; 
+		$sa->save(); 
+
+		session()->flash('message', $isNew ? 'Tool created successfully.' : 'Tool updated successfully.');
+		return redirect()->route('tools.show', $this->tool);
+	}
+
+	public function render()
+	{
+		return view('livewire.tool-form');
+	}
 }
