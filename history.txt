@@ -2,7 +2,6 @@
 (on https://github.com/sofacoustics/Ecosystem)
 
 To be done before we go live:
-* PM: Check input of "production year"
 * PM: Subject Areas: remove from the interface
 * PM: Resource: implement a selection of “Model”, “Physical Object”, “Software”, “Text”, and “Other” for Tools and disable for Databases
 * PM: Additional Title: fix to Subtitle, if available, show in the header
@@ -139,7 +138,7 @@ Metadata status
 
 Done: 
 * Title: done.
-* ProductionYear: done.
+* ProductionYear: done. Input checked for YYYY, YYYY-YYYY, or "unknown" (case insensitive).
 * Resource (& resourceType): done. Set to "Dataset" and "Sonicom Ecosystem", non-editable.
 * Language: done. 
 * Additional Title (& additionalTitleType): done as 0-1 (0-n for later).

@@ -11,7 +11,10 @@
 @endif
 
 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Tool:
-	<a href="{{ route('tools.show', $tool->id) }}">{{ $tool->title }}</a> ({{ $tool->productionyear }})
+	<a href="{{ route('tools.show', $tool->id) }}">{{ $tool->title }}</a> 
+	@if($tool->productionyear!="unknown")
+		({{ $tool->productionyear }})
+	@endif
 </h2>
 
 <p>

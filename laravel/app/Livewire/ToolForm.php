@@ -8,28 +8,33 @@ use Livewire\Component;
 
 class ToolForm extends Component
 {
-    public $tool;
-    public $title;
-    public $additionaltitle;
-    public $additionaltitletype;
-    public $description;
-		public $descriptiontype;
-    public $productionyear;
-    public $publicationyear;
-    public $language;
-    public $datasources;
-    public $software;
-    public $processing;
-    public $relatedinformation;
-		public $controlledrights;
-    public $additionalrights;
+	public $tool;
+	public $title;
+	public $additionaltitle;
+	public $additionaltitletype;
+	public $description;
+	public $descriptiontype;
+	public $productionyear;
+	public $publicationyear;
+	public $language;
+	public $datasources;
+	public $software;
+	public $processing;
+	public $relatedinformation;
+	public $controlledrights;
+	public $additionalrights;
 
-    //jw:todo rules
 	protected $rules = [
 		'title' => 'required',
-		'productionyear' => 'required',
+		'productionyear' => ['required',  // must be provided
+												 'regex:/^(\d{4}(?:-\d{4})?|unknown)$/i' ], // YYYY or YYYY-YYYY or "unknown"
 		'publicationyear' => 'required',
 		'controlledrights' => 'required',
+	];
+	
+	protected $messages = [
+		'productionyear.required' => 'The production year cannot be empty.',
+		'productionyear.regex' => 'Production year must be either YYYY or YYYY-YYYY or the string "unknown".',
 	];
 
     public function mount($tool = null)
@@ -86,7 +91,7 @@ class ToolForm extends Component
         $this->tool->description = $this->description;
 				if ($this->descriptiontype == null) { $this->tool->descriptiontype = null; }
 					else { $this->tool->descriptiontype = $this->descriptiontype+76; }
-        $this->tool->productionyear = $this->productionyear;
+        $this->tool->productionyear = strtolower($this->productionyear);
         $this->tool->publicationyear = $this->publicationyear;
         $this->tool->language = $this->language;
         $this->tool->resourcetype = 3; // fix to Dataset 

@@ -11,28 +11,33 @@ use Livewire\Component;
  */
 class DatabaseForm extends Component
 {
-    public $database;
-    public $title;
-    public $additionaltitle;
-    public $additionaltitletype;
-    public $description;
-		public $descriptiontype;
-    public $productionyear;
-    public $publicationyear;
-    public $language;
-    public $datasources;
-    public $software;
-    public $processing;
-    public $relatedinformation;
-		public $controlledrights;
-    public $additionalrights;
+	public $database;
+	public $title;
+	public $additionaltitle;
+	public $additionaltitletype;
+	public $description;
+	public $descriptiontype;
+	public $productionyear;
+	public $publicationyear;
+	public $language;
+	public $datasources;
+	public $software;
+	public $processing;
+	public $relatedinformation;
+	public $controlledrights;
+	public $additionalrights;
 
-    //jw:todo rules
 	protected $rules = [
 		'title' => 'required',
-		'productionyear' => 'required',
+		'productionyear' => ['required',  // must be provided
+												 'regex:/^(\d{4}(?:-\d{4})?|unknown)$/i' ], // YYYY or YYYY-YYYY or "unknown"
 		'publicationyear' => 'required',
 		'controlledrights' => 'required',
+	];
+
+	protected $messages = [
+		'productionyear.required' => 'The production year cannot be empty.',
+		'productionyear.regex' => 'Production year must be either YYYY or YYYY-YYYY or the string "unknown".',
 	];
 
     public function mount($database = null)
@@ -89,7 +94,7 @@ class DatabaseForm extends Component
         $this->database->description = $this->description;
 				if ($this->descriptiontype == null) { $this->database->descriptiontype = null; }
 					else { $this->database->descriptiontype = $this->descriptiontype+76; }
-        $this->database->productionyear = $this->productionyear;
+        $this->database->productionyear = strtolower($this->productionyear);
         $this->database->publicationyear = $this->publicationyear;
         $this->database->language = $this->language;
         $this->database->resourcetype = 3; // fix to Dataset 

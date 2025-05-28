@@ -28,7 +28,10 @@
 @endif
 
 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Database:
-	<a href="{{ route('databases.show', $database->id) }}">{{ $database->title }}</a> ({{ $database->productionyear }})
+	<a href="{{ route('databases.show', $database->id) }}">{{ $database->title }}</a>
+	@if($database->productionyear!="unknown")
+		({{ $database->productionyear }})
+	@endif
 </h2>
 
 <p>
