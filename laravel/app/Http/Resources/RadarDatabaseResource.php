@@ -20,7 +20,7 @@ class RadarDatabaseResource extends JsonResource
 		$database = $this->resource; // get the database model, since using '$this->resource' retrieves the whole database model from the DatabaseResource rather than the 'resource' column.
 		return [
 			'id' => $database->radar_id,
-			'parentId' => env("RADAR_WORKSPACE"),
+			'parentId' => config('services.radar.workspace'),
 			'technicalMetadata' => [
 				'schema' => [
 					'key' => 'RDDM',

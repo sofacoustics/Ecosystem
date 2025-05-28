@@ -8,8 +8,6 @@
 	@endif
 	@section('tabTitle', " | " . $tabTitle)
 
-	<livewire:status-messages />
-
 	<livewire:database-radar-status :database="$database" />
 
 	<livewire:database-radar-actions :database="$database" />

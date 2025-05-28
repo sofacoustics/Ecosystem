@@ -17,4 +17,7 @@
 			<x-button wire:click="endReview">End Review</x-button>
 		@endif
 	@endcan
+	@if($error)
+		<x-alert>{{ $error }}</x-alert>
+	@endif
 </div>

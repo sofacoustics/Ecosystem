@@ -3,16 +3,24 @@
 
 namespace App\Livewire;
 
+use Livewire\Attributes\On;
 use Livewire\Component;
 
+/*
+ * Listen for 'status-message' events and add messages
+ * to a list.
+ * Messages are then displayed for 3 seconds and then removed
+ */
 class StatusMessages extends Component
 {
     public $messages = [];
 
-    protected $listeners = ['appendStatusMessage'];
+	protected $listeners = [
+		'status-message' => 'appendStatusMessage',
+	];
 
     public function appendStatusMessage($message)
-    {
+	{
         $this->messages[] = $message;
         $this->dispatch('status-message-added');
     }

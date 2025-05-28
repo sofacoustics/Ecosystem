@@ -2,9 +2,11 @@
 
 namespace App\Livewire;
 
+use Livewire\Attributes\On;
 use Livewire\Component;
 
-use App\Http\Controllers\Api\Radar\DatasetController as RadardatasetController;
+use App\Models\Database;
+use App\Services\DatasetRadarBridge;
 
 /*
  * Get RADAR status for a database and add information
@@ -13,7 +15,7 @@ use App\Http\Controllers\Api\Radar\DatasetController as RadardatasetController;
  */
 class DatabaseRadarStatus extends Component
 {
-	private $database;
+	public Database $database;
 
 	// RADAR properties
 	public $id;
@@ -23,39 +25,35 @@ class DatabaseRadarStatus extends Component
 
 	public $error;
 
+    #[On('radar-status-changed')]
+    public function onRadarStatusChanged($content)
+    {
+		$this->dispatch('status-message', 'Recieved \'radar-status-change\' message');
+        $this->getStatus();
+    }
+
 	public function mount($database)
 	{
 		$this->database = $database;
-		if($database->radar_id)
-		{
-			$radardataset = new RadardatasetController;
-			$response = $radardataset->read($database);
-			if($response->status() != 200)
-			{
-				$this->error = "Failed to retrieve RADAR status: $response->statustext() ($response->status()))";
-				$this->dispatch('appendStatusMessage', "Failed to retrieve RADAR status: $response->statustext() ($response->status()))");
-			}
-			$content = json_decode($response->content(), true);
-			if(isset($content['id']))
-				$this->id = $content['id'];
-			if(isset($content['state']))
-				$this->state = $content['state'];
-			if(isset($content['descriptiveMetadata']['identifier']['value']))
-				$this->doi = $content['descriptiveMetadata']['identifier']['value'];
-			if(isset($content['technicalMetadata']['size']))
-				$this->size = $content['technicalMetadata']['size'];
-
-			$this->dispatch('appendStatusMessage', 'Successfully retrieved RADAR status from the RADAR server');
-		}
-		else
-		{
-			$this->dispatch('appendStatusMessage', 'There is not RADAR dataset associated with this database!');
-		}
+		$this->getStatus();
 	}
 
+    public function getStatus()
+    {
+        $radar = new DatasetRadarBridge($this->database);
+        if($radar->read())
+        {
+            $this->id = $radar->dataset->id;
+            $this->state = $radar->dataset->state;
+            $this->doi = $radar?->dataset?->descriptiveMetadata?->identifier?->value ?? null;
+            $this->size = $radar?->dataset?->technicalMetadata?->size ?? 0;
+        }
+		$this->dispatch('status-message', $radar->message);
+    }
 
     public function render()
     {
         return view('livewire.database-radar-status');
     }
+
 }

@@ -171,7 +171,7 @@ class DatasetController extends RadarController
 
 		$arrayBody = $resource->toArray(request()); // route called with ?format=radar
 
-		$endpoint = "/workspaces/".env('RADAR_WORKSPACE')."/datasets/";
+		$endpoint = "/workspaces/$this->workspace/datasets/";
 		$response = $this->post($endpoint, $arrayBody);
 		if($response->status() == '201')
 			return response()->json([

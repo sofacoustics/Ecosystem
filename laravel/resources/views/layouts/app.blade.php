@@ -27,6 +27,8 @@
 	@livewireStyles
 	</head>
 	<body class="font-sans antialiased">
+		<!-- Display 'status-messages' events -->
+		<livewire:status-messages />
 		<!-- https://tailwindcss.com/docs/customizing-colors -->
 		<div class="min-h-screen flex flex-col">
 			@include('layouts.navigation')

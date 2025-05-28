@@ -4,7 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-use App\Http\Controllers\Api\Radar\DatasetController as RadardatasetController;
+use App\Services\DatasetRadarBridge;
 
 class DatabaseRadarActions extends Component
 {
@@ -14,9 +14,11 @@ class DatabaseRadarActions extends Component
 	public $id;
 	public $state;
 
+	// the RADAR state - used to display/hide buttons
 	public $pending = false;
 	public $review = false;
 
+	public $error; // any error message to display
 
 	public function mount($database)
 	{
@@ -28,10 +30,11 @@ class DatabaseRadarActions extends Component
 		}
 		else
 		{
-			$this->dispatch('appendStatusMessage', 'There is no RADAR dataset associated with this database!');
+			$this->dispatch('status-message', 'There is no RADAR dataset associated with this database!');
 		}
 	}
 
+	// set RADAR state (pending, review, published)
 	public function setState($state)
 	{
 		$this->state = $state;
@@ -47,60 +50,61 @@ class DatabaseRadarActions extends Component
 
 	public function createdataset()
 	{
-		$this->dispatch('appendStatusMessage', 'Starting RADAR dataset creation process.');
-		$radardataset = new RadardatasetController;
-		$response = $radardataset->create($this->database);
-		if($response->status() != 201)
-		{
-			$this->dispatch('appendStatusMessage', 'The RADAR dataset could not be created! Error: '.$response->status());
-		}
-		// get radar_id
-		$content = json_decode($response->content(), true);
-		$id = $content['id'];
-		// save radar_id
-		$this->database->radar_id = $id;
-		$this->database->save();
-		$this->dispatch('appendStatusMessage', 'RADAR dataset creation successful.');
+		$radar = new DatasetRadarBridge($this->database);
+		$this->dispatch('status-message', 'Starting RADAR dataset creation process.');
+        if($radar->create())
+            $this->dispatch('radar-status-changed', 'Dataset created'); // let other livewire components know the radar status has changed
+		else
+			$this->error = $radar->details;
+		$this->dispatch('status-message', $radar->message);
 		$this->refreshStatus();
 	}
 
 	public function startReview()
 	{
-		$this->dispatch('appendStatusMessage', 'Starting review process.');
-		$radardataset = new RadardatasetController;
-		$response = $radardataset->startreview($this->database);
-		$this->database->radarstatus = 1;
-		$this->dispatch('appendStatusMessage', 'Review process successfully started.');
+		$this->dispatch('status-message', 'Starting review process.');
+		$radar = new DatasetRadarBridge($this->database);
+		if($radar->startreview())
+			$this->dispatch('radar-status-changed', 'Review process started'); // let other livewire components know the radar status has changed
+		else
+			$this->error = $radar->details; // output error message
+		$this->dispatch('status-message', $radar->message);
 		$this->refreshStatus();
 	}
 
 	public function endReview()
 	{
-		$this->dispatch('appendStatusMessage', 'Ending review process.');
-		$radardataset = new RadardatasetController;
-		$response = $radardataset->endreview($this->database);
-		$this->dispatch('appendStatusMessage', 'Review process successfully ended.');
+		$this->dispatch('status-message', 'Ending review process.');
+		$radar = new DatasetRadarBridge($this->database);
+		if($radar->endreview())
+			$this->dispatch('radar-status-changed', 'Review process ended'); // let other livewire components know the radar status has changed
+		else
+			$this->error = $radar->details;
+		$this->dispatch('status-message', $radar->message);
 		$this->refreshStatus();
-	}
-
-	private function refreshStatus()
-	{
-		$radardataset = new RadardatasetController;
-		$response = $radardataset->read($this->database);
-		if($response->status() != 200)
-		{
-			$this->error = "Failed to retrieve RADAR status: $response->statustext() ($response->status()))";
-			$this->dispatch('appendStatusMessage', "Failed to retrieve RADAR status: $response->statustext() ($response->status()))");
-		}
-		$content = json_decode($response->content(), true);
-		if(isset($content['id']))
-			$this->id = $content['id'];
-		if(isset($content['state']))
-			$this->setState($content['state']);
 	}
 
     public function render()
     {
         return view('livewire.database-radar-actions');
     }
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Private
+	////////////////////////////////////////////////////////////////////////////////
+
+	private function refreshStatus()
+    {
+		$radar = new DatasetRadarBridge($this->database);
+		if($radar->read())
+		{
+			$this->id = $radar?->dataset?->id ?? 'No RADAR dataset exists for this database';
+			$this->setState($radar?->dataset?->state ?? '');
+		}
+		else
+		{
+			$this->id = 'No RADAR dataset exists for this database';
+			$this->setState('');
+		}
+	}
 }
