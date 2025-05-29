@@ -2,7 +2,6 @@
 (on https://github.com/sofacoustics/Ecosystem)
 
 To be done before we go live:
-* PM: Resource: implement a selection of “Model”, “Physical Object”, “Software”, “Text”, and “Other” for Tools and disable for Databases
 * PM: Additional Title: fix to Subtitle, if available, show in the header
 * PM: Description: provide a single entry for General (=RADAR: Other), Abstract, Method, and Technical Remarks. Create the edit field as resizable multiline fields. 
 * PM: Implement the actual procedure to "assign DOI", do not forget the two fixed subject areas
@@ -50,6 +49,7 @@ Tools
 * Subject Areas removed from the interface
 * Publication Year: removed from the interface. Set default to "unknown"
 * Language: removed from the interface. Set default to "eng". 
+* Resource: called "Type", implemented the selection of “Model”, “Physical Object”, “Software”, “Text”, and “Other” 
 
 Download
 ========
@@ -98,6 +98,8 @@ Database
 * Subject Areas removed from the interface
 * Publication Year: removed from the interface. Set default to "unknown"
 * Language: removed from the interface. Set default to "eng". 
+* Resource: called Resource Type and fixed to "Dataset" with the remark "SONICOM Ecosystem". 
+
 
 Database landing page
 =====================

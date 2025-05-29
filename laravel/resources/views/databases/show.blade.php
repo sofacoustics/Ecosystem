@@ -171,8 +171,8 @@ Parameters:
 			{{-- mandatory metadata --}}
 			@if ($database->productionyear != null) <li><b>Production Year</b>: {{ $database->productionyear }}</li>@endif
 			@if ($database->publicationyear != null) <li><b>Publication Year</b>: {{ $database->publicationyear }}</li>@endif 
-			@if ($database->resourcetype != null) <li><b>Resource Type ({{ \App\Models\Database::resourcetypeDisplay($database->resourcetype) }})</b>
-				@if ($database->resource != null) : {{ $database->resource }}@endif 
+			@if ($database->resourcetype != null) <li><b>Resource Type</b>: {{ \App\Models\Database::resourcetypeDisplay($database->resourcetype) }}
+				@if ($database->resource != null) ({{ $database->resource }})@endif 
 			</li>@endif  
 			@if ($database->controlledrights != null) <li><b>Rights:</b> {{ \App\Models\Database::controlledrightsDisplay($database->controlledrights) }}
 				@if ($database->additionalrights != null) ({{ $database->additionalrights }})</li>@endif 

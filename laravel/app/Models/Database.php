@@ -103,21 +103,6 @@ class Database extends Model
 		return $this->hasOne(Radardataset::class);
 	}
 
-	static function resourcetypeDisplay($resourcetype)
-	{
-		return \App\Models\Radar\Metadataschema::display($resourcetype);
-	}
-
-	static function resourcetypeValue($resourcetype)
-	{
-		return \App\Models\Radar\Metadataschema::value($resourcetype);
-	}
-
-	static function resourcetypesList()
-	{
-		return \App\Models\Radar\Metadataschema::list('resourceType');
-	}
-
 	static function additionaltitletypeDisplay($additionaltitletype)
 	{
 		return \App\Models\Radar\Metadataschema::display($additionaltitletype);
@@ -197,6 +182,22 @@ class Database extends Model
 	{
 		return \App\Models\Radar\Metadataschema::display($relationtypeindex);
 	}
+
+	static function resourcetypeDisplay($resourcetype)
+	{
+		return \App\Models\Radar\Metadataschema::display($resourcetype);
+	}
+
+	static function resourcetypeValue($resourcetype)
+	{
+		return \App\Models\Radar\Metadataschema::value($resourcetype);
+	}
+
+	static function resourcetypesList()
+	{
+		return \App\Models\Radar\Metadataschema::list('resourceType');
+	}
+
 
 	public function getRadarJson() : String
 	{

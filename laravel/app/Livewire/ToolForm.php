@@ -24,13 +24,24 @@ class ToolForm extends Component
 	public $relatedinformation;
 	public $controlledrights;
 	public $additionalrights;
-
+	public $resourcetype;
+	public $resource;
+	
+	public $resourcetype_base_id; 
+	public $resourcetype_other_id; 
+	
+	public $additionaltitletype_base_id; 
+	public $descriptiontype_base_id; 
+	public $controlledrights_base_id;
+	public $controlledrights_other_id;
+	
 	protected $rules = [
 		'title' => 'required',
 		'productionyear' => ['required',  // must be provided
 												 'regex:/^(\d{4}(?:-\d{4})?|unknown)$/i' ], // YYYY or YYYY-YYYY or "unknown"
 		'publicationyear' => 'required',
 		'controlledrights' => 'required',
+		'resourcetype' => 'required',
 	];
 	
 	protected $messages = [
@@ -40,6 +51,18 @@ class ToolForm extends Component
 
 	public function mount($tool = null)
 	{
+		$resourcetype_base_id = (\App\Models\Radar\Metadataschema::where('name', 'resourcetype')->first()->id);
+		$this->resourcetype_other_id = (\App\Models\Radar\Metadataschema::where('name', 'resourcetype')->where('value', 'OTHER')->first()->id) - $resourcetype_base_id; 
+		$additionaltitletype_base_id = (\App\Models\Radar\Metadataschema::where('name', 'additionalTitleType')->first()->id);
+		$descriptiontype_base_id = (\App\Models\Radar\Metadataschema::where('name', 'descriptionType')->first()->id);
+		$controlledrights_base_id = (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->first()->id);
+		$this->controlledrights_other_id = (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->where('value', 'OTHER')->first()->id) - $controlledrights_base_id; 
+
+		$this->additionaltitletype_base_id = $additionaltitletype_base_id;
+		$this->descriptiontype_base_id = $descriptiontype_base_id; 
+		$this->controlledrights_base_id = $controlledrights_base_id; 
+		$this->resourcetype_base_id = $resourcetype_base_id;
+
 		if($tool) 
 		{
 			$this->tool = $tool;
@@ -48,12 +71,12 @@ class ToolForm extends Component
 			if ($tool->additionaltitletype == null)
 				$this->additionaltitletype = null;
 			else
-				$this->additionaltitletype = $tool->additionaltitletype-72;
+				$this->additionaltitletype = $tool->additionaltitletype-$additionaltitletype_base_id;
 			$this->description = $tool->description;
 			if ($tool->descriptiontype == null)
 				$this->descriptiontype = null;
 			else
-				$this->descriptiontype = $tool->descriptiontype-76;
+				$this->descriptiontype = $tool->descriptiontype-$descriptiontype_base_id;
 			$this->productionyear = $tool->productionyear;
 			$this->publicationyear = $tool->publicationyear;
 			$this->language = $tool->language;
@@ -61,8 +84,10 @@ class ToolForm extends Component
 			$this->software = $tool->software;
 			$this->processing = $tool->processing;
 			$this->relatedinformation = $tool->relatedinformation;
-			$this->controlledrights = $tool->controlledrights-47;
+			$this->controlledrights = $tool->controlledrights-$controlledrights_base_id;
 			$this->additionalrights = $tool->additionalrights;
+			$this->resourcetype = $tool->resourcetype-$resourcetype_base_id; 
+			$this->resource = $tool->resource; 
 		}
 		else
 		{
@@ -70,12 +95,12 @@ class ToolForm extends Component
 			$this->controlledrights = 0; // CC BY
 			$this->additionaltitletype = 0; // Subtitle
 			$this->publicationyear = "unknown"; // dummy, will be set by RADAR when Publishing
+			$this->resourcetype = (\App\Models\Radar\Metadataschema::where('name', 'resourcetype')->where('value', 'SOFTWARE')->first()->id) - $this->resourcetype_base_id;  
 		}
 	}
 
 	public function save()
 	{
-
 		$this->validate();
 
 		$isNew = !$this->tool;
@@ -89,37 +114,40 @@ class ToolForm extends Component
 		$this->tool->title = $this->title;
 		$this->tool->additionaltitle = $this->additionaltitle;
 		if ($this->additionaltitletype == null) { $this->tool->additionaltitletype = null; }
-			else { $this->tool->additionaltitletype = $this->additionaltitletype+72; }
+			else { $this->tool->additionaltitletype = $this->additionaltitletype+$this->additionaltitletype_base_id; }
 		$this->tool->description = $this->description;
 		if ($this->descriptiontype == null) { $this->tool->descriptiontype = null; }
-			else { $this->tool->descriptiontype = $this->descriptiontype+76; }
+			else { $this->tool->descriptiontype = $this->descriptiontype+$this->descriptiontype_base_id; }
 		$this->tool->productionyear = strtolower($this->productionyear);
 		$this->tool->publicationyear = $this->publicationyear;
 		$this->tool->language = $this->language;
-		$this->tool->resourcetype = 3; // fix to Dataset 
-		$this->tool->resource = "SONICOM Ecosystem"; // fix 
+		$this->tool->resourcetype = $this->resourcetype + ($this->resourcetype_base_id); 
+		$this->tool->resource = $this->resource;
 		$this->tool->datasources = $this->datasources;
 		$this->tool->software = $this->software;
 		$this->tool->processing = $this->processing;
 		$this->tool->relatedinformation = $this->relatedinformation;
-		$this->tool->controlledrights = $this->controlledrights+47;
+		$this->tool->controlledrights = $this->controlledrights+$this->controlledrights_base_id;
 		$this->tool->additionalrights = $this->additionalrights;
 
 		$this->tool->save();
 
-		$sa = new SubjectArea(); 
-		$sa->subjectareaable_id = $this->tool->id; 
-		$sa->subjectareaable_type = "App\Models\Tool"; 
-		$sa->controlledSubjectAreaIndex = 33; // Life Sciences
-		$sa->save(); 
+		if($isNew)
+		{
+			$sa = new SubjectArea(); 
+			$sa->subjectareaable_id = $this->tool->id; 
+			$sa->subjectareaable_type = "App\Models\Tool"; 
+			$sa->controlledSubjectAreaIndex = (\App\Models\Radar\Metadataschema::where('name', 'subjectArea')->where('value', 'LIFE_SCIENCE')->first()->id); // Life Sciences
+			$sa->save(); 
 
-		$sa = new SubjectArea(); 
-		$sa->subjectareaable_id = $this->tool->id; 
-		$sa->subjectareaable_type = "App\Models\Tool"; 
-		$sa->controlledSubjectAreaIndex = 46; // Other
-		$sa->additionalSubjectArea = "SONICOM Ecosystem"; 
-		$sa->save(); 
-
+			$sa = new SubjectArea(); 
+			$sa->subjectareaable_id = $this->tool->id; 
+			$sa->subjectareaable_type = "App\Models\Tool"; 
+			$sa->controlledSubjectAreaIndex = (\App\Models\Radar\Metadataschema::where('name', 'subjectArea')->where('value', 'OTHER')->first()->id); // Other
+			$sa->additionalSubjectArea = "SONICOM Ecosystem"; 
+			$sa->save(); 
+		}
+		
 		session()->flash('message', $isNew ? 'Tool created successfully.' : 'Tool updated successfully.');
 		return redirect()->route('tools.show', $this->tool);
 	}

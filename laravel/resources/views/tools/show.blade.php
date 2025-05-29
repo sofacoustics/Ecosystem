@@ -188,8 +188,8 @@ Parameters:
 		
 		@if ($tool->productionyear != null) <li><b>Production Year</b>: {{ $tool->productionyear }}</li>@endif
 		@if ($tool->publicationyear != null) <li><b>Publication Year</b>: {{ $tool->publicationyear }}</li>@endif 
-			@if ($tool->resourcetype != null) <li><b>Resource Type ({{ \App\Models\Database::resourcetypeDisplay($tool->resourcetype) }})</b>
-				@if ($tool->resource != null) : {{ $tool->resource }}@endif 
+			@if ($tool->resourcetype != null) <li><b>Resource Type</b>: {{ \App\Models\Database::resourcetypeDisplay($tool->resourcetype) }}</b>
+				@if ($tool->resource != null) ({{ $tool->resource }})@endif 
 			</li>@endif  
 			@if ($tool->controlledrights != null) <li><b>Rights:</b> {{ \App\Models\Database::controlledrightsDisplay($tool->controlledrights) }}
 				@if ($tool->additionalrights != null) ({{ $tool->additionalrights }})</li>@endif 

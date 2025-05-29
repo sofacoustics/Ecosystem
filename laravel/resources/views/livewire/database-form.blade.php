@@ -39,7 +39,7 @@
 		@endforeach
 		  @error('controlledrights') <span class="text-red-500">{{ $message }}</span> @enderror
 			</select>
-			@if ($controlledrights == 21)
+			@if ($controlledrights == $controlledrights_other_id)
 		  <input wire:model.live="additionalrights" type="text" id="additionalrights"
 				placeholder="Free text for the specification of a proprietary license (not recommended)"
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"/>

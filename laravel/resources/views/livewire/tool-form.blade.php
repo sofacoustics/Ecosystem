@@ -39,7 +39,7 @@
 		@endforeach
 		  @error('controlledrights') <span class="text-red-500">{{ $message }}</span> @enderror
 			</select>
-			@if ($controlledrights == 21)
+			@if ($controlledrights == $controlledrights_other_id)
 		  <input wire:model.live="additionalrights" type="text" id="additionalrights"
 				placeholder="Free text for the specification of a proprietary license (not recommended)"
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"/>
@@ -80,6 +80,23 @@
 		  @error('description') <span class="text-red-500">{{ $message }}</span> @enderror
 		@endif
 		</div>
+
+		<div class="mb-4">
+		  <label for="rights" class="text-gray-700 mb-2 block font-bold">Type (*): </label>
+			<select wire:model.live="resourcetype" required>
+		@foreach(\App\Models\Database::resourcetypesList() as $r => $t)
+			<option value="{{ $r }}">{{ $t->display }}</option>
+		@endforeach
+		  @error('resourcetype') <span class="text-red-500">{{ $message }}</span> @enderror
+			</select>
+			@if ($resourcetype == $resourcetype_other_id)
+		  <input wire:model.live="resource" type="text" id="resource"
+				placeholder="If the type is 'Other', describe the type of the tool here"
+				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"/>
+			@endif
+		</div>
+
+
 
 		<?php /*
 		<div class="mb-4">

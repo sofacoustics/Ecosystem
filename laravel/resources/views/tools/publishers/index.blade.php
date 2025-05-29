@@ -1,6 +1,6 @@
 <x-app-layout>
 	<x-slot name="header">
-		<<x-tool.header :tool="$publisherable" />
+		<x-tool.header :tool="$publisherable" />
 	</x-slot>
 	
 	<h3>Publishers</h3>
