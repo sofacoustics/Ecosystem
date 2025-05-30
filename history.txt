@@ -2,8 +2,8 @@
 (on https://github.com/sofacoustics/Ecosystem)
 
 To be done before we go live:
-* PM: Databases index: harmonize search and table. 
-* PM: Tools index: harmonize search and table. 
+* PM: Databases index table: implement the search by Keywords and sorting by DOI, #Datasets, Keywords, Uploaded by. 
+* PM: Tools index: harmonize search and table. Implement the search by Type.
 * PM: Design and Implement the landing page.
 * PM: Implement the actual procedure to "assign DOI", do not forget the two fixed subject areas
 * PM: Adapt Tools to "assign DOI"
@@ -57,6 +57,7 @@ Tools
 * Descriptions are now resizeable multiline entries: General (=RADAR: Other), Abstract, Method, and Technical Remarks. 
 * Order of the metadata edits rearranged, display of metadata harmonized
 * Input parameter checks added
+* Table touched on adding/editing of child elements
 
 
 Download
@@ -113,6 +114,9 @@ Database
 * Descriptions are now resizeable multiline entries: General (=RADAR: Other), Abstract, Method, and Technical Remarks. 
 * Order of the metadata edits rearranged, display of metadata harmonized
 * Input parameter checks added
+* Table touched on adding/editing of child elements
+* Index page: harmonized and implemented DOI and visible icons. 
+
 
 Database landing page
 =====================

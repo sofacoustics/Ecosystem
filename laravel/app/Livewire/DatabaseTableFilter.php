@@ -12,7 +12,8 @@ class DatabaseTableFilter extends Component
 {
 	public $filters = [
 		'title' => '',
-		'additionaltitle' => '',
+		'productionyear' => '',
+		'keywords' => '',
 	];
 
 	public $sortField = 'title'; // Default sorting field
@@ -34,7 +35,7 @@ class DatabaseTableFilter extends Component
 
 	public function applyFilters()
 	{
-		$query = DB::table('databases'); // Replace 'users' with your table title.
+		$query = DB::table('databases'); 
 
 		if (!empty($this->filters['title'])) 
 		{
@@ -42,9 +43,14 @@ class DatabaseTableFilter extends Component
 			$this->databases = $query->get();
 		}
 
-		if (!empty($this->filters['additionaltitle'])) 
+		if (!empty($this->filters['keywords'])) 
 		{
-			$query->where('additionaltitle', 'like', '%' . $this->filters['additionaltitle'] . '%');
+			// $query->where('additionaltitle', 'like', '%' . $this->filters['additionaltitle'] . '%');
+		}
+
+		if (!empty($this->filters['productionyear'])) 
+		{
+			$query->where('productionyear', 'like', '%' . $this->filters['productionyear'] . '%');
 		}
 
 		$this->databases = $query->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')->get();
@@ -60,7 +66,8 @@ class DatabaseTableFilter extends Component
 	{
 		$this->filters = [
 			'title' => '',
-			'additionaltitle' => '',
+			'productionyear' => '',
+			'keywords' => '',
 		];
 		$this->applyFilters();
 	}
@@ -77,6 +84,20 @@ class DatabaseTableFilter extends Component
 		return count($datasets);
 	}
 	
+	public function getKeywords($database_id)
+	{
+		$keywords=\App\Models\Keyword::where('keywordable_type','App\Models\Database')->where('keywordable_id',$database_id)->get();
+		$s="";
+		foreach($keywords as $index => $keyword)
+		{
+			if($index>0)
+				$s = $s . "; " . $keyword->keywordName;
+			else
+				$s = $keyword->keywordName;
+		}
+		return $s;
+	}
+
 	public function sortBy($field)
 	{
 		if ($this->sortField === $field) 
