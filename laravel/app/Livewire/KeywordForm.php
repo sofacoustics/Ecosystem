@@ -83,9 +83,15 @@ class KeywordForm extends Component
     session()->flash('message', $isNew ? 'keyword created successfully.' : 'keyword updated successfully.');
 
 		if($this->keywordable_type === 'App\Models\Database')
+		{
+			\App\Models\Database::find($this->keyword->keywordable_id)->touch();
 			return redirect()->route('databases.keywords',[ 'database' => $this->keywordable->id ]);
+		}
 		else
+		{
+			\App\Models\Tool::find($this->keyword->keywordable_id)->touch();
 			return redirect()->route('tools.keywords',[ 'tool' => $this->keywordable->id ]);
+		}
 	}
 
 	public function render()

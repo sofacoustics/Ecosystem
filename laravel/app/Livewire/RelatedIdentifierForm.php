@@ -91,10 +91,15 @@ class RelatedIdentifierForm extends Component
     session()->flash('message', $isNew ? 'subject area created successfully.' : 'subject area updated successfully.');
 
 		if($this->relatedidentifierable_type === 'App\Models\Database')
+		{
+			\App\Models\Database::find($this->relatedidentifier->relatedidentifierable_id)->touch();
 			return redirect()->route('databases.relatedidentifiers',[ 'database' => $this->relatedidentifierable->id ]);
+		}
 		else
+		{
+			\App\Models\Tool::find($this->relatedidentifier->relatedidentifierable_id)->touch();
 			return redirect()->route('tools.relatedidentifiers',[ 'tool' => $this->relatedidentifierable->id ]);
-		
+		}
 	}
 
 	public function render()

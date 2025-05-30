@@ -35,6 +35,10 @@ class RightsholderController extends Controller
 
 	public function destroy(Rightsholder $rightsholder)
 	{
+		if($rightsholder->rightsholderable_type === 'App\Models\Database')
+			\App\Models\Database::find($rightsholder->rightsholderable_id)->touch();
+		else
+			\App\Models\Tool::find($rightsholder->rightsholderable_id)->touch();
 		$rightsholder->delete();
 		return redirect()->back();
 	}

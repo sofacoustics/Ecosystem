@@ -37,35 +37,30 @@ class DatafileUpload extends Component
 		];
 	}
 
-
-
-    public function mount()
-    {
-        //jw:note doesn't appear to work. $this->authorize('create', $this->dataset);
+	public function mount()
+	{		//jw:note doesn't appear to work. $this->authorize('create', $this->dataset);
 		\Log::info("DatafileUpload::mount()");
-    }
+	}
 
-
-    #[On('livewire-upload-cancel')]
-    public function handleCancelUpload()
-    {
-        // Handle the cancellation
+	#[On('livewire-upload-cancel')]
+	public function handleCancelUpload()
+	{	// Handle the cancellation
 		\Log::info("DatafileUpload::handleCancelUpload()");
-		//dd('handleCancelUpload()');
-        // For example, reset any related properties or perform cleanup
-    }
+		// For example, reset any related properties or perform cleanup
+	}
 
 	public function updatedFile()
 	{
-		//dd(true);
 		\Log::info("updatedFile()");
-		try {
+		try 
+		{
 			$this->validate($this->rules());
 			\Log::info("validation passed");
 			$this->save();
-		} catch (\Illuminate\Validation\ValidationException $e) {
+		} 
+		catch (\Illuminate\Validation\ValidationException $e) 
+		{
 			\Log::info("validation failed");
-			//dd($e);
 			\Log::info("deleting file");
 			$this->file->delete(); // deletes the temporary file
 			\Log::info("resetting 'file'");
@@ -77,55 +72,54 @@ class DatafileUpload extends Component
 		}
 	}
 
-    public function save()
-    {
+	public function save()
+	{
 		if(!$this->file)
 		{
 			\Log::info("DatafileUpload::save() - $this->file is empty, so returning early!");
 			return;
 		}
 		\Log::info("DatafileUpload::save()");
-		// https://www.iana.org/assignments/media-types/media-types.xhtml#audio
-        $requiredMimetypes = $this->datasetdef->datafiletype->mimetypes;
-        \Log::info("Required MIME type: {$requiredMimetypes}");
-        $mimetype = $this->file->getMimeType();
-        \Log::info("Uploaded file MIME type: {$mimetype}");
+				// https://www.iana.org/assignments/media-types/media-types.xhtml#audio
+		$requiredMimetypes = $this->datasetdef->datafiletype->mimetypes;
+		\Log::info("Required MIME type: {$requiredMimetypes}");
+		$mimetype = $this->file->getMimeType();
+		\Log::info("Uploaded file MIME type: {$mimetype}");
 
 		$this->validate();
+		$this->authorize('update', $this->dataset); // check if dataset can be modified
 
-        $this->authorize('update', $this->dataset); // check if dataset can be modified
-        //
-        // if datafile doesn't exist, create it here!
-        //
-        if (!isset($this->datafile)) {
-            // create new Datafile
-            $datafile = new Datafile();
-            // set mandatory fields
-            $datafile->dataset_id = $this->dataset->id;
-            $datafile->datasetdef_id = $this->datasetdef->id;
-        } else {
-            // remove old files when editing existing file
-            $this->datafile->clean(); //jw:todo
-        }
-        $datafile->name = $this->file->getClientOriginalName();
-        //session()->flash('status', "Datafile (id=$datafile->id) is being saved to the database");
-        $datafile->save(); // save so datafile has ID (necessary for saving file)
-        $directory = $datafile->directory();
-        //$this->dispatch('saving-file', name: $datafile->name); // dispatch a browser event
-        $this->dispatch('showFlashMessage', ['type' => 'success', 'message' => 'storeAs']);
-        //session()->flash('status', "Datafile $datafile->name is being saved to disk");
-        $this->file->storeAs("$directory", "$datafile->name", 'sonicom-data');
-        //$this->validate();
-        // clean up
-        $this->file->delete();
-        //jw:note 'navigate: true' means that livewire retrieves the page in the background.
-        //jw:note This means we may be able to load multiple files concurrently.
-        //$this->redirect(url()->previous(), navigate: true);
-        $this->redirect(url()->previous()); //jw:note if the whole dataset view was a livewire component, then we wouldn't have to redirect.
-    }
+			// if datafile doesn't exist, create it here!
+		if (!isset($this->datafile)) 
+		{		// create new Datafile
+			$datafile = new Datafile();
+				// set mandatory fields
+			$datafile->dataset_id = $this->dataset->id;
+			$datafile->datasetdef_id = $this->datasetdef->id;
+		} 
+		else 
+		{ 	// remove old files when editing existing file
+			$this->datafile->clean(); //jw:todo
+		}
+		$datafile->name = $this->file->getClientOriginalName();
+		//session()->flash('status', "Datafile (id=$datafile->id) is being saved to the database");
+		$datafile->save(); // save so datafile has ID (necessary for saving file)
+		$datafile->dataset->touch(); // change updated_at of the dataset
+		$datafile->dataset->database->touch();  // change updated_at of the database
+		
+		$directory = $datafile->directory();
+		$this->dispatch('showFlashMessage', ['type' => 'success', 'message' => 'storeAs']);
+		$this->file->storeAs("$directory", "$datafile->name", 'sonicom-data');
+			// clean up
+		$this->file->delete();
+			//jw:note 'navigate: true' means that livewire retrieves the page in the background.
+			//jw:note This means we may be able to load multiple files concurrently.
+			//$this->redirect(url()->previous(), navigate: true);
+		$this->redirect(url()->previous()); //jw:note if the whole dataset view was a livewire component, then we wouldn't have to redirect.
+	}
 
-    public function render()
-    {
-        return view('livewire.datafile-upload');
-    }
+	public function render()
+	{
+		return view('livewire.datafile-upload');
+	}
 }

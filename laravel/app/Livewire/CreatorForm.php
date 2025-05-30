@@ -89,14 +89,18 @@ class CreatorForm extends Component
 		$this->creator->affiliationIdentifierScheme = $this->affiliationIdentifierScheme;
 
 		$this->creator->save();
-
     session()->flash('message', $isNew ? 'creator created successfully.' : 'creator updated successfully.');
 
 		if($this->creatorable_type === 'App\Models\Database')
+		{	
+			\App\Models\Database::find($this->creator->creatorable_id)->touch();
 			return redirect()->route('databases.creators',[ 'database' => $this->creatorable ]);
+		}
 		else
+		{
+			\App\Models\Tool::find($this->creator->creatorable_id)->touch();
 			return redirect()->route('tools.creators',[ 'tool' => $this->creatorable ]);
-		
+		}
 	}
 
 	public function render()

@@ -103,14 +103,15 @@ class DatasetdefForm extends Component
 		$this->datasetdef->datafiletype_id = $this->datafiletype_id;
 		$this->datasetdef->widget_id = $this->widget_id > 0 ? $this->widget_id : null;
 		$this->datasetdef->save();
+		$this->database->touch(); 
 
 		session()->flash('message', $isNew ? 'Datasetdef created successfully.' : 'Datasetdef updated successfully.');
 
 		return redirect()->route('databases.datasetdefs', $this->database);
 	}
 
-    public function render()
-    {
-        return view('livewire.datasetdef-form');
-    }
+	public function render()
+	{
+		return view('livewire.datasetdef-form');
+	}
 }

@@ -35,6 +35,10 @@ class KeywordController extends Controller
 
 	public function destroy(Keyword $keyword)
 	{
+		if($keyword->keywordable_type === 'App\Models\Database')
+			\App\Models\Database::find($keyword->keywordable_id)->touch();
+		else
+			\App\Models\Tool::find($keyword->keywordable_id)->touch();
 		$keyword->delete();
 		return redirect()->back();
 	}

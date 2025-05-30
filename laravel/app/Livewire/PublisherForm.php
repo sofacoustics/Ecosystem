@@ -77,9 +77,15 @@ class PublisherForm extends Component
     session()->flash('message', $isNew ? 'publisher created successfully.' : 'publisher updated successfully.');
 
 		if($this->publisherable_type === 'App\Models\Database')
+		{
+			\App\Models\Database::find($this->publisher->publisherable_id)->touch();
 			return redirect()->route('databases.publishers',[ 'database' => $this->publisherable->id ]);
+		}
 		else
+		{
+			\App\Models\Tool::find($this->publisher->publisherable_id)->touch();
 			return redirect()->route('tools.publishers',[ 'tool' => $this->publisherable->id ]);
+		}
 	}
 
 	public function render()

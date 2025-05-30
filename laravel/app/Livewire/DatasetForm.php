@@ -84,6 +84,8 @@ class DatasetForm extends Component
 				$this->dataset->name = $this->name;
 				$this->dataset->description = $this->description;
 				$this->dataset->save();
+				$this->database->touch(); 
+				
 				session()->flash('message', 'Dataset updated successfully.');
 				return redirect()->route('datasets.show', $this->dataset);
 			}

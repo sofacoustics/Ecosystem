@@ -35,6 +35,10 @@ class PublisherController extends Controller
 	
 	public function destroy(Publisher $publisher)
 	{
+		if($publisher->publisherable_type === 'App\Models\Database')
+			\App\Models\Database::find($publisher->publisherable_id)->touch();
+		else
+			\App\Models\Tool::find($publisher->publisherable_id)->touch();
 		$publisher->delete();
 		return redirect()->back();
 	}

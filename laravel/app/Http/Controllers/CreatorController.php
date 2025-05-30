@@ -36,8 +36,11 @@ class CreatorController extends Controller
 	
 	public function destroy(Creator $creator)
 	{
+		if($creator->creatorable_type === 'App\Models\Database')
+			\App\Models\Database::find($creator->creatorable_id)->touch();
+		else
+			\App\Models\Tool::find($creator->creatorable_id)->touch();
 		$creator->delete();
 		return redirect()->back();
 	}
 }
-

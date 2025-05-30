@@ -35,6 +35,10 @@ class RelatedIdentifierController extends Controller
 
 	public function destroy(RelatedIdentifier $relatedidentifier)
 	{
+		if($relatedidentifier->relatedidentifierable_type === 'App\Models\Database')
+			\App\Models\Database::find($relatedidentifier->relatedidentifierable_id)->touch();
+		else
+			\App\Models\Tool::find($relatedidentifier->relatedidentifierable_id)->touch();
 		$relatedidentifier->delete();
 		return redirect()->back();
 	}

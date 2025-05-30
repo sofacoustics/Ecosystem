@@ -76,9 +76,15 @@ class RightsholderForm extends Component
     session()->flash('message', $isNew ? 'rightsholder created successfully.' : 'rightsholder updated successfully.');
 
 		if($this->rightsholderable_type === 'App\Models\Database')
+		{
+			\App\Models\Database::find($this->rightsholder->rightsholderable_id)->touch();
 			return redirect()->route('databases.rightsholders',[ 'database' => $this->rightsholderable ]);
+		}
 		else
+		{
+			\App\Models\Tool::find($this->rightsholder->rightsholderable_id)->touch();
 			return redirect()->route('tools.rightsholders',[ 'tool' => $this->rightsholderable ]);
+		}
 	}
 
 	public function render()
