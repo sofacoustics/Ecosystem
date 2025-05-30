@@ -113,8 +113,7 @@ class ToolForm extends Component
 
 		$this->tool->title = $this->title;
 		$this->tool->additionaltitle = $this->additionaltitle;
-		if ($this->additionaltitletype == null) { $this->tool->additionaltitletype = null; }
-			else { $this->tool->additionaltitletype = $this->additionaltitletype+$this->additionaltitletype_base_id; }
+		$this->tool->additionaltitletype = (\App\Models\Radar\Metadataschema::where('name', 'additionalTitleType')->where('value', 'Subtitle')->first()->id);  // fix to Subtitle
 		$this->tool->description = $this->description;
 		if ($this->descriptiontype == null) { $this->tool->descriptiontype = null; }
 			else { $this->tool->descriptiontype = $this->descriptiontype+$this->descriptiontype_base_id; }

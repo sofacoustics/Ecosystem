@@ -6,7 +6,7 @@
 		<div class="mb-4">
 		  <label for="title" class="text-gray-700 mb-2 block font-bold">Title (*):</label>
 		  <input wire:model="title" type="text" id="title"
-				placeholder="the main title of the database"
+				placeholder="Input the main title of the database. The title does not need to be unique within the Ecosystem."
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"
 				required />
 		  @error('title') <span class="text-red-500">{{ $message }}</span> @enderror
@@ -15,7 +15,7 @@
 		<div class="mb-4">
 		  <label for="productionyear" class="text-gray-700 mb-2 block font-bold">Production Year (*):</label>
 		  <input wire:model="productionyear" type="text" id="productionyear"
-				placeholder="YYYY, YYYY-YYYY or &quot;unknown&quot;"
+				placeholder="When was the data produced? Format: YYYY, YYYY-YYYY or &quot;unknown&quot;"
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"
 				required />
 		  @error('productionyear') <span class="text-red-500">{{ $message }}</span> @enderror
@@ -41,7 +41,7 @@
 			</select>
 			@if ($controlledrights == $controlledrights_other_id)
 		  <input wire:model.live="additionalrights" type="text" id="additionalrights"
-				placeholder="Free text for the specification of a proprietary license (not recommended)"
+				placeholder="If the license is 'Other', provide a clear name for your license here. Note: 'Other' licenses are not recommended..."
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"/>
 			@endif
 		</div>
@@ -50,19 +50,11 @@
 		{{-- Optional metadata --}}
 		
 		<div class="mb-4">
-		  <label for="additionaltitle" class="text-gray-700 mb-2 block font-bold">Additional Title:</label>
-			<select wire:model.live="additionaltitletype">
-		<option value="">Select a title type...</option>
-		@foreach(\App\Models\Database::additionaltitletypesList() as $r => $t)
-			<option value="{{ $r }}">{{ $t->display }}</option>
-		@endforeach
-			</select>
-		@if ($additionaltitletype != '')
+		  <label for="additionaltitle" class="text-gray-700 mb-2 block font-bold">Subtitle:</label>
 		  <input wire:model="additionaltitle" type="text" id="additionaltitle"
-				placeholder="Alternative or additional titles as free text"
+				placeholder="Input an optional subtitle here. The subtitle will be prominently displayed right under the Title..."
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"/>
 		  @error('additionaltitle') <span class="text-red-500">{{ $message }}</span> @enderror
-		@endif
 		</div>
 		
 		<div class="mb-4">

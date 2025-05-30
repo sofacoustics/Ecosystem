@@ -128,4 +128,98 @@ class Tool extends Model
 		return $this->morphMany(RelatedIdentifier::class, 'relatedidentifierable');
 	}
 
+	static function additionaltitletypeDisplay($additionaltitletype)
+	{
+		return \App\Models\Radar\Metadataschema::display($additionaltitletype);
+	}
+
+	static function additionaltitletypesList()
+	{
+		return \App\Models\Radar\Metadataschema::list('additionalTitleType');
+	}
+
+	static function descriptiontypeDisplay($descriptiontype)
+	{
+		return \App\Models\Radar\Metadataschema::display($descriptiontype);
+	}
+
+	static function descriptiontypesList()
+	{
+		return \App\Models\Radar\Metadataschema::list('descriptionType');
+	}
+
+	static function controlledrightsDisplay($controlledrights)
+	{
+		return \App\Models\Radar\Metadataschema::display($controlledrights);
+	}
+
+	static function controlledrightsValue($controlledrights)
+	{
+		return \App\Models\Radar\Metadataschema::value($controlledrights);
+	}
+
+	static function controlledrightsList()
+	{
+		return \App\Models\Radar\Metadataschema::list('controlledRights');
+	}
+
+	static function subjectareaDisplay($subjectareaindex)
+	{
+		return \App\Models\Radar\Metadataschema::display($subjectareaindex);
+	}
+	
+	static function subjectareaValue($subjectareaindex)
+	{
+		return \App\Models\Radar\Metadataschema::value($subjectareaindex);
+	}
+
+	static function subjectareasList()
+	{
+		return \App\Models\Radar\Metadataschema::list('subjectArea');
+	}
+
+	static function relatedidentifierValue($relatedidentifiertypeindex)
+	{
+		return \App\Models\Radar\Metadataschema::value($relatedidentifiertypeindex);
+	}
+
+	static function relatedidentifierList()
+	{
+		return \App\Models\Radar\Metadataschema::list('relatedIdentifierType');
+	}
+
+	static function relatedidentifierDisplay($relatedidentifiertypeindex)
+	{
+		return \App\Models\Radar\Metadataschema::display($relatedidentifiertypeindex);
+	}
+
+	static function relationValue($relationtypeindex)
+	{
+		return \App\Models\Radar\Metadataschema::value($relationtypeindex);
+	}
+
+	static function relationList()
+	{
+		return \App\Models\Radar\Metadataschema::list('relationType');
+	}
+
+	static function relationDisplay($relationtypeindex)
+	{
+		return \App\Models\Radar\Metadataschema::display($relationtypeindex);
+	}
+
+	static function resourcetypeDisplay($resourcetype)
+	{
+		return \App\Models\Radar\Metadataschema::display($resourcetype);
+	}
+
+	static function resourcetypeValue($resourcetype)
+	{
+		return \App\Models\Radar\Metadataschema::value($resourcetype);
+	}
+
+	static function resourcetypesList()
+	{
+		return \App\Models\Radar\Metadataschema::list('resourceType');
+	}
 }

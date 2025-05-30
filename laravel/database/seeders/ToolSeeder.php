@@ -21,6 +21,7 @@ class ToolSeeder extends Seeder
 			'controlledrights' => 68,
 			'publicationyear' => 'unknown',
 			'language' => 'eng',
+			'resourcetype' => 3,
 			'user_id' => 1,
 			));
 
@@ -31,6 +32,7 @@ class ToolSeeder extends Seeder
 			'controlledrights' => 68,
 			'publicationyear' => 'unknown',
 			'language' => 'eng',
+			'resourcetype' => 3,
 			'user_id' => 4,
 			));
 	}

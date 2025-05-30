@@ -171,20 +171,23 @@ Parameters:
 			{{-- mandatory metadata --}}
 			@if ($database->productionyear != null) <li><b>Production Year</b>: {{ $database->productionyear }}</li>@endif
 			@if ($database->publicationyear != null) <li><b>Publication Year</b>: {{ $database->publicationyear }}</li>@endif 
-			@if ($database->resourcetype != null) <li><b>Resource Type</b>: {{ \App\Models\Database::resourcetypeDisplay($database->resourcetype) }}
+			
+			<li><b>Resource Type</b>: {{ \App\Models\Database::resourcetypeDisplay($database->resourcetype) }}
 				@if ($database->resource != null) ({{ $database->resource }})@endif 
-			</li>@endif  
-			@if ($database->controlledrights != null) <li><b>Rights:</b> {{ \App\Models\Database::controlledrightsDisplay($database->controlledrights) }}
-				@if ($database->additionalrights != null) ({{ $database->additionalrights }})</li>@endif 
-			</li>@endif 
+			</li>
+
+			@if ($database->controlledrights != null) 
+				<li><b>Rights:</b> {{ \App\Models\Database::controlledrightsDisplay($database->controlledrights) }}
+					@if ($database->additionalrights != null) ({{ $database->additionalrights }})@endif 
+				</li>
+			@endif 
 
 				{{-- optional metadata --}}
-			@if ($database->additionaltitletype != null) <li><b>Additional Title ({{ \App\Models\Database::additionaltitletypeDisplay($database->additionaltitletype) }})</b>
-				@if ($database->additionaltitle != null) : {{ $database->additionaltitle }}@endif 
-			</li>@endif
-			@if ($database->descriptiontype != null) <li><b>Description ({{ \App\Models\Database::descriptiontypeDisplay($database->descriptiontype) }})</b>
-				@if ($database->description != null) : {{ $database->description }}@endif 
-			</li>@endif  
+			@if ($database->descriptiontype != null) 
+				<li><b>Description ({{ \App\Models\Database::descriptiontypeDisplay($database->descriptiontype) }})</b>
+					@if ($database->description != null) : {{ $database->description }}@endif 
+				</li>
+			@endif  
 			@if ($database->language != null) <li><b>Language</b>: {{ $database->language }}</li>@endif 
 			@if ($database->datasources != null) <li><b>Datasoures</b>: {{ $database->datasources }}</li>@endif 
 			@if ($database->software != null) <li><b>Software</b>: {{ $database->software }}</li>@endif 

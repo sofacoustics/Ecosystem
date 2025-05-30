@@ -105,16 +105,15 @@ class DatabaseForm extends Component
 
 		$this->database->title = $this->title;
 		$this->database->additionaltitle = $this->additionaltitle;
-		if ($this->additionaltitletype == null) { $this->database->additionaltitletype = null; }
-			else { $this->database->additionaltitletype = $this->additionaltitletype + $this->additionaltitletype_base_id; }
+		$this->database->additionaltitletype = (\App\Models\Radar\Metadataschema::where('name', 'additionalTitleType')->where('value', 'Subtitle')->first()->id);  // fix to Subtitle
 		$this->database->description = $this->description;
 		if ($this->descriptiontype == null) { $this->database->descriptiontype = null; }
 			else { $this->database->descriptiontype = $this->descriptiontype + $this->descriptiontype_base_id; }
 		$this->database->productionyear = strtolower($this->productionyear);
 		$this->database->publicationyear = $this->publicationyear;
 		$this->database->language = $this->language;
-		$this->database->resourcetype = 3; // fix to Dataset 
-		$this->database->resource = "SONICOM Ecosystem"; // fix 
+		$this->database->resourcetype = null; // needs to be fixed to Dataset 
+		$this->database->resource = "SONICOM Ecosystem"; // fix
 		$this->database->datasources = $this->datasources;
 		$this->database->software = $this->software;
 		$this->database->processing = $this->processing;

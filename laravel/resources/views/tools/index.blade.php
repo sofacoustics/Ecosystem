@@ -3,7 +3,7 @@
 		<h2 class="font-semibold text-xl text-gray-800 leading-tight">
 			The SONICOM Ecosystem contains {{ @count($allTools) }} tools
 		</h2>
-		@can('create', \App\Models\Database::class)
+		@can('create', \App\Models\Tool::class)
 			<x-button method="GET" action="{{ route('tools.create') }}" class="inline">
 				Add a New Tool
 			</x-button>

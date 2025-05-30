@@ -2,8 +2,11 @@
 (on https://github.com/sofacoustics/Ecosystem)
 
 To be done before we go live:
-* PM: Additional Title: fix to Subtitle, if available, show in the header
 * PM: Description: provide a single entry for General (=RADAR: Other), Abstract, Method, and Technical Remarks. Create the edit field as resizable multiline fields. 
+* PM: Rearrange the order of the metadata edits, 
+* PM: Tool/show: harmonize display. 
+* PM: Databases index: harmonize search and table. 
+* PM: Tools index: harmonize search and table. 
 * PM: Implement the actual procedure to "assign DOI", do not forget the two fixed subject areas
 * PM: Adapt Tools to "assign DOI"
 * JW: Implement the minimal procedure to "Publish with DOI"
@@ -22,6 +25,7 @@ To be done after we go live:
 * JW: Clean up the Code in the repo
 * JW: Subject area 'agriculture' doesn't work. It doesn't get caught by the metadata check
 * PM: Implement download of a list of tools
+* Implement email notifications to admins
 
 Nice to have: 
 * Layout: Show buttons as tabs
@@ -50,6 +54,8 @@ Tools
 * Publication Year: removed from the interface. Set default to "unknown"
 * Language: removed from the interface. Set default to "eng". 
 * Resource: called "Type", implemented the selection of “Model”, “Physical Object”, “Software”, “Text”, and “Other” 
+* Additional Title: fixed to Subtitle, if available, shown in the header
+* Dependency of Database functions removed
 
 Download
 ========
@@ -99,7 +105,7 @@ Database
 * Publication Year: removed from the interface. Set default to "unknown"
 * Language: removed from the interface. Set default to "eng". 
 * Resource: called Resource Type and fixed to "Dataset" with the remark "SONICOM Ecosystem". 
-
+* Additional Title: fixed to Subtitle, if available, shown in the header
 
 Database landing page
 =====================
@@ -145,9 +151,9 @@ Metadata status
 Done: 
 * Title: done.
 * ProductionYear: done. Input checked for YYYY, YYYY-YYYY, or "unknown" (case insensitive).
-* Resource (& resourceType): done. Set to "Dataset" and "Sonicom Ecosystem", non-editable.
+* Resource (& resourceType): done. In the database form, set to "Dataset" and "Sonicom Ecosystem", non-editable. In the tool form, choice of selected types only. 
 * Language: done. Removed from the interface because fixed to "eng". 
-* Additional Title (& additionalTitleType): done as 0-1 (0-n for later).
+* Additional Title (& additionalTitleType): done as 0-1. In the forms, fixed to "Subtitle". 
 * PublicationYear: done. Remove from the interface because should be set by RADAR.
 * Creator: done, but 0-n (should be 1-n). 
 * Description (& descriptionType): done as 0-1 (0-n for later).

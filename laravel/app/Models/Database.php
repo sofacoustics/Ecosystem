@@ -185,19 +185,19 @@ class Database extends Model
 
 	static function resourcetypeDisplay($resourcetype)
 	{
-		return \App\Models\Radar\Metadataschema::display($resourcetype);
+		if($resourcetype == null)
+			return "Dataset";
+		else
+			return \App\Models\Radar\Metadataschema::display($resourcetype);
 	}
 
 	static function resourcetypeValue($resourcetype)
 	{
-		return \App\Models\Radar\Metadataschema::value($resourcetype);
+		if($resourcetype == null)
+			return "DATASET";
+		else
+			return \App\Models\Radar\Metadataschema::value($resourcetype);
 	}
-
-	static function resourcetypesList()
-	{
-		return \App\Models\Radar\Metadataschema::list('resourceType');
-	}
-
 
 	public function getRadarJson() : String
 	{
