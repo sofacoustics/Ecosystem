@@ -21,7 +21,7 @@ return new class extends Migration
 			$table->string('additionaltitle')->nullable();
 			$table->string('descriptiongeneral', 500)->nullable();
 			$table->string('descriptionabstract', 500)->nullable();
-			$table->string('descriptionmethod', 500)->nullable();
+			$table->string('descriptionmethods', 500)->nullable();
 			$table->string('descriptionremarks', 500)->nullable();
 			// keywords --> Table keywords
 			// publishers --> Table publishers

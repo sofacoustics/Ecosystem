@@ -45,9 +45,6 @@
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"/>
 			@endif
 		</div>
-
-
-		{{-- Optional metadata --}}
 		
 		<div class="mb-4">
 		  <label for="additionaltitle" class="text-gray-700 mb-2 block font-bold">Subtitle:</label>
@@ -59,10 +56,50 @@
 		
 		<div class="mb-4">
 		  <label for="descriptiongeneral" class="text-gray-700 mb-2 block font-bold">General Description:</label>
-		  <textarea wire:model="descriptiongeneral" type="text" id="descriptiongeneral"
-			  placeholder="Optional general description of the database."
-				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none" />
-		  @error('descriptiongeneral') <span class="text-red-500">{{ $message }}</span> @enderror
+			@if($database==null)
+				<textarea wire:model="descriptiongeneral" class="resizable-textarea text-gray-700 w-full rounded-lg border px-3 py-2" id="descriptiongeneral"
+					placeholder="Optional general description of the database."></textarea>
+			@else
+				<textarea wire:model="descriptiongeneral" class="resizable-textarea text-gray-700 w-full rounded-lg border px-3 py-2" id="descriptiongeneral"
+					placeholder="Optional general description of the database.">{{ old('descriptiongeneral', $database->descriptiongeneral) }}</textarea>
+			@endif
+			@error('descriptiongeneral') <span class="text-red-500">{{ $message }}</span> @enderror
+		</div>
+
+		<div class="mb-4">
+		  <label for="descriptionabstract" class="text-gray-700 mb-2 block font-bold">Abstract:</label>
+			@if($database==null)
+				<textarea wire:model="descriptionabstract" class="resizable-textarea text-gray-700 w-full rounded-lg border px-3 py-2" id="descriptionabstract"
+					placeholder="Optional abstract for the database."></textarea>
+			@else
+				<textarea wire:model="descriptionabstract" class="resizable-textarea text-gray-700 w-full rounded-lg border px-3 py-2" id="descriptionabstract"
+					placeholder="Optional abstract for the database.">{{ old('descriptionabstract', $database->descriptionabstract) }}</textarea>
+			@endif
+		  @error('descriptionabstract') <span class="text-red-500">{{ $message }}</span> @enderror
+		</div>
+
+		<div class="mb-4">
+		  <label for="descriptionmethods" class="text-gray-700 mb-2 block font-bold">Methods:</label>
+			@if($database==null)
+				<textarea wire:model="descriptionmethods" class="resizable-textarea text-gray-700 w-full rounded-lg border px-3 py-2" id="descriptionmethods"
+					placeholder="Optional description of the methods used to create the database."></textarea>
+			@else
+				<textarea wire:model="descriptionmethods" class="resizable-textarea text-gray-700 w-full rounded-lg border px-3 py-2" id="descriptionmethods"
+					placeholder="Optional description of the methods used to create the database.">{{ old('descriptionmethods', $database->descriptionmethods) }}</textarea>
+			@endif
+		  @error('descriptionmethods') <span class="text-red-500">{{ $message }}</span> @enderror
+		</div>
+
+		<div class="mb-4">
+		  <label for="descriptionremarks" class="text-gray-700 mb-2 block font-bold">Technical Remarks:</label>
+			@if($database==null)
+				<textarea wire:model="descriptionremarks" class="resizable-textarea text-gray-700 w-full rounded-lg border px-3 py-2" id="descriptionremarks"
+					placeholder="Optional technical remarks for the database."></textarea>
+			@else
+				<textarea wire:model="descriptionremarks" class="resizable-textarea text-gray-700 w-full rounded-lg border px-3 py-2" id="descriptionremarks"
+					placeholder="Optional technical remarks for the database.">{{ old('descriptionremarks', $database->descriptionremarks) }}</textarea>
+			@endif
+		  @error('descriptionremarks') <span class="text-red-500">{{ $message }}</span> @enderror
 		</div>
 
 		<?php /*

@@ -53,15 +53,55 @@
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"/>
 		  @error('additionaltitle') <span class="text-red-500">{{ $message }}</span> @enderror
 		</div>
-		
+
+
 		<div class="mb-4">
 		  <label for="descriptiongeneral" class="text-gray-700 mb-2 block font-bold">General Description:</label>
-		  <textarea wire:model="descriptiongeneral" type="text" id="descriptiongeneral"
-			  placeholder="Optional general description of the tool."
-				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none" />
-		  @error('descriptiongeneral') <span class="text-red-500">{{ $message }}</span> @enderror
+			@if($tool==null)
+				<textarea wire:model="descriptiongeneral" class="resizable-textarea text-gray-700 w-full rounded-lg border px-3 py-2" id="descriptiongeneral"
+					placeholder="Optional general description of the tool."></textarea>
+			@else
+				<textarea wire:model="descriptiongeneral" class="resizable-textarea text-gray-700 w-full rounded-lg border px-3 py-2" id="descriptiongeneral"
+					placeholder="Optional general description of the tool.">{{ old('descriptiongeneral', $tool->descriptiongeneral) }}</textarea>
+			@endif
+			@error('descriptiongeneral') <span class="text-red-500">{{ $message }}</span> @enderror
 		</div>
 
+		<div class="mb-4">
+		  <label for="descriptionabstract" class="text-gray-700 mb-2 block font-bold">Abstract:</label>
+			@if($tool==null)
+				<textarea wire:model="descriptionabstract" class="resizable-textarea text-gray-700 w-full rounded-lg border px-3 py-2" id="descriptionabstract"
+					placeholder="Optional abstract for the tool."></textarea>
+			@else
+				<textarea wire:model="descriptionabstract" class="resizable-textarea text-gray-700 w-full rounded-lg border px-3 py-2" id="descriptionabstract"
+					placeholder="Optional abstract for the tool.">{{ old('descriptionabstract', $tool->descriptionabstract) }}</textarea>
+			@endif
+		  @error('descriptionabstract') <span class="text-red-500">{{ $message }}</span> @enderror
+		</div>
+
+		<div class="mb-4">
+		  <label for="descriptionmethods" class="text-gray-700 mb-2 block font-bold">Methods:</label>
+			@if($tool==null)
+				<textarea wire:model="descriptionmethods" class="resizable-textarea text-gray-700 w-full rounded-lg border px-3 py-2" id="descriptionmethods"
+					placeholder="Optional description of the methods used to create the tool."></textarea>
+			@else
+				<textarea wire:model="descriptionmethods" class="resizable-textarea text-gray-700 w-full rounded-lg border px-3 py-2" id="descriptionmethods"
+					placeholder="Optional description of the methods used to create the tool.">{{ old('descriptionmethods', $tool->descriptionmethods) }}</textarea>
+			@endif
+		  @error('descriptionmethods') <span class="text-red-500">{{ $message }}</span> @enderror
+		</div>
+
+		<div class="mb-4">
+		  <label for="descriptionremarks" class="text-gray-700 mb-2 block font-bold">Technical Remarks:</label>
+			@if($tool==null)
+				<textarea wire:model="descriptionremarks" class="resizable-textarea text-gray-700 w-full rounded-lg border px-3 py-2" id="descriptionremarks"
+					placeholder="Optional technical remarks for the tool."></textarea>
+			@else
+				<textarea wire:model="descriptionremarks" class="resizable-textarea text-gray-700 w-full rounded-lg border px-3 py-2" id="descriptionremarks"
+					placeholder="Optional technical remarks for the tool.">{{ old('descriptionremarks', $tool->descriptionremarks) }}</textarea>
+			@endif
+		  @error('descriptionremarks') <span class="text-red-500">{{ $message }}</span> @enderror
+		</div>
 
 		<div class="mb-4">
 		  <label for="rights" class="text-gray-700 mb-2 block font-bold">Resource Type (*): </label>

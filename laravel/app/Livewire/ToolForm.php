@@ -14,6 +14,9 @@ class ToolForm extends Component
 	public $additionaltitle;
 	public $additionaltitletype;
 	public $descriptiongeneral;
+	public $descriptionabstract;
+	public $descriptionmethods;
+	public $descriptionremarks;
 	public $productionyear;
 	public $publicationyear;
 	public $language;
@@ -41,11 +44,18 @@ class ToolForm extends Component
 		'controlledrights' => 'required',
 		'resourcetype' => 'required',
 		'descriptiongeneral' => 'max:500',
+		'descriptionabstract' => 'max:500',
+		'descriptionmethods' => 'max:500',
+		'descriptionremarks' => 'max:500',
 	];
 	
 	protected $messages = [
 		'productionyear.required' => 'The production year cannot be empty.',
 		'productionyear.regex' => 'Production year must be either YYYY or YYYY-YYYY or the string "unknown".',
+		'descriptiongeneral.max' => 'The general description can be only up to 500 characters.',
+		'descriptionabstract.max' => 'The abstract can be only up to 500 characters.',
+		'descriptionmethods.max' => 'The methods can be only up to 500 characters.',
+		'descriptionremarks.max' => 'The technical remarks can be only up to 500 characters.',
 	];
 
 	public function mount($tool = null)
@@ -70,6 +80,9 @@ class ToolForm extends Component
 			else
 				$this->additionaltitletype = $tool->additionaltitletype-$additionaltitletype_base_id;
 			$this->descriptiongeneral = $tool->descriptiongeneral;
+			$this->descriptionabstract = $tool->descriptionabstract;
+			$this->descriptionmethods = $tool->descriptionmethods;
+			$this->descriptionremarks = $tool->descriptionremarks;
 			$this->productionyear = $tool->productionyear;
 			$this->publicationyear = $tool->publicationyear;
 			$this->language = $tool->language;
@@ -108,6 +121,9 @@ class ToolForm extends Component
 		$this->tool->additionaltitle = $this->additionaltitle;
 		$this->tool->additionaltitletype = (\App\Models\Radar\Metadataschema::where('name', 'additionalTitleType')->where('value', 'Subtitle')->first()->id);  // fix to Subtitle
 		$this->tool->descriptiongeneral = $this->descriptiongeneral;
+		$this->tool->descriptionabstract = $this->descriptionabstract;
+		$this->tool->descriptionmethods = $this->descriptionmethods;
+		$this->tool->descriptionremarks = $this->descriptionremarks;
 		$this->tool->productionyear = strtolower($this->productionyear);
 		$this->tool->publicationyear = $this->publicationyear;
 		$this->tool->language = $this->language;

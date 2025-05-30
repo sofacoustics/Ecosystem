@@ -19,8 +19,16 @@ class DatabaseSeeder extends Seeder
 	 */
 	public function run(): void
 	{
-		$this->call(RolesAndPermissionsSeeder::class);
-		$this->call(UserSeeder::class);
+		$this->call([
+			RolesAndPermissionsSeeder::class,
+			UserSeeder::class,
+			DatafiletypeSeeder::class,
+			ServiceSeeder::class,
+			WidgetSeeder::class,
+			MenuItemSeeder::class,
+			MetadataschemaSeeder::class,
+		]);
+
 		Database::create(array(
 			'title' => 'ARI B',
 			'additionaltitle' => 'Additional Title',
@@ -33,8 +41,8 @@ class DatabaseSeeder extends Seeder
 			'software' => 'Software version e.g. 1.3',
 			'processing' => 'Instructions used for processing the data in the digital resource (e.g. statistics).',
 			'relatedinformation' => 'Related information on the sample used to produce the digital data in the resource (e. g. Database ID, registry number, GenBank, IntEnz, PubChem, MedGen, PMID, PDB, molecular formula).',
-			'controlledrights' => 68,
-			'additionalrights' => 'My own license',
+			'controlledrights' => (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->where('value', 'CC_BY_4_0_ATTRIBUTION')->first()->id),
+			'additionalrights' => null,
 			'radardataset' => null,
 			'user_id' => 2));
 		Database::create(array('title' => 'ARI BezierPPM',
@@ -48,7 +56,7 @@ class DatabaseSeeder extends Seeder
 			'software' => null,
 			'processing' => null,
 			'relatedinformation' => null,
-			'controlledrights' => 47,
+			'controlledrights' => (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->where('value', 'CC_BY_4_0_ATTRIBUTION')->first()->id),
 			'additionalrights' => null,
 			'visible' => 1,
 			'radardataset' => null,
@@ -65,7 +73,7 @@ class DatabaseSeeder extends Seeder
 			'software' => null,
 			'processing' => null,
 			'relatedinformation' => null,
-			'controlledrights' => 47,
+			'controlledrights' => (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->where('value', 'CC_BY_4_0_ATTRIBUTION')->first()->id),
 			'additionalrights' => null,
 			'visible' => 1,
 			'radardataset' => null,
@@ -81,7 +89,7 @@ class DatabaseSeeder extends Seeder
 			'software' => null,
 			'processing' => null,
 			'relatedinformation' => null,
-			'controlledrights' => 47,
+			'controlledrights' => (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->where('value', 'CC_BY_4_0_ATTRIBUTION')->first()->id),
 			'additionalrights' => null,
 			'visible' => 1,
 			'radardataset' => null,
@@ -97,7 +105,7 @@ class DatabaseSeeder extends Seeder
 			'software' => null,
 			'processing' => null,
 			'relatedinformation' => null,
-			'controlledrights' => 47,
+			'controlledrights' => (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->where('value', 'CC_BY_4_0_ATTRIBUTION')->first()->id),
 			'additionalrights' => null,
 			'radardataset' => null,
 			'user_id' => 4, ));
@@ -113,8 +121,8 @@ class DatabaseSeeder extends Seeder
 			'software' => 'Software version e.g. 1.3',
 			'processing' => 'Instructions used for processing the data in the digital resource (e.g. statistics).',
 			'relatedinformation' => 'Related information on the sample used to produce the digital data in the resource (e. g. Database ID, registry number, GenBank, IntEnz, PubChem, MedGen, PMID, PDB, molecular formula).',
-			'controlledrights' => 68,
-			'additionalrights' => 'My own license',
+			'controlledrights' => (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->where('value', 'OTHER')->first()->id),
+			'additionalrights' => null,
 			'visible' => 1,
 			'radardataset' => null,
 			'user_id' => 4)
@@ -130,7 +138,7 @@ class DatabaseSeeder extends Seeder
 			'software' => null,
 			'processing' => null,
 			'relatedinformation' => null,
-			'controlledrights' => 47,
+			'controlledrights' => (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->where('value', 'CC_BY_4_0_ATTRIBUTION')->first()->id),
 			'additionalrights' => null,
 			'radardataset' => null,
 			'user_id' => 4, )
@@ -146,7 +154,7 @@ class DatabaseSeeder extends Seeder
 			'software' => null,
 			'processing' => null,
 			'relatedinformation' => null,
-			'controlledrights' => 47,
+			'controlledrights' => (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->where('value', 'CC_BY_4_0_ATTRIBUTION')->first()->id),
 			'additionalrights' => null,
 			'radardataset' => null,
 			'user_id' => 4, )
@@ -162,21 +170,15 @@ class DatabaseSeeder extends Seeder
 			'software' => null,
 			'processing' => null,
 			'relatedinformation' => null,
-			'controlledrights' => 47,
+			'controlledrights' => (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->where('value', 'CC_BY_4_0_ATTRIBUTION')->first()->id),
 			'additionalrights' => null,
 			'radardataset' => null,
 			'user_id' => 4, )
-			);			
-		
+			);
+
 		$this->call([
 			DatasetSeeder::class,
-			DatafiletypeSeeder::class,
-			ServiceSeeder::class,
-			WidgetSeeder::class,
 			DatasetdefSeeder::class,
-			DatafileSeeder::class,
-			MenuItemSeeder::class,
-			MetadataschemaSeeder::class,
 			ToolSeeder::class,
 			CreatorSeeder::class,
 			PublisherSeeder::class,
@@ -185,13 +187,6 @@ class DatabaseSeeder extends Seeder
 			KeywordSeeder::class,
 			RelatedIdentifierSeeder::class,
 			CommentSeeder::class,
-			/*
-			RadardatasetresourcetypeSeeder::class,
-			RadardatasetsubjectareaSeeder::class,
-			RadardatasetrightsholderSeeder::class,
-			RadardatasetSeeder::class,
-			 */
 		]);
-
 	}
 }

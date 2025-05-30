@@ -17,6 +17,9 @@ class DatabaseForm extends Component
 	public $additionaltitle;
 	public $additionaltitletype;
 	public $descriptiongeneral;
+	public $descriptionabstract;
+	public $descriptionmethods;
+	public $descriptionremarks;
 	public $productionyear;
 	public $publicationyear;
 	public $language;
@@ -38,11 +41,18 @@ class DatabaseForm extends Component
 		'publicationyear' => 'required',
 		'controlledrights' => 'required',
 		'descriptiongeneral' => 'max:500',
+		'descriptionabstract' => 'max:500',
+		'descriptionmethods' => 'max:500',
+		'descriptionremarks' => 'max:500',
 	];
 
 	protected $messages = [
 		'productionyear.required' => 'The production year cannot be empty.',
 		'productionyear.regex' => 'Production year must be either YYYY or YYYY-YYYY or the string "unknown".',
+		'descriptiongeneral.max' => 'The general description can be only up to 500 characters.',
+		'descriptionabstract.max' => 'The abstract can be only up to 500 characters.',
+		'descriptionmethods.max' => 'The methods can be only up to 500 characters.',
+		'descriptionremarks.max' => 'The technical remarks can be only up to 500 characters.',
 	];
 
 	public function mount($database = null)
@@ -64,6 +74,9 @@ class DatabaseForm extends Component
 			else
 				$this->additionaltitletype = $database->additionaltitletype-$additionaltitletype_base_id;
 			$this->descriptiongeneral = $database->descriptiongeneral;
+			$this->descriptionabstract = $database->descriptionabstract;
+			$this->descriptionmethods = $database->descriptionmethods;
+			$this->descriptionremarks = $database->descriptionremarks;
 			$this->productionyear = $database->productionyear;
 			$this->publicationyear = $database->publicationyear;
 			$this->language = $database->language;
@@ -100,6 +113,9 @@ class DatabaseForm extends Component
 		$this->database->additionaltitle = $this->additionaltitle;
 		$this->database->additionaltitletype = (\App\Models\Radar\Metadataschema::where('name', 'additionalTitleType')->where('value', 'Subtitle')->first()->id);  // fix to Subtitle
 		$this->database->descriptiongeneral = $this->descriptiongeneral;
+		$this->database->descriptionabstract = $this->descriptionabstract;
+		$this->database->descriptionmethods = $this->descriptionmethods;
+		$this->database->descriptionremarks = $this->descriptionremarks;
 		$this->database->productionyear = strtolower($this->productionyear);
 		$this->database->publicationyear = $this->publicationyear;
 		$this->database->language = $this->language;

@@ -19,7 +19,7 @@ return new class extends Migration
 			$table->integer('additionaltitletype')->nullable();
 			$table->string('descriptiongeneral', 500)->nullable();
 			$table->string('descriptionabstract', 500)->nullable();
-			$table->string('descriptionmethod', 500)->nullable();
+			$table->string('descriptionmethods', 500)->nullable();
 			$table->string('descriptionremarks', 500)->nullable();
 			$table->string('productionyear')->nullable();
 			$table->string('publicationyear')->nullable();

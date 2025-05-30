@@ -168,7 +168,6 @@ Parameters:
 			Other Metadata:</h3>
 		<ul class="list-disc list-inside">
 		
-			{{-- mandatory metadata --}}
 			@if ($database->productionyear != null) <li><b>Production Year</b>: {{ $database->productionyear }}</li>@endif
 			@if ($database->publicationyear != null) <li><b>Publication Year</b>: {{ $database->publicationyear }}</li>@endif 
 			
@@ -184,6 +183,15 @@ Parameters:
 
 			@if ($database->descriptiongeneral != null)
 				<li><b>General Description</b>: {{ $database->descriptiongeneral }}</li>
+			@endif 
+			@if ($database->descriptionabstract != null)
+				<li><b>Abstract</b>: {{ $database->descriptionabstract }}</li>
+			@endif 
+			@if ($database->descriptionmethods != null)
+				<li><b>Methods</b>: {{ $database->descriptionmethods }}</li>
+			@endif 
+			@if ($database->descriptionremarks != null)
+				<li><b>Technical Remarks</b>: {{ $database->descriptionremarks }}</li>
 			@endif 
 
 			@if ($database->language != null) <li><b>Language</b>: {{ $database->language }}</li>@endif 

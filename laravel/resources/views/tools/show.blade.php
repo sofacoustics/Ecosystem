@@ -200,6 +200,17 @@ Parameters:
 		@if ($tool->descriptiongeneral != null)
 			<li><b>General Description</b>: {{ $tool->descriptiongeneral }}</li>
 		@endif 
+		@if ($tool->descriptionabstract != null)
+			<li><b>Abstract</b>: {{ $tool->descriptionabstract }}</li>
+		@endif 
+		@if ($tool->descriptionmethods != null)
+			<li><b>Methods</b>: {{ $tool->descriptionmethods }}</li>
+		@endif 
+		@if ($tool->descriptionremarks != null)
+			<li><b>Technical Remarks</b>: {{ $tool->descriptionremarks }}</li>
+		@endif 
+
+
 
 		
 	<h2>Comments</h2>
