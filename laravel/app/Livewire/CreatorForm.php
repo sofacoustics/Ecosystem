@@ -22,7 +22,20 @@ class CreatorForm extends Component
 	public $affiliationIdentifierScheme;
 
 	protected $rules = [
-		'creatorName' => 'required',
+		'creatorName' => ['required','max:255'],
+		'givenName' => 'max:255',
+		'familyName' => 'max:255',
+		'nameIdentifier' => 'max:255',
+		'creatorAffiliation' => 'max:255',
+	];
+
+	protected $messages = [
+		'creatorName.required' => 'A name is required.',
+		'creatorName.max' => 'The name can be only up to 255 characters.',
+		'givenName.max' => 'The name can be only up to 255 characters.',
+		'familyName.max' => 'The name can be only up to 255 characters.',
+		'nameIdentifier.max' => 'The name identifier can be only up to 255 characters.',
+		'creatorAffiliation.max' => 'The affiliation can be only up to 255 characters.',
 	];
 
 	public function mount($creatorable, $creator = null)

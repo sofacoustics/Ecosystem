@@ -17,9 +17,17 @@ class RightsholderForm extends Component
 	public $nameIdentifierSchemeIndex;
 	public $schemeURI;
 
-
 	protected $rules = [
-		'rightsholderName' => 'required',
+		'rightsholderName' => ['required','max:255'],
+		'nameIdentifier' => 'max:255',
+		'schemeURI' => 'max:255',
+	];
+
+	protected $messages = [
+		'rightsholderName.required' => 'A name is required.',
+		'rightsholderName.max' => 'The name can be only up to 255 characters.',
+		'nameIdentifier.max' => 'The name can be only up to 255 characters.',
+		'schemeURI.max' => 'The name can be only up to 255 characters.',
 	];
 
 	public function mount($rightsholderable, $rightsholder = null)

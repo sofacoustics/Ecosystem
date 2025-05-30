@@ -15,16 +15,29 @@ use App\Models\Datasetdef;
 
 class DatafileUpload extends Component
 {
-    use WithFileUploads; // trait necessary for livewire upload
+	use WithFileUploads; // trait necessary for livewire upload
 
-    // wire:model
-    public $file;
+		// wire:model
+	public $file;
 
-    // component parameters (:dataset, :datasetdef)
-    public Dataset $dataset;
-    public Datasetdef $datasetdef;
-    // component parameter (:datafile) if editing existing datafile
-    public ?Datafile $datafile;
+		// component parameters (:dataset, :datasetdef)
+	public Dataset $dataset;
+	public Datasetdef $datasetdef;
+		// component parameter (:datafile) if editing existing datafile
+	public ?Datafile $datafile;
+
+	protected function rules()
+	{
+		$requiredMimetypes = $this->datasetdef->datafiletype->mimetypes;
+		if($requiredMimetypes != "")
+			$requiredMimetypes="|mimetypes:$requiredMimetypes";
+
+		return [
+			'file' => "required$requiredMimetypes",
+		];
+	}
+
+
 
     public function mount()
     {
@@ -63,18 +76,6 @@ class DatafileUpload extends Component
 			$this->addError('file', $e->getMessage()); // error messages weren't appearing without this, when using try/catch!
 		}
 	}
-
-    protected function rules()
-    {
-		$requiredMimetypes = $this->datasetdef->datafiletype->mimetypes;
-		if($requiredMimetypes != "")
-			$requiredMimetypes="|mimetypes:$requiredMimetypes";
-
-		return [
-			'file' => "required$requiredMimetypes",
-		];
-
-    }
 
     public function save()
     {

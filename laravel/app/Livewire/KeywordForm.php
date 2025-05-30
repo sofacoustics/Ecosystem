@@ -20,7 +20,18 @@ class KeywordForm extends Component
 
 
 	protected $rules = [
-		'keywordName' => 'required',
+		'keywordName' => ['required','max:255'],
+		'schemeURI' => 'max:255',
+		'valueURI' => 'max:255',
+		'classificationCode' => 'max:255',
+	];
+
+	protected $messages = [
+		'keywordName.required' => 'A keyword is required.',
+		'keywordName.max' => 'The keyword can be only up to 255 characters.',
+		'schemeURI.max' => 'The scheme URL can be only up to 255 characters.',
+		'valueURI.max' => 'The full URL can be only up to 255 characters.',
+		'classificationCode.max' => 'The classification code can be only up to 255 characters.',
 	];
 
 	public function mount($keywordable, $keyword = null)

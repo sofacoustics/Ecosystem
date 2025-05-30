@@ -19,7 +19,16 @@ class PublisherForm extends Component
 
 
 	protected $rules = [
-		'publisherName' => 'required',
+		'publisherName' => ['required','max:255'],
+		'nameIdentifier' => 'max:255',
+		'schemeURI' => 'max:255',
+	];
+
+	protected $messages = [
+		'publisherName.required' => 'A name is required.',
+		'publisherName.max' => 'The publisher name can be only up to 255 characters.',
+		'nameIdentifier.max' => 'The name identifier can be only up to 255 characters.',
+		'schemeURI.max' => 'The scheme URL can be only up to 255 characters.',
 	];
 
 	public function mount($publisherable, $publisher = null)

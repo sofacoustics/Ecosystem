@@ -56,6 +56,7 @@ Tools
 * Dependency of Database functions removed
 * Descriptions are now resizeable multiline entries: General (=RADAR: Other), Abstract, Method, and Technical Remarks. 
 * Order of the metadata edits rearranged, display of metadata harmonized
+* Input parameter checks added
 
 
 Download
@@ -79,6 +80,7 @@ Comments
 ========
 
 * show, delete, new, edit
+* Input parameter checks added
 
 Datasets definition
 ===================
@@ -91,6 +93,7 @@ Datasets definition
 * "Description" added to the Definition of each Datasetfile.
 * Check for unique definition names in a database (important for the download!)
 * Definition name must not contain <>:&"\|?*/
+* Input parameter checks added
 
 Database
 ========
@@ -109,6 +112,7 @@ Database
 * Additional Title: fixed to Subtitle, if available, shown in the header
 * Descriptions are now resizeable multiline entries: General (=RADAR: Other), Abstract, Method, and Technical Remarks. 
 * Order of the metadata edits rearranged, display of metadata harmonized
+* Input parameter checks added
 
 Database landing page
 =====================
@@ -126,6 +130,7 @@ Done:
 * Upload (create a new dataset, edit an existing)
 * Check for unique dataset names in a database (important for the download!)
 * Dataset Name must not contain <>:&"\|?*/
+* Input parameter checks added
 
 Bulk upload
 ===========

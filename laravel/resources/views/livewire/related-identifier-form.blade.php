@@ -20,8 +20,10 @@
 				@foreach(\App\Models\Database::relationList() as $r => $t)
 						<option value="{{ $r }}">{{ $t->display }}</option>
 				@endforeach
-			@error('relationtype') <span class="text-red-500">{{ $message }}</span> @enderror
 			</select>
+			@error('relationtype')
+				<span class="text-red-500">{{ $message }}</span>
+			@enderror
 			
 			<input wire:model="name" type="text" 
 				placeholder="The identifier, e.g., the DOI (if type is DOI) or an URL (if type is URL)."
@@ -35,8 +37,8 @@
 				@foreach(\App\Models\Database::relatedidentifierList() as $r => $t)
 						<option value="{{ $r }}">{{ $t->display }}</option>
 				@endforeach
-			@error('relatedidentifiertype') <span class="text-red-500">{{ $message }}</span> @enderror
 			</select>
+			@error('relatedidentifiertype') <span class="text-red-500">{{ $message }}</span> @enderror
 
 		<div class="mt-4">
 			<button type="submit" class="{{ $buttonClass }}">

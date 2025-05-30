@@ -26,6 +26,9 @@ class DatasetdefForm extends Component
 		'name.required' => 'The name cannot be empty.',
 		'name.unique' => 'There is already a dataset definition with this name in your database. Choose an other name.',
 		'name.not_regex' => 'The name must not contain any of the following characters: <>:&"/\\|?*',
+		'name.max' => 'The name can be only up to 255 characters.',
+		'description.max' => 'The description can be only up to 255 characters.',
+		'datafiletype_id.required' => 'Select the type of the datafile.',
 	];
 
 	public function mount($database, $datasetdef = null)
@@ -62,25 +65,35 @@ class DatasetdefForm extends Component
 
 		if($isNew)
 		{
-			$this->validate([ 'name' => [ 
-					'required',  // must be provided
-					Rule::unique('datasetdefs','name')->where(
-						function ($query) {
-							return $query->where('database_id', $this->database->id); }), // must be different than other names from this database
-					$regex, // prohibit special characters 
-					]
+			$this->validate(
+				[ 'name' => 
+						[ 
+						'required',  // must be provided
+						Rule::unique('datasetdefs','name')->where(
+							function ($query) {
+								return $query->where('database_id', $this->database->id); }), // must be different than other names from this database
+						$regex, // prohibit special characters 
+						'max:255' // max 255 characters
+						],
+					'description' => 'max:255',
+					'datafiletype_id' => 'required',
 				]);
 			$this->datasetdef = new Datasetdef();
 		}
 		else
 		{
-			$this->validate([ 'name' => [ 
-					'required',  // must be provided
-					Rule::unique('datasetdefs','name')->where(
-						function ($query) {
-							return $query->where('database_id', $this->database->id); }), // must be different than other names from this database
-					$regex, // prohibit special characters 
-					]
+			$this->validate(
+				[ 'name' => 
+						[ 
+						'required',  // must be provided
+						Rule::unique('datasetdefs','name')->where(
+							function ($query) {
+								return $query->where('database_id', $this->database->id); }), // must be different than other names from this database
+						$regex, // prohibit special characters 
+						'max:255' // max 255 characters
+						],
+					'description' => 'max:255',
+					'datafiletype_id' => 'required',
 				]);
 		}
 

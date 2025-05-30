@@ -23,6 +23,8 @@ class DatasetForm extends Component
 		'name.required' => 'The name cannot be empty.',
 		'name.unique' => 'There is already a dataset with this name in your database. Choose an other name.',
 		'name.not_regex' => 'The name must not contain any of the following characters: <>:&"/\\|?*',
+		'name.max' => 'The name can be only up to 255 characters.',
+		'description.max' => 'The description can be only up to 255 characters.',
 	];
 
 	public function mount($dataset = null)
@@ -43,13 +45,18 @@ class DatasetForm extends Component
 			$regex = 'not_regex:/[<>:&\"\\\|\?\*\/]/i';  // must not contain <>:&"\|?*/
 			if($isNew)
 			{		// create
-				$this->validate([ 'name' => [ 
-					'required',  // must be provided
-					Rule::unique('datasets','name')->where(
-						function ($query) {
-							return $query->where('database_id', $this->database->id); }), // must be different than other names from this database
-					$regex, // prohibit special characters 
-					]
+				$this->validate(
+				[ 
+					'name' => 
+						[ 
+						'required',  // must be provided
+						Rule::unique('datasets','name')->where(
+							function ($query) {
+								return $query->where('database_id', $this->database->id); }), // must be different than other names from this database
+						$regex, // prohibit special characters 
+						'max:255',
+						],
+					'description' => 'max:255',
 				]);
 				$this->dataset = new Dataset();
 				$this->dataset->name = $this->name;
@@ -61,13 +68,18 @@ class DatasetForm extends Component
 			}
 			else 
 			{		// update
-				$this->validate([ 'name' => [ 
-					'required', // must be given
-					Rule::unique('datasets','name')->ignore($this->dataset->id)->where(
-						function ($query) {
-							return $query->where('database_id', $this->database->id); }), // must be different than other names from this database
-					$regex, // prohibit special characters 
-					]
+				$this->validate(
+				[ 
+					'name' => 
+					[ 
+						'required', // must be given
+						Rule::unique('datasets','name')->ignore($this->dataset->id)->where(
+							function ($query) {
+								return $query->where('database_id', $this->database->id); }), // must be different than other names from this database
+						$regex, // prohibit special characters 
+						'max:255',
+					],
+					'description' => 'max:255',
 				]);
 				$this->dataset->name = $this->name;
 				$this->dataset->description = $this->description;

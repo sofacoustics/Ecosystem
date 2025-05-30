@@ -17,7 +17,12 @@ class CommentForm extends Component
 
 
 	protected $rules = [
-		'text' => 'required',
+		'text' => ['required','max:255']
+	];
+
+	protected $messages = [
+		'text.required' => 'A message would be great, wouldn\'t it?',
+		'text.max' => 'The message can be only up to 255 characters.',
 	];
 
 	public function mount($commentable, $comment = null)

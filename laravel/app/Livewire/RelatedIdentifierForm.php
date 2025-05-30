@@ -20,8 +20,16 @@ class RelatedIdentifierForm extends Component
 	public $relation_base_id; 
 
 	protected $rules = [
+		'name' => ['required','max:255'],
 		'relatedidentifiertype' => 'required',
 		'relationtype' => 'required',
+	];
+
+	protected $messages = [
+		'name.required' => 'Input an identifier (e.g., URL) for the relation.',
+		'name.max' => 'The identifier can be only up to 255 characters.',
+		'relatedidentifiertype.required' => 'Select the type of the identifier.',
+		'relationtype.required' => 'Select the type of relation.',
 	];
 
 	public function mount($relatedidentifierable, $relatedidentifier = null)

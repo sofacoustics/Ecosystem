@@ -47,6 +47,8 @@ class ToolForm extends Component
 		'descriptionabstract' => 'max:500',
 		'descriptionmethods' => 'max:500',
 		'descriptionremarks' => 'max:500',
+		'additionaltitle' => 'max:255',
+		'additionalrights' => 'max:255',
 	];
 	
 	protected $messages = [
@@ -56,8 +58,8 @@ class ToolForm extends Component
 		'descriptionabstract.max' => 'The abstract can be only up to 500 characters.',
 		'descriptionmethods.max' => 'The methods can be only up to 500 characters.',
 		'descriptionremarks.max' => 'The technical remarks can be only up to 500 characters.',
-		'additionaltitle' => 'max:255',
-		'additionalrights' => 'max:255',
+		'additionaltitle.max' => 'The subtitle can be only up to 255 characters.',
+		'additionalrights.max' => 'The custom license name can be only up to 255 characters.',
 	];
 
 	public function mount($tool = null)
