@@ -15,7 +15,7 @@ class Tool extends Model
 	use HasFactory;
 
 	protected $fillable = [
-			'id', 'title', 'description'
+			'id', 'title', 'descriptiongeneral'
 	];
 		
 	public function directory() : string
@@ -136,16 +136,6 @@ class Tool extends Model
 	static function additionaltitletypesList()
 	{
 		return \App\Models\Radar\Metadataschema::list('additionalTitleType');
-	}
-
-	static function descriptiontypeDisplay($descriptiontype)
-	{
-		return \App\Models\Radar\Metadataschema::display($descriptiontype);
-	}
-
-	static function descriptiontypesList()
-	{
-		return \App\Models\Radar\Metadataschema::list('descriptionType');
 	}
 
 	static function controlledrightsDisplay($controlledrights)

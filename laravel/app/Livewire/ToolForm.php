@@ -13,8 +13,7 @@ class ToolForm extends Component
 	public $title;
 	public $additionaltitle;
 	public $additionaltitletype;
-	public $description;
-	public $descriptiontype;
+	public $descriptiongeneral;
 	public $productionyear;
 	public $publicationyear;
 	public $language;
@@ -30,7 +29,6 @@ class ToolForm extends Component
 	public $resourcetype_base_id; 
 	public $resourcetype_other_id; 
 	
-	public $additionaltitletype_base_id; 
 	public $descriptiontype_base_id; 
 	public $controlledrights_base_id;
 	public $controlledrights_other_id;
@@ -42,6 +40,7 @@ class ToolForm extends Component
 		'publicationyear' => 'required',
 		'controlledrights' => 'required',
 		'resourcetype' => 'required',
+		'descriptiongeneral' => 'max:500',
 	];
 	
 	protected $messages = [
@@ -54,12 +53,10 @@ class ToolForm extends Component
 		$resourcetype_base_id = (\App\Models\Radar\Metadataschema::where('name', 'resourcetype')->first()->id);
 		$this->resourcetype_other_id = (\App\Models\Radar\Metadataschema::where('name', 'resourcetype')->where('value', 'OTHER')->first()->id) - $resourcetype_base_id; 
 		$additionaltitletype_base_id = (\App\Models\Radar\Metadataschema::where('name', 'additionalTitleType')->first()->id);
-		$descriptiontype_base_id = (\App\Models\Radar\Metadataschema::where('name', 'descriptionType')->first()->id);
 		$controlledrights_base_id = (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->first()->id);
 		$this->controlledrights_other_id = (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->where('value', 'OTHER')->first()->id) - $controlledrights_base_id; 
 
 		$this->additionaltitletype_base_id = $additionaltitletype_base_id;
-		$this->descriptiontype_base_id = $descriptiontype_base_id; 
 		$this->controlledrights_base_id = $controlledrights_base_id; 
 		$this->resourcetype_base_id = $resourcetype_base_id;
 
@@ -72,11 +69,7 @@ class ToolForm extends Component
 				$this->additionaltitletype = null;
 			else
 				$this->additionaltitletype = $tool->additionaltitletype-$additionaltitletype_base_id;
-			$this->description = $tool->description;
-			if ($tool->descriptiontype == null)
-				$this->descriptiontype = null;
-			else
-				$this->descriptiontype = $tool->descriptiontype-$descriptiontype_base_id;
+			$this->descriptiongeneral = $tool->descriptiongeneral;
 			$this->productionyear = $tool->productionyear;
 			$this->publicationyear = $tool->publicationyear;
 			$this->language = $tool->language;
@@ -114,9 +107,7 @@ class ToolForm extends Component
 		$this->tool->title = $this->title;
 		$this->tool->additionaltitle = $this->additionaltitle;
 		$this->tool->additionaltitletype = (\App\Models\Radar\Metadataschema::where('name', 'additionalTitleType')->where('value', 'Subtitle')->first()->id);  // fix to Subtitle
-		$this->tool->description = $this->description;
-		if ($this->descriptiontype == null) { $this->tool->descriptiontype = null; }
-			else { $this->tool->descriptiontype = $this->descriptiontype+$this->descriptiontype_base_id; }
+		$this->tool->descriptiongeneral = $this->descriptiongeneral;
 		$this->tool->productionyear = strtolower($this->productionyear);
 		$this->tool->publicationyear = $this->publicationyear;
 		$this->tool->language = $this->language;

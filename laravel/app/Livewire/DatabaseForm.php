@@ -16,8 +16,7 @@ class DatabaseForm extends Component
 	public $title;
 	public $additionaltitle;
 	public $additionaltitletype;
-	public $description;
-	public $descriptiontype;
+	public $descriptiongeneral;
 	public $productionyear;
 	public $publicationyear;
 	public $language;
@@ -29,7 +28,6 @@ class DatabaseForm extends Component
 	public $additionalrights;
 
 	public $additionaltitletype_base_id; 
-	public $descriptiontype_base_id; 
 	public $controlledrights_base_id;
 	public $controlledrights_other_id;
 	
@@ -39,6 +37,7 @@ class DatabaseForm extends Component
 												 'regex:/^(\d{4}(?:-\d{4})?|unknown)$/i' ], // YYYY or YYYY-YYYY or "unknown"
 		'publicationyear' => 'required',
 		'controlledrights' => 'required',
+		'descriptiongeneral' => 'max:500',
 	];
 
 	protected $messages = [
@@ -49,11 +48,9 @@ class DatabaseForm extends Component
 	public function mount($database = null)
 	{
 		$additionaltitletype_base_id = (\App\Models\Radar\Metadataschema::where('name', 'additionalTitleType')->first()->id);
-		$descriptiontype_base_id = (\App\Models\Radar\Metadataschema::where('name', 'descriptionType')->first()->id);
 		$controlledrights_base_id = (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->first()->id);
 		
 		$this->additionaltitletype_base_id = $additionaltitletype_base_id;
-		$this->descriptiontype_base_id = $descriptiontype_base_id; 
 		$this->controlledrights_base_id = $controlledrights_base_id; 
 		$this->controlledrights_other_id = (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->where('value', 'OTHER')->first()->id) - $controlledrights_base_id; 
 		
@@ -66,11 +63,7 @@ class DatabaseForm extends Component
 				$this->additionaltitletype = null;
 			else
 				$this->additionaltitletype = $database->additionaltitletype-$additionaltitletype_base_id;
-			$this->description = $database->description;
-			if ($database->descriptiontype == null)
-				$this->descriptiontype = null;
-			else
-				$this->descriptiontype = $database->descriptiontype-$descriptiontype_base_id;
+			$this->descriptiongeneral = $database->descriptiongeneral;
 			$this->productionyear = $database->productionyear;
 			$this->publicationyear = $database->publicationyear;
 			$this->language = $database->language;
@@ -106,9 +99,7 @@ class DatabaseForm extends Component
 		$this->database->title = $this->title;
 		$this->database->additionaltitle = $this->additionaltitle;
 		$this->database->additionaltitletype = (\App\Models\Radar\Metadataschema::where('name', 'additionalTitleType')->where('value', 'Subtitle')->first()->id);  // fix to Subtitle
-		$this->database->description = $this->description;
-		if ($this->descriptiontype == null) { $this->database->descriptiontype = null; }
-			else { $this->database->descriptiontype = $this->descriptiontype + $this->descriptiontype_base_id; }
+		$this->database->descriptiongeneral = $this->descriptiongeneral;
 		$this->database->productionyear = strtolower($this->productionyear);
 		$this->database->publicationyear = $this->publicationyear;
 		$this->database->language = $this->language;

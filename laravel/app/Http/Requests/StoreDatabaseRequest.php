@@ -22,7 +22,7 @@ class StoreDatabaseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //jw:todo add for rules here
+            //jw:todo add for rules here PM: Is this used at all???
             'title' => 'required|unique:databases,title|max:255',
             'description' => 'required|max:255',
             'user_id' => '',

@@ -52,25 +52,17 @@
 		<div class="mb-4">
 		  <label for="additionaltitle" class="text-gray-700 mb-2 block font-bold">Subtitle:</label>
 		  <input wire:model="additionaltitle" type="text" id="additionaltitle"
-				placeholder="Input an optional subtitle here. The subtitle will be prominently displayed right under the Title..."
+				placeholder="Optional subtitle, which be prominently displayed right under the Title..."
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"/>
 		  @error('additionaltitle') <span class="text-red-500">{{ $message }}</span> @enderror
 		</div>
 		
 		<div class="mb-4">
-		  <label for="description" class="text-gray-700 mb-2 block font-bold">Description:</label>
-			<select wire:model.live="descriptiontype">
-		<option value="">Select a description type...</option>
-		@foreach(\App\Models\Database::descriptiontypesList() as $r => $t)
-			<option value="{{ $r }}">{{ $t->display }}</option>
-		@endforeach
-			</select>
-		@if ($descriptiontype != '')
-		  <input wire:model="description" type="text" id="title"
-			  placeholder="Description of the content, e.g. technical remarks or an summary of the dataset."
+		  <label for="descriptiongeneral" class="text-gray-700 mb-2 block font-bold">General Description:</label>
+		  <textarea wire:model="descriptiongeneral" type="text" id="descriptiongeneral"
+			  placeholder="Optional general description of the database."
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none" />
-		  @error('description') <span class="text-red-500">{{ $message }}</span> @enderror
-		@endif
+		  @error('descriptiongeneral') <span class="text-red-500">{{ $message }}</span> @enderror
 		</div>
 
 		<?php /*

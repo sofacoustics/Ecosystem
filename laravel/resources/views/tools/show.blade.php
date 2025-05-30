@@ -162,7 +162,6 @@ Parameters:
 
 
 	<h2>Other Metadata</h2>
-		<p><b>Description:</b> {{ $tool->description }}</p>
 		@if($tool->filesize())
 			<p>
 				<b>File Name:</b> <a href="{{ asset($tool->url()) }}" download>{{ $tool->filename }}</a>
@@ -187,13 +186,21 @@ Parameters:
 		<p>Date updated: {{ $tool->updated_at }}</p>
 		
 		@if ($tool->productionyear != null) <li><b>Production Year</b>: {{ $tool->productionyear }}</li>@endif
+		
 		@if ($tool->publicationyear != null) <li><b>Publication Year</b>: {{ $tool->publicationyear }}</li>@endif 
-			@if ($tool->resourcetype != null) <li><b>Resource Type</b>: {{ \App\Models\Tool::resourcetypeDisplay($tool->resourcetype) }}</b>
-				@if ($tool->resource != null) ({{ $tool->resource }})@endif 
-			</li>@endif  
-			@if ($tool->controlledrights != null) <li><b>Rights:</b> {{ \App\Models\Tool::controlledrightsDisplay($tool->controlledrights) }}
-				@if ($tool->additionalrights != null) ({{ $tool->additionalrights }})</li>@endif 
-			</li>@endif 
+		
+		@if ($tool->resourcetype != null) <li><b>Resource Type</b>: {{ \App\Models\Tool::resourcetypeDisplay($tool->resourcetype) }}</b>
+			@if ($tool->resource != null) ({{ $tool->resource }})@endif 
+		</li>@endif  
+		
+		@if ($tool->controlledrights != null) <li><b>Rights:</b> {{ \App\Models\Tool::controlledrightsDisplay($tool->controlledrights) }}
+			@if ($tool->additionalrights != null) ({{ $tool->additionalrights }})</li>@endif 
+		</li>@endif 
+		
+		@if ($tool->descriptiongeneral != null)
+			<li><b>General Description</b>: {{ $tool->descriptiongeneral }}</li>
+		@endif 
+
 		
 	<h2>Comments</h2>
 		@if(count($tool->comments)==0)

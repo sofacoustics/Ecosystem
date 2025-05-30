@@ -24,12 +24,11 @@ class DatabaseSeeder extends Seeder
 		Database::create(array(
 			'title' => 'ARI B',
 			'additionaltitle' => 'Additional Title',
-			'description' => 'Specialty: hrtfs, dtfs, and photos of the ears',
+			'descriptiongeneral' => 'Specialty: hrtfs, dtfs, and photos of the ears',
 			'productionyear' => '2024-2025',
 			'publicationyear' => 'unknown',
 			'language' => 'eng',
 			'resourcetype' => null,
-			'resource' => 'General information on the content of the resource.',
 			'datasources' => 'Origin of the data contained in the resource.',
 			'software' => 'Software version e.g. 1.3',
 			'processing' => 'Instructions used for processing the data in the digital resource (e.g. statistics).',
@@ -40,12 +39,11 @@ class DatabaseSeeder extends Seeder
 			'user_id' => 2));
 		Database::create(array('title' => 'ARI BezierPPM',
 			'additionaltitle' => null,
-			'description' => 'Specialty: csv, dtfs and hrtfs',
+			'descriptiongeneral' => 'Specialty: csv, dtfs and hrtfs',
 			'productionyear' => '2024-2025',
 			'publicationyear' => 'unknown',
 			'language' => 'eng',
 			'resourcetype' => null,
-			'resource' => "SONICOM Ecosystem",
 			'datasources' => null,
 			'software' => null,
 			'processing' => null,
@@ -57,7 +55,7 @@ class DatabaseSeeder extends Seeder
 			'user_id' => 1, ));
 		Database::create(array('title' => 'AXD',
 			'additionaltitle' => null,
-			'description' => 'Specialty: SONICOM Database',
+			'descriptiongeneral' => 'Specialty: SONICOM Database',
 			'productionyear' => 'unknown',
 			'publicationyear' => 'unknown',
 			'language' => 'eng',
@@ -74,7 +72,6 @@ class DatabaseSeeder extends Seeder
 			'user_id' => 4, ));
 		Database::create(array('title' => 'Test Services',
 			'additionaltitle' => null,
-			'description' => 'Specialty: SONICOM Database',
 			'productionyear' => '2025',
 			'publicationyear' => 'unknown',
 			'language' => 'eng',
@@ -91,7 +88,6 @@ class DatabaseSeeder extends Seeder
 			'user_id' => 4, ));
 		Database::create(array('title' => 'Test sofa-brir-geometry',
 			'additionaltitle' => null,
-			'description' => 'Specialty: SONICOM Database',
 			'productionyear' => '2025',
 			'publicationyear' => 'unknown',
 			'language' => 'eng',
@@ -108,12 +104,11 @@ class DatabaseSeeder extends Seeder
 		Database::create(array(
 			'title' => 'ARI',
 			'additionaltitle' => 'Additional Title',
-			'description' => 'Specialty: hrtfs, dtfs, and photos of the ears',
+			'descriptiongeneral' => 'Specialty: hrtfs, dtfs, and photos of the ears',
 			'productionyear' => '2024-2025',
 			'publicationyear' => 'unknown',
 			'language' => 'eng',
 			'resourcetype' => null,
-			'resource' => 'General information on the content of the resource.',
 			'datasources' => 'Origin of the data contained in the resource.',
 			'software' => 'Software version e.g. 1.3',
 			'processing' => 'Instructions used for processing the data in the digital resource (e.g. statistics).',
@@ -126,7 +121,6 @@ class DatabaseSeeder extends Seeder
 			);
 		Database::create(array('title' => 'Test sofa-srir-geometry',
 			'additionaltitle' => null,
-			'description' => 'Specialty: SONICOM Database',
 			'productionyear' => '2025',
 			'publicationyear' => 'unknown',
 			'language' => 'eng',
@@ -143,7 +137,6 @@ class DatabaseSeeder extends Seeder
 			);
 		Database::create(array('title' => 'Test sofa-directivity-polar',
 			'additionaltitle' => null,
-			'description' => 'Specialty: SONICOM Database',
 			'productionyear' => '2025',
 			'publicationyear' => 'unknown',
 			'language' => 'eng',
@@ -160,7 +153,6 @@ class DatabaseSeeder extends Seeder
 			);			
 		Database::create(array('title' => 'Test sofa-properties',
 			'additionaltitle' => null,
-			'description' => 'Specialty: SONICOM Database',
 			'productionyear' => '2025',
 			'publicationyear' => 'unknown',
 			'language' => 'eng',
@@ -176,7 +168,6 @@ class DatabaseSeeder extends Seeder
 			'user_id' => 4, )
 			);			
 		
-			//Database::create(array('name' => 'Jonnie\'s ARI SOFA test 2', 'description' => 'Nr. 2. \'Nuf said!', 'user_id' => 1, 'radar_id' => 'dEZxRRrxpiHSzbBZ'));
 		$this->call([
 			DatasetSeeder::class,
 			DatafiletypeSeeder::class,

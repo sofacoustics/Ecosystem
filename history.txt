@@ -7,6 +7,7 @@ To be done before we go live:
 * PM: Tool/show: harmonize display. 
 * PM: Databases index: harmonize search and table. 
 * PM: Tools index: harmonize search and table. 
+* PM: Design and Implement the landing page.
 * PM: Implement the actual procedure to "assign DOI", do not forget the two fixed subject areas
 * PM: Adapt Tools to "assign DOI"
 * JW: Implement the minimal procedure to "Publish with DOI"

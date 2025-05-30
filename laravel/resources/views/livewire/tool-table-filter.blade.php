@@ -1,7 +1,7 @@
 <div>
 	<div class="mb-4">
 		<input type="text" wire:model.live.debounce.500ms="filters.title" placeholder="Filter by Title" class="border rounded p-2">
-		<input type="text" wire:model.live.debounce.500ms="filters.description" placeholder="Filter by Description" class="border rounded p-2">
+		<input type="text" wire:model.live.debounce.500ms="filters.additionaltitle" placeholder="Filter by Subtitle" class="border rounded p-2">
 		<button wire:click="clearFilters" class="bg-gray-200 rounded p-2">Clear Filters</button>
 	</div>
 
@@ -70,8 +70,8 @@
 						</button>
 					</th>
 					<th class="border p-2">
-						<button wire:click="sortBy('description')">Description
-							@if ($sortField === 'description')
+						<button wire:click="sortBy('additionaltitle')">Subtitle
+							@if ($sortField === 'additionaltitle')
 								@if ($sortAsc)
 									<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
@@ -101,7 +101,7 @@
 						<td class="px-6 py-4 whitespace-nowrap">{{ $tool->productionyear }}</td>
 						<td class="px-6 py-4 whitespace-nowrap">{{ $tool->publicationyear }}</td>
 						<td class="px-6 py-4 whitespace-nowrap">{{ $tool->updated_at }}</td>
-						<td class="px-6 py-4 whitespace-nowrap">{{ $tool->description }}</td>
+						<td class="px-6 py-4 whitespace-nowrap">{{ $tool->additionaltitle }}</td>
 						@auth
 							<td class="px-6 py-4 whitespace-nowrap">{{ \App\Livewire\ToolTableFilter::userName($tool->user_id) }}</td>
 						@endauth

@@ -182,12 +182,10 @@ Parameters:
 				</li>
 			@endif 
 
-				{{-- optional metadata --}}
-			@if ($database->descriptiontype != null) 
-				<li><b>Description ({{ \App\Models\Database::descriptiontypeDisplay($database->descriptiontype) }})</b>
-					@if ($database->description != null) : {{ $database->description }}@endif 
-				</li>
-			@endif  
+			@if ($database->descriptiongeneral != null)
+				<li><b>General Description</b>: {{ $database->descriptiongeneral }}</li>
+			@endif 
+
 			@if ($database->language != null) <li><b>Language</b>: {{ $database->language }}</li>@endif 
 			@if ($database->datasources != null) <li><b>Datasoures</b>: {{ $database->datasources }}</li>@endif 
 			@if ($database->software != null) <li><b>Software</b>: {{ $database->software }}</li>@endif 

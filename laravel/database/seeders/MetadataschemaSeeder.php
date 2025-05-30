@@ -84,16 +84,16 @@ class MetadataschemaSeeder extends Seeder
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'controlledRights', 'value'=> 'MIT_LICENSE', 'display' => 'MIT License'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'controlledRights', 'value'=> 'ALL_RIGHTS_RESERVED', 'display' => 'All rights reserved'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'controlledRights', 'value'=> 'OTHER', 'display' => 'Other'));
-			// nameIdentifierScheme
+			// nameIdentifierScheme (currently unused because hard-coded in the corresponding classes)
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'nameIdentifierScheme', 'value'=> 'OTHER', 'display' => 'Other'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'nameIdentifierScheme', 'value'=> 'ROR', 'display' => 'Research Organization Registry'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'nameIdentifierScheme', 'value'=> 'ORCID', 'display' => 'Orcid'));
-			// additionalTitleType
+			// additionalTitleType (currently unused because fixed to "Subtitle")
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'additionalTitleType', 'value'=> 'Subtitle', 'display' => 'Subtitle'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'additionalTitleType', 'value'=> 'Translated Title', 'display' => 'Translated Title'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'additionalTitleType', 'value'=> 'Alternative Title', 'display' => 'Alternative Title'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'additionalTitleType', 'value'=> 'Other', 'display' => 'Other'));
-			// descriptionType
+			// descriptionType (currently unused hard coded)
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'descriptionType', 'value'=> 'Abstract', 'display' => 'Abstract'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'descriptionType', 'value'=> 'Method', 'display' => 'Method'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'descriptionType', 'value'=> 'Object', 'display' => 'Object'));
