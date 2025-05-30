@@ -178,7 +178,7 @@ Parameters:
 			<li><b>Subject Areas</b>:
 				@foreach ($database->subjectareas as $index => $subjectarea)@if($index>0),@endif
 					{{ \App\Models\Database::subjectareaDisplay($subjectarea->controlledSubjectAreaIndex) }}@if ($subjectarea->additionalSubjectArea != null) {{ $subjectarea->additionalSubjectArea }}@endif
-@endforeach <--! do not change this line --> 
+@endforeach <!-- do not change this line -->
 			</li>
 
 			@if ($database->descriptiongeneral != null)

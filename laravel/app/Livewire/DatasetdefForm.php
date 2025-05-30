@@ -86,7 +86,7 @@ class DatasetdefForm extends Component
 				[ 'name' => 
 						[ 
 						'required',  // must be provided
-						Rule::unique('datasetdefs','name')->where(
+						Rule::unique('datasetdefs','name')->ignore($this->datasetdef->id)->where(
 							function ($query) {
 								return $query->where('database_id', $this->database->id); }), // must be different than other names from this database
 						$regex, // prohibit special characters 

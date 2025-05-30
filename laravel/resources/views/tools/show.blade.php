@@ -194,7 +194,7 @@ Parameters:
 			<li><b>Subject Areas</b>:
 				@foreach ($tool->subjectareas as $index => $subjectarea)@if($index>0),@endif
 					{{ \App\Models\Tool::subjectareaDisplay($subjectarea->controlledSubjectAreaIndex) }}@if ($subjectarea->additionalSubjectArea != null) {{ $subjectarea->additionalSubjectArea }}@endif
-@endforeach <--! do not change this line --> 
+@endforeach <!-- do not change this line --> 
 			</li>
 
 			@if ($tool->descriptiongeneral != null)
