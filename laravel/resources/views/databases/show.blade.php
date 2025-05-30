@@ -67,19 +67,6 @@ Parameters:
 			@endforelse
 		</ul>
 
-		<h3>Subject Areas:</h3>
-		<ul class="list-disc list-inside">
-			@forelse ($database->subjectareas as $subjectarea)
-			<li><b>{{ \App\Models\Database::subjectareaDisplay($subjectarea->controlledSubjectAreaIndex) }}</b>
-					@if ($subjectarea->additionalSubjectArea != null) ({{ $subjectarea->additionalSubjectArea }}) @endif
-			</li>
-			@empty
-				@cannot('update', $database)
-					<li>No subject areas defined.</li>
-				@endcan
-			@endforelse
-		</ul>
-
 		@can('update', $database)
 			@if(count($database->rightsholders)>0)
 				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.rightsholders', $database->id) }}">Edit</x-button></small>
@@ -165,10 +152,17 @@ Parameters:
 			@can('update', $database)
 				<small><x-button method="GET" class="inline" action="{{ route('databases.edit', $database->id) }}">Edit</x-button></small>
 			@endcan
-			Other Metadata:</h3>
+			Other:
+		</h3>
 		<ul class="list-disc list-inside">
-		
+			<li><b>Uploaded by:</b> {{ $user->name }}</li>
+			
+			<li><b>Date created:</b> {{ $database->created_at }}</li>
+
+			<li><b>Date updated:</b> {{ $database->updated_at }}</li>
+
 			@if ($database->productionyear != null) <li><b>Production Year</b>: {{ $database->productionyear }}</li>@endif
+			
 			@if ($database->publicationyear != null) <li><b>Publication Year</b>: {{ $database->publicationyear }}</li>@endif 
 			
 			<li><b>Resource Type</b>: {{ \App\Models\Database::resourcetypeDisplay($database->resourcetype) }}
@@ -181,23 +175,36 @@ Parameters:
 				</li>
 			@endif 
 
+			<li><b>Subject Areas</b>:
+				@foreach ($database->subjectareas as $index => $subjectarea)@if($index>0),@endif
+					{{ \App\Models\Database::subjectareaDisplay($subjectarea->controlledSubjectAreaIndex) }}@if ($subjectarea->additionalSubjectArea != null) {{ $subjectarea->additionalSubjectArea }}@endif
+@endforeach <--! do not change this line --> 
+			</li>
+
 			@if ($database->descriptiongeneral != null)
 				<li><b>General Description</b>: {{ $database->descriptiongeneral }}</li>
 			@endif 
+			
 			@if ($database->descriptionabstract != null)
 				<li><b>Abstract</b>: {{ $database->descriptionabstract }}</li>
 			@endif 
+			
 			@if ($database->descriptionmethods != null)
 				<li><b>Methods</b>: {{ $database->descriptionmethods }}</li>
 			@endif 
+			
 			@if ($database->descriptionremarks != null)
 				<li><b>Technical Remarks</b>: {{ $database->descriptionremarks }}</li>
 			@endif 
 
 			@if ($database->language != null) <li><b>Language</b>: {{ $database->language }}</li>@endif 
+			
 			@if ($database->datasources != null) <li><b>Datasoures</b>: {{ $database->datasources }}</li>@endif 
+			
 			@if ($database->software != null) <li><b>Software</b>: {{ $database->software }}</li>@endif 
+			
 			@if ($database->processing != null) <li><b>Processing</b>: {{ $database->processing }}</li>@endif 
+			
 			@if ($database->relatedinformation != null) <li><b>Related Information</b>: {{ $database->relatedinformation }}</li>@endif 
 		</ul>
 

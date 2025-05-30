@@ -67,19 +67,6 @@ Parameters:
 			@endforelse
 		</ul>
 
-		<h3>Subject Areas:</h3>
-		<ul class="list-disc list-inside">
-			@forelse ($tool->subjectareas as $subjectarea)
-			<li><b>{{ \App\Models\Tool::subjectareaDisplay($subjectarea->controlledSubjectAreaIndex) }}</b>
-					@if ($subjectarea->additionalSubjectArea != null) ({{ $subjectarea->additionalSubjectArea }}) @endif
-			</li>
-			@empty
-				@cannot('update', $tool)
-					<li>No subject areas defined.</li>
-				@endcan
-			@endforelse
-		</ul> 
-
 		@can('update', $tool)
 			@if(count($tool->rightsholders)>0)
 				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.rightsholders', $tool->id) }}">Edit</x-button></small>
@@ -159,60 +146,74 @@ Parameters:
 			@endforelse
 		</ul>
 
-
-
-	<h2>Other Metadata</h2>
-		@if($tool->filesize())
-			<p>
-				<b>File Name:</b> <a href="{{ asset($tool->url()) }}" download>{{ $tool->filename }}</a>
-				<img id="copyButton" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 2em; display: inline-block;">
-				<input type="text" id="textToCopy" value="{{ asset($tool->url()) }}" class="hidden">
-			</p>
-			<p><b>File Size:</b> {{ $tool->filesize() }} bytes 
-				@if($tool->filesize() > 10240)
-				= {{ round($tool->filesize() / 1024, 2) }} kbytes 
-					@if($tool->filesize() > (1024*10240))
-						= {{ round($tool->filesize() / 1024 / 1024, 2)  }} MB 
-						@if($tool->filesize() > (1024*102410240))
-							= {{ round($tool->filesize() / 1024 / 1024 / 1024, 2) }} GB
+		<h3>
+			@can('update', $tool)
+				<small><x-button method="GET" class="inline" action="{{ route('tools.edit', $tool->id) }}">Edit</x-button></small>
+			@endcan
+			Other:
+		</h3>
+		<ul class="list-disc list-inside">
+			@if($tool->filesize())
+				<li>
+					<b>File Name:</b> <a href="{{ asset($tool->url()) }}" download>{{ $tool->filename }}</a>
+					<img id="copyButton" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 2em; display: inline-block;">
+					<input type="text" id="textToCopy" value="{{ asset($tool->url()) }}" class="hidden"><br>
+					<b>File Size:</b> {{ $tool->filesize() }} bytes 
+					@if($tool->filesize() > 10240)
+					= {{ round($tool->filesize() / 1024, 2) }} kbytes 
+						@if($tool->filesize() > (1024*10240))
+							= {{ round($tool->filesize() / 1024 / 1024, 2)  }} MB 
+							@if($tool->filesize() > (1024*102410240))
+								= {{ round($tool->filesize() / 1024 / 1024 / 1024, 2) }} GB
+							@endif
 						@endif
 					@endif
-				@endif
-			</p>
-		@else
-			<p><b>File Name:</b> file not provided yet, upload a file</p>
-		@endif
-		<p>Date created: {{ $tool->created_at }}</p>
-		<p>Date updated: {{ $tool->updated_at }}</p>
-		
-		@if ($tool->productionyear != null) <li><b>Production Year</b>: {{ $tool->productionyear }}</li>@endif
-		
-		@if ($tool->publicationyear != null) <li><b>Publication Year</b>: {{ $tool->publicationyear }}</li>@endif 
-		
-		@if ($tool->resourcetype != null) <li><b>Resource Type</b>: {{ \App\Models\Tool::resourcetypeDisplay($tool->resourcetype) }}</b>
-			@if ($tool->resource != null) ({{ $tool->resource }})@endif 
-		</li>@endif  
-		
-		@if ($tool->controlledrights != null) <li><b>Rights:</b> {{ \App\Models\Tool::controlledrightsDisplay($tool->controlledrights) }}
-			@if ($tool->additionalrights != null) ({{ $tool->additionalrights }})</li>@endif 
-		</li>@endif 
-		
-		@if ($tool->descriptiongeneral != null)
-			<li><b>General Description</b>: {{ $tool->descriptiongeneral }}</li>
-		@endif 
-		@if ($tool->descriptionabstract != null)
-			<li><b>Abstract</b>: {{ $tool->descriptionabstract }}</li>
-		@endif 
-		@if ($tool->descriptionmethods != null)
-			<li><b>Methods</b>: {{ $tool->descriptionmethods }}</li>
-		@endif 
-		@if ($tool->descriptionremarks != null)
-			<li><b>Technical Remarks</b>: {{ $tool->descriptionremarks }}</li>
-		@endif 
+				</li>
+			@else
+				<li><b>File Name:</b> file not provided yet, upload a file</li>
+			@endif
+			
+			<li><b>Uploaded by:</b> {{ $user->name }}</li>
+			
+			<li><b>Date created:</b> {{ $tool->created_at }}</li>
+			
+			<li><b>Date updated:</b> {{ $tool->updated_at }}</li>
+			
+			@if ($tool->productionyear != null) <li><b>Production Year</b>: {{ $tool->productionyear }}</li>@endif
+			
+			@if ($tool->publicationyear != null) <li><b>Publication Year</b>: {{ $tool->publicationyear }}</li>@endif 
+			
+			@if ($tool->resourcetype != null) <li><b>Resource Type</b>: {{ \App\Models\Tool::resourcetypeDisplay($tool->resourcetype) }}</b>
+				@if ($tool->resource != null) ({{ $tool->resource }})@endif 
+			</li>@endif  
+			
+			@if ($tool->controlledrights != null) <li><b>Rights:</b> {{ \App\Models\Tool::controlledrightsDisplay($tool->controlledrights) }}
+				@if ($tool->additionalrights != null) ({{ $tool->additionalrights }})</li>@endif 
+			</li>@endif 
+			
+			<li><b>Subject Areas</b>:
+				@foreach ($tool->subjectareas as $index => $subjectarea)@if($index>0),@endif
+					{{ \App\Models\Tool::subjectareaDisplay($subjectarea->controlledSubjectAreaIndex) }}@if ($subjectarea->additionalSubjectArea != null) {{ $subjectarea->additionalSubjectArea }}@endif
+@endforeach <--! do not change this line --> 
+			</li>
 
+			@if ($tool->descriptiongeneral != null)
+				<li><b>General Description</b>: {{ $tool->descriptiongeneral }}</li>
+			@endif 
+			
+			@if ($tool->descriptionabstract != null)
+				<li><b>Abstract</b>: {{ $tool->descriptionabstract }}</li>
+			@endif 
+			
+			@if ($tool->descriptionmethods != null)
+				<li><b>Methods</b>: {{ $tool->descriptionmethods }}</li>
+			@endif 
+			
+			@if ($tool->descriptionremarks != null)
+				<li><b>Technical Remarks</b>: {{ $tool->descriptionremarks }}</li>
+			@endif 
+		</ul>
 
-
-		
 	<h2>Comments</h2>
 		@if(count($tool->comments)==0)
 			<p>No comments found.</p>

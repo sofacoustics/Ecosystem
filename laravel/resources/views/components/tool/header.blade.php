@@ -42,9 +42,6 @@
 	@can('own', $tool)
 		<x-button method="GET" action="{{ route('tools.doi', [$tool]) }}" class="inline">Manage DOI</x-button>
 	@endcan
-	@can('update', $tool)
-		<x-button method="GET" action="{{ route('tools.edit', [$tool]) }}" class="inline">Edit</x-button>
-	@endcan
 	@can('delete', $tool)
 		<x-button method="DELETE" action="{{ route('tools.destroy', [$tool->id]) }}" class="inline">Delete Tool</x-button>
 	@endcan

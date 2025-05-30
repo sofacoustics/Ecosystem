@@ -56,6 +56,8 @@ class ToolForm extends Component
 		'descriptionabstract.max' => 'The abstract can be only up to 500 characters.',
 		'descriptionmethods.max' => 'The methods can be only up to 500 characters.',
 		'descriptionremarks.max' => 'The technical remarks can be only up to 500 characters.',
+		'additionaltitle' => 'max:255',
+		'additionalrights' => 'max:255',
 	];
 
 	public function mount($tool = null)

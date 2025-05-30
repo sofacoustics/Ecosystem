@@ -44,6 +44,8 @@ class DatabaseForm extends Component
 		'descriptionabstract' => 'max:500',
 		'descriptionmethods' => 'max:500',
 		'descriptionremarks' => 'max:500',
+		'additionaltitle' => 'max:255',
+		'additionalrights' => 'max:255',
 	];
 
 	protected $messages = [
