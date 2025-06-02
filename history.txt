@@ -2,7 +2,6 @@
 (on https://github.com/sofacoustics/Ecosystem)
 
 To be done before we go live:
-* PM: Databases index table: implement the search by Keywords and sorting by DOI, #Datasets, Keywords, Uploaded by. 
 * PM: Tools index: harmonize search and table. Implement the search by Type.
 * PM: Design and Implement the landing page.
 * PM: Implement the actual procedure to "assign DOI", do not forget the two fixed subject areas
@@ -38,6 +37,7 @@ Nice to have:
 * Bulk Upload: Warn if a dataset already exists
 * Improve the way of linking tools, documentation, and databases (via RelatedIdentifier)
 * Allow metadata editing after publication? RADAR supports metadata correction after publication. Implement. 
+* Index tables: implement the sorting by #Datasets, Keywords, Uploaded by. 
 
 
 DONE!
@@ -115,7 +115,8 @@ Database
 * Order of the metadata edits rearranged, display of metadata harmonized
 * Input parameter checks added
 * Table touched on adding/editing of child elements
-* Index page: harmonized and implemented DOI and visible icons. 
+* Index page: harmonized and implemented DOI and visible icons.
+* Index page: Search by Keywords and sorting by DOI. 
 
 
 Database landing page

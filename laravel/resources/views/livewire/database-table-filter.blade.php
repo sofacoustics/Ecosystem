@@ -1,18 +1,20 @@
 <div>
-	<div class="mb-4">
-		<input type="text" wire:model.live.debounce.500ms="filters.title" placeholder="Filter by Title" class="border rounded p-2">
-		<input type="text" wire:model.live.debounce.500ms="filters.productionyear" placeholder="... by Produced Year" class="border rounded p-2">
-		<input type="text" wire:model.live.debounce.500ms="filters.keywords" placeholder="... by Keyword" class="border rounded p-2">
-		<button wire:click="clearFilters" class="bg-gray-200 rounded p-2">Clear Filters</button>
-	</div>
 
-	<!-- <table class="min-w-full divide-y divide-gray-200">-->
 	<table class="table-auto border border-slate-399">
+			<thead class="bg-gray-50">
+				<th></th>
+				<th></th>
+				<th><input type="text" wire:model.live.debounce.500ms="filters.title" placeholder="Filter by Title..." class="border rounded p-2"></th>
+				<th><input type="text" wire:model.live.debounce.500ms="filters.productionyear" placeholder="... by Produced Year(s)" class="border rounded p-2"></th>
+				<th></th>
+				<th><input type="text" wire:model.live.debounce.500ms="filters.keyword" placeholder="... by Keyword" class="border rounded p-2"></th>
+				<th><button wire:click="clearFilters" class="bg-gray-200 rounded p-2">Clear Filters</button></th>
+		</thead>
 			<thead class="bg-gray-50">
 				<tr>
 					<th class="border p-2">
 						<button wire:click="sortBy('visible')">
-							<img id="visible" src="{{ asset('images/visible.svg') }}" alt="visible" style="height: 1em;">
+							<img id="visible" src="{{ asset('images/visible.svg') }}" alt="visible" style="height: 2em;">
 							@if ($sortField === 'visible')
 								@if ($sortAsc)
 									<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -28,8 +30,8 @@
 					</th>
 					<th class="border p-2">
 						<button wire:click="sortBy('doi')">
-							<img id="doi" src="{{ asset('images/DOI.svg') }}" alt="DOI" style="height: 1em;">
-							@if ($sortField === 'visible')
+							<img id="doi" src="{{ asset('images/DOI.svg') }}" alt="DOI" style="height: 2em;">
+							@if ($sortField === 'doi')
 								@if ($sortAsc)
 									<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
@@ -59,7 +61,7 @@
 						</button>
 					</th>
 					<th class="border p-2">
-						<button wire:click="sortBy('productionyear')">Produced
+						<button wire:click="sortBy('productionyear')">Produced Year(s)
 							@if ($sortField === 'productionyear')
 								@if ($sortAsc)
 									<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -99,18 +101,18 @@
 				@foreach($databases as $database)
 					@if($database->visible || ($user_id == $database->user_id))
 					<tr>
-						<td class="px-6 py-4 whitespace-nowrap">
+						<td class="text-center">
 							@if($database->visible)
-								<img id="visible" src="{{ asset('images/visible.svg') }}" alt="V" style="height: 1em;">
+								<img id="visible" src="{{ asset('images/visible.svg') }}" alt="V" style="height:2em;">
 							@else
-								<img id="hidden" src="{{ asset('images/hidden.svg') }}" alt="H" style="height: 1em;">
+								<img id="hidden" src="{{ asset('images/hidden.svg') }}" alt="H" style="height:2em;">
 							@endif
 						</td>
-						<td class="px-6 py-4 whitespace-nowrap">
+						<td class="text-center">
 							@if($database->doi)
-								<img id="doi" src="{{ asset('images/DOI.svg') }}" alt="DOI" style="height: 1em;">
+								<img id="doi" src="{{ asset('images/DOI.svg') }}" alt="DOI"  style="height:2em;">
 							@else
-								<img id="nodoi" src="{{ asset('images/noDOI.png') }}" alt="noDOI" style="height: 1em;">
+								<img id="nodoi" src="{{ asset('images/noDOI.png') }}" alt="noDOI"  style="height:2em;">
 							@endif
 						</td>
 						<td class="px-6 py-4 whitespace-nowrap">

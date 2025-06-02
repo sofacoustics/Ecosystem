@@ -7,13 +7,16 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\User;
 use App\Models\Dataset;
+use App\Models\Database;
+use App\Models\Keyword;
+
 
 class DatabaseTableFilter extends Component
 {
 	public $filters = [
 		'title' => '',
 		'productionyear' => '',
-		'keywords' => '',
+		'keyword' => '',
 	];
 
 	public $sortField = 'title'; // Default sorting field
@@ -43,9 +46,10 @@ class DatabaseTableFilter extends Component
 			$this->databases = $query->get();
 		}
 
-		if (!empty($this->filters['keywords'])) 
+		if (!empty($this->filters['keyword'])) 
 		{
-			// $query->where('additionaltitle', 'like', '%' . $this->filters['additionaltitle'] . '%');
+				$query = Database::whereHas('keywords', function ($q) {
+					$q->where('keywordName', 'like', '%' . $this->filters['keyword'] . '%'); });
 		}
 
 		if (!empty($this->filters['productionyear'])) 
@@ -67,7 +71,7 @@ class DatabaseTableFilter extends Component
 		$this->filters = [
 			'title' => '',
 			'productionyear' => '',
-			'keywords' => '',
+			'keyword' => '',
 		];
 		$this->applyFilters();
 	}
