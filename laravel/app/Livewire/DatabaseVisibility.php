@@ -30,49 +30,44 @@ class DatabaseVisibility extends Component
 	protected $rules = [
 	];
 
-    public function mount(Database $database)
-    {
-        if($database) 
-        {
-            $this->database = $database;
-						$this->visible = $database->visible;
-						$this->doi = $database->doi;
-						if ($database->radarstatus == null)
-							$this->radarstatus = 0;
-						else
-							$this->radarstatus = $database->radarstatus;
-        }
-				else
-				{
-						// throw some error here
-				}
-    }
+	public function mount(Database $database)
+	{
+		if($database) 
+		{
+			$this->database = $database;
+			$this->visible = $database->visible;
+			$this->doi = $database->doi;
+			if ($database->radarstatus == null)
+				$this->radarstatus = 0;
+			else
+				$this->radarstatus = $database->radarstatus;
+		}
+	}
 
-    public function expose()
-    {
-				$this->database->visible = true;
-				$this->database->save();
-				$this->visible = $this->database->visible;
-				$this->js('window.location.reload()'); 
-    }
+	public function expose()
+	{
+		$this->database->visible = true;
+		$this->database->save();
+		$this->visible = $this->database->visible;
+		$this->js('window.location.reload()'); 
+	}
 
-    public function hide()
-    {
-				$this->database->visible = false;
-				$this->database->save();
-				$this->visible = $this->database->visible;
-				$this->js('window.location.reload()'); 
-    }
+	public function hide()
+	{
+		$this->database->visible = false;
+		$this->database->save();
+		$this->visible = $this->database->visible;
+		$this->js('window.location.reload()'); 
+	}
 	
-    public function assignDOI()
+	public function assignDOI()
 	{
 		$this->dispatch('status-message', 'Starting DOI assignment');
 		$this->error = "";
 		$this->warning = "";
 
 		$radar = new DatasetRadarBridge($this->database);
-
-		// create RADAR dataset
+			// create RADAR dataset
 		if(!$this->database->radar_id)
 		{
 			if($radar->create())
@@ -81,20 +76,12 @@ class DatabaseVisibility extends Component
 				$this->error = $radar->details;
 			$this->dispatch('status-message', $radar->message);
 		}
-		// update RADAR dataset
-		else
-		{
-			if(!$radar->update())
-			{
-				$this->error = $radar->message.'('.$radar->details.')';
-				return;
-			}
 			// validate metadata
-			if(!$radar->metadataValidate())
-			{
-				$this->error = $radar->message.'('.$radar->details.')';
-				return;
-			}
+		if(!$radar->metadataValidate())
+		{
+			$this->dispatch('radar-status-changed', 'Validation failed'); 
+			$this->error = $radar->message.'('.$radar->details.')';
+			return;
 		}
 		if($radar->read())
 		{
@@ -128,34 +115,35 @@ class DatabaseVisibility extends Component
 		// stop review process
 		if(!$radar->endreview())
 			$this->error = $radar->details;
-    }
+	}
 
-    public function submitToPublish()
-    {
-				$this->database->radarstatus=2;
-				$this->database->save();
-				$this->radarstatus = $this->database->radarstatus;
-				$this->js('window.location.reload()');
-    }
+	public function submitToPublish()
+	{
+		$this->database->radarstatus=2;
+		$this->database->save();
+		$this->radarstatus = $this->database->radarstatus;
+		$this->js('window.location.reload()');
+	}
 
-    public function approve() // Emulate the curator approving the publication at the Datathek
-    {
-				$this->database->radarstatus=3;
-				$this->database->save();
-				$this->radarstatus = $this->database->radarstatus;
-    }
+	public function approve() // Emulate the curator approving the publication at the Datathek
+	{
+		$this->database->radarstatus=3;
+		$this->database->save();
+		$this->radarstatus = $this->database->radarstatus;
+	}
 
-    public function resetDOI()
-    {
-				$this->database->radarstatus=null;
-				$this->database->doi = null;
-				$this->database->save();
-				$this->doi = $this->database->doi;
-				$this->radarstatus = $this->database->radarstatus;
-				$this->js('window.location.reload()'); 
-    }
-    public function render()
-    {
-        return view('livewire.database-visibility');
+	public function resetDOI()
+	{
+		$this->database->radarstatus=null;
+		$this->database->doi = null;
+		$this->database->radar_id = null;
+		$this->database->save();
+		$this->doi = $this->database->doi;
+		$this->radarstatus = $this->database->radarstatus;
+		$this->js('window.location.reload()'); 
+	}
+	public function render()
+	{
+		return view('livewire.database-visibility');
 	}
 }

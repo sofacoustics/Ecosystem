@@ -18,7 +18,7 @@ class RadarDatabaseResource extends JsonResource
 
 		// special RADAR JSON variant here
 		$database = $this->resource; // get the database model, since using '$this->resource' retrieves the whole database model from the DatabaseResource rather than the 'resource' column.
-		return [
+		$array = [
 			'id' => $database->radar_id,
 			'parentId' => config('services.radar.workspace'),
 			'technicalMetadata' => [
@@ -28,7 +28,7 @@ class RadarDatabaseResource extends JsonResource
 				]
 			],
 			'descriptiveMetadata' => [
-				'title' => $database->title,
+				'title' => $database->title . " (Data #" . $database->id . ")",
 				'creators' => [
 					'creator' => RadarCreatorResource::collection($this->whenLoaded('creators')),
 				],
@@ -57,5 +57,6 @@ class RadarDatabaseResource extends JsonResource
 				],
 			],
 		];
+		return $array; 
     }
 }

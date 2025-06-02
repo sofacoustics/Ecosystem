@@ -2,9 +2,10 @@
 (on https://github.com/sofacoustics/Ecosystem)
 
 To be done before we go live:
-* PM: Design and Implement the landing page.
-* PM: Implement the actual procedure to "assign DOI", do not forget the two fixed subject areas
+* PM: Implement the actual procedure to "assign DOI"
+* PM: Add "related identifier" to RADAR
 * PM: Adapt Tools to "assign DOI"
+* PM: Design and Implement the landing page.
 * JW: Implement the minimal procedure to "Publish with DOI"
 * PM: Add “published_at” to tables databases and tools with date of publication when doing "Publish with DOI"
 * PM: Implement the actual procedure to "Publish with DOI"

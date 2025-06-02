@@ -38,10 +38,19 @@
 		</ul>
 		<p>Once a DOI has been assigned, the DOI will be a permanent part of your database.</p>
 		<p><b>This operation is irreversible!</b></p>
-			<button wire:click="assignDOI" wire:confirm="Are you sure to assign a DOI to your database? This operation cannot be reverted!"
-				class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">
-				Assign DOI
-			</button>
+			@if($database->metadataValidate())
+				<button wire:click="assignDOI" disabled
+					class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">
+					Assign DOI
+				</button>
+				DOI cannot be assigned yet because of the following problems: <br>
+				{{ nl2br($database->metadataValidate()) }}
+			@else
+				<button wire:click="assignDOI" wire:confirm="Are you sure to assign a DOI to your database? This operation cannot be reverted!"
+					class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">
+					Assign DOI
+				</button>
+			@endif
 		@if($status)
 			<x-alert title='Info!' color='blue'>{{ $status }}</x-alert>
 		@endif

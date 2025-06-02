@@ -170,7 +170,7 @@ class DatasetController extends RadarController
 		$resource = new RadarDatabaseResource($database);
 
 		$arrayBody = $resource->toArray(request()); // route called with ?format=radar
-
+		$dd($arrayBody);
 		$endpoint = "/workspaces/$this->workspace/datasets/";
 		$response = $this->post($endpoint, $arrayBody);
 		if($response->status() == '201')

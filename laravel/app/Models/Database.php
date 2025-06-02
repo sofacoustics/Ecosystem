@@ -195,4 +195,30 @@ class Database extends Model
 		$jsonData = $response->json();
 		return json_encode($jsonData);
 	}
+
+	public function metadataValidate()
+	{
+		$msg = null;
+			// At least one creator required
+		if(count($this->creators)==0)
+			$msg = $msg. "Creators missing: At least one creator required\n";
+		else
+		{
+			foreach($this->creators as $creator)
+			{		// If family name provided, given name is required and vice versa
+				if($creator->givenName && !$creator->familyName)
+					$msg = $msg . "Creator " . $creator->creatorName . ": Family name required when given name provided\n"; 
+				if(!$creator->givenName && $creator->familyName)
+					$msg = $msg . "Creator " . $creator->creatorName . ": Given name required when family name provided\n"; 
+			}
+		}
+			// At least one publisher required
+		if(count($this->publishers)==0)
+			$msg = $msg. "Publishers missing: At least one publisher required\n";
+			// At least one rightsholder required
+		if(count($this->rightsholders)==0)
+			$msg = $msg. "Rightholders missing: At least one rightholder required\n";
+		
+		return $msg;
+	}
 }
