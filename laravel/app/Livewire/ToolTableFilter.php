@@ -6,12 +6,16 @@ use Livewire\Component;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\User;
+use App\Models\Tool;
+use App\Models\Keyword;
 
 class ToolTableFilter extends Component
 {
 	public $filters = [
 		'title' => '',
-		'additionaltitle' => '',
+		'productionyear' => '',
+		'keyword' => '',
+		'resourcetype' => 0,
 	];
 
 	public $sortField = 'title'; // Default sorting field
@@ -41,9 +45,20 @@ class ToolTableFilter extends Component
 			$this->tools = $query->get();
 		}
 
-		if (!empty($this->filters['additionaltitle'])) 
+		if (!empty($this->filters['keyword'])) 
 		{
-			$query->where('additionaltitle', 'like', '%' . $this->filters['additionaltitle'] . '%');
+				$query = Tool::whereHas('keywords', function ($q) {
+					$q->where('keywordName', 'like', '%' . $this->filters['keyword'] . '%'); });
+		}
+
+		if (!empty($this->filters['productionyear'])) 
+		{
+			$query->where('productionyear', 'like', '%' . $this->filters['productionyear'] . '%');
+		}
+
+		if ($this->filters['resourcetype']!=0)
+		{
+			$query->where('resourcetype', '=', $this->filters['resourcetype']);
 		}
 
 		$this->tools = $query->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')->get();
@@ -59,7 +74,9 @@ class ToolTableFilter extends Component
 	{
 		$this->filters = [
 			'title' => '',
-			'additionaltitle' => '',
+			'productionyear' => '',
+			'keyword' => '',
+			'resourcetype' => 0,
 		];
 		$this->applyFilters();
 	}
@@ -70,6 +87,20 @@ class ToolTableFilter extends Component
 		return $user[0]->name;
 	}
 	
+	public function getKeywords($tool_id)
+	{
+		$keywords=\App\Models\Keyword::where('keywordable_type','App\Models\Tool')->where('keywordable_id',$tool_id)->get();
+		$s="";
+		foreach($keywords as $index => $keyword)
+		{
+			if($index>0)
+				$s = $s . "; " . $keyword->keywordName;
+			else
+				$s = $keyword->keywordName;
+		}
+		return $s;
+	}
+
 	public function sortBy($field)
 	{
 		if ($this->sortField === $field) 
