@@ -51,7 +51,11 @@ class DatasetRadarBridge extends RadarBridge
 	 *
 	 * RADAR Docs:
 	 *
-	 *	Review	POST	/datasets/{id}/startreview		200, 401, 403, 404, 422, 500
+	 *	Review	POST	/datasets/{id}/startreview		200, 401, 403, 404, 422, 500	 
+	 *
+	 * Notes:
+	 *
+	 *  This will fail with exception:null if the metadata is invalid (test via RADAR website 'Validate Metadata' button).
 	 *
 	 */
 	public function startreview() : bool
@@ -192,6 +196,7 @@ class DatasetRadarBridge extends RadarBridge
 	 *
 	 *  Validate XML metadata	GET	/datasets/{id}/metadata/validate		200, 401, 403, 404, 500*
 	 *
+	 *
 	 */
 	public function metadataValidate() : bool
 	{
@@ -294,8 +299,8 @@ class DatasetRadarBridge extends RadarBridge
 
         // get database as JSON
 		$resource = new RadarDatabaseResource($this->database);
-		$arrayBody = $resource->toArray(request()); // route called with ?format=radar
-
+		$arrayBody = $resource->toArray(request()); // alternative would be json_decode($resource->toJson(), true);
+		
 		$endpoint = "/workspaces/$this->workspace/datasets/";
 		$response = $this->post($endpoint, $arrayBody);
         if($response->status() == '201')
