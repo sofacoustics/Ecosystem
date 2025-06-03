@@ -2,12 +2,12 @@
     {{-- Do your work, then step back. --}}
 	<h3>RADAR Actions</h3>
 	@role('admin')
-		<p>ID: {{ $id }}</p>
+		<p>ID: {{ isset($id) ? "$id" : 'There is no RADAR id for this database' }}</p>
 		<p>State: {{ $state }}</p>
 	@endrole
 
 	@can('own', $database)
-		@if(!isset($id) || $id === "")
+		@if($id == null)
 			<x-button wire:click="createdataset">Create Dataset</x-button>
 		@endif
 		@if($pending)
@@ -15,6 +15,9 @@
 		@endif
 		@if($review)
 			<x-button wire:click="endReview">End Review</x-button>
+		@endif
+		@if(isset($id))
+			<x-button wire:click="delete">Delete</x-button>
 		@endif
 	@endcan
 	@if($error)

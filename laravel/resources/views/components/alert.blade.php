@@ -28,8 +28,8 @@
 	$textcolor = "text-$color-700";
 @endphp
 
-{{--<div class="{{ $bgcolor }} border $bordercolor $textcolor px-4 py-3 rounded relative">--}}
-<div class="{{ $bgcolor }} border $bordercolor $textcolor px-4 py-3 rounded fixed top-4 right-4 space-y-2 z-50">
+<div class="{{ $bgcolor }} border $bordercolor $textcolor px-4 py-3 rounded relative">
+{{--<div class="{{ $bgcolor }} border $bordercolor $textcolor px-4 py-3 rounded fixed top-4 right-4 space-y-2 z-50">--}}
     <strong class="font-bold">{{ $title }}</strong>
     <span class="block sm:inline">{{ $slot }}</span>
 </div>

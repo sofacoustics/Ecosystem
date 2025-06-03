@@ -84,6 +84,8 @@ class CreatorForm extends Component
 		{	 $this->creator->nameIdentifierSchemeIndex = 0; }
 		else
 		{	 $this->creator->nameIdentifierSchemeIndex = $this->nameIdentifierSchemeIndex; }
+		if ($this->creator->nameIdentifierSchemeIndex == '')
+			$this->creator->nameIdentifierSchemeIndex = null; 
 		$this->creator->creatorAffiliation = $this->creatorAffiliation;
 		$this->creator->affiliationIdentifier = $this->affiliationIdentifier;
 		$this->creator->affiliationIdentifierScheme = $this->affiliationIdentifierScheme;

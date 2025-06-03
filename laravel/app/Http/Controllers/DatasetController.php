@@ -78,4 +78,13 @@ class DatasetController extends Controller
 		$dataset->delete();
 		return redirect()->back();
 	}
+
+	public function uploadtoradar(Dataset $dataset)
+	{
+		// create dataset folders
+		//
+		//
+		// upload datafiles
+		return redirect()->back()->with('status', 'Failed to upload to radar. Unknown error');
+	}
 }
