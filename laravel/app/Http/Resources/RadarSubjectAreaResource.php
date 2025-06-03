@@ -20,7 +20,7 @@ class RadarSubjectAreaResource extends JsonResource
 
 		return [
 			'controlledSubjectAreaName' => $controlledSubjectArea,
-			'additionalSubjectAreaname' => $this->additionalSubjectArea,
+			'additionalSubjectAreaName' => $this->additionalSubjectArea,
 		];
 	}
 }
