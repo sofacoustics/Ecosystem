@@ -28,7 +28,7 @@ class DatabaseRadarStatus extends Component
     #[On('radar-status-changed')]
     public function onRadarStatusChanged($content)
     {
-		$this->dispatch('status-message', 'Recieved \'radar-status-change\' message');
+		//$this->dispatch('status-message', 'Received \'radar-status-change\' message');
         $this->getStatus();
     }
 
