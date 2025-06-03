@@ -126,7 +126,7 @@ class DatasetController extends RadarController
 			'publishers',
 			'rightsholders',
 			'keywords',
-			//'relatedidentifiers',
+			'relatedidentifiers',
 			'subjectareas',
 		);
 		$resource = new RadarDatabaseResource($database);
@@ -166,7 +166,7 @@ class DatasetController extends RadarController
 			'publishers',
 			'rightsholders',
 			'keywords',
-			//'relatedidentifiers',
+			'relatedidentifiers',
 			'subjectareas',
 		);
 

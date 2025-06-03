@@ -79,7 +79,7 @@ class DatabaseVisibility extends Component
 			else
 			{
 				$this->dispatch('status-message', $radar->message);
-				$this->error = $radar->message.' RADAR Messsage: '.$radar->details;
+			$this->error = $radar->message.' RADAR Messsage: '.$radar->details.' *** Content created: *** '.json_encode($radar->content);
 				return;
 			}
 		}

@@ -299,7 +299,7 @@ class DatasetRadarBridge extends RadarBridge
 			'publishers',
 			'rightsholders',
 			'keywords',
-			//'relatedidentifiers',
+			'relatedidentifiers',
 			'subjectareas',
 		);
 			// get database as JSON
@@ -317,7 +317,7 @@ class DatasetRadarBridge extends RadarBridge
 			return true; // success
 		}
 		$content = json_decode($response->content());
-		$this->message = "Failed to create the RADAR dataset";
+		$this->message = "Failed to create the RADAR dataset!";
 		$this->details = $content?->exception ?? 'Unknown error!' . '(Code: ' . $response->status() .')';
 		return false;
 	}

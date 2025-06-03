@@ -59,10 +59,22 @@ class RadarDatabaseResource extends JsonResource
 			'subjectAreas' => [
 				'subjectArea' => RadarSubjectAreaResource::collection($this->whenLoaded('subjectareas')),
 			],
-			/*'relatedIdentifiers' => [
+			'relatedIdentifiers' => [
 				'relatedIdentifier' => RadarRelatedIdentifierResource::collection($this->whenLoaded('relatedidentifiers')),
-			],*/
+			],
 		];
+			// get all related identifiers created by the user
+		$collection = RadarRelatedIdentifierResource::collection($this->whenLoaded('relatedidentifiers'));
+			// create a related identifier for the callback to Ecosystem from RADAR
+		$callback = [
+			'value' => route('databases.show',[ 'database' => $database->id]),
+			'relatedIdentifierType' => "URL",
+			'relationType' => "IS_DESCRIBED_BY",
+			];
+		$collection = $collection->prepend($callback); // prepend the fixed identifier to all those from the user
+			// combine all metadata
+		$relatedIdentifiers['relatedIdentifier'] = $collection; 
+		$descriptiveMetadata['relatedIdentifiers'] = $relatedIdentifiers;
 		$array['descriptiveMetadata'] = $descriptiveMetadata;
 		return $array; 
 	}

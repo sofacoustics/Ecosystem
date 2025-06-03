@@ -22,7 +22,7 @@ class DatabaseController extends Controller
 			'publishers',
 			'rightsholders',
 			'keywords',
-			//'relatedidentifiers',
+			'relatedidentifiers',
 			'subjectareas',
 		]);
 		$format = request()->query('format');
