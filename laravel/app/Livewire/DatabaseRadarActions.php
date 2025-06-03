@@ -84,6 +84,23 @@ class DatabaseRadarActions extends Component
 		$this->refreshStatus();
 	}
 
+	public function delete()
+	{
+		$this->dispatch('status-message', 'Starting to delete the RADAR dataset');
+		$radar = new DatasetRadarBridge($this->database);
+		if($radar->delete())
+		{
+			$this->database->radar_id = null;
+			$this->id = null;
+			$this->database->save();
+			$this->dispatch('radar-status-changed', 'The database has been deleted'); // let other livewire components know the radar status has changed
+		}
+		else
+			$this->error = $radar->details;
+		$this->dispatch('status-message', $radar->message);
+		$this->refreshStatus();
+	}
+
     public function render()
     {
         return view('livewire.database-radar-actions');
@@ -98,12 +115,14 @@ class DatabaseRadarActions extends Component
 		$radar = new DatasetRadarBridge($this->database);
 		if($radar->read())
 		{
-			$this->id = $radar?->dataset?->id ?? 'No RADAR dataset exists for this database';
+			$this->id = $radar?->dataset?->id ?? null;
 			$this->setState($radar?->dataset?->state ?? '');
 		}
 		else
 		{
-			$this->id = 'No RADAR dataset exists for this database';
+			if($this->database->radar_id)
+				$this->error = $radar->message;
+			$this->id = null;
 			$this->setState('');
 		}
 	}

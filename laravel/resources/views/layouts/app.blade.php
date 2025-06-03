@@ -46,15 +46,6 @@
 				</x-alert>
 			</div>
 		@endif
-		@if ($errors->any())
-			<x-alert type='error'>
-				<ul>
-					@foreach ($errors->all() as $error)
-						<li>{{ $error }}</li>
-					@endforeach
-				</ul>
-			</x-alert>
-		@endif
 		<!-- Display 'status-messages' events -->
 		<livewire:status-messages />
 
@@ -69,6 +60,16 @@
 						{{ $header }}
 					</div>
 				</header>
+			@endif
+			<!-- errors -->
+			@if ($errors->any())
+				<div>
+					<ul>
+						@foreach ($errors->all() as $error)
+							<li>{{ $error }}</li>
+						@endforeach
+					</ul>
+				</div>
 			@endif
 
 

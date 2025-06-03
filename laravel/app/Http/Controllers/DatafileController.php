@@ -83,6 +83,8 @@ class DatafileController extends Controller
 
 	public function uploadtoradar(Datafile $datafile)
 	{
+		if($datafile->dataset->database->radar_id == null)
+			return redirect()->back()->with('status', 'There is no RADAR dataset associated with this database');
 		if($datafile->radar_id)
 		{
 			// file already uploaded to RADAR
