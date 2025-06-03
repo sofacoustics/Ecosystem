@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Datafile;
+use App\Services\DatasetRadarBridge;
+use App\Services\FileRadarBridge;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -76,5 +79,49 @@ class DatafileController extends Controller
 		$datafile->dataset->database->touch();
 		$datafile->delete();
 		return redirect()->back()->with('status', 'Datafile deleted');
+    }
+
+	public function uploadtoradar(Datafile $datafile)
+	{
+		if($datafile->radar_id)
+		{
+			// file already uploaded to RADAR
+			// do nothing
+			return redirect()->back()->with('status', 'The file has already been uploaded to the RADAR server');
+		}
+		else
+		{
+			$radar = new DatasetRadarBridge($datafile->dataset->database);
+			if($radar->canUpload($datafile->name))
+			{
+				//jw:todo  Maybe do this in a job?
+				if($radar->upload($datafile))
+				{
+					return redirect()->back()->with('status', 'The file was successfully uploaded to the RADAR server');
+				}
+			}
+			else
+			{
+				return redirect()->back()->with('status', 'A file with this name already exists on the RADAR server!');
+			}
+		}
+		return redirect()->back()->with('status', 'There was some error uploading the file to the RADAR server');
+	}
+
+	public function deletefromradar(Datafile $datafile)
+	{
+		if($datafile->radar_id)
+		{
+			$radar = new FileRadarBridge($datafile);
+			if($radar->delete())
+			{
+				return redirect()->back()->with('status', $radar->message);
+			}
+			else
+			{
+				return redirect()->back()->with('status', $radar->message.' ('.$radar->details.')');
+			}
+		}
+		return redirect()->back()->with('status', 'This datafile is not associated with a RADAR file');
 	}
 }

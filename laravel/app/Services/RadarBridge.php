@@ -80,6 +80,36 @@ class RadarBridge
         return $this->ensureUTF8($response);
     }
 
+	/*
+	 * Make a POST request to the RADAR API with the specified endpoint including a file
+	 * and return the response body.
+     */
+    public function postFile(string $endpoint, $path, $name, $mimetype)
+	{
+		if(strncmp($endpoint,'http',4)==0)
+			$url = $endpoint; // absolute endpoint, e.g. file upload
+		else
+			$url = $this->apiurl.$endpoint;
+		$response = Http::withToken($this->access_token)
+			->attach('file', file_get_contents($path), $name, ['Content-Type' => $mimetype])
+			->post($url);
+		$this->status = $response->status();
+		//$response->throw(); // Throw an exception if a client or server error occurred...
+        return $this->ensureUTF8($response);
+	}
+
+	/*
+	 * Make a DELETE request
+	 */
+	public function delete(string $endpoint)
+	{
+		$url = $this->apiurl.$endpoint;
+		$response = Http::withToken($this->access_token)
+			->delete($url);
+		$this->status = $response->status();
+		return $this->ensureUTF8($response);
+	}
+
     ////////////////////////////////////////////////////////////////////////////////
     // Protected
     ////////////////////////////////////////////////////////////////////////////////
@@ -103,7 +133,7 @@ class RadarBridge
 	{
 		$contentType = $response->getHeader('Content-Type'); // e.g., "text/html; charset=ISO-8859-1"
 		$charset = null;
-		if (preg_match('/charset=([a-zA-Z0-9\-]+)/i', $contentType[0], $matches)) {
+		if (is_array($contentType) && count($contentType) && preg_match('/charset=([a-zA-Z0-9\-]+)/i', $contentType[0], $matches)) {
 			    $charset = $matches[1];
 		}
 		if($charset != null)

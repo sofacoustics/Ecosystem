@@ -32,7 +32,7 @@ class UserSeeder extends Seeder
 						'orcid' => '0000-0003-1511-6164'
            ]);
            $user->assignRole('admin');
-					 
+
         $user = User::create([
             'name' => 'Jonnie User',
             'email' => 'jonathan.stuefer@oeaw.ac.at',

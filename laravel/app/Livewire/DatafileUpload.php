@@ -102,6 +102,7 @@ class DatafileUpload extends Component
 			$this->datafile->clean(); //jw:todo
 		}
 		$datafile->name = $this->file->getClientOriginalName();
+		$datafile->mimetype = $mimetype; // save this so we don't need to guess it again (yes - this and other functions guess what it is based on it's content)
 		//session()->flash('status', "Datafile (id=$datafile->id) is being saved to the database");
 		$datafile->save(); // save so datafile has ID (necessary for saving file)
 		$datafile->dataset->touch(); // change updated_at of the dataset

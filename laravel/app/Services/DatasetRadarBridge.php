@@ -6,11 +6,14 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http; // guzzle
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str; // isJson
 
 use App\Http\Resources\RadarDatabaseResource;
 
 use App\Models\Database;
+use App\Models\Datafile;
 
 /*
  * Access the RADAR API and update model values if necessary!
@@ -140,7 +143,7 @@ class DatasetRadarBridge extends RadarBridge
 
 	/*
      *
-     * Call the 'read' API.
+     * Call the 'read' API and set the $this->dataset property.
      *
 	     *
      * Returns
@@ -305,6 +308,74 @@ class DatasetRadarBridge extends RadarBridge
         $this->message = "Failed to create the RADAR dataset";
 		$this->details = $content?->exception ?? 'Unknown error!' . '(Code: ' . $response->status() .')';
         return false;
+	}
+
+	/**
+	 * Check if a file with the specified name can be uploaded
+	 *
+	 * Returns
+	 *
+	 *  true if yes
+	 *  false if no
+	 *
+	 * RADAR Docs:
+	 *
+	 *  Can upload file	GET	/datasets/{id}/canupload	filename	200, 401, 403, 404, 422, 500
+	 *
+	 */
+	public function canUpload($filename)
+	{
+        $this->reset();
+        $endpoint = '/datasets/'.$this->database->radar_id.'/canupload?filename='.$filename;
+		$response = $this->get($endpoint);
+		if($response->status() == 200)
+		{
+			$this->message = 'The file \''.$filename.'\' may be uploaded to the RADAR server.';
+			return true;
+		}
+		else
+		{
+			$this->message = 'The file \''.$filename.'\' may not be uploaded to the RADAR server.';
+			$this->details = $response->content();
+            return false;
+        }
+	}
+
+	/*
+	 * Upload the datafile to the RADAR server using the upload URL specified
+	 * in the RADAR metadata value 'uploadUrl'.
+	 *
+	 * Sets the 'radar_id' field to the id returned by the RADAR API on success
+	 *
+	 * Returns
+	 *
+	 *  true on successs
+	 *  false on failure
+	 *
+	 * RADAR Docs:
+	 *
+	 *  The /upload endpoint can be used to upload any single files. 
+	 *  If files in the formats zip/tar/tar.gz/tar.bz are uploaded, these archives will then NOT be extracted.
+	 */
+	public function upload(Datafile $datafile)
+	{
+		if(!$this->dataset)
+			$this->read();
+		$endpoint = $this->dataset->uploadUrl;
+		$response = $this->postFile($endpoint, $datafile->absolutepath(), $datafile->name, $datafile->mimetype);
+		if($response->status() == 200)
+		{
+			$this->message = 'The file \''.$datafile->name.'\' was successfully uploaded';
+			$datafile->radar_id = $response->content();
+			$datafile->save();
+			return true;
+		}
+		else
+		{
+			$this->message = 'Failed to upload the file \''.$datafile->name.'\' to the RADAR server';
+			$this->details = $response->content();
+			return false;
+		}
 	}
 
     /**

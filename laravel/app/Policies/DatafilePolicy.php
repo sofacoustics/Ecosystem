@@ -28,18 +28,21 @@ class DatafilePolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user, Dataset $dataset): bool
+    public function create(User $user, Dataset $dataset): Response
     {
-		//dd('datafile create policy');
+		return $user->id == $dataset->database->user_id
+			? Response::allow()
+			: Response::deny('You may not create a dataset for this database!');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Datafile $datafile): bool
+    public function update(User $user, Datafile $datafile): Response
     {
-        //
-		//dd('datafile update policy');
+	    return $user->id == $datafile->dataset->database->user_id
+            ? Response::allow()
+            : Response::deny('You may not update this datafile, since you do not own it!');
     }
 
     /**
@@ -47,8 +50,6 @@ class DatafilePolicy
      */
     public function delete(User $user, Datafile $datafile): Response
     {
-        //
-        //dd('datafile policy delete');
         return $user->id == $datafile->dataset->database->user_id
             ? Response::allow()
             : Response::deny('You may not delete this datafile, since you do not own it!');

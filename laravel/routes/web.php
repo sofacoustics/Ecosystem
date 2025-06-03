@@ -80,6 +80,8 @@ Route::resource('datasets', DatasetController::class);
 Route::resource('databases.datasets', DatasetController::class); // /databases/{{database}}/datasets (https://davecalnan.blog/laravel-routing-gotchas)
 // DATAFILES
 Route::resource('datafiles', DatafileController::class);
+Route::post('/datafiles/{datafile}/uploadtoradar', [DatafileController::class, 'uploadtoradar'])->name('datafiles.uploadtoradar');
+Route::delete('/datafiles/{datafile}/deletefromradar', [DatafileController::class, 'deletefromradar'])->name('datafiles.deletefromradar');
 // DATASETDEFS
 Route::resource('datasetdefs', DatasetdefController::class);
 

@@ -54,7 +54,7 @@ class DatafiletypeSeeder extends Seeder
 					'extension' => '.ply,.stl',
 					'mimetypes' => null,
 					'description' => 'Point cloud and/or mesh of a human and alike (PLY or STL file)', ]);
-					
+
         Datafiletype::create([ 'name' => 'Human and alike: Geometry: parametric (CSV)',
 			    'default_widget' => null,
 					'extension' => '.csv',

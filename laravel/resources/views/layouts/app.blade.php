@@ -27,8 +27,37 @@
 	@livewireStyles
 	</head>
 	<body class="font-sans antialiased">
+		<!-- Display 'status' session contents -->
+		@if(session('success'))
+			<div x-data="{ show: true }"
+				 x-init="setTimeout(() => show = false, 3000)"
+				 x-show="show">
+				<x-alert type='success'>
+					{{ session('success') }}
+				</x-alert>
+			</div>
+		@endif
+		@if(session('status'))
+			<div x-data="{ show: true }"
+				 x-init="setTimeout(() => show = false, 3000)"
+				 x-show="show">
+				<x-alert type='status'>
+					{{ session('status') }}
+				</x-alert>
+			</div>
+		@endif
+		@if ($errors->any())
+			<x-alert type='error'>
+				<ul>
+					@foreach ($errors->all() as $error)
+						<li>{{ $error }}</li>
+					@endforeach
+				</ul>
+			</x-alert>
+		@endif
 		<!-- Display 'status-messages' events -->
 		<livewire:status-messages />
+
 		<!-- https://tailwindcss.com/docs/customizing-colors -->
 		<div class="min-h-screen flex flex-col">
 			@include('layouts.navigation')
@@ -42,21 +71,6 @@
 				</header>
 			@endif
 
-			@if (session('status'))
-				<div class="alert alert-success">
-					{{ session('status') }}
-				</div>
-			@endif
-
-			@if ($errors->any())
-				<div class="alert alert-danger">
-					<ul>
-						@foreach ($errors->all() as $error)
-							<li>{{ $error }}</li>
-						@endforeach
-					</ul>
-				</div>
-			@endif
 
 			<!-- Page Content -->
 			<main class="grow">
