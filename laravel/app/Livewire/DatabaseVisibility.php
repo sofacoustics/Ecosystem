@@ -59,7 +59,7 @@ class DatabaseVisibility extends Component
 		$this->visible = $this->database->visible;
 		$this->js('window.location.reload()'); 
 	}
-	
+
 	public function assignDOI()
 	{
 		$this->dispatch('status-message', 'Starting DOI assignment');
@@ -71,13 +71,19 @@ class DatabaseVisibility extends Component
 		if(!$this->database->radar_id)
 		{
 			if($radar->create())
+			{
 				$this->dispatch('radar-status-changed', 'Dataset created'); // let other livewire components know the radar status has changed
+				$this->dispatch('status-message', $radar->message);
+			}
 			else
+			{
 				$this->error = $radar->details;
-			$this->dispatch('status-message', $radar->message);
+				$this->dispatch('status-message', $radar->message);
+				return;
+			}
 		}
-			// validate metadata
-		if(!$radar->metadataValidate())
+		// validate metadata
+		else if(!$radar->metadataValidate())
 		{
 			$this->dispatch('radar-status-changed', 'Validation failed'); 
 			$this->error = $radar->message.'('.$radar->details.')';
@@ -104,9 +110,9 @@ class DatabaseVisibility extends Component
 		// retrieve doi
 		if($radar->doi())
 		{
-			$this->status = $radar->message;
+			//$this->status = $radar->message; // use status-message instead
 			$this->doi = $this->database->doi; //jw:todo will this really retrieve the correct value!
-			$this->dispatch('status-message', 'Doi retrieved ('.$this->doi.')');
+			$this->dispatch('status-message', $radar->message);
 		}
 		else
 		{
