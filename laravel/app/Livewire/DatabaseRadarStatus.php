@@ -48,6 +48,13 @@ class DatabaseRadarStatus extends Component
             $this->doi = $radar?->dataset?->descriptiveMetadata?->identifier?->value ?? null;
             $this->size = $radar?->dataset?->technicalMetadata?->size ?? 0;
 		}
+		else
+		{
+            $this->id = null;
+            $this->state = null;
+            $this->doi = null;
+            $this->size = null;
+		}
     }
 
     public function render()
