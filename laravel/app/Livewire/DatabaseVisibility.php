@@ -68,23 +68,25 @@ class DatabaseVisibility extends Component
 
 		$radar = new DatasetRadarBridge($this->database);
 			// create RADAR dataset
-		if($radar->create())
+		if(!$this->database->radar_id)
 		{
-			$this->dispatch('radar-status-changed', 'Dataset created'); // let other livewire components know the radar status has changed
-			$this->dispatch('status-message', $radar->message);
-			$content_created = $radar->content;
-		}
-		else
-		{
-			$this->dispatch('status-message', $radar->message);
-			$this->error = $radar->message.' RADAR Messsage: '.$radar->details;
-			return;
+			if($radar->create())
+			{
+				$this->dispatch('radar-status-changed', 'Dataset created'); // let other livewire components know the radar status has changed
+				$this->dispatch('status-message', $radar->message);
+			}
+			else
+			{
+				$this->error = $radar->details;
+				$this->dispatch('status-message', $radar->message);
+				return;
+			}
 		}
 		// validate metadata
-		if(!$radar->metadataValidate())
+		else if(!$radar->metadataValidate())
 		{
 			$this->dispatch('radar-status-changed', 'Validation failed'); 
-			$this->error = $radar->message.' RADAR Messsage: '.$radar->details.' *** Content created: *** '.json_encode($content_created);
+			$this->error = $radar->message.'('.$radar->details.')';
 			return;
 		}
 		if($radar->read())
@@ -95,14 +97,14 @@ class DatabaseVisibility extends Component
 				// we need to start the review process in order to get the DOI
 				if(!$radar->startreview())
 				{
-					$this->error = $radar->message.' RADAR Messsage: '.$radar->details;
+					$this->error = $radar->message.'('.$radar->details.')';
 					return;
 				}
 			}
 		}
 		else
 		{
-			$this->error = $radar->message.' RADAR Messsage: '.$radar->details;
+			$this->error = $radar->message.'('.$radar->details.')';
 			return;
 		}
 		// retrieve doi
@@ -114,7 +116,7 @@ class DatabaseVisibility extends Component
 		}
 		else
 		{
-			$this->error = $radar->message.' RADAR Messsage: '.$radar->details;
+			$this->error = $radar->message.'('.$radar->details.')';
 		}
 		// stop review process
 		if(!$radar->endreview())

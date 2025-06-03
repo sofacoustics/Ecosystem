@@ -20,14 +20,12 @@ class DatabaseController extends Controller
 		$database->load([
 			'creators',
 			'publishers',
-			'rightsholders',
-			'keywords',
-			'relatedidentifiers',
 			'subjectareas',
-		]);
-		$format = request()->query('format');
-		if("$format" == 'radar')
-			return new RadarDatabaseResource($database);
+			'rightsholders',
+        ]);
+        $format = request()->query('format');
+        if("$format" == 'radar')
+            return new RadarDatabaseResource($database);
 
 		return new DatabaseResource($database);
 	}
