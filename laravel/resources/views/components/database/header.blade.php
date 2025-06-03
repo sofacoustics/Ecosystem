@@ -78,6 +78,9 @@
 		@endcan
 		<?php /* <x-button method="GET" action="{{ route('databases.publish', [$database]) }}" class="inline">Publish to RADAR</x-button> */ ?>
 	@endcan
+	@hasrole('admin')
+		<x-button method="GET" action="{{ route('databases.radar', [$database->id]) }}" class="inline">RADAR</x-button>
+	@endhasrole
 </p>
 
 <p>
