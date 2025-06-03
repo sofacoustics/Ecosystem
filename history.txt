@@ -2,13 +2,12 @@
 (on https://github.com/sofacoustics/Ecosystem)
 
 To be done before we go live:
-* PM: Implement the actual procedure to "assign DOI"
-* PM: Add "related identifier" to RADAR
 * PM: Adapt Tools to "assign DOI"
 * PM: Design and Implement the landing page.
-* JW: Implement the minimal procedure to "Publish with DOI"
+* JW: Implement the data upload on "Publish with DOI"
+* PM: Test "publish with DOI"
+* PM: Adapt Tools to "Publish with DOI".
 * PM: Add “published_at” to tables databases and tools with date of publication when doing "Publish with DOI"
-* PM: Implement the actual procedure to "Publish with DOI"
 * JW: Add obligatory email confirmation when a user registers
 * JW/PM: Workflow for the test and live server
 * MM: Implement the most important widgets
@@ -23,6 +22,7 @@ To be done after we go live:
 * JW: Subject area 'agriculture' doesn't work. It doesn't get caught by the metadata check
 * PM: Implement download of a list of tools
 * Implement email notifications to admins
+* PM: Obtain "Publication Year" from RADAR after publication. 
 
 Nice to have: 
 * Layout: Show buttons as tabs
@@ -38,6 +38,8 @@ Nice to have:
 * Improve the way of linking tools, documentation, and databases (via RelatedIdentifier)
 * Allow metadata editing after publication? RADAR supports metadata correction after publication. Implement. 
 * Index tables: implement the sorting by #Datasets, Keywords, Uploaded by. 
+* Send optional metadata to RADAR (currently, obligatory metadata uploaded only)
+
 
 
 DONE!
@@ -59,6 +61,7 @@ Tools
 * Input parameter checks added
 * Table touched on adding/editing of child elements
 * Tools index page: search by Title, Produced Year, Keywords, Type.
+* The actual procedure to "Publish with DOI" implemented, however without data upload yet. 
 
 
 Download
@@ -118,6 +121,8 @@ Database
 * Table touched on adding/editing of child elements
 * Index page: harmonized and implemented DOI and visible icons.
 * Index page: Search by Keywords and sorting by DOI. 
+* Actual procedure to "assign DOI" implemented
+* Related identifiers added when submitted to RADAR
 
 
 Database landing page
