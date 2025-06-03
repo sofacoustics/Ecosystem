@@ -33,15 +33,28 @@ class RadarCreatorResource extends JsonResource
 		$nameIdentifier = [ 'nameIdentifier' => [] ];
 		if($this->nameIdentifier != "")
 		{
-			$nameIdentifier = [
-				'nameIdentifier' => [
-					[
-						'value' => $this->nameIdentifier,
-						'schemeURI' => Radar::schemeURI($this->nameIdentifierSchemeIndex),
-						'nameIdentifierScheme' => Radar::nameIdentifierSchemeValue($this->nameIdentifierSchemeIndex),
-					],
-				]
-			];
+			if($this->nameIdentifierSchemeIndex)
+			{
+				$nameIdentifier = [
+					'nameIdentifier' => [
+						[
+							'value' => $this->nameIdentifier,
+							'schemeURI' => Radar::schemeURI($this->nameIdentifierSchemeIndex),
+							'nameIdentifierScheme' => Radar::nameIdentifierSchemeValue($this->nameIdentifierSchemeIndex),
+						],
+					]
+				];
+			}
+			else
+			{
+				$nameIdentifier = [
+					'nameIdentifier' => [
+						[
+							'value' => $this->nameIdentifier,
+						],
+					]
+				];
+			}
 		}
 
 		return [
