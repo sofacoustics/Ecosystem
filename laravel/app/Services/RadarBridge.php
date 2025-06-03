@@ -101,7 +101,7 @@ class RadarBridge
 	/*
 	 * Make a DELETE request
 	 */
-	public function delete(string $endpoint)
+	public function httpdelete(string $endpoint)
 	{
 		$url = $this->apiurl.$endpoint;
 		$response = Http::withToken($this->access_token)

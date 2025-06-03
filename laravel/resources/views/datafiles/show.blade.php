@@ -23,7 +23,7 @@
 
 		<x-button action="{{  asset($datafile->url()) }}">Download</x-button>
 		@can('update', $datafile)
-			@if($datafile->radar_id == null)
+			@if($datafile->dataset->database->radar_id != null && $datafile->radar_id == null)
 				<x-button method="POST" action="{{ route('datafiles.uploadtoradar', $datafile) }}">Upload to RADAR</x-button>
 			@endif
 		@endcan

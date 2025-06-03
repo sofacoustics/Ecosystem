@@ -68,16 +68,11 @@ Route::get('/databases/{database}/purge', [DatabaseController::class, 'purge'])-
 Route::get('/databases/{database}/showdatasets', [DatabaseController::class, 'showdatasets'])->name('databases.showdatasets');
 Route::get('/databases/{database}/comments', [CommentController::class, 'index'])->name('databases.comments');
 Route::get('/databases/{database}/datasets/bulkupload', [DatasetController::class, 'bulkupload'])->name('databases.datasets.bulkupload');
-Route::get('/databases/{database}/publish', [DatabaseController::class, 'publish'])->name('databases.publish');
-// access RADAR API
-Route::get('/databases/{database}/doi', [DatabaseController::class, 'doi'])->name('databases.doi');
-Route::post('/databases/{database}/radarcreate', [DatabaseController::class, 'radarcreate'])->name('databases.radarcreate');
-Route::post('/databases/{database}/startreview', [DatabaseController::class, 'startreview'])->name('databases.startreview');
-Route::post('/databases/{database}/endreview', [DatabaseController::class, 'endreview'])->name('databases.endreview');
 
 // DATASET
 Route::resource('datasets', DatasetController::class);
 Route::resource('databases.datasets', DatasetController::class); // /databases/{{database}}/datasets (https://davecalnan.blog/laravel-routing-gotchas)
+Route::post('datasets.uploadtoradar', [DatasetController::class, 'uploadtoradar'])->name('datasets.uploadtoradar');
 // DATAFILES
 Route::resource('datafiles', DatafileController::class);
 Route::post('/datafiles/{datafile}/uploadtoradar', [DatafileController::class, 'uploadtoradar'])->name('datafiles.uploadtoradar');
