@@ -17,15 +17,14 @@ use App\Models\Database;
  */
 class DatasetController extends RadarController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index() : JsonResponse
+	/**
+	 * Display a listing of the resource.
+	 */
+	public function index() : JsonResponse
 	{
 		$response = $this->get("/datasets");
 		return JsonResponse::fromJsonString($response->content());
-    }
-
+	}
 
 	/*
 	 *
@@ -115,19 +114,21 @@ class DatasetController extends RadarController
 		return JsonResponse::fromJsonString($response->content());
 	}
 
-	/**
-	 * Set metadata correction	POST	/datasets/{id}/metadata-correction		200, 401, 403, 404, 422, 500
-	 */
+		/**
+		 * Set metadata correction	POST	/datasets/{id}/metadata-correction		200, 401, 403, 404, 422, 500
+		 */
 	public function update(Database $database) : JsonResponse
 	{
-		// get Database in RADAR formatted array
-        // eager load relationships so they appear in serializeJson()
-        $database->load('creators',
-            'publishers',
-            'subjectareas',
-            'rightsholders',
-            'keywords',
-        );
+			// get Database in RADAR formatted array
+			// eager load relationships so they appear in serializeJson()
+		$database->load('creators',
+			'creators',
+			'publishers',
+			'rightsholders',
+			'keywords',
+			'relatedidentifiers',
+			'subjectareas',
+		);
 		$resource = new RadarDatabaseResource($database);
 		$arrayBody = $resource->toArray(request()); // route called with ?format=radar
 		$endpoint = "/datasets/$database->radar_id";
@@ -135,20 +136,20 @@ class DatasetController extends RadarController
 		return JsonResponse::fromJsonString($response->content());
 	}
 
-    /**
-	 * Create a RADAR dataset from an Ecosystem Database
-	 *
-	 *  'database'	The database to use
-	 *
-	 * Response
-	 *
-	 *	Success:	status code 201 and 'id' => 'RADAR ID', 'message' => 'Success', 'status' => '201'
-	 *				status code 200, if our database already exists (done nothing)
-	 *	Failure:	status code !201 and 'message' and 'status'
-	 *
-     */
-    public function create(Database $database) : JsonResponse
-    {
+		/**
+		 * Create a RADAR dataset from an Ecosystem Database
+		 *
+		 *  'database'	The database to use
+		 *
+		 * Response
+		 *
+		 *	Success:	status code 201 and 'id' => 'RADAR ID', 'message' => 'Success', 'status' => '201'
+		 *				status code 200, if our database already exists (done nothing)
+		 *	Failure:	status code !201 and 'message' and 'status'
+		 *
+		 */
+	public function create(Database $database) : JsonResponse
+	{
 		// We already have a RADAR ID.
 		if($database->radar_id != null)
 		{
@@ -158,14 +159,16 @@ class DatasetController extends RadarController
 			], 200);
 		}
 
-		// get Database in RADAR formatted array
-        // eager load relationships so they appear in serializeJson()
-        $database->load('creators',
-            'publishers',
-            'subjectareas',
-            'rightsholders',
-            'keywords',
-        );
+			// get Database in RADAR formatted array
+			// eager load relationships so they appear in serializeJson()
+		$database->load(
+			'creators',
+			'publishers',
+			'rightsholders',
+			'keywords',
+			'relatedidentifiers',
+			'subjectareas',
+		);
 
 		$resource = new RadarDatabaseResource($database);
 
@@ -186,42 +189,42 @@ class DatasetController extends RadarController
 		], $response->status(), $response->headers->all());
 	}
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id) : response
-    {
+	/**
+	 * Display the specified resource.
+	 */
+	public function show(string $id) : response
+	{
 		$response = $this->get("/datasets/$id");
 		return $response;
-    }
+	}
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+	/**
+	 * Remove the specified resource from storage.
+	 */
+	public function destroy(string $id)
+	{
+			//
+	}
 
-    //jw:note these functions weren't created by make:controller --api
-    public function testupdate(string $id)
-    {
-        $database = Database::find($id); // database model
-        $json = $database->radardataset->toJson(); // RADAR dataset json
-        $dataset_id = $database->radardataset->id;
-        //dd($dataset_id);
-        dd($database->radardataset->descriptiveMetadata->title);
-        //dd(url()->previous());
+	//jw:note these functions weren't created by make:controller --api
+	public function testupdate(string $id)
+	{
+		$database = Database::find($id); // database model
+		$json = $database->radardataset->toJson(); // RADAR dataset json
+		$dataset_id = $database->radardataset->id;
+		//dd($dataset_id);
+		dd($database->radardataset->descriptiveMetadata->title);
+		//dd(url()->previous());
 
-        $body = $this->put("/datasets/$dataset_id", $json);
+		$body = $this->put("/datasets/$dataset_id", $json);
 
-        $aBody = json_decode($body, true);
-        dd($aBody);
-        dd($body);
-        //echo "$body";
-        return redirect()->back();
-        //return redirect($redirect);
-        //
+		$aBody = json_decode($body, true);
+		dd($aBody);
+		dd($body);
+		//echo "$body";
+		return redirect()->back();
+		//return redirect($redirect);
+		//
 	}
 
 	////////////////////////////////////////////////////////////////////////////////

@@ -16,7 +16,7 @@ use App\Http\Requests\StoreDatabaseRequest;
 use App\Http\Requests\UpdateDatabaseRequest;
 
 use App\Http\Resources\DatabaseResource;
-use App\Http\Resources\RightsholderResource;
+//use App\Http\Resources\RightsholderResource;
 use App\Http\Resources\Json\JsonResource;
 
 
