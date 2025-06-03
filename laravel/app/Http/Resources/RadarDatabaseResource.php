@@ -28,7 +28,7 @@ class RadarDatabaseResource extends JsonResource
 				]
 			],
 			'descriptiveMetadata' => [
-				'title' => $database->title . " (Data #" . $database->id . ")",
+				'title' => $database->title . " (Database #" . $database->id . ")",
 				'creators' => [
 					'creator' => RadarCreatorResource::collection($this->whenLoaded('creators')),
 				],
