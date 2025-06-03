@@ -155,6 +155,7 @@ Parameters:
 			Other:
 		</h3>
 		<ul class="list-disc list-inside">
+			@if ($database->doi != null) <li><b>DOI</b>: <a href="{{ $database->doi }}">{{ $database->doi }}</a></li>@endif
 			<li><b>Uploaded by:</b> {{ $user->name }}</li>
 			
 			<li><b>Date created:</b> {{ $database->created_at }}</li>
