@@ -121,6 +121,7 @@ class DatabaseVisibility extends Component
 		// stop review process
 		if(!$radar->endreview())
 			$this->error = $radar->details;
+		$this->radarstatus = $this->database->radarstatus;
 	}
 
 	public function submitToPublish()
