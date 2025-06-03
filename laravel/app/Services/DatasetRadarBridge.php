@@ -179,7 +179,8 @@ class DatasetRadarBridge extends RadarBridge
         {
             $this->message = 'The corresponding RADAR dataset is missing! (Error: 404)';
             return false;
-        }
+		}
+		$this->message = 'The RADAR metadata has been successfully read from the RADAR server';
         $this->dataset = json_decode($response->content());
         return true;
 	}
