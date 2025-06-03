@@ -45,6 +45,42 @@ class DatasetRadarBridge extends RadarBridge
 
 	/*
 	 *
+	 * Publish a RADAR dataset (without uploading yet!)
+	 *
+	 * Returns:
+	 *
+	 *	true on success
+	 *	false on failure
+	 *
+	 * RADAR Docs:
+	 *
+	 *	publish	POST	/datasets/{id}/publish		200, 401, 403, 404, 422, 500	 
+	 *
+	 * 
+	 */
+	public function publish() : bool
+	{
+		$this->reset();
+		$endpoint = '/datasets/'.$this->database->radar_id.'/publish';
+		$this->content = null; // save the content sent to RADAR
+		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
+		$response = $this->post($endpoint);
+		if($this->status == 200)
+		{
+			$this->message = "Dataset successfully published";
+			return true;
+		}
+		else
+		{
+			$this->message = "Publishing of the RADAR dataset failed";
+			$this->details = $response->content();
+			return false;
+		}
+	}
+
+
+	/*
+	 *
 	 * Start the RADAR review process
 	 *
 	 * Returns:
@@ -65,6 +101,8 @@ class DatasetRadarBridge extends RadarBridge
 	{
 		$this->reset();
 		$endpoint = '/datasets/'.$this->database->radar_id.'/startreview';
+		$this->content = null; // save the content sent to RADAR
+		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
 		$response = $this->post($endpoint);
 		if($this->status == 200)
 		{
@@ -98,6 +136,8 @@ class DatasetRadarBridge extends RadarBridge
 	{
 		$this->reset();
 		$endpoint = '/datasets/'.$this->database->radar_id.'/endreview';
+		$this->content = null; // save the content sent to RADAR
+		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
 		$response = $this->post($endpoint);
 		if($response->status() == 200)
 		{
@@ -131,6 +171,8 @@ class DatasetRadarBridge extends RadarBridge
 	{
 		$this->reset();
 		$endpoint = '/datasets/'.$this->database->radar_id.'/doi';
+		$this->content = null; // save the content sent to RADAR
+		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
 		$response = $this->get($endpoint);
 		if($response->status() == 200)
 		{
@@ -177,6 +219,8 @@ class DatasetRadarBridge extends RadarBridge
 			return false;
 		}
 		$endpoint = '/datasets/'.$this->database->radar_id;
+		$this->content = null; // save the content sent to RADAR
+		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
 		$response = $this->get($endpoint);
 		if($response->status() == 404)
 		{
@@ -206,6 +250,8 @@ class DatasetRadarBridge extends RadarBridge
 	{
 		$this->reset();
 		$endpoint = '/datasets/'.$this->database->radar_id.'/metadata/validate';
+		$this->content = null; // save the content sent to RADAR
+		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
 		$response = $this->get($endpoint);
 		if($response->status() == 200)
 		{
@@ -248,12 +294,12 @@ class DatasetRadarBridge extends RadarBridge
 		$this->reset();
 			// get Database in RADAR formatted array
 			// eager load relationships so they appear in serializeJson()
-		$this->database->load(			
+		$this->database->load(
 			'creators',
 			'publishers',
 			'rightsholders',
 			'keywords',
-			//'relatedidentifiers',
+			'relatedidentifiers',
 			'subjectareas',
 		);
 		$resource = new RadarDatabaseResource($this->database);

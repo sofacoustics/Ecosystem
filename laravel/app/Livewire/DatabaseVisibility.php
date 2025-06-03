@@ -79,7 +79,7 @@ class DatabaseVisibility extends Component
 			else
 			{
 				$this->dispatch('status-message', $radar->message);
-			$this->error = $radar->message.' RADAR Messsage: '.$radar->details.' *** Content created: *** '.json_encode($radar->content);
+				$this->error = $radar->message.' RADAR Message: '.$radar->details.' *** Content created: *** '.json_encode($radar->content);
 				return;
 			}
 		}
@@ -87,7 +87,7 @@ class DatabaseVisibility extends Component
 		else if(!$radar->metadataValidate())
 		{
 			$this->dispatch('radar-status-changed', 'Validation failed'); 
-			$this->error = $radar->message.' RADAR Messsage: '.$radar->details.' *** Content created: *** '.json_encode($content_created);
+			$this->error = $radar->message.' RADAR Message: '.$radar->details.' *** Content created: *** '.json_encode($content_created);
 			return;
 		}
 		if($radar->read())
@@ -98,26 +98,25 @@ class DatabaseVisibility extends Component
 				// we need to start the review process in order to get the DOI
 				if(!$radar->startreview())
 				{
-					$this->error = $radar->message.' RADAR Messsage: '.$radar->details;
+					$this->error = $radar->message.' RADAR Message: '.$radar->details;
 					return;
 				}
 			}
 		}
 		else
 		{
-			$this->error = $radar->message.' RADAR Messsage: '.$radar->details;
+			$this->error = $radar->message.' RADAR Message: '.$radar->details;
 			return;
 		}
 		// retrieve doi
 		if($radar->doi())
 		{
-			//$this->status = $radar->message; // use status-message instead
-			$this->doi = $this->database->doi; //jw:todo will this really retrieve the correct value!
+			$this->doi = $this->database->doi; 
 			$this->dispatch('status-message', $radar->message);
 		}
 		else
 		{
-			$this->error = $radar->message.' RADAR Messsage: '.$radar->details;
+			$this->error = $radar->message.' RADAR Message: '.$radar->details;
 		}
 		// stop review process
 		if(!$radar->endreview())
@@ -127,6 +126,41 @@ class DatabaseVisibility extends Component
 
 	public function submitToPublish()
 	{
+		$this->dispatch('status-message', 'Updating metadata');
+		$this->error = "";
+		$this->warning = "";
+
+		$radar = new DatasetRadarBridge($this->database);
+		if($radar->update())
+		{
+			$this->dispatch('radar-status-changed', 'Dataset updated'); // let other livewire components know the radar status has changed
+			$this->dispatch('status-message', $radar->message);
+			$content_created = $radar->content;
+		}
+		else
+		{
+			$this->dispatch('status-message', $radar->message);
+			$this->error = $radar->message.' RADAR Message: '.$radar->details.' *** Content updated: *** '.json_encode($radar->content);
+			return;
+		}
+			// validate metadata
+		if(!$radar->metadataValidate())
+		{
+			$this->dispatch('radar-status-changed', 'Validation failed'); 
+			$this->error = $radar->message.' RADAR Message: '.$radar->details.' *** Content created: *** '.json_encode($content_created);
+			return;
+		}
+			// *******************
+			//  PM: Here, we need to add the upload of all data
+			// *******************
+		
+			// after the upload, we can trigger the review
+		if(!$radar->startreview())
+		{
+			$this->error = $radar->message.' RADAR Review Message: '.$radar->details;
+			return;
+		}
+		
 		$this->database->radarstatus=2;
 		$this->database->save();
 		$this->radarstatus = $this->database->radarstatus;
@@ -142,6 +176,17 @@ class DatabaseVisibility extends Component
 
 	public function resetDOI()
 	{
+		$radar = new DatasetRadarBridge($this->database);
+			// do we have a link to RADAR?
+		if($this->database->radar_id)
+		{		// stop review process
+			if(!$radar->endreview())
+				$this->error = $radar->details;
+/*				// delete the dataset
+			if(!$radar->delete())
+				$this->error = $radar->details;*/
+		}
+
 		$this->database->radarstatus=null;
 		$this->database->doi = null;
 		$this->database->radar_id = null;
