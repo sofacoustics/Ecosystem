@@ -2,6 +2,7 @@
 
 % #Author: Michael Mihocic: First version, loading and plotting a few figures, supporting a few conventions (31.08.2023)
 % #Author: Michael Mihocic: support of Directivity SOFA files implemented (15.04.2025)
+% #Author: Michael Mihocic: conventions restriction removed (03.06.2025)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -56,10 +57,10 @@ Obj=SOFAload(SOFAfile);
 if isoctave; fputs(fid, [ "About to plot\n"]); end
 
 %% Plot a few figures
-switch Obj.GLOBAL_SOFAConventions
-    % maybe other directivity cases will follow
-    case 'FreeFieldDirectivityTF';
-        if isoctave; fputs(fid, [ "case FreeFieldDirectivityTF\n"]); end
+% switch Obj.GLOBAL_SOFAConventions
+%     % maybe other directivity cases will follow
+%     case 'FreeFieldDirectivityTF';
+        % if isoctave; fputs(fid, [ "case FreeFieldDirectivityTF\n"]); end
         % figure('Name',SOFAfile);
         % fputs(fid, [ "just done figure\n"]);
         SOFAplotGeometry(Obj);
@@ -70,7 +71,7 @@ switch Obj.GLOBAL_SOFAConventions
         print ("-r600", [SOFAfile '_1.png'])
         %print ("-r600", '/tmp/hrtf_1.png');
         if isoctave; fputs(fid, [ "just printed " SOFAfile "_1.png\n"]); end
-end
+% end
 
 
 %% Epilogue: (un)comment if you want to:

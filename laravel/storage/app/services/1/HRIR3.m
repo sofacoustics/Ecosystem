@@ -1,6 +1,7 @@
 %HRIR3 - Function to load SOFA files, create and save visualizing 3 figures
 
 % #Author: Michael Mihocic: First version, loading and plotting a few figures, supporting a few conventions (31.08.2023)
+% #Author: Michael Mihocic: minor fixes when creating figures (03.06.2025)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
