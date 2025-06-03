@@ -28,29 +28,35 @@
 
 <h3>DOI Assignment:</h3>
 @if($radarstatus==null || $radarstatus==0)
-	<b>Status:</b> No DOI assigned.
-	<p>By clicking the button below, a DOI can be assigned to your database.</p>
-	<p>To this end, the following steps will happen:
-		<ul class="list-disc list-inside">
-			<li>Your database will be registered at the ÖAW Datathek as a new "dataset".
-			<li>The database metadata will be sent to the Datathek. This is a quick process.
-			<li>A DOI for your database will be requested and assigned to your database within the Ecosystem.
-		</ul>
+	<p><b>DOI Status:</b> No DOI assigned.</p>
+	@if($database->metadataValidate())
+		<p><b>Metadata Status:</b> Invalid, with following problems:</p>
+		<p class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded font-bold">{!! nl2br($database->metadataValidate()) !!}</p>
+	@else
+		<p><b>Metadata Status:</b> Valid</p>
+		<p>By clicking the button below, a DOI can be assigned to your database.</p>
+		<p>To this end, the following steps will happen:
+			<ul class="list-disc list-inside">
+				<li>Your database will be registered at the ÖAW Datathek as a new "dataset".
+				<li>The database metadata will be sent to the Datathek. This is a quick process.
+				<li>A DOI for your database will be requested and assigned to your database within the Ecosystem.
+			</ul>
 		<p>Once a DOI has been assigned, the DOI will be a permanent part of your database.</p>
 		<p><b>This operation is irreversible!</b></p>
-			@if($database->metadataValidate())
-				<button wire:click="assignDOI" disabled
-					class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">
-					Assign DOI
-				</button>
-				DOI cannot be assigned yet because of the following problems: <br>
-				{{ nl2br($database->metadataValidate()) }}
-			@else
-				<button wire:click="assignDOI" wire:confirm="Are you sure to assign a DOI to your database? This operation cannot be reverted!"
-					class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">
-					Assign DOI
-				</button>
-			@endif
+		<button 
+			wire:click="assignDOI" 
+			wire:confirm="Are you sure to assign a DOI to your database? This operation cannot be reverted!"
+			wire:loading.attr="disabled"
+			wire:loading.class="opacity-50">
+			<span wire:loading.remove wire:target="assignDOI"
+				class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">
+				Assign DOI
+			</span>
+			<span wire:loading wire:target="assignDOI" 
+				class="bg-gray-500 rounded px-4 py-2 font-bold text-white cursor-not-allowed">
+				Processing...
+			</span>
+		</button>
 		@if($status)
 			<x-alert title='Info!' color='blue'>{{ $status }}</x-alert>
 		@endif
@@ -60,14 +66,22 @@
 		@if($error)
 			<x-alert title='Error!'>{{ $error }}</x-alert>
 		@endif
-	<p>Note that this does not publish your database with that DOI yet:
-		The datafiles will <b>not</b> be transfered to the Datathek yet, and the link between the DOI and your data will be invalid yet.</p>
-	<p>Note also that even with DOI assigned, you will be able to hide your database within the Ecosystem.</p>
+		<p>Note that this does not publish your database with that DOI yet:
+			The datafiles will <b>not</b> be transfered to the Datathek yet, and the link between the DOI and your data will be invalid yet.</p>
+		<p>Note also that even with DOI assigned, you will be able to hide your database within the Ecosystem.</p>
+	@endif
 @else
 	<b>Status:</b>
 	<ul class="list-disc list-inside">
-		<li>DOI assigned: <b>{{ $doi }}</b>.
-		<li>When persistently published, the database will be available under the following link: <b>https://doi.org/{{$doi}}</b>.
+		<li>DOI: Assigned (<b>{{ $doi }}</b>).
+		<li>DOI link: https://doi.org/{{$doi}}. When persistently published, the database will be available under this link.
+		@if($database->metadataValidate())
+			<li>Metadata: Invalid, with following problems:<br>
+				<p class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded font-bold">{!! nl2br($database->metadataValidate()) !!}</p>
+			</li>
+		@else
+			<li>Metadata: Valid</li>
+		@endif
 	</ul>
 @endif
 <p></p>
@@ -79,20 +93,33 @@
 @else
 	@if($visible)
 		@if($radarstatus==1)
-			<p>By clicking the button below, your database can be submitted to be persistently published with the DOI.</p>
-			<p>To this end, the following steps will be taken:</p>
-			<ul class="list-disc list-inside">
-				<li>The database will be locked. <b>No edits will be allowed!</b>
-				<li>The metadata at the Datathek will be updated.
-				<li>The datafiles will be sent to the Datathek. Depending on the size of your datafiles, this might take a while.
-				<li>The curator of the Datathek will be notified.
-			</ul>
-			<p><b>This operation is irreversible and triggers a human to act!</b></p>
-				<button wire:click="submitToPublish" wire:confirm="Are you sure to submit your database for a persistent publication? This operation cannot be reverted!"
-					class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">
-					Publish with DOI
-				</button>
-			<p>Once the curator approves your database, it will be published at the Datathek and the DOI will be valid.</p>
+			@if($database->metadataValidate())
+				<p>If you want to persistently publish your database, provide valid metadata first.</p>
+			@else
+				<p>By clicking the button below, your database can be submitted to be persistently published with the DOI.</p>
+				<p>To this end, the following steps will be taken:</p>
+				<ul class="list-disc list-inside">
+					<li>The database will be locked. <b>No edits will be allowed!</b>
+					<li>The metadata at the Datathek will be updated.
+					<li>The datafiles will be sent to the Datathek. Depending on the size of your datafiles, this might take a while.
+					<li>The curator of the Datathek will be notified.
+				</ul>
+				<p><b>This operation is irreversible and triggers a human to act!</b></p>
+					<button wire:click="submitToPublish" 
+						wire:confirm="Are you sure to submit your database for a persistent publication? This operation cannot be reverted!"
+						wire:loading.attr="disabled"
+						wire:loading.class="opacity-50">
+						<span wire:loading.remove wire:target="submitToPublish"
+							class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">
+							Publish with DOI
+						</span>
+						<span wire:loading wire:target="submitToPublish" 
+							class="bg-gray-500 rounded px-4 py-2 font-bold text-white cursor-not-allowed">
+							Processing...
+						</span>
+					</button>
+				<p>Once the curator approves your database, it will be published at the Datathek and the DOI will be valid.</p>
+			@endif
 		@elseif($radarstatus==2)
 			<p>The database has been submitted to be persistently published.</p>
 			<p>The curator has been notified. Please check later...</p>
@@ -111,6 +138,6 @@
 <hr>
 <p>Debugging:</p>
 <small>RADAR Status: {{ $radarstatus }}</small>
-<x-button wire:click="resetDOI" class="inline">Reset DOI and the Persistent Publication</x-button>
-<x-button wire:click="approve" class="inline">Approve the Persistent Publication</x-button>
+<button wire:click="resetDOI" class="inline bg-gray-500 hover:bg-gray-700 rounded px-4 py-2 font-bold text-white">Reset DOI and the Persistent Publication</button>
+<button wire:click="approve" class="inline bg-gray-500 hover:bg-gray-700 rounded px-4 py-2 font-bold text-white">Approve the Persistent Publication</button>
 </div>
