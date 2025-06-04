@@ -62,6 +62,12 @@
 				</header>
 			@endif
 			<!-- errors -->
+			@if(session('error'))
+				<x-alert type='error'>
+					{{ session('error') }}
+				</x-alert>
+			@endif
+			<!-- validation errors -->
 			@if ($errors->any())
 				<div>
 					<ul>
@@ -71,7 +77,6 @@
 					</ul>
 				</div>
 			@endif
-
 
 			<!-- Page Content -->
 			<main class="grow">
