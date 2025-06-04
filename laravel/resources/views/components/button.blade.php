@@ -7,6 +7,7 @@
 		action 		??
 		type	   	button|submit|reset  Default: 'submit' for 'action' buttons, 'button' otherwise
 		disabled    true or false. default: false
+		loadingText If set to something, this text is used once the button has been pressed.
 
 	Example:
 
@@ -26,6 +27,7 @@
 @props([
 	'method' => 'POST',
 	'disabled' => false,
+	'loadingText' => '',
 ])
 @php
 	if ($method == 'GET') {
@@ -45,17 +47,24 @@
 	}
 
 	// button colors
-	$classColors = 'blue-500 bg-blue-500 hover:bg-blue-700 text-white';
+	$enabledColors = 'blue-500 bg-blue-500 hover:bg-blue-700 text-white';
+	$disabledColors = 'gray-400 bg-gray-400 text-white';
+	$deleteColors = 'red-400 bg-red-400 hover:bg-red-600 text-white';
+
+	$classColors = $enabledColors;
 	if ($disabled) {
-		$classColors = 'gray-400 bg-gray-400 text-white';
+		$classColors = $disabledColors;
 	}
 	if ("$method" == 'DELETE') {
-		$classColors = 'red-400 bg-red-400 hover:bg-red-600 text-white';
+		$classColors = $deleteColors;
 	}
+
 @endphp
 <div class="inline">
 	@if ($attributes->has('action'))
-		<form {{ $attributes }} method="{{ $formMethod }}">
+		<form {{ $attributes }} method="{{ $formMethod }}"
+			x-data="{ loading: false }"
+			@submit="loading = true">
 			@if (in_array("$method", ['DELETE', 'PATCH', 'POST', 'PUT']))
 				@csrf
 				@if (in_array("$method", ['DELETE', 'PATCH', 'PUT']))
@@ -65,7 +74,10 @@
 	@endif
 	<button {{ $attributes->except(['action', 'type', 'class']) }} type="{{ $type }}"
 		@if ($disabled) disabled @endif
-		class="{{ $classColors }} font-bold mx-1 my-1 py-1 px-2 rounded">
+		@if ($loadingText) x-text="loading ? '{{ $loadingText }}' : '{{ $slot }}'" @endif
+		:disabled="loading"
+		:class="loading ? '{{ $disabledColors }}' : '{{ $classColors }}'"
+		class="font-bold mx-1 my-1 py-1 px-2 rounded">
 		{{ $slot }}
 	</button>
 	@if ($attributes->has('action'))
