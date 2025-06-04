@@ -371,6 +371,7 @@ class DatabaseUpload extends Component
 									}
 
 									$datafile->name = "$originalName";
+									$datafile->mimetype = $file->getMimeType();
 									$datafile->save(); // save so datafile has ID (necessary for saving file)
 									
 									if($existing) 
