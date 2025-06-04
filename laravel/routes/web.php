@@ -72,7 +72,7 @@ Route::get('/databases/{database}/datasets/bulkupload', [DatasetController::clas
 // DATASET
 Route::resource('datasets', DatasetController::class);
 Route::resource('databases.datasets', DatasetController::class); // /databases/{{database}}/datasets (https://davecalnan.blog/laravel-routing-gotchas)
-Route::post('datasets.uploadtoradar', [DatasetController::class, 'uploadtoradar'])->name('datasets.uploadtoradar');
+Route::post('/datasets/{dataset}/uploadtoradar', [DatasetController::class, 'uploadtoradar'])->name('datasets.uploadtoradar');
 // DATAFILES
 Route::resource('datafiles', DatafileController::class);
 Route::post('/datafiles/{datafile}/uploadtoradar', [DatafileController::class, 'uploadtoradar'])->name('datafiles.uploadtoradar');

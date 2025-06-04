@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http; // guzzle
 
 /*
@@ -120,6 +121,17 @@ class RadarBridge
 		$this->details = '';
 		$this->status = '';
     }
+
+    protected function getJsonValue(string $key, response $response) : string
+	{
+		$array = json_decode($response->content(), true); // 'true' == associative array
+		$lastErrorMsg = json_last_error_msg();
+		if(is_array($array) && array_key_exists($key, $array))
+		{
+			return $array[$key];
+		}
+		return "ERROR: $lastErrorMsg";
+	}
 
     ////////////////////////////////////////////////////////////////////////////////
     // Private

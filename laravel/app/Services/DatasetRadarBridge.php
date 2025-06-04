@@ -31,11 +31,11 @@ use App\Models\Datafile;
  */
 class DatasetRadarBridge extends RadarBridge
 {
-	var $database; // the Ecosystem database
-	var $dataset; // the RADAR dataset - some values set sometimes
+	public $database; // the Ecosystem database
+	public $dataset; // the RADAR dataset - some values set sometimes
 	public $content; // save the content sent to RADAR
 	public $endpoint; // save the endpoint sent to RADAR
-		
+
 
 	function __construct($database)
 	{
@@ -56,7 +56,7 @@ class DatasetRadarBridge extends RadarBridge
 	 *
 	 *	publish	POST	/datasets/{id}/publish		200, 401, 403, 404, 422, 500	 
 	 *
-	 * 
+	 *
 	 */
 	public function publish() : bool
 	{
@@ -440,6 +440,19 @@ class DatasetRadarBridge extends RadarBridge
 		}
 	}
 
+	/*
+	 * Delete RADAR dataset corresponding to this database
+	 *
+	 * Returns
+	 *
+	 *  true on success
+	 *  false on failure
+	 *
+	 * RADAR Docs:
+	 *
+	 *  Delete	DELETE	/datasets		200, 401, 403, 404, 500
+	 *
+	 */
 	public function delete()
 	{
 		$endpoint = '/datasets/'.$this->database->radar_id;
@@ -462,19 +475,5 @@ class DatasetRadarBridge extends RadarBridge
 		$this->message = 'Failed to delete the RADAR dataset';
 		$this->details = $response->content();
 		return false;
-	}
-
-	// Private
-	////////////////////////////////////////////////////////////////////////////////
-
-	private function getJsonValue(string $key, response $response) : string
-	{
-		$array = json_decode($response->content(), true); // 'true' == associative array
-		$lastErrorMsg = json_last_error_msg();
-		if(is_array($array) && array_key_exists($key, $array))
-		{
-			return $array[$key];
-		}
-		return "ERROR: $lastErrorMsg";
 	}
 }

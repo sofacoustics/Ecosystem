@@ -40,7 +40,8 @@
     @endif
 
 	@can('update', $dataset)
-		<x-button method="POST" action="{{ route('datasets.uploadtoradar', $dataset) }}">Upload to RADAR</x-button>
+		<p>Dataset name: {{ $dataset->name }}</p>
+		<x-button loadingText="Uploading: please be patient" method="POST" action="{{ route('datasets.uploadtoradar', $dataset) }}">Upload to RADAR</x-button>
 	@endif
 
 </x-app-layout>

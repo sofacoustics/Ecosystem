@@ -84,12 +84,12 @@ class DatafileController extends Controller
 	public function uploadtoradar(Datafile $datafile)
 	{
 		if($datafile->dataset->database->radar_id == null)
-			return redirect()->back()->with('status', 'There is no RADAR dataset associated with this database');
+			return redirect()->back()->with('error', 'There is no RADAR dataset associated with this database');
 		if($datafile->radar_id)
 		{
 			// file already uploaded to RADAR
 			// do nothing
-			return redirect()->back()->with('status', 'The file has already been uploaded to the RADAR server');
+			return redirect()->back()->with('success', 'The file has already been uploaded to the RADAR server');
 		}
 		else
 		{
@@ -99,15 +99,15 @@ class DatafileController extends Controller
 				//jw:todo  Maybe do this in a job?
 				if($radar->upload($datafile))
 				{
-					return redirect()->back()->with('status', 'The file was successfully uploaded to the RADAR server');
+					return redirect()->back()->with('success', 'The file was successfully uploaded to the RADAR server');
 				}
 			}
 			else
 			{
-				return redirect()->back()->with('status', 'A file with this name already exists on the RADAR server!');
+				return redirect()->back()->with('error', 'A file with this name already exists on the RADAR server!');
 			}
 		}
-		return redirect()->back()->with('status', 'There was some error uploading the file to the RADAR server');
+		return redirect()->back()->with('error', 'There was some error uploading the file to the RADAR server');
 	}
 
 	public function deletefromradar(Datafile $datafile)
@@ -117,13 +117,13 @@ class DatafileController extends Controller
 			$radar = new FileRadarBridge($datafile);
 			if($radar->delete())
 			{
-				return redirect()->back()->with('status', $radar->message);
+				return redirect()->back()->with('success', $radar->message);
 			}
 			else
 			{
-				return redirect()->back()->with('status', $radar->message.' ('.$radar->details.')');
+				return redirect()->back()->with('error', $radar->message.' ('.$radar->details.')');
 			}
 		}
-		return redirect()->back()->with('status', 'This datafile is not associated with a RADAR file');
+		return redirect()->back()->with('error', 'This datafile is not associated with a RADAR file');
 	}
 }
