@@ -77,7 +77,7 @@
 		@if ($loadingText) x-text="loading ? '{{ $loadingText }}' : '{{ $slot }}'" @endif
 		:disabled="loading"
 		:class="loading ? '{{ $disabledColors }}' : '{{ $classColors }}'"
-		class="font-bold mx-1 my-1 py-1 px-2 rounded">
+		class="{{ $classColors }} font-bold mx-1 my-1 py-1 px-2 rounded">
 		{{ $slot }}
 	</button>
 	@if ($attributes->has('action'))
