@@ -4,7 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-use App\Services\DatasetRadarBridge;
+use App\Services\DatabaseRadarDatasetBridge;
 
 class DatabaseRadarActions extends Component
 {
@@ -50,7 +50,7 @@ class DatabaseRadarActions extends Component
 
 	public function createdataset()
 	{
-		$radar = new DatasetRadarBridge($this->database);
+		$radar = new DatabaseRadarDatasetBridge($this->database);
 		$this->dispatch('status-message', 'Starting RADAR dataset creation process.');
         if($radar->create())
             $this->dispatch('radar-status-changed', 'Dataset created'); // let other livewire components know the radar status has changed
@@ -63,7 +63,7 @@ class DatabaseRadarActions extends Component
 	public function startReview()
 	{
 		$this->dispatch('status-message', 'Starting review process.');
-		$radar = new DatasetRadarBridge($this->database);
+		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if($radar->startreview())
 			$this->dispatch('radar-status-changed', 'Review process started'); // let other livewire components know the radar status has changed
 		else
@@ -75,7 +75,7 @@ class DatabaseRadarActions extends Component
 	public function endReview()
 	{
 		$this->dispatch('status-message', 'Ending review process.');
-		$radar = new DatasetRadarBridge($this->database);
+		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if($radar->endreview())
 			$this->dispatch('radar-status-changed', 'Review process ended'); // let other livewire components know the radar status has changed
 		else
@@ -87,7 +87,7 @@ class DatabaseRadarActions extends Component
 	public function delete()
 	{
 		$this->dispatch('status-message', 'Starting to delete the RADAR dataset');
-		$radar = new DatasetRadarBridge($this->database);
+		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if($radar->delete())
 		{
 			$this->database->radar_id = null;
@@ -112,7 +112,7 @@ class DatabaseRadarActions extends Component
 
 	private function refreshStatus()
     {
-		$radar = new DatasetRadarBridge($this->database);
+		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if($radar->read())
 		{
 			$this->id = $radar?->dataset?->id ?? null;

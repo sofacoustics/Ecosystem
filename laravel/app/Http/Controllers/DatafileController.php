@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Datafile;
-use App\Services\DatasetRadarBridge;
-use App\Services\FileRadarBridge;
+use App\Services\DatabaseRadarDatasetBridge;
+use App\Services\DatafileRadarFileBridge;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -93,7 +93,7 @@ class DatafileController extends Controller
 		}
 		else
 		{
-			$radar = new DatasetRadarBridge($datafile->dataset->database);
+			$radar = new DatabaseRadarDatasetBridge($datafile->dataset->database);
 			if($radar->canUpload($datafile->name))
 			{
 				//jw:todo  Maybe do this in a job?
@@ -114,7 +114,7 @@ class DatafileController extends Controller
 	{
 		if($datafile->radar_id)
 		{
-			$radar = new FileRadarBridge($datafile);
+			$radar = new DatafileRadarFileBridge($datafile);
 			if($radar->delete())
 			{
 				return redirect()->back()->with('success', $radar->message);

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Database;
 use App\Models\Dataset;
 
-use App\Services\FolderRadarBridge;
+use App\Services\DatasetRadarFolderBridge;
 
 class DatasetController extends Controller
 {
@@ -86,7 +86,7 @@ class DatasetController extends Controller
 	public function uploadtoradar(Dataset $dataset)
 	{
 		// create dataset folders
-		$radar = new FolderRadarBridge($dataset);
+		$radar = new DatasetRadarFolderBridge($dataset);
 		if(!$radar->upload())
 		{
 			return redirect()->back()->with('error', $radar->message.' ('.$radar->details.')');

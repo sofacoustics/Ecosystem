@@ -29,7 +29,7 @@ use App\Models\Datafile;
  * Note '$this->status' is set by RadarBridge
  *
  */
-class DatasetRadarBridge extends RadarBridge
+class DatabaseRadarDatasetBridge extends RadarBridge
 {
 	public $database; // the Ecosystem database
 	public $dataset; // the RADAR dataset - some values set sometimes

@@ -5,7 +5,7 @@ namespace App\Livewire;
 use App\Models\Database;
 
 use App\Http\Resources\DatabaseResource;
-use App\Services\DatasetRadarBridge;
+use App\Services\DatabaseRadarDatasetBridge;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -66,7 +66,7 @@ class DatabaseVisibility extends Component
 		$this->error = "";
 		$this->warning = "";
 
-		$radar = new DatasetRadarBridge($this->database);
+		$radar = new DatabaseRadarDatasetBridge($this->database);
 			// create RADAR dataset
 		if(!$this->database->radar_id)
 		{
@@ -130,7 +130,7 @@ class DatabaseVisibility extends Component
 		$this->error = "";
 		$this->warning = "";
 
-		$radar = new DatasetRadarBridge($this->database);
+		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if($radar->update())
 		{
 			$this->dispatch('radar-status-changed', 'Dataset updated'); // let other livewire components know the radar status has changed
@@ -176,7 +176,7 @@ class DatabaseVisibility extends Component
 
 	public function resetDOI()
 	{
-		$radar = new DatasetRadarBridge($this->database);
+		$radar = new DatabaseRadarDatasetBridge($this->database);
 			// do we have a link to RADAR?
 		if($this->database->radar_id)
 		{		// stop review process

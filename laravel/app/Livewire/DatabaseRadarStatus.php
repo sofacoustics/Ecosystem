@@ -6,7 +6,7 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 
 use App\Models\Database;
-use App\Services\DatasetRadarBridge;
+use App\Services\DatabaseRadarDatasetBridge;
 
 /*
  * Get RADAR status for a database and add information
@@ -40,7 +40,7 @@ class DatabaseRadarStatus extends Component
 
     public function getStatus()
     {
-        $radar = new DatasetRadarBridge($this->database);
+        $radar = new DatabaseRadarDatasetBridge($this->database);
         if($radar->read())
         {
             $this->id = $radar->dataset->id;
