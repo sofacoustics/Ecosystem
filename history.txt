@@ -10,6 +10,7 @@ To be done before we go live:
 * JW: Workflow for the test and live server
 * JW/PM: Add obligatory email confirmation when a user registers
 * MM: Implement the most important widgets
+* PM: Date linked with ORCID is GMT - show that in the message.
 
 To be done after we go live:
 * JW: Add "Admin" as a role to the User interface. Admins should be able to see and edit all data
@@ -37,6 +38,8 @@ Nice to have:
 * Allow metadata editing after publication? RADAR supports metadata correction after publication. Implement. 
 * Index tables: implement the sorting by #Datasets, Keywords, Uploaded by. 
 * Send optional metadata to RADAR (currently, obligatory metadata uploaded only)
+* Bulk Upload: Missing files: Click instead of Hover
+* Bulk Upload: Confirmation when saved to Database. 
 
 
 
