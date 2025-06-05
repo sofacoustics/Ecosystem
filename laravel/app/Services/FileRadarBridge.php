@@ -58,7 +58,7 @@ class FileRadarBridge extends RadarBridge
 	public function delete($endpoint = '')
 	{
 		$endpoint = '/files/'.$this->datafile->radar_id;
-		$response = parent::delete($endpoint);
+		$response = $this->httpdelete($endpoint);
 		if($response->status() == 204)
 		{
 			$this->message = 'Successfully deleted the file '.$this->datafile->radar_id.' from the RADAR server';
@@ -72,19 +72,5 @@ class FileRadarBridge extends RadarBridge
 			$this->details = $response->content();
 			return false;
 		}
-	}
-	////////////////////////////////////////////////////////////////////////////////
-	// Private
-	////////////////////////////////////////////////////////////////////////////////
-
-	private function getJsonValue(string $key, response $response) : string
-	{
-		$array = json_decode($response->content(), true); // 'true' == associative array
-		$lastErrorMsg = json_last_error_msg();
-		if(is_array($array) && array_key_exists($key, $array))
-		{
-			return $array[$key];
-		}
-		return "ERROR: $lastErrorMsg";
 	}
 }

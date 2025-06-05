@@ -24,12 +24,12 @@
 		<x-button action="{{  asset($datafile->url()) }}">Download</x-button>
 		@can('update', $datafile)
 			@if($datafile->dataset->database->radar_id != null && $datafile->radar_id == null)
-				<x-button method="POST" action="{{ route('datafiles.uploadtoradar', $datafile) }}">Upload to RADAR</x-button>
+				<x-button loadingText="Uploading: please wait" method="POST" action="{{ route('datafiles.uploadtoradar', $datafile) }}">Upload to RADAR</x-button>
 			@endif
 		@endcan
 		@can('delete', $datafile)
 			@if($datafile->radar_id)
-				<x-button method="DELETE" action="{{ route('datafiles.deletefromradar', $datafile) }}">Delete from RADAR</x-button>
+				<x-button loadingText="Deleting: please wait" method="DELETE" action="{{ route('datafiles.deletefromradar', $datafile) }}">Delete from RADAR</x-button>
 			@endif
 		@endcan
 </x-app-layout>

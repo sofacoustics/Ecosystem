@@ -111,7 +111,7 @@ class DatabaseVisibility extends Component
 		// retrieve doi
 		if($radar->doi())
 		{
-			$this->doi = $this->database->doi; 
+			$this->doi = $this->database->doi;
 			$this->dispatch('status-message', $radar->message);
 		}
 		else

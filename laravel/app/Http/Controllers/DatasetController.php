@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Database;
 use App\Models\Dataset;
 
+use App\Services\FolderRadarBridge;
 
 class DatasetController extends Controller
 {
@@ -79,12 +80,24 @@ class DatasetController extends Controller
 		return redirect()->back();
 	}
 
+	/*
+	 * Upload this dataset and it's datafiles to RADAR
+	 */
 	public function uploadtoradar(Dataset $dataset)
 	{
 		// create dataset folders
+		$radar = new FolderRadarBridge($dataset);
+		if(!$radar->upload())
+		{
+			return redirect()->back()->with('error', $radar->message.' ('.$radar->details.')');
+		}
+		else
+		{
+			return redirect()->back()->with('success', $radar->message);
+		}
 		//
 		//
 		// upload datafiles
-		return redirect()->back()->with('status', 'Failed to upload to radar. Unknown error');
+		return redirect()->back()->with('error', 'Failed to upload to radar. Unknown error');
 	}
 }

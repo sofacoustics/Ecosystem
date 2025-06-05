@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('datafiles', function (Blueprint $table) {
+        Schema::table('datasets', function (Blueprint $table) {
 			$table->string('radar_id')->nullable(); // set to the RADAR id for this file once uploaded successfully
+			$table->string('radar_upload_url')->nullable(); // set to the RADAR id for this file once uploaded successfully
         });
     }
 
@@ -21,8 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('datafiles', function (Blueprint $table) {
-			$table->dropColumn('radar_id'); // set to the RADAR id for this file once uploaded successfully
+        Schema::table('datasets', function (Blueprint $table) {
+			$table->dropColumn('radar_id');
+			$table->dropColumn('radar_upload_url');
         });
     }
 };
