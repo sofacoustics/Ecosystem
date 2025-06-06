@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Datafile;
 use App\Services\DatabaseRadarDatasetBridge;
+use App\Services\DatasetRadarFolderBridge;
 use App\Services\DatafileRadarFileBridge;
 
 use Illuminate\Http\Request;
@@ -83,8 +84,24 @@ class DatafileController extends Controller
 
 	public function uploadtoradar(Datafile $datafile)
 	{
+		// create RADAR dataset for the database first
 		if($datafile->dataset->database->radar_id == null)
-			return redirect()->back()->with('error', 'There is no RADAR dataset associated with this database');
+		{
+			$radardataset = new DatabaseRadarDatasetBridge($datafile->dataset->database);
+			if(!$radardataset->create())
+			{
+				return redirect()->back()->with('error', $radardataset->message.' ('.$radardataset->details.')');
+			}
+		}
+		// create RADAR folder for the dataset
+		if($datafile->dataset->radar_id == null)
+		{
+			$radarfolder = new DatasetRadarFolderBridge($datafile->dataset);
+			if(!$radarfolder->create())
+			{
+				return redirect()->back()->with('error', $radarfolder->message.' ('.$radarfolder->details.')');
+			}
+		}
 		if($datafile->radar_id)
 		{
 			// file already uploaded to RADAR
@@ -93,18 +110,15 @@ class DatafileController extends Controller
 		}
 		else
 		{
-			$radar = new DatabaseRadarDatasetBridge($datafile->dataset->database);
-			if($radar->canUpload($datafile->name))
+			$radarfile = new DatafileRadarFileBridge($datafile);
+			//jw:todo  Maybe do this in a job?
+			if($radarfile->upload($datafile))
 			{
-				//jw:todo  Maybe do this in a job?
-				if($radar->upload($datafile))
-				{
-					return redirect()->back()->with('success', 'The file was successfully uploaded to the RADAR server');
-				}
+				return redirect()->back()->with('success', $radarfile->message);
 			}
 			else
 			{
-				return redirect()->back()->with('error', 'A file with this name already exists on the RADAR server!');
+				return redirect()->back()->with('error', $radarfile->message .' ('.$radarfile->details.')');
 			}
 		}
 		return redirect()->back()->with('error', 'There was some error uploading the file to the RADAR server');

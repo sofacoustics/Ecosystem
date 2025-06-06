@@ -32,7 +32,7 @@ use App\Models\Dataset;
 class DatasetRadarFolderBridge extends RadarBridge
 {
     public Dataset $dataset;	// the Ecosystem dataset
-    public $folder;		// the RADAR file - some values set sometimes
+    public $radarfolder;		// the RADAR folder - some values set sometimes
 
     function __construct($dataset)
     {
@@ -88,6 +88,46 @@ class DatasetRadarFolderBridge extends RadarBridge
 	}
 
 	/*
+	 * Delete a dataset (RADAR folder) from the RADAR backend including it's subfolders and files
+	 *
+	 * RADAR Docs:
+	 *
+	 *  Delete	DELETE	/folders/{id}		200, 401, 403, 404, 500
+	 */
+	public function delete(): bool
+	{
+		if($this->dataset->radar_id == null)
+			return true; // nothing to delete
+
+		$endpoint = '/folders/'.$this->dataset->radar_id;
+		$response = $this->httpdelete($endpoint);
+		if($response->status() == 204)
+		{
+			$this->message = 'Successfully deleted the folder '.$this->dataset->radar_id.' from the RADAR server';
+			$this->dataset->radar_id = null;
+			$this->dataset->radar_upload_url = null;
+			$this->dataset->save();
+			// reset RADAR ids for datafiles
+			foreach($this->dataset->datafiles as $datafile)
+			{
+				$datafile->radar_id = null;
+				$datafile->datasetdef_radar_id = null;
+				$datafile->datasetdef_radar_upload_url = null;
+				$datafile->save();
+			}
+			return true;
+		}
+		else
+		{
+			$this->message = 'Failed to delete the associated RADAR folder '.$this->dataset->radar_id;
+			$this->details = $response->content();
+			return false;
+		}
+
+		return false;
+	}
+
+	/*
 	 * Upload the Dataset to RADAR
 	 *
 	 * - creates the dataset folder
@@ -103,20 +143,14 @@ class DatasetRadarFolderBridge extends RadarBridge
 			// upload datafiles
 			foreach($this->dataset->datafiles as $datafile)
 			{
-				if($datafile->radar_id != null)
+				if($datafile->datasetdef_radar_id != null && $datafile->radar_id != null)
 					continue; // already uploaded
 
-				$response = $this->postFile($uploadUrl, $datafile->absolutepath(), $datafile->name, $datafile->mimetype);
-				if($response->status() != 200)
+				$radarfile = new DatafileRadarFileBridge($datafile);
+				if(!$radarfile->upload())
 				{
-					$this->message = 'Failed to upload the file '.$datafile->name.'!';
-					$this->details = $response->content();
-					return false;
-				}
-				else
-				{
-					$datafile->radar_id = $response->content();
-					$datafile->save();
+					$this->message = $radarfile->message;
+					$this->details = $radarfile->details;
 				}
 			}
 			$this->message = 'The dataset \''.$this->dataset->name.'\' and its datafiles have been successfully uploaded to the RADAR server.';

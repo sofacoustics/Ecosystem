@@ -6,23 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::table('datafiles', function (Blueprint $table) {
+	/**
+	 * Run the migrations.
+	 */
+	public function up(): void
+	{
+		Schema::table('datafiles', function (Blueprint $table) {
 			$table->string('radar_id')->nullable(); // set to the RADAR id for this file once uploaded successfully
-        });
-    }
+		});
+	}
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::table('datafiles', function (Blueprint $table) {
+	/**
+	 * Reverse the migrations.
+	 */
+	public function down(): void
+	{
+		Schema::table('datafiles', function (Blueprint $table) {
 			$table->dropColumn('radar_id'); // set to the RADAR id for this file once uploaded successfully
-        });
-    }
+		});
+	}
 };

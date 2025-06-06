@@ -41,6 +41,62 @@ class DatafileRadarFileBridge extends RadarBridge
     }
 
 	/*
+	 * Upload this datafile to the RADAR backend.
+	 *
+	 * This creates a folder in the dataset's folder using the datasetdef->name and uploads the datafile into this folder
+	 *
+	 * Returns
+	 *
+	 *  true on success
+	 *  false on failure
+	 */
+	public function upload() : bool
+	{
+		// create datasetdef->name folder
+		/*
+		 * RADAR Docs:
+		 *
+		 * Create   POST /folders/${folderId}/folders       201, 400, 401, 403, 500
+		 *
+		 */
+		$folderName = $this->datafile->datasetdef->name;
+		$arrayBody = [ 'folderName' => "$folderName" ];//json = '{ "folderName" : "'.$folderName.'" }';
+		$endpoint = '/folders/'.$this->datafile->dataset->radar_id.'/folders';
+		$response = $this->post($endpoint, $arrayBody);
+		if($response->status() == 201)
+		{
+			$this->datafile->datasetdef_radar_id = $this->getJsonValue('id', $response);
+			$this->datafile->datasetdef_radar_upload_url = $this->getJsonValue('uploadUrl', $response);
+			$this->datafile->save();
+		}
+		else
+		{
+			$this->message = 'Failed to created the folder "'.$folderName.'"!';
+			$this->details = $response->content();
+			return false;
+		}
+
+		// upload file using datasetdef_radar_upload
+		$response = $this->postFile($this->datafile->datasetdef_radar_upload_url, $this->datafile->absolutepath(), $this->datafile->name, $this->datafile->mimetype);
+		if($response->status() == 200)
+		{
+			$this->datafile->radar_id = $response->content();
+			$this->datafile->save();
+			$this->message = 'Successfully created the datafile '.$this->datafile->name.' and it\s datasetdef->name folder "'.$folderName.'"!';
+			return true;
+		}
+		else
+		{
+			$this->message = 'Failed to upload the file '.$this->datafile->name.'!';
+			$this->details = $response->content();
+			return false;
+		}
+		return false;
+	}
+
+
+
+	/*
 	 * Delete a file from RADAR
 	 *
 	 * NOTE: the API returns '204' if successfully deleted!
@@ -57,18 +113,22 @@ class DatafileRadarFileBridge extends RadarBridge
 	 */
 	public function delete($endpoint = '')
 	{
-		$endpoint = '/files/'.$this->datafile->radar_id;
+		//jw:todo delete 'datasetdef' folder too
+
+		$endpoint = '/folders/'.$this->datafile->datasetdef_radar_id;
 		$response = $this->httpdelete($endpoint);
 		if($response->status() == 204)
 		{
-			$this->message = 'Successfully deleted the file '.$this->datafile->radar_id.' from the RADAR server';
+			$this->message = 'Successfully deleted the file '.$this->datafile->radar_id.' and it\s datasetdef->name folder from the RADAR server';
 			$this->datafile->radar_id = null;
+			$this->datafile->datasetdef_radar_id = null;
+			$this->datafile->datasetdef_radar_upload_url = null;
 			$this->datafile->save();
 			return true;
 		}
 		else
 		{
-			$this->message = 'Failed to delete the associated RADAR file '.$this->datafile->radar_id;
+			$this->message = 'Failed to delete the associated RADAR file '.$this->datafile->radar_id.' and it\'s datasetdef->name folder';
 			$this->details = $response->content();
 			return false;
 		}

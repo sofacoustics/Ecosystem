@@ -100,4 +100,23 @@ class DatasetController extends Controller
 		// upload datafiles
 		return redirect()->back()->with('error', 'Failed to upload to radar. Unknown error');
 	}
+
+	public function deletefromradar(Dataset $dataset)
+	{
+		if($dataset->radar_id)
+		{
+			$radar = new DatasetRadarFolderBridge($dataset);
+			if($radar->delete())
+			{
+				return redirect()->back()->with('success', $radar->message);
+			}
+			else
+			{
+				return redirect()->back()->with('error', $radar->message.' ('.$radar->details.')');
+			}
+		}
+		return redirect()->back()->with('error', 'This dataset is not associated with a RADAR folder');
+	}
+
+
 }

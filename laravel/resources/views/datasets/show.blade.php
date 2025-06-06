@@ -40,8 +40,11 @@
     @endif
 
 	@can('update', $dataset)
-		<p>Dataset name: {{ $dataset->name }}</p>
-		<x-button loadingText="Uploading: please be patient" method="POST" action="{{ route('datasets.uploadtoradar', $dataset) }}">Upload to RADAR</x-button>
+		@if($dataset->radar_id == null)
+			<x-button loadingText="Uploading: please be patient" method="POST" action="{{ route('datasets.uploadtoradar', $dataset) }}">Upload to RADAR</x-button>
+		@else
+			<x-button loadingText="Deleting: please be patient" method="DELETE" action="{{ route('datasets.deletefromradar', $dataset) }}">Delete from RADAR</x-button>
+		@endif
 	@endif
 
 </x-app-layout>

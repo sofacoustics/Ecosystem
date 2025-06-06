@@ -57,7 +57,7 @@ class DatafileListener extends Component
 				// *****
 				// Widget: Properties
 			if ($view === 'livewire.datafiles.properties')
-			{		
+			{
 				$fullPath = $this->datafile->absolutepath();
 				$viewData['fullPath'] = $fullPath; 
 				//if (Storage::exists($fullPath)) 
@@ -69,7 +69,11 @@ class DatafileListener extends Component
 				$viewData['fileSizeInMegabytes'] = round($fileSizeInBytes / (1024*1024), 2);
 				$viewData['fileSizeInGigabytes'] = round($fileSizeInBytes / (1024*1024*1024), 2);
 				$viewData['created_at'] = $this->datafile->created_at;
-				$viewData['updated_at'] = $this->datafile->updated_at;
+                $viewData['updated_at'] = $this->datafile->updated_at;
+                $viewData['radar_id'] = $this->datafile->radar_id;
+                $viewData['datasetdef_radar_id'] = $this->datafile->datasetdef_radar_id;
+                $viewData['datasetdef_radar_upload_url'] = $this->datafile->datasetdef_radar_upload_url;
+
 			} // Widget: Properties
 			
 			
@@ -114,7 +118,7 @@ class DatafileListener extends Component
 				{
 					$csvContent = '';
 				}
-	
+
 					// CSV as array for table
 				$csvRows = [];
 				if ($csvContent !== '') 
