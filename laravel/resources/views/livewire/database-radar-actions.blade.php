@@ -8,7 +8,7 @@
 
 	@can('own', $database)
 		@if($id == null)
-			<x-button wire:click="createdataset">Create Dataset</x-button>
+			<x-button wire:click="createDataset">Create RADAR Dataset</x-button>
 		@endif
 		@if($pending)
 			<x-button wire:click="startReview">Start Review</x-button>
@@ -16,8 +16,14 @@
 		@if($review)
 			<x-button wire:click="endReview">End Review</x-button>
 		@endif
+		@if($canUpload)
+			{{--
+			<x-livewire-button wire:click="uploadToRadar" loading="Uploading...">Upload to RADAR</x-livewire-button>
+			--}}
+			<x-button wire:click="uploadToRadar">Upload to RADAR</x-button>
+		@endif
 		@if(isset($id))
-			<x-button wire:click="delete">Delete</x-button>
+			<x-button method="DELETE" wire:click="deleteFromRadar">Delete from RADAR</x-button>
 		@endif
 	@endcan
 	@if($error)

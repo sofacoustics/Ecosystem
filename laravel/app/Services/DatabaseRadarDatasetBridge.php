@@ -417,6 +417,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	 *  The /upload endpoint can be used to upload any single files.
 	 *  If files in the formats zip/tar/tar.gz/tar.bz are uploaded, these archives will then NOT be extracted.
 	 */
+	/*
 	public function upload(Datafile $datafile)
 	{
 		if(!$this->dataset)
@@ -439,6 +440,30 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 			return false;
 		}
 	}
+	 */
+	public function upload() : bool
+	{
+		if(!$this->create())
+		{
+			return false;
+		}
+
+		foreach($this->database->datasets as $dataset)
+		{
+			$radar = new DatasetRadarFolderBridge($dataset);
+			if(!$radar->upload())
+			{
+				// failed to upload dataset
+				$this->message = $radar->message;
+				$this->details = $radar->details;
+				return false;
+			}
+		}
+
+		$this->message = 'The database has been successfully uploaded to the RADAR backend!';
+
+		return true;
+	}
 
 	/*
 	 * Delete RADAR dataset corresponding to this database
@@ -459,13 +484,19 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		$response = $this->httpdelete($endpoint);
 		if($response->status() == 204)
 		{
+			$this->database->radar_id = null;
+			$this->database->save();
 			// set dataset and datafile radar_ids back to null
-			//jw:todo reset datasets, once we've implemented it.
 			foreach($this->database->datasets as $dataset)
 			{
+				$dataset->radar_id = null;
+				$dataset->radar_upload_url = null;
+				$dataset->save();
 				foreach($dataset->datafiles as $datafile)
 				{
 					$datafile->radar_id = null;
+					$datafile->datasetdef_radar_id = null;
+					$datafile->datasetdef_radar_upload_url = null;
 					$datafile->save();
 				}
 			}

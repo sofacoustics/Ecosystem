@@ -52,7 +52,7 @@
 				class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">
 				Assign DOI
 			</span>
-			<span wire:loading wire:target="assignDOI" 
+			<span wire:loading wire:target="assignDOI"
 				class="bg-gray-500 rounded px-4 py-2 font-bold text-white cursor-not-allowed">
 				Processing...
 			</span>

@@ -75,6 +75,8 @@
 	<button {{ $attributes->except(['action', 'type', 'class']) }} type="{{ $type }}"
 		@if ($disabled) disabled @endif
 		@if ($loadingText) x-text="loading ? '{{ $loadingText }}' : '{{ $slot }}'" @endif
+		{{-- If we're not a form, then give user immediate feedback that it's been pressed
+		@if (!$attributes->has('action')) x-on:click="loading = true" @endif--}}
 		:disabled="loading"
 		:class="loading ? '{{ $disabledColors }}' : '{{ $classColors }}'"
 		class="{{ $classColors }} font-bold mx-1 my-1 py-1 px-2 rounded">

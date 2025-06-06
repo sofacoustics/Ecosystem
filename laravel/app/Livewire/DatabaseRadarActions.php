@@ -18,6 +18,9 @@ class DatabaseRadarActions extends Component
 	public $pending = false;
 	public $review = false;
 
+	// true if we haven't uploaded yet
+	public $canUpload = false;
+
 	public $error; // any error message to display
 
 	public function mount($database)
@@ -26,6 +29,7 @@ class DatabaseRadarActions extends Component
 		if($database->radar_id)
 		{
 			$this->id = $database->radar_id;
+
 			$this->refreshStatus();
 		}
 		else
@@ -48,7 +52,7 @@ class DatabaseRadarActions extends Component
 			$this->review = false;
 	}
 
-	public function createdataset()
+	public function createDataset()
 	{
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		$this->dispatch('status-message', 'Starting RADAR dataset creation process.');
@@ -84,15 +88,23 @@ class DatabaseRadarActions extends Component
 		$this->refreshStatus();
 	}
 
-	public function delete()
+	public function uploadToRadar() // note that the 'upload()' function is reserved in Livewire
+	{
+		$this->error = "";
+		$this->dispatch('status-message', 'Starting upload.');
+		$radar = new DatabaseRadarDatasetBridge($this->database);
+		if(!$radar->upload())
+			$this->error = $radar->message.' ('.$radar->details.')';
+		$this->dispatch('status-message', $radar->message);
+	}
+
+	public function deleteFromRadar()
 	{
 		$this->dispatch('status-message', 'Starting to delete the RADAR dataset');
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if($radar->delete())
 		{
-			$this->database->radar_id = null;
 			$this->id = null;
-			$this->database->save();
 			$this->dispatch('radar-status-changed', 'The database has been deleted'); // let other livewire components know the radar status has changed
 		}
 		else
@@ -116,6 +128,7 @@ class DatabaseRadarActions extends Component
 		if($radar->read())
 		{
 			$this->id = $radar?->dataset?->id ?? null;
+			$this->canUpload = true;
 			$this->setState($radar?->dataset?->state ?? '');
 		}
 		else
@@ -123,6 +136,7 @@ class DatabaseRadarActions extends Component
 			if($this->database->radar_id)
 				$this->error = $radar->message;
 			$this->id = null;
+			$this->canUpload = false;
 			$this->setState('');
 		}
 	}
