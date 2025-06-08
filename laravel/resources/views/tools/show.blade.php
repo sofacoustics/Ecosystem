@@ -173,6 +173,18 @@ Parameters:
 				<li><b>File Name:</b> file not provided yet, upload a file</li>
 			@endif
 			
+			@if ($tool->doi != null) 
+				@if($tool->radarstatus==1)
+					<li><b>DOI (assigned)</b>: {{ $tool->doi }}
+				@elseif($tool->radarstatus==2)
+					<li><b>DOI (publication requested)</b>: {{ $tool->doi }}
+				@elseif($tool->radarstatus==3)
+					<li><b>DOI (persistently published)</b>: <a href="https://doi.org/{{ $tool->doi }}">{{ $tool->doi }}</a>
+				@endif
+			@else
+				<li><b>DOI</b>: not assigned yet
+			@endif
+			
 			<li><b>Uploaded by:</b> {{ $user->name }}</li>
 			
 			<li><b>Date created:</b> {{ $tool->created_at }}</li>

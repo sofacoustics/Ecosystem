@@ -26,7 +26,7 @@
 
 	@if($tool->doi)
 		<x-property name="DOI">
-			<a href="{{ $tool->doi }}">{{ $tool->doi }}</a>
+			<a href="https://doi.org/{{ $tool->doi }}">{{ $tool->doi }}</a>
 		</x-property>
 	@endif
 </p>

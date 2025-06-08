@@ -22,13 +22,13 @@
 	<br>
 	<p>
 		Database list in JSON format: <a href="{{ url()->current() . '?type=json' }}">{{ url()->current() . '?type=json' }}</a> 
-		<img id="copyButton" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 2em; display: inline-block;">
-		<input type="text" id="textToCopy" value="{{ url()->current() . '?type=json' }}" class="hidden">
+		<img id="copyJSON" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 2em; display: inline-block;">
+		<input type="text" id="textJSON" value="{{ url()->current() . '?type=json' }}" class="hidden">
 	</p>
 		<script>
-		document.getElementById('copyButton').addEventListener('click', function() {
+		document.getElementById('copyJSON').addEventListener('click', function() {
 				// Get the text from the input field
-				var textToCopy = document.getElementById('textToCopy').value;
+				var textToCopy = document.getElementById('textJSON').value;
 
 				// Use the Clipboard API to copy the text
 				navigator.clipboard.writeText(textToCopy).then(function() {
