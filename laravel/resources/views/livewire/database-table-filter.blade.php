@@ -43,8 +43,8 @@
 					@endif
 				</button>
 			</th>
-			<th class="border p-2">
-				<button wire:click="sortBy('title')">Title
+			<th class="border px-6 py-2 text-left">
+				<button wire:click="sortBy('title')" class="text-left">Title
 					@if ($sortField === 'title')
 						@if ($sortAsc)
 							<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -101,28 +101,28 @@
 				<tr>
 					<td class="text-center">
 						@if($database->visible)
-							<img id="visible" src="{{ asset('images/visible.svg') }}" alt="V" style="height:2em;">
+							<img id="visible" src="{{ asset('images/visible.svg') }}" alt="V" style="display: block; margin: 0 auto; height:2em;">
 						@else
-							<img id="hidden" src="{{ asset('images/hidden.svg') }}" alt="H" style="height:2em;">
+							<img id="hidden" src="{{ asset('images/hidden.svg') }}" alt="H" style="display: block; margin: 0 auto; height:2em;">
 						@endif
 					</td>
 					<td class="text-center">
 						@if($database->doi)
-							<img id="doi" src="{{ asset('images/DOI.svg') }}" alt="DOI"  style="height:2em;">
+							<img id="doi" src="{{ asset('images/DOI.svg') }}" alt="DOI"  style="display: block; margin: 0 auto; height:2em;">
 						@else
-							<img id="nodoi" src="{{ asset('images/noDOI.png') }}" alt="noDOI"  style="height:2em;">
+							<img id="nodoi" src="{{ asset('images/noDOI.png') }}" alt="noDOI"  style="display: block; margin: 0 auto; height:2em;">
 						@endif
 					</td>
 					<td class="px-6 py-4 whitespace-nowrap">
 						<a class="btn btn-primary" href="{{ route('databases.show', $database->id) }}">{{ $database->title }}</a><br>
 						<small>{{ $database->additionaltitle }}</small>
 					</td>
-					<td class="px-6 py-4 whitespace-nowrap">{{ $database->productionyear }}</td>
-					<td class="px-6 py-4 whitespace-nowrap">{{ \App\Livewire\DatabaseTableFilter::countDatasets($database->id) }}</td>
-					<td class="px-6 py-4 whitespace-nowrap">{{ \App\Livewire\DatabaseTableFilter::getKeywords($database->id) }}</td>
-					<td class="px-6 py-4 whitespace-nowrap">{{ $database->updated_at }}</td>
+					<td class="px-6 py-4 whitespace-nowrap text-center">{{ $database->productionyear }}</td>
+					<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Livewire\DatabaseTableFilter::countDatasets($database->id) }}</td>
+					<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Livewire\DatabaseTableFilter::getKeywords($database->id) }}</td>
+					<td class="px-6 py-4 whitespace-nowrap text-center">{{ $database->updated_at }}</td>
 					@auth
-						<td class="px-6 py-4 whitespace-nowrap">{{ \App\Livewire\DatabaseTableFilter::userName($database->user_id) }}</td>
+						<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Livewire\DatabaseTableFilter::userName($database->user_id) }}</td>
 					@endauth
 				</tr>
 				@endif

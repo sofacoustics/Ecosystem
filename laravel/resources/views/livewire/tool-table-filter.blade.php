@@ -2,7 +2,7 @@
 
 	<table class="table-auto border border-slate-399">
 		<thead class="bg-gray-50">
-			<th></th>
+			<th class="border p-2"></th>
 			<th><input type="text" wire:model.live.debounce.500ms="filters.title" placeholder="Filter by Title..." class="border rounded p-2"></th>
 			<th><input type="text" wire:model.live.debounce.500ms="filters.productionyear" placeholder="... by Produced Year(s)" class="border rounded p-2"></th>
 			<th>
@@ -18,9 +18,8 @@
 			<th><button wire:click="clearFilters" class="bg-gray-200 rounded p-2">Clear Filters</button></th>
 		</thead>
 		<thead class="bg-gray-50">
-			<th class="border p-2">
-				<button wire:click="sortBy('doi')">
-					<img id="doi" src="{{ asset('images/DOI.svg') }}" alt="DOI" style="height: 2em;">
+			<th class="border p-2 min-w-[10ch]">
+				<button wire:click="sortBy('doi')">DOI
 					@if ($sortField === 'doi')
 						@if ($sortAsc)
 							<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -34,7 +33,7 @@
 					@endif
 				</button>
 			</th>
-			<th class="border p-2">
+			<th class="border px-6 py-2 text-left">
 				<button wire:click="sortBy('title')">Title
 					@if ($sortField === 'title')
 						@if ($sortAsc)
@@ -105,21 +104,21 @@
 				<tr>
 					<td class="text-center">
 						@if($tool->doi)
-							<img id="doi" src="{{ asset('images/DOI.svg') }}" alt="DOI"  style="height:2em;">
+							<img id="doi" src="{{ asset('images/DOI.svg') }}" alt="DOI"  style="display: block; margin: 0 auto; height:2em;">
 						@else
-							<img id="nodoi" src="{{ asset('images/noDOI.png') }}" alt="noDOI"  style="height:2em;">
+							<img id="nodoi" src="{{ asset('images/noDOI.png') }}" alt="noDOI"  style="display: block; margin: 0 auto; height:2em;">
 						@endif
 					</td>
 					<td class="px-6 py-4 whitespace-nowrap">
 						<a class="btn btn-primary" href="{{ route('tools.show', $tool->id) }}">{{ $tool->title }}</a><br>
 						<small>{{ $tool->additionaltitle }}</small>
 					</td>
-					<td class="px-6 py-4 whitespace-nowrap">{{ $tool->productionyear }}</td>
-					<td class="px-6 py-4 whitespace-nowrap">{{ \App\Models\Tool::resourcetypeDisplay($tool->resourcetype) }}</td>
-					<td class="px-6 py-4 whitespace-nowrap">{{ \App\Livewire\ToolTableFilter::getKeywords($tool->id) }}</td>
-					<td class="px-6 py-4 whitespace-nowrap">{{ $tool->updated_at }}</td>
+					<td class="px-6 py-4 whitespace-nowrap text-center">{{ $tool->productionyear }}</td>
+					<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Models\Tool::resourcetypeDisplay($tool->resourcetype) }}</td>
+					<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Livewire\ToolTableFilter::getKeywords($tool->id) }}</td>
+					<td class="px-6 py-4 whitespace-nowrap text-center">{{ $tool->updated_at }}</td>
 					@auth
-						<td class="px-6 py-4 whitespace-nowrap">{{ \App\Livewire\ToolTableFilter::userName($tool->user_id) }}</td>
+						<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Livewire\ToolTableFilter::userName($tool->user_id) }}</td>
 					@endauth
 				</tr>
 			@endforeach
