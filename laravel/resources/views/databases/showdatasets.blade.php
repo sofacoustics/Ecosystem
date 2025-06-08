@@ -16,6 +16,7 @@
 						@endcan
 						<th class="border p-2">#</th>
 						<th class="border p-2">Name</th>
+						<th class="border p-2"># Datafiles</th>
 						<th class="border p-2 text-left">Description</th>
 						<th class="border p-2">ID</th>
 					</tr>
@@ -31,6 +32,7 @@
 							@endcan
 							<td class="border p-2 text-center">#{{ $loop->index+1}}</td>
 							<td class="border p-2 text-center"><a href="{{ route('datasets.show', $dataset->id) }}">{{ $dataset->name }}</a></td>
+							<td class="border p-2 text-center">{{ count($dataset->datafiles) }}</td>
 							<td class="border p-2">{{ $dataset->description }}</td>
 							<td class="border p-2 text-center"><small>{{ $dataset->id }}</small></td>
 						</tr>
