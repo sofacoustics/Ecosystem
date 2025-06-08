@@ -15,7 +15,7 @@ class MenuItemSeeder extends Seeder
     {
 
         MenuItem::create([
-            'id' => '1', 'title' => 'Data', 'url' => '/databases', 'authenticated' => 0, ]);
+            'id' => '1', 'title' => 'Databases', 'url' => '/databases', 'authenticated' => 0, ]);
 
         MenuItem::create([
             'id' => '2', 'title' => 'Tools', 'url' => '/tools', 'authenticated' => 0, ]);
