@@ -2,18 +2,19 @@
 (on https://github.com/sofacoustics/Ecosystem)
 
 To be done before we go live:
-* PM: Adapt Tools to "assign DOI"
 * PM: Design and Implement the landing page.
+* PM: Adapt Tools to "assign DOI"
 * JW: Implement the data upload on "Publish with DOI"
-* PM: Test "publish with DOI"
+* PM: Implement the actual workflow for "Publish with DOI" (Reset DOI, Approve -> RADAR Button)
 * PM: Adapt Tools to "Publish with DOI".
 * JW: Workflow for the test and live server
 * JW/PM: Add obligatory email confirmation when a user registers
 * MM: Implement the most important widgets
-* PM: Date linked with ORCID is GMT - show that in the message.
+* PM: Move the readme issues to github/Issues. 
 
 To be done after we go live:
 * JW: Add "Admin" as a role to the User interface. Admins should be able to see and edit all data
+* PM: Consider the admin role in the Database landing page and Database show
 * JW: Clean up the User related code
 * Bulk Upload: Cancel an upload
 * JW: Clean up the Code in the repo
@@ -27,12 +28,10 @@ Nice to have:
 * Layout: Show buttons as tabs
 * Trim spaces from the inputs
 * Add "Fill in with your name" at creators, publishers, and rightsholders.
-* Fork to a SONICOM Github repository. PM: I tried that, but it is more complex than I thought. Skipped for later. 
 * Audio View: add https://wavesurfer.xyz/
 * Bulk Upload: Automatic fill of the dataset description
 * Add confirmation on delete
 * Show comments as a table
-* Landing page: Include filter by Visible and Archived
 * Bulk Upload: Warn if a dataset already exists
 * Improve the way of linking tools, documentation, and databases (via RelatedIdentifier)
 * Allow metadata editing after publication? RADAR supports metadata correction after publication. Implement. 
