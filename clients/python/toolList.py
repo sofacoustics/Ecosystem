@@ -3,12 +3,15 @@ import requests
 def toolList():
     """
     Displays the list of all visible Tools in the Ecosystem.
+    
+    Author: Piotr Majdak (2025)
+    
     """
     server_url = 'https://sonicom.amtoolbox.org/tools?type=json'
 
     # Fetch the list of tools from the Ecosystem
     try:
-        response = requests.get(server_url, verify=False) # verify=False is equivalent to CertificateFilename=''
+        response = requests.get(server_url)
         response.raise_for_status()  # Raise an HTTPError for bad responses (4xx or 5xx)
         tools = response.json()
 
