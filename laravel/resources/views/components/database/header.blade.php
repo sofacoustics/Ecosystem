@@ -93,17 +93,17 @@
 </p>
 
 
-		<script>
-		document.getElementById('copyDOI').addEventListener('click', function() {
-				// Get the text from the input field
-				var textToCopy = document.getElementById('textDOI').value;
+<script>
+	document.getElementById('copyDOI').addEventListener('click', function() {
+			// Get the text from the input field
+		var textToCopy = document.getElementById('textDOI').value;
 
-				// Use the Clipboard API to copy the text
-				navigator.clipboard.writeText(textToCopy).then(function() {
-						alert(textToCopy + '\ncopied to the clipboard...');
-				}).catch(function(err) {
-						console.error('Failed to copy text: ', err);
-						alert('Failed to copy text. Please copy manually.'); // Inform the user
-				});
+		// Use the Clipboard API to copy the text
+		navigator.clipboard.writeText(textToCopy).then(function() {
+				alert(textToCopy + '\ncopied to the clipboard...');
+		}).catch(function(err) {
+				console.error('Failed to copy text: ', err);
+				alert('Failed to copy text. Please copy manually.'); // Inform the user
 		});
-		</script>
+	});
+</script>

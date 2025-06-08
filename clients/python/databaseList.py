@@ -22,10 +22,10 @@ def databaseList():
     # Iterate through the database list and display each
     data = databases['data']
     for item in data:
-        database_id = item.get('database id')
+        database_id = item.get('ID')
         database_url = item.get('URL')
-        database_title = item.get('database title')
-        print(f"Database #ID {database_id}: {database_title}.    URL: {database_url}")
+        database_title = item.get('Title')
+        print(f"Database #ID {database_id}: {database_title}. URL: {database_url}")
 
 if __name__ == "__main__":
     databaseList()

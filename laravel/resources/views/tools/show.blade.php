@@ -10,7 +10,29 @@ Parameters:
 	<x-slot name="header">
 		<x-tool.header :tool=$tool />
 	</x-slot>
+	<h2>The File</h2>
+		@if($tool->filesize())
+			<li><b>File Name:</b> {{ $tool->filename }}
+			<li>
+				<b>Download Link:</b> <a href="{{ asset($tool->url()) }}" download>{{ $tool->filename }}</a>
+				<img id="copyButton" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 2em; display: inline-block;">
+				<input type="text" id="textToCopy" value="{{ asset($tool->url()) }}" class="hidden"><br>
+			<li><b>File Size:</b> {{ $tool->filesize() }} bytes 
+				@if($tool->filesize() > 10240)
+				= {{ round($tool->filesize() / 1024, 2) }} kbytes 
+					@if($tool->filesize() > (1024*10240))
+						= {{ round($tool->filesize() / 1024 / 1024, 2)  }} MB 
+						@if($tool->filesize() > (1024*102410240))
+							= {{ round($tool->filesize() / 1024 / 1024 / 1024, 2) }} GB
+						@endif
+					@endif
+				@endif
+		@else
+			<li><b>File Name:</b> File not provided yet, upload a file</li>
+		@endif
 
+	<hr>
+	
 	<h2>Metadata</h2>
 		@can('update', $tool)
 			@if(count($tool->creators)>0)
@@ -153,26 +175,6 @@ Parameters:
 			Other:
 		</h3>
 		<ul class="list-disc list-inside">
-			@if($tool->filesize())
-				<li>
-					<b>File Name:</b> <a href="{{ asset($tool->url()) }}" download>{{ $tool->filename }}</a>
-					<img id="copyButton" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 2em; display: inline-block;">
-					<input type="text" id="textToCopy" value="{{ asset($tool->url()) }}" class="hidden"><br>
-					<b>File Size:</b> {{ $tool->filesize() }} bytes 
-					@if($tool->filesize() > 10240)
-					= {{ round($tool->filesize() / 1024, 2) }} kbytes 
-						@if($tool->filesize() > (1024*10240))
-							= {{ round($tool->filesize() / 1024 / 1024, 2)  }} MB 
-							@if($tool->filesize() > (1024*102410240))
-								= {{ round($tool->filesize() / 1024 / 1024 / 1024, 2) }} GB
-							@endif
-						@endif
-					@endif
-				</li>
-			@else
-				<li><b>File Name:</b> file not provided yet, upload a file</li>
-			@endif
-			
 			@if ($tool->doi != null) 
 				@if($tool->radarstatus==1)
 					<li><b>DOI (assigned)</b>: {{ $tool->doi }}
@@ -226,6 +228,8 @@ Parameters:
 			@endif 
 		</ul>
 
+	<hr>
+	
 	<h2>Comments</h2>
 		@if(count($tool->comments)==0)
 			<p>No comments found.</p>

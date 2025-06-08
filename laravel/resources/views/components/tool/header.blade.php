@@ -26,7 +26,12 @@
 
 	@if($tool->doi)
 		<x-property name="DOI">
-			<a href="https://doi.org/{{ $tool->doi }}">{{ $tool->doi }}</a>
+			@if($tool->radarstatus==3)
+				<a href="https://doi.org/{{ $tool->doi }}">{{ $tool->doi }}</a>
+			@else
+				{{ $tool->doi }}
+			@endif
+			<img id="copyDOI" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 1.5em; display: inline-block;"><input type="text" id="textDOI" value="{{ $tool->doi }}" class="hidden">
 		</x-property>
 	@endif
 </p>
@@ -50,3 +55,18 @@
 <p>
 	<small><b>Ecosystem ID:</b> {{ $tool->id }}</small>
 </p>
+
+<script>
+	document.getElementById('copyDOI').addEventListener('click', function() {
+			// Get the text from the input field
+		var textToCopy = document.getElementById('textDOI').value;
+
+		// Use the Clipboard API to copy the text
+		navigator.clipboard.writeText(textToCopy).then(function() {
+				alert(textToCopy + '\ncopied to the clipboard...');
+		}).catch(function(err) {
+				console.error('Failed to copy text: ', err);
+				alert('Failed to copy text. Please copy manually.'); // Inform the user
+		});
+	});
+</script>

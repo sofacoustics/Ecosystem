@@ -1,9 +1,9 @@
-function databaseDownload(databaseID, downloadPath)
+function databaseDownload(downloadPath, databaseID)
 % Downloads datafiles from the Ecosystem
 %
 % Parameters to be provided: 
-%   databaseID: ID of the database, see databaseList
 %   downloadPath: Local directory where the files will be downloaded.
+%   databaseID: ID of the database, see databaseList
 %
 % The local structure will be: downloadPath\datasetName\datasetDefName\DatafileName
 
@@ -38,17 +38,27 @@ end
 
 %% Iterate through the datafile list and download each file
 data=jsonData.data;
-for ii = 1:length(data)
-  fileURL = data(ii).URL; 
-  fileName = data(ii).datafileName; %Get the file name
-  if ~exist(fullfile(downloadPath, data(ii).datasetName),'dir'), mkdir(fullfile(downloadPath, data(ii).datasetName)); end
-  if ~exist(fullfile(downloadPath, data(ii).datasetName, data(ii).datafileType),'dir'), mkdir(fullfile(downloadPath, data(ii).datasetName, data(ii).datafileType)); end  
-  localFilePath = fullfile(downloadPath, data(ii).datasetName, data(ii).datafileType, fileName);
-  
-  try
-    disp(['Downloading ' fileName ' from dataset ' data(ii).datasetName '...']);
-    websave(localFilePath, fileURL, options);
-  catch ME
-    error('downloadFilesFromHTTPServer:downloadError', 'Failed to download file: %s from %s to %s. Error: %s', fileName, fileURL, localFilePath, ME.message);
+if isempty(data)
+  disp('This Database does not contain any Datafiles'); 
+else
+  for ii = 1:length(data)
+    fileURL = data(ii).DatafileURL; % Get the Datafile URL
+    fileName = data(ii).DatafileName; % Get the Datafile name
+    if ~exist(fullfile(downloadPath, data(ii).DatasetName),'dir')
+      mkdir(fullfile(downloadPath, data(ii).DatasetName)); % create Dataset directory
+    end
+    if ~exist(fullfile(downloadPath, data(ii).DatasetName, data(ii).DatafileType),'dir')
+      mkdir(fullfile(downloadPath, data(ii).DatasetName, data(ii).DatafileType)); % create Datafile Type directory
+    end
+      % create local absolute path for the Datafile
+    localFilePath = fullfile(downloadPath, data(ii).DatasetName, data(ii).DatafileType, fileName);  
+      % download the Datafile
+    try
+      disp(['Downloading ' fileName ' from Dataset ' data(ii).DatasetName '...']);
+      websave(localFilePath, fileURL, options);
+    catch ME
+      error('downloadFilesFromHTTPServer:downloadError', 'Failed to download file: %s from %s to %s. Error: %s', fileName, fileURL, localFilePath, ME.message);
+    end
   end
+  disp('Download completed...');
 end

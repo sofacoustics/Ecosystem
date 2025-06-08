@@ -56,13 +56,13 @@ class DatabaseController extends Controller
 
 				$data = $databases->map(function ($database) { // Transform the data into a suitable format.  This is CRUCIAL.
 						return [
-								'database id' => $database->id,
+								'ID' => $database->id,
+								'Title' => $database->title,
 								'URL' => url()->current() . '/' . $database->id . '/download?type=json',
-								'database title' => $database->title,
-								'database subtitle' => $database->additionaltitle,
-								'database production year' => $database->productionyear,
-								'database created date' => $database->created_at,
-								'database updated date' => $database->updated_at,
+								'Subtitle' => $database->additionaltitle,
+								'Production Year' => $database->productionyear,
+								'Created Date' => $database->created_at,
+								'Updated Date' => $database->updated_at,
 						];
 				});
 				// Return the file data as a JSON response.
@@ -204,15 +204,15 @@ class DatabaseController extends Controller
 
 				$fileData = $files->map(function ($file) { // Transform the data into a suitable format.  This is CRUCIAL.
 						return [
-								'datafile id' => $file->id,
-								'datafile name' => $file->name,
-								'datafile type' => $file->datasetdef->name,
-								'dataset id' => $file->dataset->id,
-								'dataset name' => $file->dataset->name, 
-								'dataset description' => $file->dataset->description,
-								'database id' => $file->dataset->database->id,
-								'database title' => $file->dataset->database->title,
-								'URL' => asset($file->url()),
+								'Datafile ID' => $file->id,
+								'Datafile Name' => $file->name,
+								'Datafile URL' => asset($file->url()),
+								'Datafile Type' => $file->datasetdef->name,
+								'Dataset ID' => $file->dataset->id,
+								'Dataset Name' => $file->dataset->name, 
+								'Dataset Description' => $file->dataset->description,
+								'Database ID' => $file->dataset->database->id,
+								'Database Title' => $file->dataset->database->title,
 						];
 				});
 				// Return the file data as a JSON response.
