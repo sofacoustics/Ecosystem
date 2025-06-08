@@ -27,15 +27,5 @@ end
 
 %% Iterate through the tool list and display each 
 data=tools.data;
-for ii = 1:length(data)
-    toolID = data(ii).ID; % Get the tool ID
-    toolURL = data(ii).URL; % Get the URL to JSON for download
-    toolTitle = data(ii).Title; % Get the tool Title
-    toolType = data(ii).Type; % Get the tool Type
-    toolFilename = data(ii).Filename; % Get the tool Filename
-    if isempty(toolFilename)
-      disp(['Tool #ID ' num2str(toolID) ' (' toolType '): ' toolTitle '. File not available.']);
-    else
-      disp(['Tool #ID ' num2str(toolID) ' (' toolType '): ' toolTitle '. URL: ' toolURL]);
-    end
-end
+tab=struct2table(data);
+disp(tab);

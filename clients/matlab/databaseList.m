@@ -27,9 +27,5 @@ end
 
 %% Iterate through the database list and display each 
 data=databases.data;
-for ii = 1:length(data)
-    databaseID = data(ii).ID; % Get the database ID
-    databaseURL = data(ii).URL; % Get the URL to JSON for download
-    databaseTitle = data(ii).Title; % Get the database Title
-    disp(['Database #ID ' num2str(databaseID) ': ' databaseTitle '. URL: ' databaseURL]);
-end
+tab=struct2table(data);
+disp(tab);
