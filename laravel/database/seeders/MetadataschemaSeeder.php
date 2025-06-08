@@ -25,7 +25,7 @@ class MetadataschemaSeeder extends Seeder
 		//Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'resourceType', 'value' => 'SERVICE', 'display' => 'Service'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'resourceType', 'value' => 'SOFTWARE', 'display' => 'Software'));
 		//Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'resourceType', 'value' => 'SOUND', 'display' => 'Sound'));
-		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'resourceType', 'value' => 'TEXT', 'display' => 'Text, e.g., documentation'));
+		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'resourceType', 'value' => 'TEXT', 'display' => 'Text'));
 		//Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'resourceType', 'value' => 'WORKFLOW', 'display' => 'Workflow'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'resourceType', 'value' => 'OTHER', 'display' => 'Other'));
 			// SubjectArea
