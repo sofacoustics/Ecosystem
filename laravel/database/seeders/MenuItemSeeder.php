@@ -29,7 +29,7 @@ class MenuItemSeeder extends Seeder
         MenuItem::create([
             'id' => '5', 'title' => 'About', 'route' => 'about', 'authenticated' => 0, ]);
 
-        MenuItem::create([
+        /*MenuItem::create([
             'id' => '6', 'title' => 'Backend', 'route' => 'filament.admin.pages.dashboard', 'authenticated' => 2, ]);
 
         MenuItem::create([
@@ -42,6 +42,6 @@ class MenuItemSeeder extends Seeder
             'id' => '9', 'title' => 'Services', 'url' => '/services', 'authenticated' => 2, ]);
 
         MenuItem::create([
-            'id' => '10', 'title' => 'RADAR', 'url' => '/radar', 'authenticated' => 2, ]);
+            'id' => '10', 'title' => 'RADAR', 'url' => '/radar', 'authenticated' => 2, ]);*/
     }
 }
