@@ -73,10 +73,12 @@ Download
 
 Widgets & Services
 ==================
-* Implement the seeder tables for various widgets and services
+* Seeder tables for various widgets and services implemented
 * Image: rotation and reset (container does not expand yet)
 * Audio: basic player
 * Properties: file size, internal path, date created, data updated
+* SOFA Properties: Table with all metadata
+* STL Viewer: https://www.viewstl.com/plugin/
 
 Comments
 ========
