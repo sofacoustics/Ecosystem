@@ -2,7 +2,6 @@
 (on https://github.com/sofacoustics/Ecosystem)
 
 To be done before we go live:
-* PM: Design and Implement the landing page.
 * PM: Adapt Tools to "assign DOI"
 * JW: Implement the data upload on "Publish with DOI"
 * PM: Implement the actual workflow for "Publish with DOI" (Reset DOI, Approve -> RADAR Button)
@@ -41,9 +40,10 @@ Nice to have:
 * Bulk Upload: Confirmation when saved to Database. 
 
 
+General
+=======
+* Landing page implemented.
 
-DONE!
-=====
 
 Tools
 =====
@@ -63,10 +63,8 @@ Tools
 * Tools index page: search by Title, Produced Year, Keywords, Type.
 * The actual procedure to "Publish with DOI" implemented, however without data upload yet. 
 
-
 Download
 ========
-
 * General interface created
 * JSON format created
 * Example client for Matlab/Octave implemented
@@ -75,7 +73,6 @@ Download
 
 Widgets & Services
 ==================
-
 * Implement the seeder tables for various widgets and services
 * Image: rotation and reset (container does not expand yet)
 * Audio: basic player
@@ -83,13 +80,11 @@ Widgets & Services
 
 Comments
 ========
-
 * show, delete, new, edit
 * Input parameter checks added
 
 Datasets definition
 ===================
-
 * New, Show, Delete, Edit
 * Widgets generally implemented
 * Multiple photos as a single datafile: user needs to create animated WEBP
@@ -102,7 +97,6 @@ Datasets definition
 
 Database
 ========
-
 * General check of the RADAR API
 * Retrieval of all databases from datathek
 * show and edit "Visible", "Assign DOI", "Publish with DOI"
@@ -128,8 +122,6 @@ Database
 
 Database landing page
 =====================
-
-Done: 
 * General implementation
 * Include Publication and Production Date for sorting
 * Include Last Modified for sorting
@@ -137,8 +129,6 @@ Done:
 
 Upload & Datasets
 =================
-
-Done: 
 * Upload (create a new dataset, edit an existing)
 * Check for unique dataset names in a database (important for the download!)
 * Dataset Name must not contain <>:&"\|?*/
@@ -146,8 +136,6 @@ Done:
 
 Bulk upload
 ===========
-
-Done: 
 * Check if a dataset already exists
 * Implement the actual Upload
 * Dataset name and datafile names linked by <ID>
@@ -160,15 +148,12 @@ Done:
 
 User profile
 ============
-
 * "ORCID" added. Syntax: String, max 20 characters. 
 * Link the profile with ORCID
 * Allow new databases only if the profile linked with ORCID
 
 Metadata status
 ===============
-
-Done: 
 * Title: done.
 * ProductionYear: done. Input checked for YYYY, YYYY-YYYY, or "unknown" (case insensitive).
 * Resource (& resourceType): done. In the database form, set to "Dataset" and "Sonicom Ecosystem", non-editable. In the tool form, choice of selected types only. 

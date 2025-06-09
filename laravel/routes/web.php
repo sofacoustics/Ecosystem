@@ -18,6 +18,7 @@ use App\Http\Controllers\RadarController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ToolController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Database\Eloquent\Model;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +31,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () { return view('landing'); })->name('home');
+Route::get('/', function () { return view('landing', [
+	'database' => \App\Models\Database::where('databases.visible', '=', 1)->latest()->first(),
+	'datafile' => \App\Models\Datafile::latest()->first(), 
+	'tool' => \App\Models\Tool::latest()->first()]
+); })->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
