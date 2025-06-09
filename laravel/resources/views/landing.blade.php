@@ -8,7 +8,9 @@
 	<h3 id="latestTool">Latest Tool:</h3>
 	<ul class="list-disc list-inside inline-block">
 		<li><b>Title:</b> {{ $tool->title }}
-		<li><small><b>Subtitle:</b> {{ $tool->title }}</small>
+		@if($tool->additionaltitle)
+			<li><small><b>Subtitle:</b> {{ $tool->additionaltitle }}</small>
+		@endif
 		<li><b>Filename:</b> {{ $tool->filename }}
 		<li><b>Modified at:</b> {{ $tool->updated_at }}
 		<li><a href="{{ route('tools.show', $tool->id) }}">More details...</a>
@@ -19,7 +21,9 @@
 	<h3 id="latestDatabase">Most recent Database:</h3> 
 	<ul class="list-disc list-inside inline-block">
 		<li><b>Title:</b> {{ $database->title }}
-		<li><small><b>Subtitle:</b> {{ $database->title }}</small>
+		@if($database->additionaltitle)
+			<li><small><b>Subtitle:</b> {{ $database->additionaltitle }}</small>
+		@endif
 		<li><b>Modified at:</b> {{ $database->updated_at }}
 		<li><a href="{{ route('databases.show', $database->id) }}">More details...</a>
 	</ul>
