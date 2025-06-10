@@ -10,6 +10,7 @@ use App\Services\DatabaseRadarDatasetBridge;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 use Livewire\Component;
 
@@ -86,7 +87,7 @@ class DatabaseVisibility extends Component
 		// validate metadata
 		else if(!$radar->metadataValidate())
 		{
-			$this->dispatch('radar-status-changed', 'Validation failed'); 
+			$this->dispatch('radar-status-changed', 'Validation failed');
 			$this->error = $radar->message.' RADAR Message: '.$radar->details.' *** Content created: *** '.json_encode($content_created);
 			return;
 		}
@@ -126,7 +127,7 @@ class DatabaseVisibility extends Component
 
 	public function submitToPublish()
 	{
-		$this->dispatch('status-message', 'Updating metadata');
+		//$this->dispatch('status-message', 'Updating metadata');
 		$this->error = "";
 		$this->warning = "";
 
@@ -146,25 +147,42 @@ class DatabaseVisibility extends Component
 			// validate metadata
 		if(!$radar->metadataValidate())
 		{
-			$this->dispatch('radar-status-changed', 'Validation failed'); 
+			$this->dispatch('radar-status-changed', 'Validation failed');
 			$this->error = $radar->message.' RADAR Message: '.$radar->details.' *** Content created: *** '.json_encode($content_created);
 			return;
 		}
-			// *******************
-			//  PM: Here, we need to add the upload of all data
-			// *******************
-		
-			// after the upload, we can trigger the review
+		// upload database to the Datathek
+		if(!$radar->upload())
+		{
+			$this->error = $radar->message.' ('.$radar->details.')';
+			return;
+		}
+		else
+		{
+			$this->dispatch('status-message', $radar->message);
+			// Starting the 'review' process directly after uploading was failing.
+			// sleeping for 5 seconds appears to fix this. Not a pretty solution though!
+			// help when starting the review directly after uploading files, which otherwise fails!
+			sleep(5);
+		}
+
+		// after the upload, we can trigger the review
 		if(!$radar->startreview())
 		{
 			$this->error = $radar->message.' RADAR Review Message: '.$radar->details;
 			return;
 		}
-		
+		else
+		{
+			$this->dispatch('status-message', $radar->message);
+		}
+
 		$this->database->radarstatus=2;
 		$this->database->save();
+		Log::info('Changing radarstatus for database '.$this->database->id.' to '.$this->database->radarstatus);
 		$this->radarstatus = $this->database->radarstatus;
-		$this->js('window.location.reload()');
+		$this->dispatch('status-message', 'The database has been successfully published!');
+		//$this->js('window.location.reload()'); //jw:note I think this refreshes page removing status messages too early and is unnecessary
 	}
 
 	public function approve() // Emulate the curator approving the publication at the Datathek
@@ -177,14 +195,14 @@ class DatabaseVisibility extends Component
 	public function resetDOI()
 	{
 		$radar = new DatabaseRadarDatasetBridge($this->database);
-			// do we have a link to RADAR?
+		// do we have a link to RADAR?
 		if($this->database->radar_id)
 		{		// stop review process
 			if(!$radar->endreview())
 				$this->error = $radar->details;
-/*				// delete the dataset
+			// delete the dataset
 			if(!$radar->delete())
-				$this->error = $radar->details;*/
+				$this->error = $radar->details;
 		}
 
 		$this->database->radarstatus=null;
