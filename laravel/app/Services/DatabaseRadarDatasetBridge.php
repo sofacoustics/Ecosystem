@@ -485,6 +485,8 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		if($response->status() == 204)
 		{
 			$this->database->radar_id = null;
+			$this->database->doi = null;
+			$this->database->radarstatus = 0;
 			$this->database->save();
 			// set dataset and datafile radar_ids back to null
 			foreach($this->database->datasets as $dataset)
