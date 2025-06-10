@@ -241,9 +241,9 @@ class DatabaseController extends Controller
 	}
 
 	/*
-	 * Display RADAR status
+	 * Display Datatheck status
 	 */
-	public function radar(Database $database)
+	public function datathek(Database $database)
 	{
 		$radardataset = new RadardatasetController;
 		$response = $radardataset->read($database);
@@ -258,10 +258,10 @@ class DatabaseController extends Controller
 		$radar =>
 		 */
 
-		return view('databases.radar', [
+		return view('databases.datathek', [
 			'database' => $database,
 			'radar' => $content,
-			'tabTitle' => 'RADAR Info'
+			'tabTitle' => 'Datathek Info'
 		]);
 	}
 

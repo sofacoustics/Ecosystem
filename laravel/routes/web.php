@@ -58,7 +58,7 @@ Route::view('/terms-of-use', 'pages.terms-of-use')->name('terms-of-use');
 Route::resource('databases', DatabaseController::class);
 Route::get('/databases/{database}/visibility', [DatabaseController::class, 'visibility'])->name('databases.visibility');
 Route::get('/databases/{database}/radar', [DatabaseController::class, 'radarShow'])->name('databases.radar');
-Route::get('/databases/{database}/radar', [DatabaseController::class, 'radar'])->name('databases.radar'); // display RADAR stuff for testing API
+Route::get('/databases/{database}/datathek', [DatabaseController::class, 'datathek'])->name('databases.datathek')->middleware('admin'); // display Datathek status and actions for admin testing
 Route::get('/databases/{database}/radar/edit', [DatabaseController::class, 'radarEdit'])->name('databases.radar.edit');
 Route::get('/databases/{database}/datasetdefs', [DatabaseController::class, 'datasetdefs'])->name('databases.datasetdefs');
 Route::get('/databases/{database}/creators', [CreatorController::class, 'index'])->name('databases.creators');
