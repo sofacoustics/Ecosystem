@@ -57,15 +57,6 @@
 				Processing...
 			</span>
 		</button>
-		@if($status)
-			<x-alert title='Info!' color='blue'>{{ $status }}</x-alert>
-		@endif
-		@if($warning)
-			<x-alert title='Warning!'>{{ $warning }}</x-alert>
-		@endif
-		@if($error)
-			<x-alert title='Error!'>{{ $error }}</x-alert>
-		@endif
 		<p>Note that this does not publish your database with that DOI yet:
 			The datafiles will <b>not</b> be transfered to the Datathek yet, and the link between the DOI and your data will be invalid yet.</p>
 		<p>Note also that even with DOI assigned, you will be able to hide your database within the Ecosystem.</p>
@@ -124,7 +115,7 @@
 			<p>The database has been submitted to be persistently published.</p>
 			<p>The curator has been notified. Please check later...</p>
 		@elseif($radarstatus==3)
-			<p>The database has been persistenly published under the following link: <a href="https://doi.org/{{$doi}}">https://doi.org/{{$doi}}</a>.
+			<p>The database has been persistently published under the following link: <a href="https://doi.org/{{$doi}}">https://doi.org/{{$doi}}</a>.
 			</p>
 			<p>Well done!</p>
 		@else
@@ -134,6 +125,17 @@
 		<p>If you want to persistently publish your database with that DOI, you need to <b>expose</b> the database within the Ecosystem first.</p>
 	@endif
 @endif
+
+@if($status)
+	<x-alert title='Info!' color='blue'>{{ $status }}</x-alert>
+@endif
+@if($warning)
+	<x-alert title='Warning!'>{{ $warning }}</x-alert>
+@endif
+@if($error)
+	<x-alert title='Error!'>{{ $error }}</x-alert>
+@endif
+
 <p></p>
 <hr>
 <p>Debugging:</p>
