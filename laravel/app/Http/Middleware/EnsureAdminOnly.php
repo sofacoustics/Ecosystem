@@ -16,7 +16,7 @@ class EnsureAdminOnly
     public function handle(Request $request, Closure $next): Response
     {
 	    if (!auth()->user()->hasRole('admin')) {
-	        return redirect('home');
+	        return redirect('/');
 	    }
 		return $next($request);
     }
