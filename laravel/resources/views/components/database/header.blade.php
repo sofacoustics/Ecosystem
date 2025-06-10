@@ -94,7 +94,7 @@
 
 
 <script>
-	document.getElementById('copyDOI').addEventListener('click', function() {
+	document.getElementById('copyDOI')?.addEventListener('click', function() {
 			// Get the text from the input field
 		var textToCopy = document.getElementById('textDOI').value;
 
