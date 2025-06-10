@@ -60,10 +60,11 @@
 	}
 
 @endphp
-<div class="inline">
+<div 
+	x-data="{ loading: false }"
+	class="inline">
 	@if ($attributes->has('action'))
 		<form {{ $attributes }} method="{{ $formMethod }}"
-			x-data="{ loading: false }"
 			@submit="loading = true">
 			@if (in_array("$method", ['DELETE', 'PATCH', 'POST', 'PUT']))
 				@csrf
