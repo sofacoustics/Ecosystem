@@ -88,7 +88,7 @@ class DatabaseVisibility extends Component
 		else if(!$radar->metadataValidate())
 		{
 			$this->dispatch('radar-status-changed', 'Validation failed');
-			$this->error = $radar->message.' RADAR Message: '.$radar->details.' *** Content created: *** '.json_encode($content_created);
+			$this->error = $radar->message.' RADAR Message: '.$radar->details;
 			return;
 		}
 		if($radar->read())
@@ -192,27 +192,6 @@ class DatabaseVisibility extends Component
 		$this->radarstatus = $this->database->radarstatus;
 	}
 
-	public function resetDOI()
-	{
-		$radar = new DatabaseRadarDatasetBridge($this->database);
-		// do we have a link to RADAR?
-		if($this->database->radar_id)
-		{		// stop review process
-			if(!$radar->endreview())
-				$this->error = $radar->details;
-			// delete the dataset
-			if(!$radar->delete())
-				$this->error = $radar->details;
-		}
-
-		$this->database->radarstatus=null;
-		$this->database->doi = null;
-		$this->database->radar_id = null;
-		$this->database->save();
-		$this->doi = $this->database->doi;
-		$this->radarstatus = $this->database->radarstatus;
-		$this->js('window.location.reload()'); 
-	}
 	public function render()
 	{
 		return view('livewire.database-visibility');

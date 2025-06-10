@@ -54,7 +54,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	 *
 	 * RADAR Docs:
 	 *
-	 *	publish	POST	/datasets/{id}/publish		200, 401, 403, 404, 422, 500	 
+	 *	publish	POST	/datasets/{id}/publish		200, 401, 403, 404, 422, 500
 	 *
 	 *
 	 */
@@ -508,5 +508,25 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		$this->message = 'Failed to delete the RADAR dataset';
 		$this->details = $response->content();
 		return false;
+	}
+
+	public function resetPersistentPublication()
+	{
+		if($this->database->radar_id)
+		{
+			// stop review process
+			if(!$this->endreview())
+				return false;
+			// delete the dataset
+			if(!$this->delete())
+				return false;
+		}
+
+		$this->database->radarstatus=null;
+		$this->database->doi = null;
+		$this->database->radar_id = null;
+		$this->database->save();
+		$this->message = 'The DOI has successfully been reset and the persistent publication retracted!';
+		return true;
 	}
 }

@@ -22,6 +22,9 @@
 			--}}
 			<x-button wire:click="uploadToRadar">Upload to RADAR</x-button>
 		@endif
+		@if($radarstatus == 2)
+			<x-button wire:click="resetDOI">Reset DOI and the Persistent Publication</x-button>
+		@endif
 		@if(isset($id))
 			<x-button method="DELETE" wire:click="deleteFromRadar">Delete from RADAR</x-button>
 		@endif
