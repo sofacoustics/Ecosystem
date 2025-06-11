@@ -70,7 +70,7 @@ class ToolPolicy
 	 */
 	public function delete(User $user, Tool $tool): Response
 	{
-		return ($user->id == $tool->user_id) && ($tool->radarstatus < 2) // allow only for owners and if not submitted for persistent publication
+		return ($user->id == $tool->user_id) && ($tool->radarstatus < 2) // allow only for owners and if DOI not assigned yet
 			? Response::allow()
 			: Response::deny('You may not delete this tool, since you do not own it!');
 
