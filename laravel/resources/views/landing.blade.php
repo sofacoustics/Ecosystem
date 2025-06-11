@@ -17,8 +17,8 @@
 	</ul>
 	
 	<hr>
-	
-	<h3 id="latestDatabase">Most recent Database:</h3> 
+
+	<h3 id="latestDatabase">Most recent Database:</h3>
 	<ul class="list-disc list-inside inline-block">
 		<li><b>Title:</b> {{ $database->title }}
 		@if($database->additionaltitle)
@@ -29,17 +29,19 @@
 	</ul>
 	
 	<hr>
-	
-	<h3 id="latestDatafile">Latest Datafile:</h3>
-	<ul class="list-disc list-inside inline-block">
-		<li><b>Database:</b> <a href="{{ route('databases.show', $datafile->dataset->database->id) }}">{{ $datafile->dataset->database->title }}</a>
-		<li><b>Dataset:</b> <a href="{{ route('datasets.show', $datafile->dataset->id) }}">{{ $datafile->dataset->name }}</a>
-		<li><b>Datafile Type:</b> {{ $datafile->datasetdef->name }} ({{ $datafile->datasetdef->datafiletype->name }})
-		<li><b>Datafile Name:</b> <a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a>
-		<li><b>Modified at:</b> {{ $datafile->updated_at }}
-	</ul>
-	<div wire:key="{{ $datafile->id }}">
-		<livewire:DatafileListener :datafile="$datafile" :key="$datafile->id" />
-	</div>
+
+    @if($datafile)
+        <h3 id="latestDatafile">Latest Datafile:</h3>
+        <ul class="list-disc list-inside inline-block">
+            <li><b>Database:</b> <a href="{{ route('databases.show', $datafile->dataset->database->id) }}">{{ $datafile->dataset->database->title }}</a>
+            <li><b>Dataset:</b> <a href="{{ route('datasets.show', $datafile->dataset->id) }}">{{ $datafile->dataset->name }}</a>
+            <li><b>Datafile Type:</b> {{ $datafile->datasetdef->name }} ({{ $datafile->datasetdef->datafiletype->name }})
+            <li><b>Datafile Name:</b> <a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a>
+            <li><b>Modified at:</b> {{ $datafile->updated_at }}
+        </ul>
+        <div wire:key="{{ $datafile->id }}">
+            <livewire:DatafileListener :datafile="$datafile" :key="$datafile->id" />
+        </div>
+    @endif
 
 </x-app-layout>
