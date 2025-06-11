@@ -137,7 +137,11 @@ Parameters:
 			@forelse ($database->relatedidentifiers as $relatedidentifier)
 			<li>
 				<b>{{ \App\Models\Database::relationDisplay($relatedidentifier->relationtype) }}:</b> 
-				{{ $relatedidentifier->name }} 
+				@if (\App\Models\Database::relatedidentifierDisplay($relatedidentifier->relatedidentifiertype) === "URL")
+					<a href="{{ $relatedidentifier->name }} ">{{ $relatedidentifier->name }}</a> 
+				@else
+					{{ $relatedidentifier->name }} 
+				@endif
 				({{ \App\Models\Database::relatedidentifierDisplay($relatedidentifier->relatedidentifiertype) }}).
 			</li>
 			@empty
