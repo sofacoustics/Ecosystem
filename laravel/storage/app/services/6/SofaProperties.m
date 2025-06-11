@@ -80,7 +80,7 @@ function SofaProperties(SOFAfile)
         field_name = field_names{i};
         % Check if the field starts with 'GLOBAL_'
         if startsWith(field_name, 'GLOBAL_')
-            data{end+1, 1} = field_name;
+            data{end+1, 1} = field_name(8:end);  % extractAfter is not supported in Octave
             data{end, 2} = get_sofa_field(Obj, field_name, 'unknown');
         end
     end
