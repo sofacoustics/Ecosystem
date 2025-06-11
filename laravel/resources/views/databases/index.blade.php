@@ -25,20 +25,27 @@
 		<img id="copyJSON" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 2em; display: inline-block;">
 		<input type="text" id="textJSON" value="{{ url()->current() . '?type=json' }}" class="hidden">
 	</p>
-		<script>
-		document.getElementById('copyJSON').addEventListener('click', function() {
-				// Get the text from the input field
-				var textToCopy = document.getElementById('textJSON').value;
+	
+	<p>Clients for the Database list: 
+		<a href="{{ asset('clients/matlab/databaseList.m') }}" download>Matlab</a> 
+		<a href="{{ asset('clients/octave/databaseList.m') }}" download>Octave</a> 
+		<a href="{{ asset('clients/python/databaseList.py') }}" download>Python</a> 
+	</p>
+	
+	<script>
+	document.getElementById('copyJSON').addEventListener('click', function() {
+			// Get the text from the input field
+			var textToCopy = document.getElementById('textJSON').value;
 
-				// Use the Clipboard API to copy the text
-				navigator.clipboard.writeText(textToCopy).then(function() {
-						alert(textToCopy + '\ncopied to the clipboard...');
-				}).catch(function(err) {
-						console.error('Failed to copy text: ', err);
-						alert('Failed to copy text. Please copy manually.'); // Inform the user
-				});
-		});
-		</script>
+			// Use the Clipboard API to copy the text
+			navigator.clipboard.writeText(textToCopy).then(function() {
+					alert(textToCopy + '\ncopied to the clipboard...');
+			}).catch(function(err) {
+					console.error('Failed to copy text: ', err);
+					alert('Failed to copy text. Please copy manually.'); // Inform the user
+			});
+	});
+	</script>
 	
 
 
