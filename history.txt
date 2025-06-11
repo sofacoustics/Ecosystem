@@ -3,7 +3,8 @@
 
 To be done before we go live:
 * PM: Adapt Tools to "assign DOI"
-* PM: Adapt Tools to "Publish with DOI"
+* PM: Implement the actual workflow for "Publish with DOI" (Reset DOI, Approve -> RADAR Button)
+* PM: Adapt Tools to "Publish with DOI".
 * JW: Workflow for the test and live server
 * JW/PM: Add obligatory email confirmation when a user registers
 * MM: Implement the most important widgets
@@ -16,7 +17,7 @@ To be done after we go live:
 * Bulk Upload: Cancel an upload
 * JW: Clean up the Code in the repo
 * Implement email notifications to admins
-* PM: Obtain "Publication Year" from RADAR after publication. 
+* PM: Obtain "Publication Year" from RADAR after publication.
 * PM: Logging of all downloads
 
 Nice to have:
@@ -113,14 +114,12 @@ Database
 * Input parameter checks added
 * Table touched on adding/editing of child elements
 * Index page: harmonized and implemented DOI and visible icons.
-* Index page: Search by Keywords and sorting by DOI. 
+* Index page: Search by Keywords and sorting by DOI.
 * Actual procedure to "assign DOI" implemented
 * Related identifiers added when submitted to RADAR
 * DOI can be revokoed (=delete the entry at RADAR).
 * Data upload on "Publish with DOI" implemented. 
 * "Publish with DOI" from the user's perspective ready.
-
-
 
 Database landing page
 =====================
@@ -184,4 +183,4 @@ For later:
 * GeoLocation (& geoLocationCountry, geoLocationRegion, geoLocationPoint, geoLocationBox): tbd as 0-n, later. 
 * SoftwareType (& type, softwareName, optional alternativeSoftware): tbd as 0-n, later.
 * DataProcessing: tbd as 0-n. 
-* RelatedInformation (& relatedInformationType): tbd as 0-n. 
+* RelatedInformation (& relatedInformationType): tbd as 0-n.
