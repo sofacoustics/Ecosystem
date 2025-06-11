@@ -515,16 +515,24 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		if($this->database->radar_id)
 		{
 			// stop review process
-			if(!$this->endreview())
-				return false;
+			$this->endreview();
+
 			// delete the dataset
-			if(!$this->delete())
-				return false;
+			$this->delete();
 		}
 
 		$this->database->radarstatus=null;
 		$this->database->doi = null;
 		$this->database->radar_id = null;
+		$this->database->save();
+		$this->message = 'The DOI has successfully been reset! Check what happened at the Datathek.';
+		return true;
+	}
+	
+
+	public function approvePersistentPublication()
+	{
+		$this->database->radarstatus=3;
 		$this->database->save();
 		$this->message = 'The DOI has successfully been reset and the persistent publication retracted!';
 		return true;

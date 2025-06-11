@@ -185,13 +185,6 @@ class DatabaseVisibility extends Component
 		//$this->js('window.location.reload()'); //jw:note I think this refreshes page removing status messages too early and is unnecessary
 	}
 
-	public function approve() // Emulate the curator approving the publication at the Datathek
-	{
-		$this->database->radarstatus=3;
-		$this->database->save();
-		$this->radarstatus = $this->database->radarstatus;
-	}
-
 	public function render()
 	{
 		return view('livewire.database-visibility');
