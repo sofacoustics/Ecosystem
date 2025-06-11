@@ -46,17 +46,18 @@
 		$type = $attributes->get('type');
 	}
 
-	// button colors
+	// button colors: moved to AppServiceProvider (global)
+	/*
 	$enabledColors = 'blue-500 bg-blue-500 hover:bg-blue-700 text-white';
 	$disabledColors = 'gray-400 bg-gray-400 text-white';
 	$deleteColors = 'red-400 bg-red-400 hover:bg-red-600 text-white';
-
-	$classColors = $enabledColors;
+	*/
+	$classColors = $buttonColorEnabled;
 	if ($disabled) {
-		$classColors = $disabledColors;
+		$classColors = $buttonColorDisabled;
 	}
 	if ("$method" == 'DELETE') {
-		$classColors = $deleteColors;
+		$classColors = $buttonColorDelete;
 	}
 
 @endphp
@@ -79,8 +80,8 @@
 		{{-- If we're not a form, then give user immediate feedback that it's been pressed
 		@if (!$attributes->has('action')) x-on:click="loading = true" @endif--}}
 		:disabled="loading"
-		:class="loading ? '{{ $disabledColors }}' : '{{ $classColors }}'"
-		class="{{ $classColors }} font-bold mx-1 my-1 py-1 px-2 rounded">
+		:class="loading ? '{{ $buttonColorDisabled }}' : '{{ $classColors }}'"
+		class="{{ $classColors }} {{ $buttonStyle }}">
 		{{ $slot }}
 	</button>
 	@if ($attributes->has('action'))
