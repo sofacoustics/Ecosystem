@@ -3,13 +3,11 @@
 
 To be done before we go live:
 * PM: Adapt Tools to "assign DOI"
-* JW: Implement the data upload on "Publish with DOI"
-* PM: Implement the actual workflow for "Publish with DOI" (Reset DOI, Approve -> RADAR Button)
-* PM: Adapt Tools to "Publish with DOI".
+* PM: Adapt Tools to "Publish with DOI"
 * JW: Workflow for the test and live server
 * JW/PM: Add obligatory email confirmation when a user registers
 * MM: Implement the most important widgets
-* PM: Move the readme issues to github/Issues. 
+* PM: Move the readme issues to github/Issues.
 
 To be done after we go live:
 * JW: Add "Admin" as a role to the User interface. Admins should be able to see and edit all data
@@ -17,13 +15,11 @@ To be done after we go live:
 * JW: Clean up the User related code
 * Bulk Upload: Cancel an upload
 * JW: Clean up the Code in the repo
-* JW: Subject area 'agriculture' doesn't work. It doesn't get caught by the metadata check
-* PM: Implement download of a list of tools
 * Implement email notifications to admins
 * PM: Obtain "Publication Year" from RADAR after publication. 
 * PM: Logging of all downloads
 
-Nice to have: 
+Nice to have:
 * Layout: Show buttons as tabs
 * Trim spaces from the inputs
 * Add "Fill in with your name" at creators, publishers, and rightsholders.
@@ -69,7 +65,8 @@ Download
 * JSON format created
 * Example client for Matlab/Octave implemented
 * Download of the database list implemented
-* Example client to display database list for Matlab/Octave implemented
+* Example clients for Python implemented
+* Example clients to display database list for Matlab/Octave implemented
 
 Widgets & Services
 ==================
@@ -120,6 +117,9 @@ Database
 * Actual procedure to "assign DOI" implemented
 * Related identifiers added when submitted to RADAR
 * DOI can be revokoed (=delete the entry at RADAR).
+* Data upload on "Publish with DOI" implemented. 
+* "Publish with DOI" from the user's perspective ready.
+
 
 
 Database landing page
