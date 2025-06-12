@@ -136,9 +136,4 @@
 	<x-alert title='Error!'>{{ $error }}</x-alert>
 @endif
 
-<p></p>
-<hr>
-<p>Debugging:</p>
-<small>RADAR Status: {{ $radarstatus }}</small>
-<button wire:click="approve" class="inline bg-gray-500 hover:bg-gray-700 rounded px-4 py-2 font-bold text-white">Approve the Persistent Publication</button>
 </div>

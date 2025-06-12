@@ -182,14 +182,7 @@ class DatabaseVisibility extends Component
 		Log::info('Changing radarstatus for database '.$this->database->id.' to '.$this->database->radarstatus);
 		$this->radarstatus = $this->database->radarstatus;
 		$this->dispatch('status-message', 'The database has been successfully published!');
-		//$this->js('window.location.reload()'); //jw:note I think this refreshes page removing status messages too early and is unnecessary
-	}
-
-	public function approve() // Emulate the curator approving the publication at the Datathek
-	{
-		$this->database->radarstatus=3;
-		$this->database->save();
-		$this->radarstatus = $this->database->radarstatus;
+		$this->js('window.location.reload()'); //jw:note I think this refreshes page removing status messages too early and is unnecessary
 	}
 
 	public function render()

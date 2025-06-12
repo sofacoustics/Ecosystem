@@ -158,7 +158,11 @@ Parameters:
 			@forelse ($tool->relatedidentifiers as $relatedidentifier)
 			<li>
 				<b>{{ \App\Models\Tool::relationDisplay($relatedidentifier->relationtype) }}:</b> 
-				{{ $relatedidentifier->name }} 
+				@if (\App\Models\Tool::relatedidentifierDisplay($relatedidentifier->relatedidentifiertype) === "URL")
+					<a href="{{ $relatedidentifier->name }} ">{{ $relatedidentifier->name }}</a> 
+				@else
+					{{ $relatedidentifier->name }} 
+				@endif
 				({{ \App\Models\Tool::relatedidentifierDisplay($relatedidentifier->relatedidentifiertype) }}).
 			</li>
 			@empty

@@ -125,13 +125,29 @@ class DatabaseRadarActions extends Component
 		}
 		else
 			$this->dispatch('status-message', $radar->message);
+		
 		$this->refreshStatus();
+		$this->js('window.location.reload()'); 
+
 	}
 
-    public function render()
-    {
-        return view('livewire.database-radar-actions');
-    }
+	public function approvePublication() // Emulate the curator approving the publication at the Datathek
+	{
+		$radar = new DatabaseRadarDatasetBridge($this->database);
+		// do we have a link to RADAR?
+		if(!$radar->approvePersistentPublication())
+		{
+			$this->error = $radar->message . ' ('.$radar->details;
+		}
+		else
+			$this->dispatch('status-message', $radar->message);
+		$this->js('window.location.reload()'); 
+	}
+
+	public function render()
+	{
+		return view('livewire.database-radar-actions');
+	}
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Private

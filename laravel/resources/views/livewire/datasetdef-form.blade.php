@@ -10,9 +10,9 @@
         @if (Auth::user()->id == $database->user_id)
             <p>
                 @if ($datasetdef)
-                    <h3>Edit the definition of a datafile:</h3>
+                    <h3>Edit the datafile definition:</h3>
                 @else
-                    <h3>Add a new datafile to the definition:</h3>
+                    <h3>Add a new datafile definition:</h3>
                 @endif
             </p>
             <form wire:submit.prevent="save">
