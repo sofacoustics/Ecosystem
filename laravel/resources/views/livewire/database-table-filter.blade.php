@@ -13,7 +13,7 @@
 		<thead class="bg-gray-50">
 			<th class="border p-2">
 				<button wire:click="sortBy('visible')">
-					<img id="visible" src="{{ asset('images/visible.svg') }}" alt="visible" style="height: 2em;">
+					VIS
 					@if ($sortField === 'visible')
 						@if ($sortAsc)
 							<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -29,7 +29,7 @@
 			</th>
 			<th class="border p-2">
 				<button wire:click="sortBy('doi')">
-					<img id="doi" src="{{ asset('images/DOI.svg') }}" alt="DOI" style="height: 2em;">
+					DOI
 					@if ($sortField === 'doi')
 						@if ($sortAsc)
 							<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -108,9 +108,9 @@
 					</td>
 					<td class="text-center">
 						@if($database->doi)
-							<img id="doi" src="{{ asset('images/DOI.svg') }}" alt="DOI"  style="display: block; margin: 0 auto; height:2em;">
+							<img id="doi" src="{{ asset('images/DOI.svg') }}" alt="DOI"  style="display: block; margin: 0 auto; width: 100%; height: auto;">
 						@else
-							<img id="nodoi" src="{{ asset('images/noDOI.png') }}" alt="noDOI"  style="display: block; margin: 0 auto; height:2em;">
+							<img id="nodoi" src="{{ asset('images/noDOI.png') }}" alt="noDOI"  style="display: block; margin: 0 auto; width: 100%; height: auto;">
 						@endif
 					</td>
 					<td class="px-6 py-4 whitespace-nowrap">
