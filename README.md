@@ -135,37 +135,6 @@ If you are pulling from master/origin you should link the post-merge hook into t
 
 This will do the stuff necessary to update your local code, e.g. run composer install, ./artisan migrate, etc. See the file for details 'git-hooks/post-merge'
 
-## TODO
-
-- [ ] remove Chirps directory
-- [x] rename 'dataset' directory to 'datasets'
-- [x] add 'delete' to dataset controller
-- [ ] Check that we're only using software with EUPL
-- [ ] Allow comments on Database
-- [ ] User registration must be confirmed by curator!
-- [ ] Terminology: one user can have many databases, each with a specific dataset definition (datasetdef).
-- [ ] The datasetdef can be any combination of supported file types (not extensions)
-- [ ] A datasetdef's file types can have a specific visualisation specified from a supported list
-- [ ] Let user specify file nomancleture when defining datasetdef
-- [ ] Start using github issues
-- [ ] Users: Add users to specific group on creation
-- [ ] Implement Sub menus
-- [x] Test filament (https://filamentphp.com/docs) for database table views
-- [ ] PM: Provide examples to JS (Database/Dataset/Files, with links for visu and with cached visu results, and metadata [which?])
-- [ ] PM: provide a list of files to be processed to JS
-- [ ] PM: check which metadata will be stored in the database (=information quickly available without loading the dataset files)
-- [x] JW: rename 'title' column to 'name' in Database table
-- [x] JW: Add RADAR credentials to ansible role env creation.
-- [x] JW: Put RADAR URL and workspace in .env file (and ansible)
-- [ ] JW: Implement dataset definition mask and dataset upload
-- [ ] JW: Add additional subjectAreas with button
-- [ ] JW: Implement ORCID and ROR schemes
-- [ ] JW: Check that reverb / supervisorctl tasks work for multiple sites on the same machine
-- [ ] JW: Add git revision / branch to about.
-- [ ] JW: Add supervisorctl for npm run dev (https://stackoverflow.com/questions/28108728/how-to-npm-start-with-supervisord)
-- [ ] JW: Allow a tool to be restricted to specific datafiletypes (need additional table?)
-- [ ] JW: Remove 'datatype', since we're using 'datafiletype'
-
 ## Place to push stuff when testing git deployment
 
 ## Configuration
