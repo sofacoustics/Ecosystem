@@ -50,8 +50,6 @@ class DatasetdefForm extends Component
 		}
 		if($this->widget_id == null)
 			$this->widget_id = 1; // default widget
-		
-		assert($this->database->id == $this->datasetdef->database_id);
 
 		$this->datafiletypes = \App\Models\Datafiletype::all();
 		$this->widgets = \App\Models\Widget::all(); //jw:todo get widgets based on datafiletype
@@ -66,7 +64,7 @@ class DatasetdefForm extends Component
 		if($isNew)
 		{
 			$this->validate(
-				[ 'name' => 
+				[ 'name' =>
 						[ 
 						'required',  // must be provided
 						Rule::unique('datasetdefs','name')->where(
@@ -84,7 +82,7 @@ class DatasetdefForm extends Component
 		{
 			$this->validate(
 				[ 'name' => 
-						[ 
+						[
 						'required',  // must be provided
 						Rule::unique('datasetdefs','name')->ignore($this->datasetdef->id)->where(
 							function ($query) {
