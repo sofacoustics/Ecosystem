@@ -118,11 +118,6 @@ Route::get('/tools/{tool}/relatedidentifiers', [RelatedIdentifierController::cla
 /// SERVICEs
 Route::resource('services', ServiceController::class);
 
-/// Backend (Filament)
-#Route::group(['middleware' => ['role:admin']], function() {
-#    Route::get('/admin', [AdminController::class, 'index'])->name('admin'); // named route: https://laravel.com/docs/10.x/routing#named-routes
-#});
-
 /// PROFILE
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

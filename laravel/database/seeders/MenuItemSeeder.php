@@ -29,9 +29,7 @@ class MenuItemSeeder extends Seeder
         MenuItem::create([
             'id' => '5', 'title' => 'About', 'route' => 'about', 'authenticated' => 0, ]);
 
-        /*MenuItem::create([
-            'id' => '6', 'title' => 'Backend', 'route' => 'filament.admin.pages.dashboard', 'authenticated' => 2, ]);
-
+        /*
         MenuItem::create([
             'id' => '7', 'title' => 'Datasets', 'url' => '/datasets', 'authenticated' => 2, ]);
 
