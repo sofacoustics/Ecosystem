@@ -43,9 +43,10 @@ class DatabasePolicy
 	 */
 	public function create(User $user): bool
 	{
-		if($user->id != 0) 
-			if ($user->orcid_verified_at != null)
-				return true;
+		if($user->id != 0) // if logged in
+			if ($user->hasVerifiedEmail()) // if email verified
+				if ($user->orcid_verified_at != null) // if ORCID linked 
+					return true;
 		return false; 
 	}
 
