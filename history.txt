@@ -1,45 +1,10 @@
 *** Ecosystem *** 
-(on https://github.com/sofacoustics/Ecosystem)
+Code: https://github.com/sofacoustics/Ecosystem
+Issues: https://github.com/sofacoustics/Ecosystem/issues
 
-To be done before we go live:
-* PM: Adapt Tools to "assign DOI"
-* PM: Implement the actual workflow for "Publish with DOI" (Reset DOI, Approve -> RADAR Button)
-* PM: Adapt Tools to "Publish with DOI".
-* JW: Workflow for the test and live server
-* JW/PM: Add obligatory email confirmation when a user registers
-* MM: Implement the most important widgets
-* PM: Move the readme issues to github/Issues.
-
-To be done after we go live:
-* JW: Add "Admin" as a role to the User interface. Admins should be able to see and edit all data
-* PM: Consider the admin role in the Database landing page and Database show
-* JW: Clean up the User related code
-* Bulk Upload: Cancel an upload
-* JW: Clean up the Code in the repo
-* Implement email notifications to admins
-* PM: Obtain "Publication Year" from RADAR after publication.
-* PM: Logging of all downloads
-
-Nice to have:
-* Layout: Show buttons as tabs
-* Trim spaces from the inputs
-* Add "Fill in with your name" at creators, publishers, and rightsholders.
-* Audio View: add https://wavesurfer.xyz/
-* Bulk Upload: Automatic fill of the dataset description
-* Add confirmation on delete
-* Show comments as a table
-* Bulk Upload: Warn if a dataset already exists
-* Improve the way of linking tools, documentation, and databases (via RelatedIdentifier)
-* Allow metadata editing after publication? RADAR supports metadata correction after publication. Implement. 
-* Index tables: implement the sorting by #Datasets, Keywords, Uploaded by. 
-* Send optional metadata to RADAR (currently, obligatory metadata uploaded only)
-* Bulk Upload: Missing files: Click instead of Hover
-* Bulk Upload: Confirmation when saved to Database. 
-
-
-General
-=======
-* Landing page implemented.
+Landing page
+============
+* Latest Database, Tool, and Datafile shown
 
 
 Tools
