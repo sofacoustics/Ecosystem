@@ -19,7 +19,8 @@
 		</thead>
 		<thead class="bg-gray-50">
 			<th class="border p-2 min-w-[10ch]">
-				<button wire:click="sortBy('doi')">DOI
+				<button wire:click="sortBy('doi')">
+					<img id="doi" src="{{ asset('images/DOI.svg') }}" alt="DOI?"  style="display: block; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em;">
 					@if ($sortField === 'doi')
 						@if ($sortAsc)
 							<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -104,9 +105,9 @@
 				<tr>
 					<td class="text-center">
 						@if($tool->doi)
-							<img id="doi" src="{{ asset('images/DOI.svg') }}" alt="DOI"  style="display: block; margin: 0 auto; height:2em;">
+							<img id="doi" src="{{ asset('images/DOI.svg') }}" alt="DOI"  style="display: block; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em;">
 						@else
-							<img id="nodoi" src="{{ asset('images/noDOI.png') }}" alt="noDOI"  style="display: block; margin: 0 auto; height:2em;">
+							<img id="nodoi" src="{{ asset('images/noDOI.png') }}" alt="noDOI" style="display: block; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em;">
 						@endif
 					</td>
 					<td class="px-6 py-4 whitespace-nowrap">
