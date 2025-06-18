@@ -20,7 +20,6 @@ use Livewire\Component;
 class DatabaseVisibility extends Component
 {
 	public $database;
-	public $xx;
 	public $visible;
 	public $doi;
 	public $status; // set messages to be viewed in view

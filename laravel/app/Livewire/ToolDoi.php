@@ -4,13 +4,18 @@ namespace App\Livewire;
 
 use App\Models\Tool;
 
+use App\Http\Resources\ToolResource;
+use App\Services\ToolRadarDatasetBridge;
+
 use Livewire\Component;
 
 class ToolDoi extends Component
 {
 	public $tool;
-	public $xx;
 	public $doi;
+	public $status; // set messages to be viewed in view
+	public $warning;
+	public $error; // set error messages to be viewed in view
 	public $radarstatus;
 
 	protected $rules = [
