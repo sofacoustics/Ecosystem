@@ -42,7 +42,7 @@ Route::get('/databases/{id}', function ($id) {
 });
 */
 // Use Api controller so we can eager load databases
-Route::get('/databases/{database}', [ App\Http\Controllers\Api\DatabaseController::class, 'show']);
+Route::get('/databases/{database}', [ App\Http\Controllers\Api\DatabaseController::class, 'show']); // this is unused currently and it is not extended to Tools!
 
 ////////////////////////////////////////////////////////////////////////////////
 // RADAR API

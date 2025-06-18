@@ -124,4 +124,16 @@ class ToolController extends Controller
 		$user = \App\Models\User::where('id', $tool->user_id)->first();
 		return view('tools.doi', [ 'tool' => $tool, 'user' => $user ]);
 	}
+	
+	/*
+	 * Display Datatheck status
+	 */
+	public function datathek(Tool $tool)
+	{
+		return view('tools.datathek', [
+			'tool' => $tool,
+			'tabTitle' => 'Datathek Info'
+		]);
+	}
+
 }

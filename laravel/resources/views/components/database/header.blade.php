@@ -81,8 +81,8 @@
 		@can('delete', $database)
 			<x-button method="DELETE" action="{{ route('databases.destroy', [$database->id]) }}" class="inline">Delete Database</x-button>
 		@endcan
-		<?php /* <x-button method="GET" action="{{ route('databases.publish', [$database]) }}" class="inline">Publish to RADAR</x-button> */ ?>
 	@endcan
+	
 	@hasrole('admin')
 		<x-button method="GET" action="{{ route('databases.datathek', [$database->id]) }}" class="inline">Datathek</x-button>
 	@endhasrole

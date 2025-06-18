@@ -14,7 +14,7 @@ use App\Http\Controllers\DatafileController;
 use App\Http\Controllers\DatasetController;
 use App\Http\Controllers\DatasetdefController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RadarController;
+//use App\Http\Controllers\RadarController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ToolController;
 use Illuminate\Support\Facades\Route;
@@ -43,7 +43,7 @@ Route::get('/dashboard', function () {
 
 // SONICOM
 /// RADAR
-Route::get('/radar', [RadarController::class, 'index'])->name('radar');
+//Route::get('/radar', [RadarController::class, 'index'])->name('radar');
 
 /// ABOUT etc
 Route::view('/about', 'pages.about')->name('about');
@@ -114,6 +114,7 @@ Route::get('/tools/{tool}/subjectareas', [SubjectAreaController::class, 'index']
 Route::get('/tools/{tool}/rightsholders', [RightsholderController::class, 'index'])->name('tools.rightsholders');
 Route::get('/tools/{tool}/keywords', [KeywordController::class, 'index'])->name('tools.keywords');
 Route::get('/tools/{tool}/relatedidentifiers', [RelatedIdentifierController::class, 'index'])->name('tools.relatedidentifiers');
+Route::get('/tools/{tool}/datathek', [ToolController::class, 'datathek'])->name('tools.datathek')->middleware('admin'); // display Datathek status and actions for admin testing
 
 /// SERVICEs
 Route::resource('services', ServiceController::class);

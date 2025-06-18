@@ -50,6 +50,10 @@
 	@can('delete', $tool)
 		<x-button method="DELETE" action="{{ route('tools.destroy', [$tool->id]) }}" class="inline">Delete Tool</x-button>
 	@endcan
+	
+	@hasrole('admin')
+		<x-button method="GET" action="{{ route('tools.datathek', [$tool->id]) }}" class="inline">Datathek</x-button>
+	@endhasrole
 </p>
 
 <p>

@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Carbon;
 
-use App\Http\Controllers\Api\Radar\DatasetController as RadardatasetController;
-
 use App\Models\User;
 use App\Models\Database;
 use App\Models\Datafile;
@@ -16,19 +14,11 @@ use App\Http\Requests\StoreDatabaseRequest;
 use App\Http\Requests\UpdateDatabaseRequest;
 
 use App\Http\Resources\DatabaseResource;
-//use App\Http\Resources\RightsholderResource;
 use App\Http\Resources\Json\JsonResource;
 
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-
-/*use App\Data\RadardatasetData;
-use App\Data\RadardatasetpureData;
-use App\Data\RadardatasetresourcetypeData;
-use App\Data\RadardatasetsubjectareaData;
-use App\Data\RadarcreatorData;
-use App\Data\RadarpublisherData;*/
 
 class DatabaseController extends Controller
 {
@@ -245,22 +235,9 @@ class DatabaseController extends Controller
 	 */
 	public function datathek(Database $database)
 	{
-		$radardataset = new RadardatasetController;
-		$response = $radardataset->read($database);
-		$content = json_decode($response->content(), true);
-
-		/*
-		$radar['id'] = $database->radar_id; // either something or null
-
-		$radar['state'] = $content->state ?? "";
-		$radar['doi'] = $content->descriptiveMetadata?->identifier?->value ?? "";
-		$radar['size'] = $content->technicalMetadata->size ?? 'EMPTY';
-		$radar =>
-		 */
 
 		return view('databases.datathek', [
 			'database' => $database,
-			'radar' => $content,
 			'tabTitle' => 'Datathek Info'
 		]);
 	}
