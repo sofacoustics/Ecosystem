@@ -2,6 +2,7 @@
 /.undodir
 /node_modules
 /public/build
+/public/data
 /public/hot
 /public/storage
 /storage/*.key
@@ -20,3 +21,4 @@ yarn-error.log
 /.vscode
 composer.lock.bak
 .undodir
+
