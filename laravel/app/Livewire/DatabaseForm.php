@@ -61,12 +61,12 @@ class DatabaseForm extends Component
 
 	public function mount($database = null)
 	{
-		$additionaltitletype_base_id = (\App\Models\Radar\Metadataschema::where('name', 'additionalTitleType')->first()->id);
-		$controlledrights_base_id = (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->first()->id);
+		$additionaltitletype_base_id = (\App\Models\Metadataschema::where('name', 'additionalTitleType')->first()->id);
+		$controlledrights_base_id = (\App\Models\Metadataschema::where('name', 'controlledRights')->first()->id);
 		
 		$this->additionaltitletype_base_id = $additionaltitletype_base_id;
 		$this->controlledrights_base_id = $controlledrights_base_id; 
-		$this->controlledrights_other_id = (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->where('value', 'OTHER')->first()->id) - $controlledrights_base_id; 
+		$this->controlledrights_other_id = (\App\Models\Metadataschema::where('name', 'controlledRights')->where('value', 'OTHER')->first()->id) - $controlledrights_base_id; 
 		
 		if($database) 
 		{
@@ -115,7 +115,7 @@ class DatabaseForm extends Component
 
 		$this->database->title = $this->title;
 		$this->database->additionaltitle = $this->additionaltitle;
-		$this->database->additionaltitletype = (\App\Models\Radar\Metadataschema::where('name', 'additionalTitleType')->where('value', 'Subtitle')->first()->id);  // fix to Subtitle
+		$this->database->additionaltitletype = (\App\Models\Metadataschema::where('name', 'additionalTitleType')->where('value', 'Subtitle')->first()->id);  // fix to Subtitle
 		$this->database->descriptiongeneral = $this->descriptiongeneral;
 		$this->database->descriptionabstract = $this->descriptionabstract;
 		$this->database->descriptionmethods = $this->descriptionmethods;
@@ -138,13 +138,13 @@ class DatabaseForm extends Component
 			$sa = new SubjectArea(); 
 			$sa->subjectareaable_id = $this->database->id; 
 			$sa->subjectareaable_type = "App\Models\Database"; 
-			$sa->controlledSubjectAreaIndex = (\App\Models\Radar\Metadataschema::where('name', 'subjectArea')->where('value', 'LIFE_SCIENCE')->first()->id); // Life Sciences
+			$sa->controlledSubjectAreaIndex = (\App\Models\Metadataschema::where('name', 'subjectArea')->where('value', 'LIFE_SCIENCE')->first()->id); // Life Sciences
 			$sa->save(); 
 
 			$sa = new SubjectArea(); 
 			$sa->subjectareaable_id = $this->database->id; 
 			$sa->subjectareaable_type = "App\Models\Database"; 
-			$sa->controlledSubjectAreaIndex = (\App\Models\Radar\Metadataschema::where('name', 'subjectArea')->where('value', 'OTHER')->first()->id); // Other
+			$sa->controlledSubjectAreaIndex = (\App\Models\Metadataschema::where('name', 'subjectArea')->where('value', 'OTHER')->first()->id); // Other
 			$sa->additionalSubjectArea = "SONICOM Ecosystem"; 
 			$sa->save(); 
 		}

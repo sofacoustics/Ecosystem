@@ -22,7 +22,7 @@ class SubjectAreaForm extends Component
 
 	public function mount($subjectareaable, $subjectarea = null)
 	{
-		$base_id = (\App\Models\Radar\Metadataschema::where('name', 'subjectArea')->first()->id);
+		$base_id = (\App\Models\Metadataschema::where('name', 'subjectArea')->first()->id);
 
 		$this->subjectareaable = $subjectareaable;
 		$this->base_id = $base_id;
@@ -55,7 +55,7 @@ class SubjectAreaForm extends Component
 		$this->subjectarea->subjectareaable_type = $this->subjectareaable_type;
 		if ($this->controlledSubjectAreaIndex == null)
 		{		// Other if not defined
-			$this->subjectarea->controlledSubjectAreaIndex = (\App\Models\Radar\Metadataschema::where('name', 'subjectArea')->where('value', 'OTHER')->first()->id); 
+			$this->subjectarea->controlledSubjectAreaIndex = (\App\Models\Metadataschema::where('name', 'subjectArea')->where('value', 'OTHER')->first()->id); 
 		}
 		else
 		{	 

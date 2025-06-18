@@ -23,14 +23,14 @@ class SubjectAreaSeeder extends Seeder
 			SubjectArea::create(array(
 				'subjectareaable_id' => $database->id,
 				'subjectareaable_type' => 'App\Models\Database',
-				'controlledSubjectAreaIndex' => (\App\Models\Radar\Metadataschema::where('name', 'subjectArea')->where('value', 'LIFE_SCIENCE')->first()->id), // Life science
+				'controlledSubjectAreaIndex' => (\App\Models\Metadataschema::where('name', 'subjectArea')->where('value', 'LIFE_SCIENCE')->first()->id), // Life science
 				'additionalSubjectArea' => null,
 				));
 
 			SubjectArea::create(array(
 				'subjectareaable_id' => $database->id,
 				'subjectareaable_type' => 'App\Models\Database',
-				'controlledSubjectAreaIndex' => (\App\Models\Radar\Metadataschema::where('name', 'subjectArea')->where('value', 'OTHER')->first()->id), // Other
+				'controlledSubjectAreaIndex' => (\App\Models\Metadataschema::where('name', 'subjectArea')->where('value', 'OTHER')->first()->id), // Other
 				'additionalSubjectArea' => 'SONICOM Ecosystem',
 				));
 		}
@@ -42,14 +42,14 @@ class SubjectAreaSeeder extends Seeder
 			SubjectArea::create(array(
 				'subjectareaable_id' => $tool->id,
 				'subjectareaable_type' => 'App\Models\Tool',
-				'controlledSubjectAreaIndex' => (\App\Models\Radar\Metadataschema::where('name', 'subjectArea')->where('value', 'LIFE_SCIENCE')->first()->id), // Life science
+				'controlledSubjectAreaIndex' => (\App\Models\Metadataschema::where('name', 'subjectArea')->where('value', 'LIFE_SCIENCE')->first()->id), // Life science
 				'additionalSubjectArea' => null,
 				));
 
 			SubjectArea::create(array(
 				'subjectareaable_id' => $tool->id,
 				'subjectareaable_type' => 'App\Models\Tool',
-				'controlledSubjectAreaIndex' => (\App\Models\Radar\Metadataschema::where('name', 'subjectArea')->where('value', 'OTHER')->first()->id), // Other
+				'controlledSubjectAreaIndex' => (\App\Models\Metadataschema::where('name', 'subjectArea')->where('value', 'OTHER')->first()->id), // Other
 				'additionalSubjectArea' => 'SONICOM Ecosystem',
 				));
 		}

@@ -64,11 +64,11 @@ class ToolForm extends Component
 
 	public function mount($tool = null)
 	{
-		$resourcetype_base_id = (\App\Models\Radar\Metadataschema::where('name', 'resourcetype')->first()->id);
-		$this->resourcetype_other_id = (\App\Models\Radar\Metadataschema::where('name', 'resourcetype')->where('value', 'OTHER')->first()->id) - $resourcetype_base_id; 
-		$additionaltitletype_base_id = (\App\Models\Radar\Metadataschema::where('name', 'additionalTitleType')->first()->id);
-		$controlledrights_base_id = (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->first()->id);
-		$this->controlledrights_other_id = (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->where('value', 'OTHER')->first()->id) - $controlledrights_base_id; 
+		$resourcetype_base_id = (\App\Models\Metadataschema::where('name', 'resourcetype')->first()->id);
+		$this->resourcetype_other_id = (\App\Models\Metadataschema::where('name', 'resourcetype')->where('value', 'OTHER')->first()->id) - $resourcetype_base_id; 
+		$additionaltitletype_base_id = (\App\Models\Metadataschema::where('name', 'additionalTitleType')->first()->id);
+		$controlledrights_base_id = (\App\Models\Metadataschema::where('name', 'controlledRights')->first()->id);
+		$this->controlledrights_other_id = (\App\Models\Metadataschema::where('name', 'controlledRights')->where('value', 'OTHER')->first()->id) - $controlledrights_base_id; 
 
 		$this->additionaltitletype_base_id = $additionaltitletype_base_id;
 		$this->controlledrights_base_id = $controlledrights_base_id; 
@@ -105,7 +105,7 @@ class ToolForm extends Component
 			$this->controlledrights = 0; // CC BY
 			$this->additionaltitletype = 0; // Subtitle
 			$this->publicationyear = "unknown"; // dummy, will be set by RADAR when Publishing
-			$this->resourcetype = (\App\Models\Radar\Metadataschema::where('name', 'resourcetype')->where('value', 'SOFTWARE')->first()->id) - $this->resourcetype_base_id;  
+			$this->resourcetype = (\App\Models\Metadataschema::where('name', 'resourcetype')->where('value', 'SOFTWARE')->first()->id) - $this->resourcetype_base_id;  
 		}
 	}
 
@@ -123,7 +123,7 @@ class ToolForm extends Component
 
 		$this->tool->title = $this->title;
 		$this->tool->additionaltitle = $this->additionaltitle;
-		$this->tool->additionaltitletype = (\App\Models\Radar\Metadataschema::where('name', 'additionalTitleType')->where('value', 'Subtitle')->first()->id);  // fix to Subtitle
+		$this->tool->additionaltitletype = (\App\Models\Metadataschema::where('name', 'additionalTitleType')->where('value', 'Subtitle')->first()->id);  // fix to Subtitle
 		$this->tool->descriptiongeneral = $this->descriptiongeneral;
 		$this->tool->descriptionabstract = $this->descriptionabstract;
 		$this->tool->descriptionmethods = $this->descriptionmethods;
@@ -147,13 +147,13 @@ class ToolForm extends Component
 			$sa = new SubjectArea(); 
 			$sa->subjectareaable_id = $this->tool->id; 
 			$sa->subjectareaable_type = "App\Models\Tool"; 
-			$sa->controlledSubjectAreaIndex = (\App\Models\Radar\Metadataschema::where('name', 'subjectArea')->where('value', 'LIFE_SCIENCE')->first()->id); // Life Sciences
+			$sa->controlledSubjectAreaIndex = (\App\Models\Metadataschema::where('name', 'subjectArea')->where('value', 'LIFE_SCIENCE')->first()->id); // Life Sciences
 			$sa->save(); 
 
 			$sa = new SubjectArea(); 
 			$sa->subjectareaable_id = $this->tool->id; 
 			$sa->subjectareaable_type = "App\Models\Tool"; 
-			$sa->controlledSubjectAreaIndex = (\App\Models\Radar\Metadataschema::where('name', 'subjectArea')->where('value', 'OTHER')->first()->id); // Other
+			$sa->controlledSubjectAreaIndex = (\App\Models\Metadataschema::where('name', 'subjectArea')->where('value', 'OTHER')->first()->id); // Other
 			$sa->additionalSubjectArea = "SONICOM Ecosystem"; 
 			$sa->save(); 
 		}

@@ -34,8 +34,8 @@ class RelatedIdentifierForm extends Component
 
 	public function mount($relatedidentifierable, $relatedidentifier = null)
 	{
-		$relatedidentifier_base_id = (\App\Models\Radar\Metadataschema::where('name', 'relatedIdentifierType')->first()->id);
-		$relation_base_id = (\App\Models\Radar\Metadataschema::where('name', 'relationType')->first()->id);
+		$relatedidentifier_base_id = (\App\Models\Metadataschema::where('name', 'relatedIdentifierType')->first()->id);
+		$relation_base_id = (\App\Models\Metadataschema::where('name', 'relationType')->first()->id);
 
 		$this->relatedidentifierable = $relatedidentifierable;
 		$this->relatedidentifier_base_id = $relatedidentifier_base_id;
@@ -70,7 +70,7 @@ class RelatedIdentifierForm extends Component
 		$this->relatedidentifier->relatedidentifierable_type = $this->relatedidentifierable_type;
 		if ($this->relatedidentifiertype == null)
 		{		// Other if not defined
-			$this->relatedidentifier->relatedidentifiertype = (\App\Models\Radar\Metadataschema::where('name', 'relatedIdentifierType')->where('value', 'OTHER')->first()->id); 
+			$this->relatedidentifier->relatedidentifiertype = (\App\Models\Metadataschema::where('name', 'relatedIdentifierType')->where('value', 'OTHER')->first()->id); 
 		}
 		else
 		{	 
@@ -78,7 +78,7 @@ class RelatedIdentifierForm extends Component
 		}
 		if ($this->relationtype == null)
 		{		// Other if not defined
-			$this->relatedidentifier->relationtype = (\App\Models\Radar\Metadataschema::where('name', 'relationType')->where('value', 'OTHER')->first()->id); 
+			$this->relatedidentifier->relationtype = (\App\Models\Metadataschema::where('name', 'relationType')->where('value', 'OTHER')->first()->id); 
 		}
 		else
 		{	 

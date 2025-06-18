@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Http;
 
 use App\Data\RadardatasetpureData;
-use App\Models\Radar\Metadataschema;
+use App\Models\Metadataschema;
 
 
 class Database extends Model
@@ -37,7 +37,7 @@ class Database extends Model
 
     public function metadata()
     {
-        return App\Models\Radar\Metadataschema::all();
+        return App\Models\Metadataschema::all();
     }
 
 	//
@@ -105,72 +105,72 @@ class Database extends Model
 
 	static function additionaltitletypeDisplay($additionaltitletype)
 	{
-		return \App\Models\Radar\Metadataschema::display($additionaltitletype);
+		return \App\Models\Metadataschema::display($additionaltitletype);
 	}
 
 	static function additionaltitletypesList()
 	{
-		return \App\Models\Radar\Metadataschema::list('additionalTitleType');
+		return \App\Models\Metadataschema::list('additionalTitleType');
 	}
 
 	static function controlledrightsDisplay($controlledrights)
 	{
-		return \App\Models\Radar\Metadataschema::display($controlledrights);
+		return \App\Models\Metadataschema::display($controlledrights);
 	}
 
 	static function controlledrightsValue($controlledrights)
 	{
-		return \App\Models\Radar\Metadataschema::value($controlledrights);
+		return \App\Models\Metadataschema::value($controlledrights);
 	}
 
 	static function controlledrightsList()
 	{
-		return \App\Models\Radar\Metadataschema::list('controlledRights');
+		return \App\Models\Metadataschema::list('controlledRights');
 	}
 
 	static function subjectareaDisplay($subjectareaindex)
 	{
-		return \App\Models\Radar\Metadataschema::display($subjectareaindex);
+		return \App\Models\Metadataschema::display($subjectareaindex);
 	}
 	
 	static function subjectareaValue($subjectareaindex)
 	{
-		return \App\Models\Radar\Metadataschema::value($subjectareaindex);
+		return \App\Models\Metadataschema::value($subjectareaindex);
 	}
 
 	static function subjectareasList()
 	{
-		return \App\Models\Radar\Metadataschema::list('subjectArea');
+		return \App\Models\Metadataschema::list('subjectArea');
 	}
 
 	static function relatedidentifierValue($relatedidentifiertypeindex)
 	{
-		return \App\Models\Radar\Metadataschema::value($relatedidentifiertypeindex);
+		return \App\Models\Metadataschema::value($relatedidentifiertypeindex);
 	}
 
 	static function relatedidentifierList()
 	{
-		return \App\Models\Radar\Metadataschema::list('relatedIdentifierType');
+		return \App\Models\Metadataschema::list('relatedIdentifierType');
 	}
 
 	static function relatedidentifierDisplay($relatedidentifiertypeindex)
 	{
-		return \App\Models\Radar\Metadataschema::display($relatedidentifiertypeindex);
+		return \App\Models\Metadataschema::display($relatedidentifiertypeindex);
 	}
 
 	static function relationValue($relationtypeindex)
 	{
-		return \App\Models\Radar\Metadataschema::value($relationtypeindex);
+		return \App\Models\Metadataschema::value($relationtypeindex);
 	}
 
 	static function relationList()
 	{
-		return \App\Models\Radar\Metadataschema::list('relationType');
+		return \App\Models\Metadataschema::list('relationType');
 	}
 
 	static function relationDisplay($relationtypeindex)
 	{
-		return \App\Models\Radar\Metadataschema::display($relationtypeindex);
+		return \App\Models\Metadataschema::display($relationtypeindex);
 	}
 
 	static function resourcetypeDisplay($resourcetype)
@@ -178,7 +178,7 @@ class Database extends Model
 		if($resourcetype == null)
 			return "Dataset";
 		else
-			return \App\Models\Radar\Metadataschema::display($resourcetype);
+			return \App\Models\Metadataschema::display($resourcetype);
 	}
 
 	static function resourcetypeValue($resourcetype)
@@ -186,7 +186,7 @@ class Database extends Model
 		if($resourcetype == null)
 			return "DATASET";
 		else
-			return \App\Models\Radar\Metadataschema::value($resourcetype);
+			return \App\Models\Metadataschema::value($resourcetype);
 	}
 
 	public function getRadarJson() : String

@@ -18,11 +18,11 @@ class ToolSeeder extends Seeder
 			'title' => 'AMT 1.6.0', 
 			'additionaltitle' => 'The Auditory Modeling Toolbox 1.6.0', 
 			'filename' => 'amtoolbox-full-1.6.0.zip',
-			'controlledrights' => (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->where('value', 'CC_BY_4_0_ATTRIBUTION')->first()->id),
+			'controlledrights' => (\App\Models\Metadataschema::where('name', 'controlledRights')->where('value', 'CC_BY_4_0_ATTRIBUTION')->first()->id),
 			'productionyear' => '2025',
 			'publicationyear' => 'unknown',
 			'language' => 'eng',
-			'resourcetype' => (\App\Models\Radar\Metadataschema::where('name', 'resourcetype')->where('value', 'SOFTWARE')->first()->id),
+			'resourcetype' => (\App\Models\Metadataschema::where('name', 'resourcetype')->where('value', 'SOFTWARE')->first()->id),
 			'user_id' => 2,
 			));
 
@@ -30,11 +30,11 @@ class ToolSeeder extends Seeder
 			'title' => 'SOFA Toolbox', 
 			'additionaltitle' => 'Reference SOFA Toolbox for Matlab and Octave', 
 			'filename' => 'sofa.zip',
-			'controlledrights' => (\App\Models\Radar\Metadataschema::where('name', 'controlledRights')->where('value', 'CC_BY_4_0_ATTRIBUTION')->first()->id),
+			'controlledrights' => (\App\Models\Metadataschema::where('name', 'controlledRights')->where('value', 'CC_BY_4_0_ATTRIBUTION')->first()->id),
 			'publicationyear' => 'unknown',
 			'productionyear' => '2024',
 			'language' => 'eng',
-			'resourcetype' => (\App\Models\Radar\Metadataschema::where('name', 'resourcetype')->where('value', 'SOFTWARE')->first()->id),
+			'resourcetype' => (\App\Models\Metadataschema::where('name', 'resourcetype')->where('value', 'SOFTWARE')->first()->id),
 			'user_id' => 4,
 			));
 	}

@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-use App\Models\Radar\Metadataschema;
+use App\Models\Metadataschema;
 
 class MetadataschemaSeeder extends Seeder
 {
