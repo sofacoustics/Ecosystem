@@ -23,12 +23,12 @@ use App\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-use App\Data\RadardatasetData;
+/*use App\Data\RadardatasetData;
 use App\Data\RadardatasetpureData;
 use App\Data\RadardatasetresourcetypeData;
 use App\Data\RadardatasetsubjectareaData;
 use App\Data\RadarcreatorData;
-use App\Data\RadarpublisherData;
+use App\Data\RadarpublisherData;*/
 
 class DatabaseController extends Controller
 {
@@ -157,7 +157,7 @@ class DatabaseController extends Controller
 		return redirect()->route('databases.index')->with('success', 'Database deleted successfully');
 	}
 
-	public function radarShow(Database $database)
+	/*public function radarShow(Database $database)
 	{
 		return view('databases.radar.show',['database' => $database]);
 	}
@@ -165,7 +165,7 @@ class DatabaseController extends Controller
 	public function radarEdit(Database $database)
 	{
 		return view('databases.radar.edit',['database' => $database]);
-	}
+	}*/
 
 	public function datasetdefs(Database $database)
 	{

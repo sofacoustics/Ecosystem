@@ -27,9 +27,9 @@ class Database extends Model
 		'user_id', '_token', '_method', 'submit'];
 
 	// https://spatie.be/docs/laravel-data/v4/advanced-usage/eloquent-casting
-	protected $casts = [
+	/*protected $casts = [
 		'radardataset' => RadardatasetpureData::class,
-    ];
+    ];*/
 
 	protected static function booted()
     {

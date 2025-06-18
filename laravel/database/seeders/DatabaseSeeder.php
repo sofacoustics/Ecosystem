@@ -5,7 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-use App\Data\RadardatasetpureData;
+//use App\Data\RadardatasetpureData;
 
 use App\Models\MenuItem;
 use App\Models\Database;
