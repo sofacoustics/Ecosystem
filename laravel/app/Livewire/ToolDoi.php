@@ -61,19 +61,19 @@ class ToolDoi extends Component
 				return;
 			}
 		}
-		// validate metadata
+			// validate metadata
 		else if(!$radar->metadataValidate())
 		{
 			$this->dispatch('radar-status-changed', 'Validation failed');
 			$this->error = $radar->message.' RADAR Message: '.$radar->details;
 			return;
 		}
+		
 		if($radar->read())
 		{
 			$state = $radar?->dataset?->state ?? 'INVALID RADAR STATE';
 			if($state  == "PENDING")
-			{
-				// we need to start the review process in order to get the DOI
+			{		// we need to start the review process in order to get the DOI
 				if(!$radar->startreview())
 				{
 					$this->error = $radar->message.' RADAR Message: '.$radar->details;
@@ -86,7 +86,7 @@ class ToolDoi extends Component
 			$this->error = $radar->message.' RADAR Message: '.$radar->details;
 			return;
 		}
-		// retrieve doi
+			// retrieve doi
 		if($radar->doi())
 		{
 			$this->doi = $this->tool->doi;
@@ -96,9 +96,10 @@ class ToolDoi extends Component
 		{
 			$this->error = $radar->message.' RADAR Message: '.$radar->details;
 		}
-		// stop review process
+			// stop review process
 		if(!$radar->endreview())
 			$this->error = $radar->details;
+		
 		$this->radarstatus = $this->tool->radarstatus;
 	}
 

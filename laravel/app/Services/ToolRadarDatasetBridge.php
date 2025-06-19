@@ -31,7 +31,7 @@ use App\Models\Tool;
 class ToolRadarDatasetBridge extends RadarBridge
 {
 	public $tool; // the Ecosystem tool
-	public $dataset; // the RADAR dataset - some values set sometimes
+	public $radar_dataset; // the RADAR dataset - some values set sometimes
 	public $content; // save the content sent to RADAR
 	public $endpoint; // save the endpoint sent to RADAR
 
@@ -227,7 +227,7 @@ class ToolRadarDatasetBridge extends RadarBridge
 			return false;
 		}
 		$this->message = 'The RADAR metadata has been successfully read from the RADAR server';
-		$this->dataset = json_decode($response->content());
+		$this->radar_dataset = json_decode($response->content());
 		return true;
 	}
 
@@ -416,30 +416,6 @@ class ToolRadarDatasetBridge extends RadarBridge
 	 *  The /upload endpoint can be used to upload any single files.
 	 *  If files in the formats zip/tar/tar.gz/tar.bz are uploaded, these archives will then NOT be extracted.
 	 */
-	/*
-	public function upload(Datafile $datafile)
-	{
-		if(!$this->dataset)
-			$this->read();
-		$endpoint = $this->dataset->uploadUrl;
-		$this->content = $datafile->absolutepath(); // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
-		$response = $this->postFile($endpoint, $datafile->absolutepath(), $datafile->name, $datafile->mimetype);
-		if($response->status() == 200)
-		{
-			$this->message = 'The file \''.$datafile->name.'\' was successfully uploaded';
-			$datafile->radar_id = $response->content();
-			$datafile->save();
-			return true;
-		}
-		else
-		{
-			$this->message = 'Failed to upload the file \''.$datafile->name.'\' to the RADAR server';
-			$this->details = $response->content();
-			return false;
-		}
-	}
-	 */
 	public function upload() : bool
 	{
 		if(!$this->create())
@@ -447,12 +423,12 @@ class ToolRadarDatasetBridge extends RadarBridge
 			return false;
 		}
 
-		foreach($this->tool->datasets as $dataset)
+		if($this->tool->filename)
 		{
-			$radar = new DatasetRadarFolderBridge($dataset);
+			$radar = new ToolfileRadarFileBridge($dataset);
 			if(!$radar->upload())
 			{
-				// failed to upload dataset
+				// failed to upload the datafile
 				$this->message = $radar->message;
 				$this->details = $radar->details;
 				return false;

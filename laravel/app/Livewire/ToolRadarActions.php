@@ -158,9 +158,9 @@ class ToolRadarActions extends Component
 		$radar = new ToolRadarDatasetBridge($this->tool);
 		if($radar->read())
 		{
-			$this->id = $radar?->dataset?->id ?? null;
+			$this->id = $radar?->radar_dataset?->id ?? null;
 			$this->canUpload = true;
-			$this->setState($radar?->dataset?->state ?? '');
+			$this->setState($radar?->radar_dataset?->state ?? '');
 		}
 		else
 		{
