@@ -13,11 +13,14 @@ class ToolRadarActions extends Component
 	// RADAR properties
 	public $id;
 	public $state;
+	public $doi;
+	public $size;
+	public $radar_content;
 
 	// the RADAR state - used to display/hide buttons
 	public $pending = false;
 	public $review = false;
-	public $radar_status = 0; // this will be set to the value of the tool field 'radar_status'.
+	public $radar_status = null; // this will be set to the value of the tool field 'radar_status'.
 
 	// true if we haven't uploaded yet
 	public $canUpload = false;
@@ -31,7 +34,6 @@ class ToolRadarActions extends Component
 		if($tool->radar_id)
 		{
 			$this->id = $tool->radar_id;
-
 			$this->refreshStatus();
 		}
 		else
@@ -58,8 +60,8 @@ class ToolRadarActions extends Component
 	{
 		$radar = new ToolRadarDatasetBridge($this->tool);
 		$this->dispatch('status-message', 'Starting RADAR dataset creation process.');
-        if($radar->create())
-            $this->dispatch('radar-status-changed', 'Dataset created'); // let other livewire components know the radar status has changed
+		if($radar->create())
+			$this->dispatch('radar-status-changed', 'Dataset created'); // let other livewire components know the radar status has changed
 		else
 			$this->error = $radar->details;
 		$this->dispatch('status-message', $radar->message);
@@ -186,6 +188,10 @@ class ToolRadarActions extends Component
 		if($radar->read())
 		{
 			$this->id = $radar?->radar_dataset?->id ?? null;
+			$this->state = $radar->radar_dataset->state;
+			$this->doi = $radar?->radar_dataset?->descriptiveMetadata?->identifier?->value ?? null;
+			$this->size = $radar?->radar_dataset?->technicalMetadata?->size ?? "unknown";
+			$this->radar_content = $radar->radar_content;
 			$this->canUpload = true;
 			$this->setState($radar?->radar_dataset?->state ?? '');
 		}
@@ -194,6 +200,10 @@ class ToolRadarActions extends Component
 			if($this->tool->radar_id)
 				$this->error = $radar->message;
 			$this->id = null;
+			$this->state = null;
+			$this->doi = null;
+			$this->size = null;
+			$this->radar_content = null;
 			$this->canUpload = false;
 			$this->setState('');
 		}

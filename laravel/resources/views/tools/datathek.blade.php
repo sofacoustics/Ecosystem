@@ -8,8 +8,6 @@
 	@endif
 	@section('tabTitle', " | " . $tabTitle)
 
-	<livewire:tool-radar-status :tool="$tool" />
-
 	<livewire:tool-radar-actions :tool="$tool" />
 
 </x-app-layout>

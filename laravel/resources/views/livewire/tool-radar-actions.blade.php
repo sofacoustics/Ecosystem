@@ -1,4 +1,17 @@
 <div>
+
+	<h3>RADAR Status</h3>
+		<p>ID: {{ $id }}</p>
+		<p>State: {{ $state }}</p>
+		<p>Internal Radar Status: {{ $radar_status }}</p>
+		<p>DOI: {{ $doi }}</p>
+		<p>Size: {{ $size }}</p>
+		<p>Dataset: {{ $radar_content }}</p>
+
+		@if("$error" != '')
+			<x-alert title='Error!'>{{ $error }}</x-alert>
+		@endif
+		
 	<h3>RADAR Actions</h3>
 		@if($id == null)
 			<x-livewire-button wire:click="createDataset" loading="Creating...">Create RADAR Dataset</x-livewire-button>
