@@ -109,9 +109,9 @@ class DatabaseVisibility extends Component
 			return;
 		}
 		// retrieve doi
-		if($radar->doi())
+		if($radar->getDOI())
 		{
-			$this->doi = $this->database->doi;
+			$this->doi = $radar->doi; 
 			$this->dispatch('status-message', $radar->message);
 		}
 		else
@@ -121,6 +121,10 @@ class DatabaseVisibility extends Component
 		// stop review process
 		if(!$radar->endreview())
 			$this->error = $radar->details;
+		
+		$this->database->radar_status = 1;
+		$this->database->doi = $this->doi;
+		$this->database->save();
 		$this->radar_status = $this->database->radar_status;
 	}
 

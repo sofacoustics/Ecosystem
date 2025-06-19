@@ -107,7 +107,6 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		if($this->status == 200)
 		{
 			$this->message = "Review process of the RADAR dataset successfully started";
-			$this->database->radar_status = 1;
 			return true;
 		}
 		else
@@ -167,7 +166,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	 *  Returns just the DOI as the body
 	 *
 	 */
-	public function doi() : bool
+	public function getDOI() : bool
 	{
 		$this->reset();
 		$endpoint = '/datasets/'.$this->database->radar_id.'/doi';
@@ -177,9 +176,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		if($response->status() == 200)
 		{
 			$this->message = 'DOI successfully retrieved from RADAR';
-			$this->database->doi = $response->content();
-			$this->database->radar_status = 1;
-			$this->database->save();
+			$this->doi = $response->content();
 			return true;
 		}
 		else
@@ -461,24 +458,6 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		$response = $this->httpdelete($endpoint);
 		if($response->status() == 204)
 		{
-			$this->database->radar_id = null;
-			$this->database->doi = null;
-			$this->database->radar_status = 0;
-			$this->database->save();
-			// set dataset and datafile radar_ids back to null
-			foreach($this->database->datasets as $dataset) // iterate through all Dataset of the Database
-			{
-				$dataset->radar_id = null;
-				$dataset->radar_upload_url = null;
-				$dataset->save();
-				foreach($dataset->datafiles as $datafile)
-				{
-					$datafile->radar_id = null;
-					$datafile->datasetdef_radar_id = null;
-					$datafile->datasetdef_radar_upload_url = null;
-					$datafile->save();
-				}
-			}
 			$this->message = 'The RADAR dataset has been deleted';
 			return true;
 		}
@@ -486,3 +465,4 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		$this->details = $response->content();
 		return false;
 	}
+}

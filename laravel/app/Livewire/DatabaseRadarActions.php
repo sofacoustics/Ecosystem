@@ -13,16 +13,21 @@ class DatabaseRadarActions extends Component
 	// RADAR properties
 	public $id;
 	public $state;
+	public $doi;
+	public $size;
+	public $radar_content;
+	public $isExpanded = false; // Initial state of the RADAR content: collapsed
 
 	// the RADAR state - used to display/hide buttons
 	public $pending = false;
 	public $review = false;
-	public $radar_status = 0; // this will be set to the value of the database field 'radar_status'.
+	public $radar_status = null; // this will be set to the value of the database field 'radar_status'.
 
 	// true if we haven't uploaded yet
 	public $canUpload = false;
 
 	public $error; // any error message to display
+
 
 	public function mount($database)
 	{
@@ -31,13 +36,17 @@ class DatabaseRadarActions extends Component
 		if($database->radar_id)
 		{
 			$this->id = $database->radar_id;
-
 			$this->refreshStatus();
 		}
 		else
 		{
 			$this->dispatch('status-message', 'There is no RADAR dataset associated with this database!');
 		}
+	}
+
+	public function toggleExpand()
+	{
+		$this->isExpanded = !$this->isExpanded; // Toggle the boolean value
 	}
 
 	// set RADAR state (pending, review, published)
@@ -58,8 +67,8 @@ class DatabaseRadarActions extends Component
 	{
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		$this->dispatch('status-message', 'Starting RADAR dataset creation process.');
-        if($radar->create())
-            $this->dispatch('radar-status-changed', 'Dataset created'); // let other livewire components know the radar status has changed
+		if($radar->create())
+			$this->dispatch('radar-status-changed', 'Dataset created'); // let other livewire components know the radar status has changed
 		else
 			$this->error = $radar->details;
 		$this->dispatch('status-message', $radar->message);
@@ -100,6 +109,9 @@ class DatabaseRadarActions extends Component
 		$this->dispatch('status-message', $radar->message);
 	}
 
+	/*
+	* This will delete the Database from the Datathek and remove the DOI in the Ecosystem
+	*/
 	public function deleteFromRadar()
 	{
 		$this->dispatch('status-message', 'Starting to delete the RADAR dataset');
@@ -111,36 +123,87 @@ class DatabaseRadarActions extends Component
 		}
 		else
 			$this->error = $radar->details;
+
+		$this->database->radar_id = null;
+		$this->database->doi = null;
+		$this->database->radar_status = null;
+		$this->database->save();
+			// set dataset and datafile radar_ids back to null
+		foreach($this->database->datasets as $dataset) // iterate through all Dataset of the Database
+		{
+			$dataset->radar_id = null;
+			$dataset->radar_upload_url = null;
+			$dataset->save();
+			foreach($dataset->datafiles as $datafile)
+			{
+				$datafile->radar_id = null;
+				$datafile->datasetdef_radar_id = null;
+				$datafile->datasetdef_radar_upload_url = null;
+				$datafile->save();
+			}
+		}
+
 		$this->dispatch('status-message', $radar->message);
 		$this->refreshStatus();
 	}
 
-	public function resetDOI()
+	/* 
+	* Approve the persistent publication: Set the Status to "Persistently published". 
+	*
+	* Note: nothing happens at the Datathek currently. 
+	*/
+	public function approvePersistentPublication() 
 	{
-		$radar = new DatabaseRadarDatasetBridge($this->database);
-		// do we have a link to RADAR?
-		if(!$radar->resetPersistentPublication())
-		{
-			$this->error = $radar->message . ' ('.$radar->details;
-		}
-		else
-			$this->dispatch('status-message', $radar->message);
-		
-		$this->refreshStatus();
-		$this->js('window.location.reload()'); 
+		$this->database->radar_status = 3;
+		$this->database->save();
 
+		$this->js('window.location.reload()'); 
 	}
 
-	public function approvePublication() // Emulate the curator approving the publication at the Datathek
-	{
+	/*
+	* Reject the persistent publication: End the review at Datathek and set the Status to "DOI assigned"
+	*/
+	public function rejectPersistentPublication()
+	{		// end the review
 		$radar = new DatabaseRadarDatasetBridge($this->database);
-		// do we have a link to RADAR?
-		if(!$radar->approvePersistentPublication())
+		if(!$radar->endreview())
 		{
-			$this->error = $radar->message . ' ('.$radar->details;
+			$this->error = 'End Review: '.$radar->message . ' ('.$radar->details .')';
 		}
-		else
-			$this->dispatch('status-message', $radar->message);
+			// set status to "DOI assigned"
+		$this->database->radar_status = 1;
+		$this->database->save();
+
+		$this->refreshStatus();
+		$this->js('window.location.reload()'); 
+	}
+
+	/*
+	* Remove the DOI from the Ecosystem and all links to the Datathek. But it does nothing in the Datathek.
+	*/
+	public function resetDOI()
+	{	
+		$this->database->radar_id = null;
+		$this->database->doi = null;
+		$this->database->radar_status = null;
+		$this->database->save();
+			// set dataset and datafile radar_ids back to null
+		foreach($this->database->datasets as $dataset) // iterate through all Dataset of the Database
+		{
+			$dataset->radar_id = null;
+			$dataset->radar_upload_url = null;
+			$dataset->save();
+			foreach($dataset->datafiles as $datafile)
+			{
+				$datafile->radar_id = null;
+				$datafile->datasetdef_radar_id = null;
+				$datafile->datasetdef_radar_upload_url = null;
+				$datafile->save();
+			}
+		}
+
+
+		$this->refreshStatus();
 		$this->js('window.location.reload()'); 
 	}
 
@@ -159,6 +222,10 @@ class DatabaseRadarActions extends Component
 		if($radar->read())
 		{
 			$this->id = $radar?->radar_dataset?->id ?? null;
+			$this->state = $radar->radar_dataset->state;
+			$this->doi = $radar?->radar_dataset?->descriptiveMetadata?->identifier?->value ?? null;
+			$this->size = $radar?->radar_dataset?->technicalMetadata?->size ?? "unknown";
+			$this->radar_content = $radar->radar_content;
 			$this->canUpload = true;
 			$this->setState($radar?->radar_dataset?->state ?? '');
 		}
@@ -167,6 +234,10 @@ class DatabaseRadarActions extends Component
 			if($this->database->radar_id)
 				$this->error = $radar->message;
 			$this->id = null;
+			$this->state = null;
+			$this->doi = null;
+			$this->size = null;
+			$this->radar_content = null;
 			$this->canUpload = false;
 			$this->setState('');
 		}
