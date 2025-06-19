@@ -92,7 +92,7 @@ class DatabaseVisibility extends Component
 		}
 		if($radar->read())
 		{
-			$state = $radar?->dataset?->state ?? 'INVALID RADAR STATE';
+			$state = $radar?->radar_dataset?->state ?? 'INVALID RADAR STATE';
 			if($state  == "PENDING")
 			{
 				// we need to start the review process in order to get the DOI

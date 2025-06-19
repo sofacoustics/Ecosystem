@@ -492,7 +492,7 @@ class ToolRadarDatasetBridge extends RadarBridge
 			// stop review process
 			$this->endreview();
 
-			// delete the dataset
+			// delete the RADAR dataset
 			$this->delete();
 		}
 

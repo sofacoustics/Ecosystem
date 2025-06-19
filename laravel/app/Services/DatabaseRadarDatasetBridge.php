@@ -32,7 +32,7 @@ use App\Models\Datafile;
 class DatabaseRadarDatasetBridge extends RadarBridge
 {
 	public $database; // the Ecosystem database
-	public $dataset; // the RADAR dataset - some values set sometimes
+	public $radar_dataset; // the RADAR dataset - some values set sometimes
 	public $content; // save the content sent to RADAR
 	public $endpoint; // save the endpoint sent to RADAR
 
@@ -67,7 +67,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		$response = $this->post($endpoint);
 		if($this->status == 200)
 		{
-			$this->message = "Dataset successfully published";
+			$this->message = "RADAR Dataset successfully published";
 			return true;
 		}
 		else
@@ -106,7 +106,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		$response = $this->post($endpoint);
 		if($this->status == 200)
 		{
-			$this->message = "Dataset review process successfully started";
+			$this->message = "Review process of the RADAR dataset successfully started";
 			$this->database->radar_status = 1;
 			return true;
 		}
@@ -192,7 +192,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 
 		/*
 		 *
-		 * Call the 'read' API and set the $this->dataset property.
+		 * Call the 'read' API and set the $this->radar_dataset property.
 		 *
 		 *
 		 * Returns
@@ -200,7 +200,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		 *  'true' if reading is successful
 		 *  'false' otherwise
 		 *
-		 *		If the dataset does not exist, then it returns
+		 *		If the RADAR dataset does not exist, then it returns
 		 *
 		 *		'statusCode' => 404
 		 *		'content ' => {"message":"There is no RADAR dataset for this database"}
@@ -228,7 +228,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 			return false;
 		}
 		$this->message = 'The RADAR metadata has been successfully read from the RADAR server';
-		$this->dataset = json_decode($response->content());
+		$this->radar_dataset = json_decode($response->content());
 		return true;
 	}
 
@@ -417,30 +417,6 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	 *  The /upload endpoint can be used to upload any single files.
 	 *  If files in the formats zip/tar/tar.gz/tar.bz are uploaded, these archives will then NOT be extracted.
 	 */
-	/*
-	public function upload(Datafile $datafile)
-	{
-		if(!$this->dataset)
-			$this->read();
-		$endpoint = $this->dataset->uploadUrl;
-		$this->content = $datafile->absolutepath(); // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
-		$response = $this->postFile($endpoint, $datafile->absolutepath(), $datafile->name, $datafile->mimetype);
-		if($response->status() == 200)
-		{
-			$this->message = 'The file \''.$datafile->name.'\' was successfully uploaded';
-			$datafile->radar_id = $response->content();
-			$datafile->save();
-			return true;
-		}
-		else
-		{
-			$this->message = 'Failed to upload the file \''.$datafile->name.'\' to the RADAR server';
-			$this->details = $response->content();
-			return false;
-		}
-	}
-	 */
 	public function upload() : bool
 	{
 		if(!$this->create())
@@ -448,12 +424,12 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 			return false;
 		}
 
-		foreach($this->database->datasets as $dataset)
+		foreach($this->database->datasets as $dataset) // For each Ecosystem(!) dataset
 		{
 			$radar = new DatasetRadarFolderBridge($dataset);
 			if(!$radar->upload())
 			{
-				// failed to upload dataset
+				// failed to upload an Ecosystem dataset
 				$this->message = $radar->message;
 				$this->details = $radar->details;
 				return false;
@@ -489,7 +465,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 			$this->database->radar_status = 0;
 			$this->database->save();
 			// set dataset and datafile radar_ids back to null
-			foreach($this->database->datasets as $dataset)
+			foreach($this->database->datasets as $dataset) // iterate through all Dataset of the Database
 			{
 				$dataset->radar_id = null;
 				$dataset->radar_upload_url = null;
@@ -517,7 +493,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 			// stop review process
 			$this->endreview();
 
-			// delete the dataset
+			// delete the RADAR dataset
 			$this->delete();
 		}
 
