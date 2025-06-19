@@ -33,7 +33,11 @@ use Illuminate\Database\Eloquent\Model;
 
 Route::get('/', function () { return view('landing', [
 	'database' => \App\Models\Database::where('databases.visible', '=', 1)->orderBy('updated_at', 'desc')->first(),
-	'datafile' => \App\Models\Datafile::orderBy('updated_at', 'desc')->first(), 
+	'datafile' => \App\Models\Datafile::whereIn('dataset_id', 
+									\App\Models\Dataset::whereIn('database_id', 
+										\App\Models\Database::where('databases.visible', '=', 1)->pluck('id')
+										)->pluck('id')
+									)->orderBy('updated_at', 'desc')->first(), 
 	'tool' => \App\Models\Tool::orderBy('updated_at', 'desc')->first()]
 ); })->name('home');
 
