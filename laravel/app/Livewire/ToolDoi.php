@@ -16,7 +16,7 @@ class ToolDoi extends Component
 	public $status; // set messages to be viewed in view
 	public $warning;
 	public $error; // set error messages to be viewed in view
-	public $radar_status; // null or 0: nothing happened with RADAR yet; 1: DOI assigned; 2: Requested publication, curator notified; 3: Database persistently published.
+	public $radar_status; // null or 0: nothing happened with RADAR yet; 1: DOI assigned; 2: Requested publication, curator notified; 3: Persistently published.
 
 	protected $rules = [
 	];
@@ -58,6 +58,7 @@ class ToolDoi extends Component
 			{
 				$this->dispatch('status-message', $radar->message);
 				$this->error = $radar->message.' RADAR Message: '.$radar->details.' *** Content created: *** '.json_encode($radar->content);
+				$this->radar_status = $this->tool->radar_status;
 				return;
 			}
 		}
@@ -66,17 +67,19 @@ class ToolDoi extends Component
 		{
 			$this->dispatch('radar-status-changed', 'Validation failed');
 			$this->error = $radar->message.' RADAR Message: '.$radar->details;
+			$this->radar_status = $this->tool->radar_status;
 			return;
 		}
 		
 		if($radar->read())
 		{
-			$state = $radar?->dataset?->state ?? 'INVALID RADAR STATE';
+			$state = $radar?->radar_dataset?->state ?? 'INVALID RADAR STATE';
 			if($state  == "PENDING")
 			{		// we need to start the review process in order to get the DOI
 				if(!$radar->startreview())
 				{
 					$this->error = $radar->message.' RADAR Message: '.$radar->details;
+					$this->radar_status = $this->tool->radar_status;
 					return;
 				}
 			}
@@ -84,12 +87,13 @@ class ToolDoi extends Component
 		else
 		{
 			$this->error = $radar->message.' RADAR Message: '.$radar->details;
+			$this->radar_status = $this->tool->radar_status;
 			return;
 		}
 			// retrieve doi
-		if($radar->doi())
+		if($radar->getDOI())
 		{
-			$this->doi = $this->tool->doi;
+			$this->doi = $radar->doi; 
 			$this->dispatch('status-message', $radar->message);
 		}
 		else
@@ -100,33 +104,70 @@ class ToolDoi extends Component
 		if(!$radar->endreview())
 			$this->error = $radar->details;
 		
+		$this->tool->radar_status = 1;
+		$this->tool->doi = $this->doi;
+		$this->tool->save();
 		$this->radar_status = $this->tool->radar_status;
 	}
 
 	public function submitToPublish()
 	{
-		$this->tool->radar_status=1;
-		$this->tool->save();
-		$this->radar_status = $this->tool->radar_status;
-		$this->js('window.location.reload()'); 
-	}
+		$this->error = "";
+		$this->warning = "";
 
-	public function approve() // Emulate the curator approving the publication at the Datathek
-	{
+		$radar = new ToolRadarDatasetBridge($this->tool);
+		if($radar->update())
+		{
+			$this->dispatch('radar-status-changed', 'Dataset updated'); // let other livewire components know the radar status has changed
+			$this->dispatch('status-message', $radar->message);
+			$content_created = $radar->content;
+		}
+		else
+		{
+			$this->dispatch('status-message', $radar->message);
+			$this->error = $radar->message.' RADAR Message: '.$radar->details.' *** Content updated: *** '.json_encode($radar->content);
+			return;
+		}
+			// validate metadata
+		if(!$radar->metadataValidate())
+		{
+			$this->dispatch('radar-status-changed', 'Validation failed');
+			$this->error = $radar->message.' RADAR Message: '.$radar->details.' *** Content created: *** '.json_encode($content_created);
+			return;
+		}
+		// upload tool to the Datathek
+		if(!$radar->upload())
+		{
+			$this->error = $radar->message.' ('.$radar->details.')';
+			return;
+		}
+		else
+		{
+			$this->dispatch('status-message', $radar->message);
+			// Starting the 'review' process directly after uploading was failing.
+			// sleeping for 5 seconds appears to fix this. Not a pretty solution though!
+			// help when starting the review directly after uploading files, which otherwise fails!
+			sleep(5);
+		}
+
+		// after the upload, we can trigger the review
+		if(!$radar->startreview())
+		{
+			$this->error = $radar->message.' RADAR Review Message: '.$radar->details;
+			return;
+		}
+		else
+		{
+			$this->dispatch('status-message', $radar->message);
+		}
+
 		$this->tool->radar_status=2;
 		$this->tool->save();
 		$this->radar_status = $this->tool->radar_status;
+		$this->dispatch('status-message', 'Tool has been successfully submitted for persistent publication!');
+		//$this->js('window.location.reload()'); //jw:note I think this refreshes page removing status messages too early and is unnecessary
 	}
 
-	public function resetDOI()
-	{
-		$this->tool->radar_status=null;
-		$this->tool->doi = null;
-		$this->tool->save();
-		$this->doi = $this->tool->doi;
-		$this->radar_status = $this->tool->radar_status;
-		$this->js('window.location.reload()'); 
-	}
 	public function render()
 	{
 		return view('livewire.tool-doi');

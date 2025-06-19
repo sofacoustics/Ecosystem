@@ -32,8 +32,10 @@ class ToolRadarDatasetBridge extends RadarBridge
 {
 	public $tool; // the Ecosystem tool
 	public $radar_dataset; // the RADAR dataset - some values set sometimes
-	public $content; // save the content sent to RADAR
-	public $endpoint; // save the endpoint sent to RADAR
+	public $content; // content sent to RADAR
+	public $endpoint; // endpoint sent to RADAR
+	public $radar_content; // JSON content from RADAR
+	public $doi; // retrieved DOI
 
 
 	function __construct($tool)
@@ -44,7 +46,7 @@ class ToolRadarDatasetBridge extends RadarBridge
 
 	/*
 	 *
-	 * Publish a RADAR dataset (without uploading yet!)
+	 * Publish a RADAR dataset (no uploading!)
 	 *
 	 * Returns:
 	 *
@@ -61,8 +63,8 @@ class ToolRadarDatasetBridge extends RadarBridge
 	{
 		$this->reset();
 		$endpoint = '/datasets/'.$this->tool->radar_id.'/publish';
-		$this->content = null; // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
+		$this->content = null; 
+		$this->endpoint = $endpoint;
 		$response = $this->post($endpoint);
 		if($this->status == 200)
 		{
@@ -100,13 +102,12 @@ class ToolRadarDatasetBridge extends RadarBridge
 	{
 		$this->reset();
 		$endpoint = '/datasets/'.$this->tool->radar_id.'/startreview';
-		$this->content = null; // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
+		$this->content = null;
+		$this->endpoint = $endpoint;
 		$response = $this->post($endpoint);
 		if($this->status == 200)
 		{
 			$this->message = "Dataset review process successfully started";
-			$this->tool->radar_status = 1;
 			return true;
 		}
 		else
@@ -135,8 +136,8 @@ class ToolRadarDatasetBridge extends RadarBridge
 	{
 		$this->reset();
 		$endpoint = '/datasets/'.$this->tool->radar_id.'/endreview';
-		$this->content = null; // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
+		$this->content = null;
+		$this->endpoint = $endpoint;
 		$response = $this->post($endpoint);
 		if($response->status() == 200)
 		{
@@ -166,19 +167,17 @@ class ToolRadarDatasetBridge extends RadarBridge
 	 *  Returns just the DOI as the body
 	 *
 	 */
-	public function doi() : bool
+	public function getDOI() : bool
 	{
 		$this->reset();
 		$endpoint = '/datasets/'.$this->tool->radar_id.'/doi';
-		$this->content = null; // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
+		$this->content = null;
+		$this->endpoint = $endpoint;
 		$response = $this->get($endpoint);
 		if($response->status() == 200)
 		{
 			$this->message = 'DOI successfully retrieved from RADAR';
-			$this->tool->doi = $response->content();
-			$this->tool->radar_status = 1;
-			$this->tool->save();
+			$this->doi = $response->content();
 			return true;
 		}
 		else
@@ -218,8 +217,8 @@ class ToolRadarDatasetBridge extends RadarBridge
 			return false;
 		}
 		$endpoint = '/datasets/'.$this->tool->radar_id;
-		$this->content = null; // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
+		$this->content = null;
+		$this->endpoint = $endpoint;
 		$response = $this->get($endpoint);
 		if($response->status() == 404)
 		{
@@ -227,7 +226,8 @@ class ToolRadarDatasetBridge extends RadarBridge
 			return false;
 		}
 		$this->message = 'The RADAR metadata has been successfully read from the RADAR server';
-		$this->radar_dataset = json_decode($response->content());
+		$this->radar_dataset = json_decode($response->content()); 
+		$this->radar_content = $response->content();
 		return true;
 	}
 
@@ -249,8 +249,8 @@ class ToolRadarDatasetBridge extends RadarBridge
 	{
 		$this->reset();
 		$endpoint = '/datasets/'.$this->tool->radar_id.'/metadata/validate';
-		$this->content = null; // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
+		$this->content = null;
+		$this->endpoint = $endpoint;
 		$response = $this->get($endpoint);
 		if($response->status() == 200)
 		{
@@ -304,8 +304,8 @@ class ToolRadarDatasetBridge extends RadarBridge
 		$resource = new RadarToolResource($this->tool);
 		$arrayBody = $resource->toArray(request()); // route called with ?format=radar
 		$endpoint = '/datasets/'.$this->tool->radar_id;
-		$this->content = $arrayBody; // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
+		$this->content = $arrayBody;
+		$this->endpoint = $endpoint;
 		$response = $this->put($endpoint, $arrayBody);
 		if($response->status() == 200)
 		{
@@ -352,12 +352,13 @@ class ToolRadarDatasetBridge extends RadarBridge
 		$arrayBody = $resource->toArray(request()); // alternative would be json_decode($resource->toJson(), true);
 		
 		$endpoint = "/workspaces/$this->workspace/datasets/";
-		$this->content = $arrayBody; // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
+		$this->content = $arrayBody;
+		$this->endpoint = $endpoint;
 		$response = $this->post($endpoint, $arrayBody);
 		if($response->status() == '201')
 		{
 			$this->tool->radar_id = $this->getJsonValue('id', $response);
+			$this->tool->radar_upload_url = $this->getJsonValue('uploadUrl', $response);
 			$this->tool->save();
 			return true; // success
 		}
@@ -384,8 +385,8 @@ class ToolRadarDatasetBridge extends RadarBridge
 	{
 		$this->reset();
 		$endpoint = '/datasets/'.$this->tool->radar_id.'/canupload?filename='.$filename;
-		$this->content = null; // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
+		$this->content = null; 
+		$this->endpoint = $endpoint; 
 		$response = $this->get($endpoint);
 		if($response->status() == 200)
 		{
@@ -423,25 +424,29 @@ class ToolRadarDatasetBridge extends RadarBridge
 			return false;
 		}
 
-		if($this->tool->filename)
+		if($this->tool->filename) // if tool file available
 		{
-			$radar = new ToolfileRadarFileBridge($dataset);
+			$radar = new ToolfileRadarFileBridge($this->tool);
 			if(!$radar->upload())
 			{
-				// failed to upload the datafile
+				// failed to upload the tool file
 				$this->message = $radar->message;
 				$this->details = $radar->details;
 				return false;
 			}
 		}
+		else
+		{
+			$this->message = 'The tool file is not available!';
+			return false;
+		}
 
-		$this->message = 'The tool has been successfully uploaded to the RADAR backend!';
-
+		$this->message = 'The tool has been successfully uploaded to the Datathek!';
 		return true;
 	}
 
 	/*
-	 * Delete RADAR dataset corresponding to this tool
+	 * Delete RADAR dataset corresponding to this tool and reset the DOI
 	 *
 	 * Returns
 	 *
@@ -459,25 +464,7 @@ class ToolRadarDatasetBridge extends RadarBridge
 		$response = $this->httpdelete($endpoint);
 		if($response->status() == 204)
 		{
-			$this->tool->radar_id = null;
-			$this->tool->doi = null;
-			$this->tool->radar_status = 0;
-			$this->tool->save();
-			// set dataset and datafile radar_ids back to null
-			foreach($this->tool->datasets as $dataset)
-			{
-				$dataset->radar_id = null;
-				$dataset->radar_upload_url = null;
-				$dataset->save();
-				foreach($dataset->datafiles as $datafile)
-				{
-					$datafile->radar_id = null;
-					$datafile->datasetdef_radar_id = null;
-					$datafile->datasetdef_radar_upload_url = null;
-					$datafile->save();
-				}
-			}
-			$this->message = 'The RADAR dataset has been deleted';
+			$this->message = 'The RADAR dataset has been deleted and DOI assignment removed';
 			return true;
 		}
 		$this->message = 'Failed to delete the RADAR dataset';
@@ -485,31 +472,4 @@ class ToolRadarDatasetBridge extends RadarBridge
 		return false;
 	}
 
-	public function resetPersistentPublication()
-	{
-		if($this->tool->radar_id)
-		{
-			// stop review process
-			$this->endreview();
-
-			// delete the RADAR dataset
-			$this->delete();
-		}
-
-		$this->tool->radar_status=null;
-		$this->tool->doi = null;
-		$this->tool->radar_id = null;
-		$this->tool->save();
-		$this->message = 'The DOI has successfully been reset! Check what happened at the Datathek.';
-		return true;
-	}
-	
-
-	public function approvePersistentPublication()
-	{
-		$this->tool->radar_status=3;
-		$this->tool->save();
-		$this->message = 'The DOI has successfully been reset and the persistent publication retracted!';
-		return true;
-	}
 }

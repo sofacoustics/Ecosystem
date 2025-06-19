@@ -59,29 +59,33 @@
 		@if($tool->metadataValidate())
 			<p>If you want to persistently publish your tool, provide valid metadata first.</p>
 		@else
-			<p>By clicking the button below, your tool can be submitted to be persistently published with the DOI.</p>
-			<p>To this end, the following steps will be taken:</p>
-			<ul class="list-disc list-inside">
-				<li>The tool will be locked. <b>No edits will be allowed!</b>
-				<li>The metadata at the Datathek will be updated.
-				<li>The datafiles will be sent to the Datathek. Depending on the size of your datafiles, this might take a while.
-				<li>The curator of the Datathek will be notified.
-			</ul>
-			<p><b>This operation is irreversible and triggers a human to act!</b></p>
-				<button wire:click="submitToPublish" 
-					wire:confirm="Are you sure to submit your tool for a persistent publication? This operation cannot be reverted!"
-					wire:loading.attr="disabled"
-					wire:loading.class="opacity-50">
-					<span wire:loading.remove wire:target="submitToPublish"
-						class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">
-						Publish with DOI
-					</span>
-					<span wire:loading wire:target="submitToPublish" 
-						class="bg-gray-500 rounded px-4 py-2 font-bold text-white cursor-not-allowed">
-						Processing...
-					</span>
-				</button>
-			<p>Once the curator approves your tool, it will be published at the Datathek and the DOI will be valid.</p>
+			@if($tool->filename==null)
+				<p>If you want to persistently publish your tool, upload your tool first.</p>
+			@else
+				<p>By clicking the button below, your tool can be submitted to be persistently published with the DOI.</p>
+				<p>To this end, the following steps will be taken:</p>
+				<ul class="list-disc list-inside">
+					<li>The tool will be locked. <b>No edits will be allowed!</b>
+					<li>The metadata at the Datathek will be updated.
+					<li>The datafiles will be sent to the Datathek. Depending on the size of your datafiles, this might take a while.
+					<li>The curator of the Datathek will be notified.
+				</ul>
+				<p><b>This operation is irreversible and triggers a human to act!</b></p>
+					<button wire:click="submitToPublish" 
+						wire:confirm="Are you sure to submit your tool for a persistent publication? This operation cannot be reverted!"
+						wire:loading.attr="disabled"
+						wire:loading.class="opacity-50">
+						<span wire:loading.remove wire:target="submitToPublish"
+							class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">
+							Publish with DOI
+						</span>
+						<span wire:loading wire:target="submitToPublish" 
+							class="bg-gray-500 rounded px-4 py-2 font-bold text-white cursor-not-allowed">
+							Processing...
+						</span>
+					</button>
+				<p>Once the curator approves your tool, it will be published at the Datathek and the DOI will be valid.</p>
+			@endif
 		@endif
 	@elseif($radar_status==2)
 		<p>The tool has been submitted to be persistently published.</p>

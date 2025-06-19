@@ -45,7 +45,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 
 	/*
 	 *
-	 * Publish a RADAR dataset (without uploading yet!)
+	 * Publish a RADAR dataset (no uploading!)
 	 *
 	 * Returns:
 	 *

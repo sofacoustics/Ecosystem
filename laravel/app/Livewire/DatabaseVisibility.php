@@ -178,7 +178,6 @@ class DatabaseVisibility extends Component
 
 		$this->database->radar_status=2;
 		$this->database->save();
-		Log::info('Changing radar_status for database '.$this->database->id.' to '.$this->database->radar_status);
 		$this->radar_status = $this->database->radar_status;
 		$this->dispatch('status-message', 'The database has been successfully published!');
 		$this->js('window.location.reload()'); //jw:note I think this refreshes page removing status messages too early and is unnecessary

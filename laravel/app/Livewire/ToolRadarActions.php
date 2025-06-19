@@ -100,6 +100,9 @@ class ToolRadarActions extends Component
 		$this->dispatch('status-message', $radar->message);
 	}
 
+	/*
+	* This will delete the Tool from the Datathek and remove the DOI in the Ecosystem
+	*/
 	public function deleteFromRadar()
 	{
 		$this->dispatch('status-message', 'Starting to delete the RADAR dataset');
@@ -111,36 +114,60 @@ class ToolRadarActions extends Component
 		}
 		else
 			$this->error = $radar->details;
+
+		$this->tool->radar_id = null;
+		$this->tool->radar_upload_url = null;
+		$this->tool->doi = null;
+		$this->tool->radar_status = null;
+		$this->tool->save();
+
 		$this->dispatch('status-message', $radar->message);
 		$this->refreshStatus();
 	}
 
-	public function resetDOI()
+	/* 
+	* Approve the persistent publication: Set the Status to "Persistently published". 
+	*
+	* Note: nothing happens at the Datathek currently. 
+	*/
+	public function approvePersistentPublication() 
 	{
-		$radar = new ToolRadarDatasetBridge($this->tool);
-		// do we have a link to RADAR?
-		if(!$radar->resetPersistentPublication())
-		{
-			$this->error = $radar->message . ' ('.$radar->details;
-		}
-		else
-			$this->dispatch('status-message', $radar->message);
-		
-		$this->refreshStatus();
-		$this->js('window.location.reload()'); 
+		$this->tool->radar_status = 3;
+		$this->tool->save();
 
+		$this->js('window.location.reload()'); 
 	}
 
-	public function approvePublication() // Emulate the curator approving the publication at the Datathek
-	{
+	/*
+	* Reject the persistent publication: End the review at Datathek and set the Status to "DOI assigned"
+	*/
+	public function rejectPersistentPublication()
+	{		// end the review
 		$radar = new ToolRadarDatasetBridge($this->tool);
-		// do we have a link to RADAR?
-		if(!$radar->approvePersistentPublication())
+		if(!$radar->endreview())
 		{
-			$this->error = $radar->message . ' ('.$radar->details;
+			$this->error = 'End Review: '.$radar->message . ' ('.$radar->details .')';
 		}
-		else
-			$this->dispatch('status-message', $radar->message);
+			// set status to "DOI assigned"
+		$this->tool->radar_status = 1;
+		$this->tool->save();
+
+		$this->refreshStatus();
+		$this->js('window.location.reload()'); 
+	}
+
+	/*
+	* Remove the DOI from the Ecosystem and all links to the Datathek. But it does nothing in the Datathek.
+	*/
+	public function resetDOI()
+	{	
+		$this->tool->radar_id = null;
+		$this->tool->radar_upload_url = null;
+		$this->tool->doi = null;
+		$this->tool->radar_status = null;
+		$this->tool->save();
+
+		$this->refreshStatus();
 		$this->js('window.location.reload()'); 
 	}
 

@@ -22,15 +22,15 @@ class ToolRadarStatus extends Component
 	public $state;
 	public $doi;
 	public $size;
+	public $radar_content;
 
 	public $error;
 
-    #[On('radar-status-changed')]
-    public function onRadarStatusChanged($content)
-    {
-		//$this->dispatch('status-message', 'Received \'radar-status-change\' message');
-        $this->getStatus();
-    }
+	#[On('radar-status-changed')]
+	public function onRadarStatusChanged($content)
+	{
+		$this->getStatus();
+	}
 
 	public function mount($tool)
 	{
@@ -38,28 +38,30 @@ class ToolRadarStatus extends Component
 		$this->getStatus();
 	}
 
-    public function getStatus()
-    {
-        $radar = new ToolRadarDatasetBridge($this->tool);
-        if($radar->read())
-        {
-            $this->id = $radar->radar_dataset->id;
-            $this->state = $radar->radar_dataset->state;
-            $this->doi = $radar?->radar_dataset?->descriptiveMetadata?->identifier?->value ?? null;
-            $this->size = $radar?->radar_dataset?->technicalMetadata?->size ?? 0;
+	public function getStatus()
+	{
+		$radar = new ToolRadarDatasetBridge($this->tool);
+		if($radar->read())
+		{
+			$this->id = $radar->radar_dataset->id;
+			$this->state = $radar->radar_dataset->state;
+			$this->doi = $radar?->radar_dataset?->descriptiveMetadata?->identifier?->value ?? null;
+			$this->size = $radar?->radar_dataset?->technicalMetadata?->size ?? "unknown";
+			$this->radar_content = $radar->radar_content;
 		}
 		else
 		{
-            $this->id = null;
-            $this->state = null;
-            $this->doi = null;
-            $this->size = null;
+			$this->id = null;
+			$this->state = null;
+			$this->doi = null;
+			$this->size = null;
+			$this->radar_content = null;
 		}
-    }
+	}
 
-    public function render()
-    {
-        return view('livewire.tool-radar-status');
-    }
+	public function render()
+	{
+		return view('livewire.tool-radar-status');
+	}
 
 }
