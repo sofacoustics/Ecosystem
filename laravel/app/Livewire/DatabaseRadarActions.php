@@ -17,7 +17,7 @@ class DatabaseRadarActions extends Component
 	// the RADAR state - used to display/hide buttons
 	public $pending = false;
 	public $review = false;
-	public $radarstatus = 0; // this will be set to the value of the database field 'radarstatus'.
+	public $radar_status = 0; // this will be set to the value of the database field 'radar_status'.
 
 	// true if we haven't uploaded yet
 	public $canUpload = false;
@@ -27,7 +27,7 @@ class DatabaseRadarActions extends Component
 	public function mount($database)
 	{
 		$this->database = $database;
-		$this->radarstatus = $database->radarstatus;
+		$this->radar_status = $database->radar_status;
 		if($database->radar_id)
 		{
 			$this->id = $database->radar_id;
@@ -170,6 +170,6 @@ class DatabaseRadarActions extends Component
 			$this->canUpload = false;
 			$this->setState('');
 		}
-		$this->radarstatus = $this->database->radarstatus;
+		$this->radar_status = $this->database->radar_status;
 	}
 }

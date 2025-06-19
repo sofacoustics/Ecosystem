@@ -16,7 +16,7 @@ class ToolDoi extends Component
 	public $status; // set messages to be viewed in view
 	public $warning;
 	public $error; // set error messages to be viewed in view
-	public $radarstatus;
+	public $radar_status;
 
 	protected $rules = [
 	];
@@ -27,10 +27,10 @@ class ToolDoi extends Component
 		{
 			$this->tool = $tool;
 			$this->doi = $tool->doi;
-			if ($tool->radarstatus == null)
-				$this->radarstatus = 0;
+			if ($tool->radar_status == null)
+				$this->radar_status = 0;
 			else
-				$this->radarstatus = $tool->radarstatus;
+				$this->radar_status = $tool->radar_status;
 		}
 		else
 		{
@@ -100,31 +100,31 @@ class ToolDoi extends Component
 		if(!$radar->endreview())
 			$this->error = $radar->details;
 		
-		$this->radarstatus = $this->tool->radarstatus;
+		$this->radar_status = $this->tool->radar_status;
 	}
 
 	public function submitToPublish()
 	{
-		$this->tool->radarstatus=1;
+		$this->tool->radar_status=1;
 		$this->tool->save();
-		$this->radarstatus = $this->tool->radarstatus;
+		$this->radar_status = $this->tool->radar_status;
 		$this->js('window.location.reload()'); 
 	}
 
 	public function approve() // Emulate the curator approving the publication at the Datathek
 	{
-		$this->tool->radarstatus=2;
+		$this->tool->radar_status=2;
 		$this->tool->save();
-		$this->radarstatus = $this->tool->radarstatus;
+		$this->radar_status = $this->tool->radar_status;
 	}
 
 	public function resetDOI()
 	{
-		$this->tool->radarstatus=null;
+		$this->tool->radar_status=null;
 		$this->tool->doi = null;
 		$this->tool->save();
 		$this->doi = $this->tool->doi;
-		$this->radarstatus = $this->tool->radarstatus;
+		$this->radar_status = $this->tool->radar_status;
 		$this->js('window.location.reload()'); 
 	}
 	public function render()

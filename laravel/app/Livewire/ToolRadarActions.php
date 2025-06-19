@@ -17,7 +17,7 @@ class ToolRadarActions extends Component
 	// the RADAR state - used to display/hide buttons
 	public $pending = false;
 	public $review = false;
-	public $radarstatus = 0; // this will be set to the value of the tool field 'radarstatus'.
+	public $radar_status = 0; // this will be set to the value of the tool field 'radar_status'.
 
 	// true if we haven't uploaded yet
 	public $canUpload = false;
@@ -27,7 +27,7 @@ class ToolRadarActions extends Component
 	public function mount($tool)
 	{
 		$this->tool = $tool;
-		$this->radarstatus = $tool->radarstatus;
+		$this->radar_status = $tool->radar_status;
 		if($tool->radar_id)
 		{
 			$this->id = $tool->radar_id;
@@ -170,6 +170,6 @@ class ToolRadarActions extends Component
 			$this->canUpload = false;
 			$this->setState('');
 		}
-		$this->radarstatus = $this->tool->radarstatus;
+		$this->radar_status = $this->tool->radar_status;
 	}
 }

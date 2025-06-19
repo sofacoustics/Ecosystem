@@ -22,7 +22,7 @@ class Database extends Model
 		'radardataset',
 		'productionyear', 'publicationyear', 'language', 'resourcetype', 'resource', 'datasources','software',
 		'processing', 'controlledrights', 'additionalrights', 
-		'creators', 'doi', 'visible', 'radarstatus',
+		'creators', 'doi', 'visible', 'radar_status',
 		'bulk_upload_dataset_name_filter',
 		'user_id', '_token', '_method', 'submit'];
 

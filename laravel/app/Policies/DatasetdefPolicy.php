@@ -51,7 +51,7 @@ class DatasetdefPolicy
       //  return false;
 			
 				// User can only update their database
-			if($user->id == $datasetdef->database->user_id && $database->radarstatus < 2)
+			if($user->id == $datasetdef->database->user_id && $database->radar_status < 2)
 				return true;
 			else
 				return false;
@@ -66,7 +66,7 @@ class DatasetdefPolicy
     public function delete(User $user, Datasetdef $datasetdef, Database $database): bool
     {
         $nDatasets = count($datasetdef->database->datasets);
-        return ($nDatasets == 0 && $user->id == $datasetdef->database->user_id && $database->radarstatus < 2)
+        return ($nDatasets == 0 && $user->id == $datasetdef->database->user_id && $database->radar_status < 2)
             ? true
             : false;
     }

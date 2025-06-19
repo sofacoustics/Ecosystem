@@ -106,7 +106,7 @@ class ToolRadarDatasetBridge extends RadarBridge
 		if($this->status == 200)
 		{
 			$this->message = "Dataset review process successfully started";
-			$this->tool->radarstatus = 1;
+			$this->tool->radar_status = 1;
 			return true;
 		}
 		else
@@ -177,7 +177,7 @@ class ToolRadarDatasetBridge extends RadarBridge
 		{
 			$this->message = 'DOI successfully retrieved from RADAR';
 			$this->tool->doi = $response->content();
-			$this->tool->radarstatus = 1;
+			$this->tool->radar_status = 1;
 			$this->tool->save();
 			return true;
 		}
@@ -461,7 +461,7 @@ class ToolRadarDatasetBridge extends RadarBridge
 		{
 			$this->tool->radar_id = null;
 			$this->tool->doi = null;
-			$this->tool->radarstatus = 0;
+			$this->tool->radar_status = 0;
 			$this->tool->save();
 			// set dataset and datafile radar_ids back to null
 			foreach($this->tool->datasets as $dataset)
@@ -496,7 +496,7 @@ class ToolRadarDatasetBridge extends RadarBridge
 			$this->delete();
 		}
 
-		$this->tool->radarstatus=null;
+		$this->tool->radar_status=null;
 		$this->tool->doi = null;
 		$this->tool->radar_id = null;
 		$this->tool->save();
@@ -507,7 +507,7 @@ class ToolRadarDatasetBridge extends RadarBridge
 
 	public function approvePersistentPublication()
 	{
-		$this->tool->radarstatus=3;
+		$this->tool->radar_status=3;
 		$this->tool->save();
 		$this->message = 'The DOI has successfully been reset and the persistent publication retracted!';
 		return true;

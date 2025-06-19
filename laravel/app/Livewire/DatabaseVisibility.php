@@ -25,7 +25,7 @@ class DatabaseVisibility extends Component
 	public $status; // set messages to be viewed in view
 	public $warning;
 	public $error; // set error messages to be viewed in view
-	public $radarstatus; // null or 0: nothing happened with RADAR yet; 1: DOI assigned; 2: Requested publication, curator notified; 3: Database persistently published.
+	public $radar_status; // null or 0: nothing happened with RADAR yet; 1: DOI assigned; 2: Requested publication, curator notified; 3: Database persistently published.
 
 	protected $rules = [
 	];
@@ -37,10 +37,10 @@ class DatabaseVisibility extends Component
 			$this->database = $database;
 			$this->visible = $database->visible;
 			$this->doi = $database->doi;
-			if ($database->radarstatus == null)
-				$this->radarstatus = 0;
+			if ($database->radar_status == null)
+				$this->radar_status = 0;
 			else
-				$this->radarstatus = $database->radarstatus;
+				$this->radar_status = $database->radar_status;
 		}
 	}
 
@@ -121,7 +121,7 @@ class DatabaseVisibility extends Component
 		// stop review process
 		if(!$radar->endreview())
 			$this->error = $radar->details;
-		$this->radarstatus = $this->database->radarstatus;
+		$this->radar_status = $this->database->radar_status;
 	}
 
 	public function submitToPublish()
@@ -176,10 +176,10 @@ class DatabaseVisibility extends Component
 			$this->dispatch('status-message', $radar->message);
 		}
 
-		$this->database->radarstatus=2;
+		$this->database->radar_status=2;
 		$this->database->save();
-		Log::info('Changing radarstatus for database '.$this->database->id.' to '.$this->database->radarstatus);
-		$this->radarstatus = $this->database->radarstatus;
+		Log::info('Changing radar_status for database '.$this->database->id.' to '.$this->database->radar_status);
+		$this->radar_status = $this->database->radar_status;
 		$this->dispatch('status-message', 'The database has been successfully published!');
 		$this->js('window.location.reload()'); //jw:note I think this refreshes page removing status messages too early and is unnecessary
 	}

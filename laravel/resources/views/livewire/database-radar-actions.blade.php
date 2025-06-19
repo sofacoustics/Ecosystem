@@ -22,7 +22,7 @@
 
 		<x-button wire:click="resetDOI">Reset DOI and the Persistent Publication</x-button>
 
-		@if($radarstatus == 2)
+		@if($radar_status == 2)
 			<x-button wire:click="approvePublication">Approve the Persistent Publication</x-button>
 			<x-livewire-button wire:click="resetDOI" loading="Resetting...">Reset DOI and the Persistent Publication</x-livewire-button>
 		@endif

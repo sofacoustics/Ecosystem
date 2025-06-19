@@ -1,6 +1,6 @@
 <div>
 <h3>DOI Assignment:</h3>
-@if($radarstatus==null || $radarstatus==0)
+@if($radar_status==null || $radar_status==0)
 	<p><b>DOI Status:</b> No DOI assigned.</p>
 	@if($tool->metadataValidate())
 		<p><b>Metadata Status:</b> Invalid, with following problems:</p>
@@ -52,10 +52,10 @@
 <hr>
 
 <h3>Persistent Publication:</h3>
-@if($radarstatus==null || $radarstatus==0)
+@if($radar_status==null || $radar_status==0)
 	<p>If you want to persistently publish your tool, assign a DOI first.</p>
 @else
-	@if($radarstatus==1)
+	@if($radar_status==1)
 		@if($tool->metadataValidate())
 			<p>If you want to persistently publish your tool, provide valid metadata first.</p>
 		@else
@@ -83,15 +83,15 @@
 				</button>
 			<p>Once the curator approves your tool, it will be published at the Datathek and the DOI will be valid.</p>
 		@endif
-	@elseif($radarstatus==2)
+	@elseif($radar_status==2)
 		<p>The tool has been submitted to be persistently published.</p>
 		<p>The curator has been notified. Please check later...</p>
-	@elseif($radarstatus==3)
+	@elseif($radar_status==3)
 		<p>The tool has been persistently published under the following link: <a href="https://doi.org/{{$doi}}">https://doi.org/{{$doi}}</a>.
 		</p>
 		<p>Well done!</p>
 	@else
-		<p>Unknown RADAR status: {{ $radarstatus }}. This is a bug, contact the administrators.</p>
+		<p>Unknown RADAR status: {{ $radar_status }}. This is a bug, contact the administrators.</p>
 		@endif
 @endif
 

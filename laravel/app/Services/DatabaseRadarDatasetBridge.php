@@ -107,7 +107,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		if($this->status == 200)
 		{
 			$this->message = "Dataset review process successfully started";
-			$this->database->radarstatus = 1;
+			$this->database->radar_status = 1;
 			return true;
 		}
 		else
@@ -178,7 +178,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		{
 			$this->message = 'DOI successfully retrieved from RADAR';
 			$this->database->doi = $response->content();
-			$this->database->radarstatus = 1;
+			$this->database->radar_status = 1;
 			$this->database->save();
 			return true;
 		}
@@ -486,7 +486,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		{
 			$this->database->radar_id = null;
 			$this->database->doi = null;
-			$this->database->radarstatus = 0;
+			$this->database->radar_status = 0;
 			$this->database->save();
 			// set dataset and datafile radar_ids back to null
 			foreach($this->database->datasets as $dataset)
@@ -521,7 +521,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 			$this->delete();
 		}
 
-		$this->database->radarstatus=null;
+		$this->database->radar_status=null;
 		$this->database->doi = null;
 		$this->database->radar_id = null;
 		$this->database->save();
@@ -532,7 +532,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 
 	public function approvePersistentPublication()
 	{
-		$this->database->radarstatus=3;
+		$this->database->radar_status=3;
 		$this->database->save();
 		$this->message = 'The DOI has successfully been reset and the persistent publication retracted!';
 		return true;

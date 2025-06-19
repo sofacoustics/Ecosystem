@@ -34,7 +34,7 @@ return new class extends Migration
 			$table->string('additionalrights')->nullable();
 			$table->unsignedBigInteger('user_id');
 			$table->string('doi')->nullable(); // Adding DOI
-			$table->unsignedInteger('radarstatus')->nullable(); // Adding RADAR Status
+			$table->unsignedInteger('radar_status')->nullable(); // Adding RADAR Status
 			$table->timestamps();
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 		});

@@ -38,7 +38,7 @@ class DatasetPolicy
      */
     public function create(User $user, Database $database): Response
     {
-			$access = ($user->id == $database->user_id && $database->radarstatus < 2);
+			$access = ($user->id == $database->user_id && $database->radar_status < 2);
 			return $access
             ? Response::allow()
             : Response::deny('You can not create a dataset because it is not public and you do not own it!');
@@ -49,7 +49,7 @@ class DatasetPolicy
      */
     public function update(User $user, Dataset $dataset): bool
     {
-			if($user->id === $dataset->database->user_id && $dataset->database->radarstatus < 2)
+			if($user->id === $dataset->database->user_id && $dataset->database->radar_status < 2)
 					return true;
 			return false;
     }
@@ -59,7 +59,7 @@ class DatasetPolicy
      */
     public function delete(User $user, Dataset $dataset): bool
     {
-			if($user->id === $dataset->database->user_id && $dataset->database->radarstatus < 2)
+			if($user->id === $dataset->database->user_id && $dataset->database->radar_status < 2)
 					return true;
 			return false;
     }

@@ -180,11 +180,11 @@ Parameters:
 		</h3>
 		<ul class="list-disc list-inside">
 			@if ($tool->doi != null) 
-				@if($tool->radarstatus==1)
+				@if($tool->radar_status==1)
 					<li><b>DOI (assigned)</b>: {{ $tool->doi }}
-				@elseif($tool->radarstatus==2)
+				@elseif($tool->radar_status==2)
 					<li><b>DOI (publication requested)</b>: {{ $tool->doi }}
-				@elseif($tool->radarstatus==3)
+				@elseif($tool->radar_status==3)
 					<li><b>DOI (persistently published)</b>: <a href="https://doi.org/{{ $tool->doi }}">{{ $tool->doi }}</a>
 				@endif
 			@else
