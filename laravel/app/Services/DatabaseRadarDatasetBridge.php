@@ -35,7 +35,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	public $radar_dataset; // the RADAR dataset - some values set sometimes
 	public $content; // save the content sent to RADAR
 	public $endpoint; // save the endpoint sent to RADAR
-
+	public $radar_content; // JSON content from RADAR
 
 	function __construct($database)
 	{
@@ -229,6 +229,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		}
 		$this->message = 'The RADAR metadata has been successfully read from the RADAR server';
 		$this->radar_dataset = json_decode($response->content());
+		$this->radar_content = json_encode($this->radar_dataset, JSON_PRETTY_PRINT);
 		return true;
 	}
 
@@ -485,32 +486,3 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		$this->details = $response->content();
 		return false;
 	}
-
-	public function resetPersistentPublication()
-	{
-		if($this->database->radar_id)
-		{
-			// stop review process
-			$this->endreview();
-
-			// delete the RADAR dataset
-			$this->delete();
-		}
-
-		$this->database->radar_status=null;
-		$this->database->doi = null;
-		$this->database->radar_id = null;
-		$this->database->save();
-		$this->message = 'The DOI has successfully been reset! Check what happened at the Datathek.';
-		return true;
-	}
-	
-
-	public function approvePersistentPublication()
-	{
-		$this->database->radar_status=3;
-		$this->database->save();
-		$this->message = 'The DOI has successfully been reset and the persistent publication retracted!';
-		return true;
-	}
-}

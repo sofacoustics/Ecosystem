@@ -43,10 +43,10 @@ class DatabaseRadarStatus extends Component
         $radar = new DatabaseRadarDatasetBridge($this->database);
         if($radar->read())
         {
-            $this->id = $radar->dataset->id;
-            $this->state = $radar->dataset->state;
-            $this->doi = $radar?->dataset?->descriptiveMetadata?->identifier?->value ?? null;
-            $this->size = $radar?->dataset?->technicalMetadata?->size ?? 0;
+            $this->id = $radar->radar_dataset->id;
+            $this->state = $radar->radar_dataset->state;
+            $this->doi = $radar?->radar_dataset?->descriptiveMetadata?->identifier?->value ?? null;
+            $this->size = $radar?->radar_dataset?->technicalMetadata?->size ?? 0;
 		}
 		else
 		{
