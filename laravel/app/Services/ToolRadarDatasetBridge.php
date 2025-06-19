@@ -227,7 +227,7 @@ class ToolRadarDatasetBridge extends RadarBridge
 		}
 		$this->message = 'The RADAR metadata has been successfully read from the RADAR server';
 		$this->radar_dataset = json_decode($response->content()); 
-		$this->radar_content = $response->content();
+		$this->radar_content = json_encode($this->radar_dataset, JSON_PRETTY_PRINT);
 		return true;
 	}
 

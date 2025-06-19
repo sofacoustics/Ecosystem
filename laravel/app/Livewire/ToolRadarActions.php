@@ -16,6 +16,7 @@ class ToolRadarActions extends Component
 	public $doi;
 	public $size;
 	public $radar_content;
+	public $isExpanded = false; // Initial state of the RADAR content: collapsed
 
 	// the RADAR state - used to display/hide buttons
 	public $pending = false;
@@ -26,6 +27,7 @@ class ToolRadarActions extends Component
 	public $canUpload = false;
 
 	public $error; // any error message to display
+
 
 	public function mount($tool)
 	{
@@ -40,6 +42,11 @@ class ToolRadarActions extends Component
 		{
 			$this->dispatch('status-message', 'There is no RADAR dataset associated with this tool!');
 		}
+	}
+
+	public function toggleExpand()
+	{
+		$this->isExpanded = !$this->isExpanded; // Toggle the boolean value
 	}
 
 	// set RADAR state (pending, review, published)
