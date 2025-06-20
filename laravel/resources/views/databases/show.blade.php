@@ -185,7 +185,7 @@ Parameters:
 			</li>
 
 			@if ($database->controlledrights != null) 
-				<li><b>Rights:</b> {{ \App\Models\Database::controlledrightsDisplay($database->controlledrights) }}
+				<li><b>Rights:</b> {{ \App\Models\Metadataschema::display($database->controlledrights) }}
 					@if ($database->additionalrights != null) ({{ $database->additionalrights }})@endif 
 				</li>
 			@endif 

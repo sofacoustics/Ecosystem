@@ -113,21 +113,6 @@ class Database extends Model
 		return \App\Models\Metadataschema::list('additionalTitleType');
 	}
 
-	static function controlledrightsDisplay($controlledrights)
-	{
-		return \App\Models\Metadataschema::display($controlledrights);
-	}
-
-	static function controlledrightsValue($controlledrights)
-	{
-		return \App\Models\Metadataschema::value($controlledrights);
-	}
-
-	static function controlledrightsList()
-	{
-		return \App\Models\Metadataschema::list('controlledRights');
-	}
-
 	static function subjectareaDisplay($subjectareaindex)
 	{
 		return \App\Models\Metadataschema::display($subjectareaindex);

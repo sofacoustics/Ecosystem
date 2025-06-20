@@ -157,6 +157,7 @@ class MetadataschemaSeeder extends Seeder
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relationType', 'value'=> 'REQUIRES', 'display' => 'Requires'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relationType', 'value'=> 'IS_OBSOLETE_BY', 'display' => 'Is Obsolete By'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relationType', 'value'=> 'OBSOLETES', 'display' => 'Obsoletes'));
-		
+			// Additional row for the EUPL License
+		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'controlledRights', 'value'=> 'ECOSYSTEM_EUPL', 'display' => 'EUPL-1.2: European Union Public Licence version 1.2'));	
 	}
 }

@@ -31,7 +31,6 @@ class DatabaseForm extends Component
 	public $additionalrights;
 
 	public $additionaltitletype_base_id; 
-	public $controlledrights_base_id;
 	public $controlledrights_other_id;
 	
 	protected $rules = [
@@ -62,11 +61,8 @@ class DatabaseForm extends Component
 	public function mount($database = null)
 	{
 		$additionaltitletype_base_id = (\App\Models\Metadataschema::where('name', 'additionalTitleType')->first()->id);
-		$controlledrights_base_id = (\App\Models\Metadataschema::where('name', 'controlledRights')->first()->id);
-		
 		$this->additionaltitletype_base_id = $additionaltitletype_base_id;
-		$this->controlledrights_base_id = $controlledrights_base_id; 
-		$this->controlledrights_other_id = (\App\Models\Metadataschema::where('name', 'controlledRights')->where('value', 'OTHER')->first()->id) - $controlledrights_base_id; 
+		$this->controlledrights_other_id = (\App\Models\Metadataschema::where('name', 'controlledRights')->where('value', 'OTHER')->first()->id); 
 		
 		if($database) 
 		{
@@ -88,13 +84,13 @@ class DatabaseForm extends Component
 			$this->software = $database->software;
 			$this->processing = $database->processing;
 			$this->relatedinformation = $database->relatedinformation;
-			$this->controlledrights = $database->controlledrights-$controlledrights_base_id;
+			$this->controlledrights = $database->controlledrights;
 			$this->additionalrights = $database->additionalrights;
 		}
 		else
 		{
 			$this->language = "eng"; 
-			$this->controlledrights = 0; // CC BY
+			$this->controlledrights = (\App\Models\Metadataschema::where('name', 'controlledRights')->where('value', 'CC_BY_4_0_ATTRIBUTION')->first()->id); // CC BY as default
 			$this->additionaltitletype = 0; // Subtitle
 			$this->publicationyear = "unknown"; // dummy, will be set by RADAR when Publishing
 		}
@@ -129,7 +125,7 @@ class DatabaseForm extends Component
 		$this->database->software = $this->software;
 		$this->database->processing = $this->processing;
 		$this->database->relatedinformation = $this->relatedinformation;
-		$this->database->controlledrights = $this->controlledrights + $this->controlledrights_base_id;
+		$this->database->controlledrights = $this->controlledrights;
 		$this->database->additionalrights = $this->additionalrights;
 
 		$this->database->save();

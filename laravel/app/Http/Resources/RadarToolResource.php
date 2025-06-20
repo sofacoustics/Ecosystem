@@ -30,6 +30,18 @@ class RadarToolResource extends JsonResource
 				]
 			],
 		];
+		
+		$cr = \App\Models\Metadataschema::value($tool->controlledrights);
+		if(str_contains($cr, 'ECOSYSTEM'))
+		{
+			$cr = 'OTHER';
+			$ar = \App\Models\Metadataschema::display($tool->controlledrights);
+		}
+		else
+		{
+			$ar = $tool->additionalrights;
+		}
+		
 		$descriptiveMetadata = 
 		[
 			'title' => $tool->title . " (Tool #" . $tool->id . ")",
@@ -50,8 +62,8 @@ class RadarToolResource extends JsonResource
 				'resourceType' => $tool->resourcetypeValue($tool->resourcetype),
 			],
 			'rights' => [
-				'controlledRights' => $tool->controlledRightsValue($tool->controlledrights),
-				'additionalRights' => $tool->additionalrights,
+				'controlledRights' => $cr,
+				'additionalRights' => $ar,
 			],
 			'rightsHolders' => [
 				'rightsHolder' => RadarRightsholderResource::collection($this->whenLoaded('rightsholders')),

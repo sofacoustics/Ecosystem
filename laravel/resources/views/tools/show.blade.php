@@ -205,7 +205,7 @@ Parameters:
 				@if ($tool->resource != null) ({{ $tool->resource }})@endif 
 			</li>@endif  
 			
-			@if ($tool->controlledrights != null) <li><b>Rights:</b> {{ \App\Models\Tool::controlledrightsDisplay($tool->controlledrights) }}
+			@if ($tool->controlledrights != null) <li><b>Rights:</b> {{ \App\Models\Metadataschema::display($tool->controlledrights) }}
 				@if ($tool->additionalrights != null) ({{ $tool->additionalrights }})</li>@endif 
 			</li>@endif 
 			

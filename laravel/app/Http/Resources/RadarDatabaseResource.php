@@ -30,6 +30,18 @@ class RadarDatabaseResource extends JsonResource
 				]
 			],
 		];
+		
+		$cr = \App\Models\Metadataschema::value($database->controlledrights);
+		if(str_contains($cr, 'ECOSYSTEM'))
+		{
+			$cr = 'OTHER';
+			$ar = \App\Models\Metadataschema::display($database->controlledrights);
+		}
+		else
+		{
+			$ar = $database->additionalrights;
+		}
+		
 		$descriptiveMetadata = 
 		[
 			'title' => $database->title . " (Database #" . $database->id . ")",
@@ -50,8 +62,8 @@ class RadarDatabaseResource extends JsonResource
 				'resourceType' => $database->resourcetypeValue($database->resourcetype),
 			],
 			'rights' => [
-				'controlledRights' => $database->controlledRightsValue($database->controlledrights),
-				'additionalRights' => $database->additionalrights,
+				'controlledRights' => $cr,
+				'additionalRights' => $ar,
 			],
 			'rightsHolders' => [
 				'rightsHolder' => RadarRightsholderResource::collection($this->whenLoaded('rightsholders')),

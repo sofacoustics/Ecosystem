@@ -19,6 +19,15 @@ class Metadataschema extends Model
     }
 
     /*
+     * Lists all rows for a specific 'name' in their 'id' format
+     */
+    static function list_ids($name)
+    {
+        $rr = Metadataschema::where('name',$name)->select('id')->get();
+        return $rr;
+    }
+
+    /*
      * Return the 'value' field for this id. This is necessary for valid RADAR JSON
      */
     static function value($id)
