@@ -2,7 +2,7 @@
 <h3>Visibility within the Ecosystem:</h3>
 @if($visible)
 	<p><b>Status:</b> The database is <b>visible</b> to all Ecosystem visitors.</p>
-	@if($radar_status<1)
+	@if($radar_status<2)
 		<p>By clicking the button below, the database can be hidden, i.e., it will be visible to you and the admins only.</p>
 		<button wire:click="hide" wire:confirm="Are you sure to hide your database?"
 			class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">
@@ -11,6 +11,10 @@
 		<p>Note that because the database has been published (i.e., visible) to others, 
 			your database might be spread across the internet even if you hide it.
 		</p>
+	@elseif($radar_status<3)
+		<p>The database cannot be hidden again because it has been submitted for a persistent publication.</p>
+	@else
+		<p>The database cannot be hidden again because it has been persistently published.</p>
 	@endif
 @else
 	<p><b>Status:</b> The database is <b>hidden</b>, i.e., only visible to you and the admins.</p>
