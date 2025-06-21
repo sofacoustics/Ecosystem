@@ -58,18 +58,18 @@ class DatasetdefPolicy
 				
     }
 
-    /**
-     * Determine whether the user can delete the the datasetdef
-     *
-     * User can only delete the datasetdef if there are not datasets which use it!
-     */
-    public function delete(User $user, Datasetdef $datasetdef, Database $database): bool
-    {
-        $nDatasets = count($datasetdef->database->datasets);
-        return ($nDatasets == 0 && $user->id == $datasetdef->database->user_id && $database->radar_status < 2)
-            ? true
-            : false;
-    }
+	/**
+	 * Determine whether the user can delete the the datasetdef
+	 *
+	 * User can only delete the datasetdef if there are not datasets which use it!
+	 */
+	public function delete(User $user, Datasetdef $datasetdef, Database $database): bool
+	{
+		$nDatasets = count($datasetdef->database->datasets);
+		return ($nDatasets == 0 && $user->id == $datasetdef->database->user_id && $database->radar_status < 2)
+			? true
+			: false;
+	}
 
     /**
      * Determine whether the user can restore the model.
