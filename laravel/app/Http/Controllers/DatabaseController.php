@@ -16,6 +16,7 @@ use App\Http\Requests\UpdateDatabaseRequest;
 use App\Http\Resources\DatabaseResource;
 use App\Http\Resources\Json\JsonResource;
 
+use App\Services\DatabaseRadarDatasetBridge;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -143,6 +144,11 @@ class DatabaseController extends Controller
 	public function destroy(Database $database)
 	{
 		$this->authorize($database);
+		if($database->radar_id)
+		{
+			$radar = new DatabaseRadarDatasetBridge($database);
+			$radar->delete();	// Delete the database from RADAR
+		}
 		$database->delete(); // Note that due to onDelete('cascade') in files database, the related files will be deleted too!
 		return redirect()->route('databases.index')->with('success', 'Database deleted successfully');
 	}
