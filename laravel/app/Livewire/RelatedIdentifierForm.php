@@ -16,7 +16,12 @@ class RelatedIdentifierForm extends Component
 	public $name;
 	public $relatedidentifiertype;
 	public $relationtype;
-	public $activeTab; 
+	public $activeTab;
+	public $prefix; // dealing with database or tool? 
+	public $ecosystemrelation; // how is the database/tool related with tool/database
+	public $ecosystemrelatedable; // selected database or tool
+	public $ecosystemrelatedable_ids; // options to select a database or tool, just the IDs
+	public $ecosystemrelatedable_names; // options to select a database or tool, just the names
 
 	protected $rules = [
 		'name' => ['required','max:255'],
@@ -43,6 +48,7 @@ class RelatedIdentifierForm extends Component
 			$this->relatedidentifiertype = $relatedidentifier->relatedidentifiertype;
 			$this->relationtype = $relatedidentifier->relationtype;
 			$this->activeTab = 'general'; 
+			$this->ecosystemrelatedable_id = ""; // put here the retrieval algorithm of the id
 		}
 		else
 		{
@@ -51,6 +57,37 @@ class RelatedIdentifierForm extends Component
 			$this->relationtype = (\App\Models\Metadataschema::where('name', 'relationType')->where('value', 'IS_COMPILED_BY')->first()->id); 
 			$this->relatedidentifiertype = (\App\Models\Metadataschema::where('name', 'relatedIdentifierType')->where('value', 'URL')->first()->id); 
 			$this->activeTab = 'ecosystem'; 
+			if(\App\Models\Metadataschema::value($relatedidentifierable->resourcetype)=="TEXT")
+				$this->ecosystemrelatedable_id = 2; // default for Documents: "Describes"
+			else
+				$this->ecosystemrelatedable_id = 4; // default for Tools: "Was Involved of Creation of"
+		}
+		if($this->relatedidentifierable_type === 'App\Models\Database')
+		{
+			$this->prefix = "Database";
+			$this->ecosystemrelatedable_ids[] = "";
+			$this->ecosystemrelatedable_names[] = "Select a Tool or Document...";
+			$tools = \App\Models\Tool::all();
+			foreach($tools as $tool)
+			{
+				array_push($this->ecosystemrelatedable_ids, $tool->id);
+				array_push($this->ecosystemrelatedable_names, $tool->title." (".$tool->publicationyear.")");
+			}
+		}
+		else
+		{
+			if(\App\Models\Metadataschema::value($relatedidentifierable->resourcetype)=="TEXT")
+				$this->prefix = "Document";
+			else
+				$this->prefix = "Tool";
+			$this->ecosystemrelatedable_ids[] = "";
+			$this->ecosystemrelatedable_names[] = "Select a Database...";
+			$databases = \App\Models\Database::all();
+			foreach($databases as $database)
+			{
+				array_push($this->ecosystemrelatedable_ids, $database->id);
+				array_push($this->ecosystemrelatedable_names, $database->title." (".$database->publicationyear.")");
+			}
 		}
 	}
 

@@ -28,23 +28,32 @@
 		<div class="mt-6 p-6">
 			@if($activeTab === 'ecosystem')
 				<form wire:submit.prevent="saveEcosystem">
-					<div class="block">
-						<label class="{{ $labelClass }}" for="ecosystemtype">Relation Type:</label>
-						<select wire:model.live="ecosystemtype">
-							<option value="">Select a relation...</option>
-							@foreach(\App\Models\Metadataschema::list_ids('relatedIdentifierType') as $t)
-								<option value="{{ $t->id }}">{{ \App\Models\Metadataschema::display($t->id) }}</option>
-							@endforeach
+					<div class="flex items-center">
+						<label class="{{ $labelClass }}" for="ecosystemrelation">{{ $prefix }}:</label>
+						<select wire:model.live="ecosystemrelation" class="{{ $selectClass }}">
+							<option value="1">Is Described By</option>
+							<option value="2">Describes</option>
+							<option value="3">Was Created With</option>
+							<option value="4">Was Involved of Creation of</option>
+							<option value="5">Can Be Processed By</option>
+							<option value="6">Processes</option>
 						</select>
-						@error('ecosystemtype')
+						@error('ecosystemrelation')
 							<span class="text-red-500">{{ $message }}</span>
 						@enderror
 						
-						<div class="mt-4">
-							<button type="submit" class="{{ $buttonClass }}">
-								{{ $relatedidentifier ? 'Update Relation' : 'Create Relation' }}
-							</button>
-						</div>
+						<select wire:model.live="ecosystemrelatedable" class="{{ $selectClass }}">
+							@foreach($ecosystemrelatedable_ids as $r => $t)
+								<option value="{{ $t }}">{{ $ecosystemrelatedable_names[$r] }}</option>
+							@endforeach
+						</select>
+						@error('ecosystemrelatedables') <span class="text-red-500">{{ $message }}</span> @enderror
+					</div>
+					
+					<div class="mt-4">
+						<button type="submit" class="{{ $buttonClass }}">
+							{{ $relatedidentifier ? 'Update Relation' : 'Create Relation' }}
+						</button>
 					</div>
 				</form>
 			@endif
@@ -52,8 +61,8 @@
 			@if($activeTab === 'general')
 				<form wire:submit.prevent="saveGeneral">
 					<div class="flex items-center">
-						<label class="{{ $labelClass }}" for="relationtype">Database:</label>
-						<select wire:model.live="relationtype" class="{{ $selectClass }}>
+						<label class="{{ $labelClass }}" for="relationtype">{{ $prefix }}:</label>
+						<select wire:model.live="relationtype" class="{{ $selectClass }}">
 							<option value="">Select a relation...</option>
 							@foreach(\App\Models\Metadataschema::list_ids('relationType') as $t)
 								<option value="{{ $t->id }}">{{ \App\Models\Metadataschema::display($t->id) }}</option>
