@@ -18,10 +18,14 @@ class RelatedIdentifierForm extends Component
 	public $relationtype;
 	public $activeTab;
 	public $prefix; // dealing with database or tool? 
-	public $ecosystemrelation; // how is the database/tool related with tool/database
-	public $ecosystemrelatedable; // selected database or tool
-	public $ecosystemrelatedable_ids; // options to select a database or tool, just the IDs
-	public $ecosystemrelatedable_names; // options to select a database or tool, just the names
+	public $databaserelation; // what is the relation to a database?
+	public $databaserelatedable; // selected database
+	public $databaserelatedable_ids; // options to select a database, just the IDs
+	public $databaserelatedable_names; // options to select a database, just the names
+	public $toolrelation; // what is the relation to a tool?
+	public $toolrelatedable; // selected tool
+	public $toolrelatedable_ids; // options to select a tool, just the IDs
+	public $toolrelatedable_names; // options to select a tool, just the names
 
 	protected $rules = [
 		'name' => ['required','max:255'],
@@ -38,6 +42,10 @@ class RelatedIdentifierForm extends Component
 
 	public function mount($relatedidentifierable, $relatedidentifier = null)
 	{
+		if($relatedidentifierable->resourcetype == null)
+			$reltype = "DATASET";
+		else
+			$reltype = \App\Models\Metadataschema::value($relatedidentifierable->resourcetype);
 		$this->relatedidentifierable = $relatedidentifierable;
 		if($relatedidentifier)
 		{
@@ -47,8 +55,11 @@ class RelatedIdentifierForm extends Component
 			$this->name = $relatedidentifier->name;
 			$this->relatedidentifiertype = $relatedidentifier->relatedidentifiertype;
 			$this->relationtype = $relatedidentifier->relationtype;
-			$this->activeTab = 'general'; 
-			$this->ecosystemrelatedable_id = ""; // put here the retrieval algorithm of the id
+			$this->activeTab = 'external'; 
+			$this->databaserelation = ""; // put here the retrieval algorithm of the id
+			$this->databaserelatedable = ""; // put here the retrieval algorithm of the id
+			$this->toolrelation = ""; // put here the retrieval algorithm of the id
+			$this->toolrelatedable = ""; // put here the retrieval algorithm of the id
 		}
 		else
 		{
@@ -56,39 +67,51 @@ class RelatedIdentifierForm extends Component
 			$this->relatedidentifierable_type = get_class($relatedidentifierable);
 			$this->relationtype = (\App\Models\Metadataschema::where('name', 'relationType')->where('value', 'IS_COMPILED_BY')->first()->id); 
 			$this->relatedidentifiertype = (\App\Models\Metadataschema::where('name', 'relatedIdentifierType')->where('value', 'URL')->first()->id); 
-			$this->activeTab = 'ecosystem'; 
-			if(\App\Models\Metadataschema::value($relatedidentifierable->resourcetype)=="TEXT")
-				$this->ecosystemrelatedable_id = 2; // default for Documents: "Describes"
-			else
-				$this->ecosystemrelatedable_id = 4; // default for Tools: "Was Involved of Creation of"
-		}
-		if($this->relatedidentifierable_type === 'App\Models\Database')
-		{
-			$this->prefix = "Database";
-			$this->ecosystemrelatedable_ids[] = "";
-			$this->ecosystemrelatedable_names[] = "Select a Tool or Document...";
-			$tools = \App\Models\Tool::all();
-			foreach($tools as $tool)
+			$this->activeTab = 'database';
+			if($reltype=="TEXT")
 			{
-				array_push($this->ecosystemrelatedable_ids, $tool->id);
-				array_push($this->ecosystemrelatedable_names, $tool->title." (".$tool->publicationyear.")");
+				$this->databaserelation = 2; // default for Documents: "Describes"
+				$this->toolrelation = 2; // default for Documents: "Describes"
+			}
+			elseif($reltype=="DATASET")
+			{
+				$this->databaserelation = 3; // default for Databases: "Was Created With"
+				$this->toolrelation = 3; // default for Databases: "Was Created With"
+			}
+			else
+			{
+				$this->databaserelation = 4; // default for Tools: "Was Involved of Creation of"
+				$this->toolrelation = 4; // default for Tools: "Was Involved of Creation of"
 			}
 		}
+
+		if($this->relatedidentifierable_type === 'App\Models\Database')
+			$this->prefix = "Database";
 		else
 		{
-			if(\App\Models\Metadataschema::value($relatedidentifierable->resourcetype)=="TEXT")
+			if($reltype=="TEXT")
 				$this->prefix = "Document";
 			else
 				$this->prefix = "Tool";
-			$this->ecosystemrelatedable_ids[] = "";
-			$this->ecosystemrelatedable_names[] = "Select a Database...";
-			$databases = \App\Models\Database::all();
-			foreach($databases as $database)
-			{
-				array_push($this->ecosystemrelatedable_ids, $database->id);
-				array_push($this->ecosystemrelatedable_names, $database->title." (".$database->publicationyear.")");
-			}
 		}
+		$this->toolrelatedable_ids[] = "";
+		$this->toolrelatedable_names[] = "... a Tool or Document";
+		$tools = \App\Models\Tool::all();
+		foreach($tools as $tool)
+		{
+			array_push($this->toolrelatedable_ids, $tool->id);
+			array_push($this->toolrelatedable_names, $tool->title." (".$tool->publicationyear.")");
+		}
+
+		$this->databaserelatedable_ids[] = "";
+		$this->databaserelatedable_names[] = "... a Database";
+		$databases = \App\Models\Database::all();
+		foreach($databases as $database)
+			if($database->visible)
+			{
+				array_push($this->databaserelatedable_ids, $database->id);
+				array_push($this->databaserelatedable_names, $database->title." (".$database->publicationyear.")");
+			}
 	}
 
 	public function selectTab($tab)
@@ -97,7 +120,7 @@ class RelatedIdentifierForm extends Component
 	}
 
 
-	public function saveGeneral()
+	public function saveExternal()
 	{
 		$this->validate();
 
@@ -143,7 +166,41 @@ class RelatedIdentifierForm extends Component
 		}
 	}
 
-	public function saveEcosystem()
+	public function saveDatabase()
+	{
+		$this->validate();
+
+		$isNew = !$this->relatedidentifier;
+
+		if($isNew)
+		{
+			$this->relatedidentifier = new RelatedIdentifier();
+		}
+		$this->relatedidentifier->relatedidentifierable_id = $this->relatedidentifierable_id;
+		$this->relatedidentifier->relatedidentifierable_type = $this->relatedidentifierable_type;
+		$this->relatedidentifier->name = $this->name;
+		
+		$this->relatedidentifier->relatedidentifiertype = $this->relatedidentifiertype; 
+		$this->relatedidentifier->relationtype = $this->relationtype; 
+		
+		$this->relatedidentifier->save();
+
+		session()->flash('message', $isNew ? 'related identifier created successfully.' : 'related identifier updated successfully.');
+
+		if($this->relatedidentifierable_type === 'App\Models\Database')
+		{
+			\App\Models\Database::find($this->relatedidentifier->relatedidentifierable_id)->touch();
+			return redirect()->route('databases.relatedidentifiers',[ 'database' => $this->relatedidentifierable->id ]);
+		}
+		else
+		{
+			\App\Models\Tool::find($this->relatedidentifier->relatedidentifierable_id)->touch();
+			return redirect()->route('tools.relatedidentifiers',[ 'tool' => $this->relatedidentifierable->id ]);
+		}
+	}
+
+
+	public function saveTool()
 	{
 		$this->validate();
 
@@ -188,6 +245,8 @@ class RelatedIdentifierForm extends Component
 			return redirect()->route('tools.relatedidentifiers',[ 'tool' => $this->relatedidentifierable->id ]);
 		}
 	}
+
+
 
 
 	public function render()

@@ -15,39 +15,42 @@
 	@endif
 	<div class="mx-auto shadow-md box-border">
 
-			<button wire:click="selectTab('ecosystem')"
+			<button wire:click="selectTab('database')"
 				class="focus:outline-none transition duration-150 ease-in-out
-					{{ $activeTab === 'ecosystem' ? $tabClass : $tabDisabledClass }}">
-				Relation within the Ecosystem
+					{{ $activeTab === 'database' ? $tabClass : $tabDisabledClass }}">
+				Relation within an Ecosystem Database
 			</button>
-			<button wire:click="selectTab('general')"
+			<button wire:click="selectTab('tool')"
 				class="focus:outline-none transition duration-150 ease-in-out
-				 {{ $activeTab === 'general' ? $tabClass : $tabDisabledClass }}">
-				General relation
+					{{ $activeTab === 'tool' ? $tabClass : $tabDisabledClass }}">
+				Relation within an Ecosystem Tool/Document
+			</button>
+			<button wire:click="selectTab('external')"
+				class="focus:outline-none transition duration-150 ease-in-out
+				 {{ $activeTab === 'external' ? $tabClass : $tabDisabledClass }}">
+				Relation to external resources
 			</button>
 		<div class="mt-6 p-6">
-			@if($activeTab === 'ecosystem')
-				<form wire:submit.prevent="saveEcosystem">
+			@if($activeTab === 'database')
+				<form wire:submit.prevent="saveDatabase">
 					<div class="flex items-center">
-						<label class="{{ $labelClass }}" for="ecosystemrelation">{{ $prefix }}:</label>
-						<select wire:model.live="ecosystemrelation" class="{{ $selectClass }}">
-							<option value="1">Is Described By</option>
-							<option value="2">Describes</option>
-							<option value="3">Was Created With</option>
-							<option value="4">Was Involved of Creation of</option>
-							<option value="5">Can Be Processed By</option>
-							<option value="6">Processes</option>
+						<label class="{{ $labelClass }}" for="databaserelation">{{ $prefix }}...</label>
+						<select wire:model.live="databaserelation" class="{{ $selectClass }}" required>
+							<option value="-1">was involved in creation of ...</option>
+							@foreach(\App\Models\Metadataschema::list_ids('relationType') as $t)
+								<option value="{{ $t->id }}">{{ strtolower(\App\Models\Metadataschema::display($t->id)) }} ...</option>
+							@endforeach
 						</select>
-						@error('ecosystemrelation')
+						@error('databaserelation')
 							<span class="text-red-500">{{ $message }}</span>
 						@enderror
 						
-						<select wire:model.live="ecosystemrelatedable" class="{{ $selectClass }}">
-							@foreach($ecosystemrelatedable_ids as $r => $t)
-								<option value="{{ $t }}">{{ $ecosystemrelatedable_names[$r] }}</option>
+						<select wire:model.live="databaserelatedable" class="{{ $selectClass }}" required>
+							@foreach($databaserelatedable_ids as $r => $t)
+								<option value="{{ $t }}">{{ $databaserelatedable_names[$r] }}</option>
 							@endforeach
 						</select>
-						@error('ecosystemrelatedables') <span class="text-red-500">{{ $message }}</span> @enderror
+						@error('databaserelatedable') <span class="text-red-500">{{ $message }}</span> @enderror
 					</div>
 					
 					<div class="mt-4">
@@ -58,14 +61,46 @@
 				</form>
 			@endif
 				
-			@if($activeTab === 'general')
-				<form wire:submit.prevent="saveGeneral">
+			@if($activeTab === 'tool')
+				<form wire:submit.prevent="saveTool">
 					<div class="flex items-center">
-						<label class="{{ $labelClass }}" for="relationtype">{{ $prefix }}:</label>
-						<select wire:model.live="relationtype" class="{{ $selectClass }}">
+						<label class="{{ $labelClass }}" for="toolrelation">{{ $prefix }}...</label>
+						<select wire:model.live="toolrelation" class="{{ $selectClass }}" required>
+							<option value="-1">was involved in creation of ...</option>
+							<option value="-2">was created with ...</option>
+							<option value="-3">can be processed by ...</option>
+							@foreach(\App\Models\Metadataschema::list_ids('relationType') as $t)
+								<option value="{{ $t->id }}">{{ strtolower(\App\Models\Metadataschema::display($t->id)) }} ...</option>
+							@endforeach
+						</select>
+						@error('toolrelation')
+							<span class="text-red-500">{{ $message }}</span>
+						@enderror
+						
+						<select wire:model.live="toolrelatedable" class="{{ $selectClass }}" required>
+							@foreach($toolrelatedable_ids as $r => $t)
+								<option value="{{ $t }}">{{ $toolrelatedable_names[$r] }}</option>
+							@endforeach
+						</select>
+						@error('toolrelatedable') <span class="text-red-500">{{ $message }}</span> @enderror
+					</div>
+					
+					<div class="mt-4">
+						<button type="submit" class="{{ $buttonClass }}">
+							{{ $relatedidentifier ? 'Update Relation' : 'Create Relation' }}
+						</button>
+					</div>
+				</form>
+			@endif
+
+			@if($activeTab === 'external')
+				<form wire:submit.prevent="saveExternal">
+					<div class="flex items-center">
+						<label class="{{ $labelClass }}" for="relationtype">{{ $prefix }}...</label>
+						<select wire:model.live="relationtype" class="{{ $selectClass }}" required>
 							<option value="">Select a relation...</option>
 							@foreach(\App\Models\Metadataschema::list_ids('relationType') as $t)
-								<option value="{{ $t->id }}">{{ \App\Models\Metadataschema::display($t->id) }}</option>
+								<option value="{{ $t->id }}">{{ strtolower(\App\Models\Metadataschema::display($t->id)) }}...</option>
 							@endforeach
 						</select>
 						@error('relationtype')
@@ -73,12 +108,12 @@
 						@enderror
 						
 						<input wire:model="name" type="text" 
-							placeholder="The identifier, e.g., the DOI (if type is DOI) or an URL (if type is URL)."
+							placeholder="... the identifier, e.g., a DOI or an URL (depending on the following type)"
 							id="name"
 							class="{{ $inputClass }}"/>
 						@error('name') <span class="text-red-500">{{ $message }}</span> @enderror
 
-						<select wire:model.live="relatedidentifiertype" class="{{ $selectClass }}">
+						<select wire:model.live="relatedidentifiertype" class="{{ $selectClass }}" required>
 							@foreach(\App\Models\Metadataschema::list_ids('relatedIdentifierType') as $t)
 								<option value="{{ $t->id }}">{{ \App\Models\Metadataschema::display($t->id) }}</option>
 							@endforeach
