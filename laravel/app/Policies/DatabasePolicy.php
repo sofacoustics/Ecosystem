@@ -69,7 +69,7 @@ class DatabasePolicy
 	{
 			// this is called from the controller edit function, when $this->authorize($database) is called.
 		if (isset($user->id))
-			$enable = ($user->id == $database->user_id) && ($database->radarstatus < 2); // allow only for owners and if not submitted for persistent publication yet
+			$enable = ($user->id == $database->user_id) && ($database->radar_status < 2); // allow only for owners and if not submitted for persistent publication yet
 		else
 			$enable = false; // do not allow if non-authorized
 		return $enable
@@ -83,7 +83,7 @@ class DatabasePolicy
 	 */
 	public function delete(User $user, Database $database): Response
 	{
-		return ($user->id == $database->user_id) && ($database->radarstatus < 2) // allow only for owners and if DOI not assigned yet
+		return ($user->id == $database->user_id) && ($database->radar_status < 2) // allow only for owners and if DOI not assigned yet
 				? Response::allow()
 				: Response::deny('You may not delete this database, since you do not own it!');
 

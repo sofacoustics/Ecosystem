@@ -138,21 +138,6 @@ class Tool extends Model
 		return \App\Models\Metadataschema::list('additionalTitleType');
 	}
 
-	static function controlledrightsDisplay($controlledrights)
-	{
-		return \App\Models\Metadataschema::display($controlledrights);
-	}
-
-	static function controlledrightsValue($controlledrights)
-	{
-		return \App\Models\Metadataschema::value($controlledrights);
-	}
-
-	static function controlledrightsList()
-	{
-		return \App\Models\Metadataschema::list('controlledRights');
-	}
-
 	static function subjectareaDisplay($subjectareaindex)
 	{
 		return \App\Models\Metadataschema::display($subjectareaindex);
@@ -211,5 +196,31 @@ class Tool extends Model
 	static function resourcetypesList()
 	{
 		return \App\Models\Metadataschema::list('resourceType');
+	}
+	
+	public function metadataValidate()
+	{
+		$msg = null;
+			// At least one creator required
+		if(count($this->creators)==0)
+			$msg = $msg. "- Creators missing: At least one creator required\n";
+		else
+		{
+			foreach($this->creators as $creator)
+			{		// If family name provided, given name is required and vice versa
+				if($creator->givenName && !$creator->familyName)
+					$msg = $msg . "- Creator " . $creator->creatorName . ": Family name required when given name provided\n"; 
+				if(!$creator->givenName && $creator->familyName)
+					$msg = $msg . "- Creator " . $creator->creatorName . ": Given name required when family name provided\n";
+			}
+		}
+			// At least one publisher required
+		if(count($this->publishers)==0)
+			$msg = $msg. "- Publishers missing: At least one publisher required\n";
+			// At least one rightsholder required
+		if(count($this->rightsholders)==0)
+			$msg = $msg. "- Rightholders missing: At least one rightholder required\n";
+		
+		return $msg;
 	}
 }

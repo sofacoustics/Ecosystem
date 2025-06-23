@@ -1,6 +1,6 @@
 <x-app-layout>
 	<x-slot name="header">
-			<x-database.header :database=$database :tabTitle=$tabTitle />
+			<x-tool.header :tool=$tool :tabTitle=$tabTitle />
 	</x-slot>
 
 	@if(isset($tabTitle))
@@ -8,6 +8,6 @@
 	@endif
 	@section('tabTitle', " | " . $tabTitle)
 
-	<livewire:database-radar-actions :database="$database" />
+	<livewire:tool-radar-actions :tool="$tool" />
 
 </x-app-layout>

@@ -2,7 +2,7 @@
 <h3>Visibility within the Ecosystem:</h3>
 @if($visible)
 	<p><b>Status:</b> The database is <b>visible</b> to all Ecosystem visitors.</p>
-	@if($radarstatus<1)
+	@if($radar_status<2)
 		<p>By clicking the button below, the database can be hidden, i.e., it will be visible to you and the admins only.</p>
 		<button wire:click="hide" wire:confirm="Are you sure to hide your database?"
 			class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">
@@ -11,6 +11,10 @@
 		<p>Note that because the database has been published (i.e., visible) to others, 
 			your database might be spread across the internet even if you hide it.
 		</p>
+	@elseif($radar_status<3)
+		<p>The database cannot be hidden again because it has been submitted for a persistent publication.</p>
+	@else
+		<p>The database cannot be hidden again because it has been persistently published.</p>
 	@endif
 @else
 	<p><b>Status:</b> The database is <b>hidden</b>, i.e., only visible to you and the admins.</p>
@@ -27,7 +31,7 @@
 <hr>
 
 <h3>DOI Assignment:</h3>
-@if($radarstatus==null || $radarstatus==0)
+@if($radar_status==null || $radar_status==0)
 	<p><b>DOI Status:</b> No DOI assigned.</p>
 	@if($database->metadataValidate())
 		<p><b>Metadata Status:</b> Invalid, with following problems:</p>
@@ -79,11 +83,11 @@
 <hr>
 
 <h3>Persistent Publication:</h3>
-@if($radarstatus==null || $radarstatus==0)
+@if($radar_status==null || $radar_status==0)
 	<p>If you want to persistently publish your database, assign a DOI first.</p>
 @else
 	@if($visible)
-		@if($radarstatus==1)
+		@if($radar_status==1)
 			@if($database->metadataValidate())
 				<p>If you want to persistently publish your database, provide valid metadata first.</p>
 			@else
@@ -111,15 +115,15 @@
 					</button>
 				<p>Once the curator approves your database, it will be published at the Datathek and the DOI will be valid.</p>
 			@endif
-		@elseif($radarstatus==2)
+		@elseif($radar_status==2)
 			<p>The database has been submitted to be persistently published.</p>
 			<p>The curator has been notified. Please check later...</p>
-		@elseif($radarstatus==3)
+		@elseif($radar_status==3)
 			<p>The database has been persistently published under the following link: <a href="https://doi.org/{{$doi}}">https://doi.org/{{$doi}}</a>.
 			</p>
 			<p>Well done!</p>
 		@else
-			<p>Unknown RADAR status: {{ $radarstatus }}. This is a bug, contact the administrators.</p>
+			<p>Unknown RADAR status: {{ $radar_status }}. This is a bug, contact the administrators.</p>
 		@endif
 	@else
 		<p>If you want to persistently publish your database with that DOI, you need to <b>expose</b> the database within the Ecosystem first.</p>

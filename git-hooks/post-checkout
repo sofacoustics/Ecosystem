@@ -9,6 +9,8 @@ echo "branch: $branch_name"
 # we should be in the root folder of the git repository
 cd laravel
 
+echo "<?php return ['string' => '$(git describe --tags --exact-match 2>/dev/null || git describe --tags)'];" > config/version.php
+
 echo "Running 'composer install'"
 composer install
 # Check for new migration files

@@ -30,8 +30,8 @@
 		<div class="mb-4">
 		  <label for="rights" class="text-gray-700 mb-2 block font-bold">Rights (*): </label>
 			<select wire:model.live="controlledrights" required>
-		@foreach(\App\Models\Database::controlledrightsList() as $r => $t)
-			<option value="{{ $r }}">{{ $t->display }}</option>
+		@foreach(\App\Models\Metadataschema::list_ids('controlledRights') as $t)
+			<option value="{{ $t->id }}">{{ \App\Models\Metadataschema::display($t->id) }}</option>
 		@endforeach
 		  @error('controlledrights') <span class="text-red-500">{{ $message }}</span> @enderror
 			</select>

@@ -43,7 +43,7 @@
 
 	@if($database->doi)
 		<x-property name="DOI">
-			@if($database->radarstatus==3)
+			@if($database->radar_status==3)
 				<a href="https://doi.org/{{ $database->doi }}">{{ $database->doi }}</a>
 			@else
 				{{ $database->doi }}
@@ -79,7 +79,10 @@
 			@endif
 		@endcan
 		@can('delete', $database)
-			<x-button method="DELETE" action="{{ route('databases.destroy', [$database->id]) }}" class="inline">Delete Database</x-button>
+			<x-button method="DELETE" action="{{ route('databases.destroy', [$database->id]) }}" class="inline"
+				confirm="Are you sure to delete the Database?">
+				Delete Database
+			</x-button>
 		@endcan
 	@endcan
 	

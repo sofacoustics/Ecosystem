@@ -81,10 +81,5 @@ class WidgetSeeder extends Seeder
             'service_id' => 9,
             'view' => 'sofa-headphones',
         ));		
-		Widget::create(array('name' => 'PDF Viewer',
-            'description' => 'Show a PDF.',
-            'view' => 'pdf',
-        ));
-		
     }
 }

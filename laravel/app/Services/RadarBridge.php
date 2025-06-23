@@ -84,7 +84,7 @@ class RadarBridge
 	 * Make a POST request to the RADAR API with the specified endpoint including a file
 	 * and return the response body.
 	 */
-	public function postFile(string $endpoint, $path, $name, $mimetype)
+	public function postFile(string $endpoint, $path, $name, $mimetype = null)
 	{
 		if(strncmp($endpoint,'http',4)==0)
 			$url = $endpoint; // absolute endpoint, e.g. file upload
@@ -129,7 +129,7 @@ class RadarBridge
 		{
 			return $array[$key];
 		}
-		return "ERROR: $lastErrorMsg";
+		return "ERROR retrieving the key $key from the response: $lastErrorMsg";
 	}
 
 	////////////////////////////////////////////////////////////////////////////////

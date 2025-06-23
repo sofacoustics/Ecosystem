@@ -3,11 +3,12 @@
 
 	Parameters:
 
-		method     	The form method.
-		action 		??
-		type	   	button|submit|reset  Default: 'submit' for 'action' buttons, 'button' otherwise
-		disabled    true or false. default: false
-		loadingText If set to something, this text is used once the button has been pressed.
+		method:				The form method.
+		action:				??
+		type:					button|submit|reset  Default: 'submit' for 'action' buttons, 'button' otherwise
+		disabled:			true or false. default: false
+		loadingText:	If set to something, this text is used once the button has been pressed.
+		confirm:		Provide a text if confirmation required
 
 	Example:
 
@@ -28,6 +29,7 @@
 	'method' => 'POST',
 	'disabled' => false,
 	'loadingText' => '',
+	'confirm' => '',
 ])
 @php
 	if ($method == 'GET') {
@@ -80,8 +82,9 @@
 		{{-- If we're not a form, then give user immediate feedback that it's been pressed
 		@if (!$attributes->has('action')) x-on:click="loading = true" @endif--}}
 		:disabled="loading"
-		:class="loading ? '{{ $buttonColorDisabled }}' : '{{ $classColors }}'"
-		class="{{ $classColors }} {{ $buttonStyle }}">
+		class="{{ $classColors }} {{ $buttonStyle }}"
+		@if($confirm) onclick="return confirm('{{ $confirm }}')" @endif
+		>
 		{{ $slot }}
 	</button>
 	@if ($attributes->has('action'))

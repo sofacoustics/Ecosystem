@@ -4,11 +4,11 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-use App\Services\DatabaseRadarDatasetBridge;
+use App\Services\ToolRadarDatasetBridge;
 
-class DatabaseRadarActions extends Component
+class ToolRadarActions extends Component
 {
-	public $database;
+	public $tool;
 
 	// RADAR properties
 	public $id;
@@ -21,7 +21,7 @@ class DatabaseRadarActions extends Component
 	// the RADAR state - used to display/hide buttons
 	public $pending = false;
 	public $review = false;
-	public $radar_status = null; // this will be set to the value of the database field 'radar_status'.
+	public $radar_status = null; // this will be set to the value of the tool field 'radar_status'.
 
 	// true if we haven't uploaded yet
 	public $canUpload = false;
@@ -29,18 +29,18 @@ class DatabaseRadarActions extends Component
 	public $error; // any error message to display
 
 
-	public function mount($database)
+	public function mount($tool)
 	{
-		$this->database = $database;
-		$this->radar_status = $database->radar_status;
-		if($database->radar_id)
+		$this->tool = $tool;
+		$this->radar_status = $tool->radar_status;
+		if($tool->radar_id)
 		{
-			$this->id = $database->radar_id;
+			$this->id = $tool->radar_id;
 			$this->refreshStatus();
 		}
 		else
 		{
-			$this->dispatch('status-message', 'There is no RADAR dataset associated with this database!');
+			$this->dispatch('status-message', 'There is no RADAR dataset associated with this tool!');
 		}
 	}
 
@@ -65,7 +65,7 @@ class DatabaseRadarActions extends Component
 
 	public function createDataset()
 	{
-		$radar = new DatabaseRadarDatasetBridge($this->database);
+		$radar = new ToolRadarDatasetBridge($this->tool);
 		$this->dispatch('status-message', 'Starting RADAR dataset creation process.');
 		if($radar->create())
 			$this->dispatch('radar-status-changed', 'Dataset created'); // let other livewire components know the radar status has changed
@@ -78,7 +78,7 @@ class DatabaseRadarActions extends Component
 	public function startReview()
 	{
 		$this->dispatch('status-message', 'Starting review process.');
-		$radar = new DatabaseRadarDatasetBridge($this->database);
+		$radar = new ToolRadarDatasetBridge($this->tool);
 		if($radar->startreview())
 			$this->dispatch('radar-status-changed', 'Review process started'); // let other livewire components know the radar status has changed
 		else
@@ -90,7 +90,7 @@ class DatabaseRadarActions extends Component
 	public function endReview()
 	{
 		$this->dispatch('status-message', 'Ending review process.');
-		$radar = new DatabaseRadarDatasetBridge($this->database);
+		$radar = new ToolRadarDatasetBridge($this->tool);
 		if($radar->endreview())
 			$this->dispatch('radar-status-changed', 'Review process ended'); // let other livewire components know the radar status has changed
 		else
@@ -103,45 +103,32 @@ class DatabaseRadarActions extends Component
 	{
 		$this->error = "";
 		$this->dispatch('status-message', 'Starting upload.');
-		$radar = new DatabaseRadarDatasetBridge($this->database);
+		$radar = new ToolRadarDatasetBridge($this->tool);
 		if(!$radar->upload())
 			$this->error = $radar->message.' ('.$radar->details.')';
 		$this->dispatch('status-message', $radar->message);
 	}
 
 	/*
-	* This will delete the Database from the Datathek and remove the DOI in the Ecosystem
+	* This will delete the Tool from the Datathek and remove the DOI in the Ecosystem
 	*/
 	public function deleteFromRadar()
 	{
 		$this->dispatch('status-message', 'Starting to delete the RADAR dataset');
-		$radar = new DatabaseRadarDatasetBridge($this->database);
+		$radar = new ToolRadarDatasetBridge($this->tool);
 		if($radar->delete())
 		{
 			$this->id = null;
-			$this->dispatch('radar-status-changed', 'The database has been deleted'); // let other livewire components know the radar status has changed
+			$this->dispatch('radar-status-changed', 'The tool has been deleted'); // let other livewire components know the radar status has changed
 		}
 		else
 			$this->error = $radar->details;
 
-		$this->database->radar_id = null;
-		$this->database->doi = null;
-		$this->database->radar_status = null;
-		$this->database->save();
-			// set dataset and datafile radar_ids back to null
-		foreach($this->database->datasets as $dataset) // iterate through all Dataset of the Database
-		{
-			$dataset->radar_id = null;
-			$dataset->radar_upload_url = null;
-			$dataset->save();
-			foreach($dataset->datafiles as $datafile)
-			{
-				$datafile->radar_id = null;
-				$datafile->datasetdef_radar_id = null;
-				$datafile->datasetdef_radar_upload_url = null;
-				$datafile->save();
-			}
-		}
+		$this->tool->radar_id = null;
+		$this->tool->radar_upload_url = null;
+		$this->tool->doi = null;
+		$this->tool->radar_status = null;
+		$this->tool->save();
 
 		$this->dispatch('status-message', $radar->message);
 		$this->refreshStatus();
@@ -154,8 +141,8 @@ class DatabaseRadarActions extends Component
 	*/
 	public function approvePersistentPublication() 
 	{
-		$this->database->radar_status = 3;
-		$this->database->save();
+		$this->tool->radar_status = 3;
+		$this->tool->save();
 
 		$this->js('window.location.reload()'); 
 	}
@@ -165,14 +152,14 @@ class DatabaseRadarActions extends Component
 	*/
 	public function rejectPersistentPublication()
 	{		// end the review
-		$radar = new DatabaseRadarDatasetBridge($this->database);
+		$radar = new ToolRadarDatasetBridge($this->tool);
 		if(!$radar->endreview())
 		{
 			$this->error = 'End Review: '.$radar->message . ' ('.$radar->details .')';
 		}
 			// set status to "DOI assigned"
-		$this->database->radar_status = 1;
-		$this->database->save();
+		$this->tool->radar_status = 1;
+		$this->tool->save();
 
 		$this->refreshStatus();
 		$this->js('window.location.reload()'); 
@@ -183,25 +170,11 @@ class DatabaseRadarActions extends Component
 	*/
 	public function resetDOI()
 	{	
-		$this->database->radar_id = null;
-		$this->database->doi = null;
-		$this->database->radar_status = null;
-		$this->database->save();
-			// set dataset and datafile radar_ids back to null
-		foreach($this->database->datasets as $dataset) // iterate through all Dataset of the Database
-		{
-			$dataset->radar_id = null;
-			$dataset->radar_upload_url = null;
-			$dataset->save();
-			foreach($dataset->datafiles as $datafile)
-			{
-				$datafile->radar_id = null;
-				$datafile->datasetdef_radar_id = null;
-				$datafile->datasetdef_radar_upload_url = null;
-				$datafile->save();
-			}
-		}
-
+		$this->tool->radar_id = null;
+		$this->tool->radar_upload_url = null;
+		$this->tool->doi = null;
+		$this->tool->radar_status = null;
+		$this->tool->save();
 
 		$this->refreshStatus();
 		$this->js('window.location.reload()'); 
@@ -209,7 +182,7 @@ class DatabaseRadarActions extends Component
 
 	public function render()
 	{
-		return view('livewire.database-radar-actions');
+		return view('livewire.tool-radar-actions');
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -218,7 +191,7 @@ class DatabaseRadarActions extends Component
 
 	private function refreshStatus()
     {
-		$radar = new DatabaseRadarDatasetBridge($this->database);
+		$radar = new ToolRadarDatasetBridge($this->tool);
 		if($radar->read())
 		{
 			$this->id = $radar?->radar_dataset?->id ?? null;
@@ -231,7 +204,7 @@ class DatabaseRadarActions extends Component
 		}
 		else
 		{
-			if($this->database->radar_id)
+			if($this->tool->radar_id)
 				$this->error = $radar->message;
 			$this->id = null;
 			$this->state = null;
@@ -241,6 +214,6 @@ class DatabaseRadarActions extends Component
 			$this->canUpload = false;
 			$this->setState('');
 		}
-		$this->radar_status = $this->database->radar_status;
+		$this->radar_status = $this->tool->radar_status;
 	}
 }

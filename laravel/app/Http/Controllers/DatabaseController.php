@@ -16,9 +16,11 @@ use App\Http\Requests\UpdateDatabaseRequest;
 use App\Http\Resources\DatabaseResource;
 use App\Http\Resources\Json\JsonResource;
 
+use App\Services\DatabaseRadarDatasetBridge;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
 
 class DatabaseController extends Controller
 {
@@ -143,6 +145,11 @@ class DatabaseController extends Controller
 	public function destroy(Database $database)
 	{
 		$this->authorize($database);
+		if($database->radar_id)
+		{
+			$radar = new DatabaseRadarDatasetBridge($database);
+			$radar->delete();	// Delete the database from RADAR
+		}
 		$database->delete(); // Note that due to onDelete('cascade') in files database, the related files will be deleted too!
 		return redirect()->route('databases.index')->with('success', 'Database deleted successfully');
 	}
@@ -159,7 +166,26 @@ class DatabaseController extends Controller
 
 	public function datasetdefs(Database $database)
 	{
-		return view('databases.datasetdefs.index', ['database' => $database]);
+		$edits = false;
+		$deletes = false;
+		$user = auth()->user();
+		foreach($database->datasetdefs as $datasetdef)
+		{ 
+			if(Gate::allows('update', [Datasetdef::class, $datasetdef, $database]))
+			{ 
+				$edits = true;
+				break;
+			}
+		}
+		foreach($database->datasetdefs as $datasetdef)
+		{ 
+			if(Gate::allows('delete', [Datasetdef::class, $datasetdef, $database]))
+			{ 
+				$deletable = true;
+				break;
+			}
+		}
+		return view('databases.datasetdefs.index', ['database' => $database, 'edits' => $edits, 'deletes' => $deletes]);
 	}
 
 	public function upload(Database $database)

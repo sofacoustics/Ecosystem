@@ -47,7 +47,7 @@
 		Reset DOI
 	</x-livewire-button>
 	<x-livewire-button style='delete' wire:click="deleteFromRadar" loading="Deleting..."
-		wire:confirm="This will delete the Database from the Datathek and remove the DOI in the Ecosystem!">
+		wire:confirm="This will delete the Tool from the Datathek and remove the DOI in the Ecosystem!">
 		Delete from RADAR
 	</x-livewire-button>
 

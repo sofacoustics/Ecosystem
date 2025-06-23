@@ -10,10 +10,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str; // isJson
 
-use App\Http\Resources\RadarDatabaseResource;
+use App\Http\Resources\RadarToolResource;
 
-use App\Models\Database;
-use App\Models\Datafile;
+use App\Models\Tool;
 
 /*
  * Access the RADAR API and update model values if necessary!
@@ -29,17 +28,19 @@ use App\Models\Datafile;
  * Note '$this->status' is set by RadarBridge
  *
  */
-class DatabaseRadarDatasetBridge extends RadarBridge
+class ToolRadarDatasetBridge extends RadarBridge
 {
-	public $database; // the Ecosystem database
+	public $tool; // the Ecosystem tool
 	public $radar_dataset; // the RADAR dataset - some values set sometimes
-	public $content; // save the content sent to RADAR
-	public $endpoint; // save the endpoint sent to RADAR
+	public $content; // content sent to RADAR
+	public $endpoint; // endpoint sent to RADAR
 	public $radar_content; // JSON content from RADAR
+	public $doi; // retrieved DOI
 
-	function __construct($database)
+
+	function __construct($tool)
 	{
-		$this->database = $database;
+		$this->tool = $tool;
 		parent::__construct();
 	}
 
@@ -61,13 +62,13 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	public function publish() : bool
 	{
 		$this->reset();
-		$endpoint = '/datasets/'.$this->database->radar_id.'/publish';
-		$this->content = null; // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
+		$endpoint = '/datasets/'.$this->tool->radar_id.'/publish';
+		$this->content = null; 
+		$this->endpoint = $endpoint;
 		$response = $this->post($endpoint);
 		if($this->status == 200)
 		{
-			$this->message = "RADAR Dataset successfully published";
+			$this->message = "Dataset successfully published";
 			return true;
 		}
 		else
@@ -100,13 +101,13 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	public function startreview() : bool
 	{
 		$this->reset();
-		$endpoint = '/datasets/'.$this->database->radar_id.'/startreview';
-		$this->content = null; // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
+		$endpoint = '/datasets/'.$this->tool->radar_id.'/startreview';
+		$this->content = null;
+		$this->endpoint = $endpoint;
 		$response = $this->post($endpoint);
 		if($this->status == 200)
 		{
-			$this->message = "Review process of the RADAR dataset successfully started";
+			$this->message = "Dataset review process successfully started";
 			return true;
 		}
 		else
@@ -134,9 +135,9 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	public function endreview() : bool
 	{
 		$this->reset();
-		$endpoint = '/datasets/'.$this->database->radar_id.'/endreview';
-		$this->content = null; // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
+		$endpoint = '/datasets/'.$this->tool->radar_id.'/endreview';
+		$this->content = null;
+		$this->endpoint = $endpoint;
 		$response = $this->post($endpoint);
 		if($response->status() == 200)
 		{
@@ -153,7 +154,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 
 	/*
 	 *
-	 * Get DOI from RADAR and save in the database
+	 * Get DOI from RADAR and save in the tool
 	 *
 	 * Return
 	 *
@@ -169,9 +170,9 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	public function getDOI() : bool
 	{
 		$this->reset();
-		$endpoint = '/datasets/'.$this->database->radar_id.'/doi';
-		$this->content = null; // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
+		$endpoint = '/datasets/'.$this->tool->radar_id.'/doi';
+		$this->content = null;
+		$this->endpoint = $endpoint;
 		$response = $this->get($endpoint);
 		if($response->status() == 200)
 		{
@@ -189,7 +190,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 
 		/*
 		 *
-		 * Call the 'read' API and set the $this->radar_dataset property.
+		 * Call the 'read' API and set the $this->dataset property.
 		 *
 		 *
 		 * Returns
@@ -197,10 +198,10 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		 *  'true' if reading is successful
 		 *  'false' otherwise
 		 *
-		 *		If the RADAR dataset does not exist, then it returns
+		 *		If the dataset does not exist, then it returns
 		 *
 		 *		'statusCode' => 404
-		 *		'content ' => {"message":"There is no RADAR dataset for this database"}
+		 *		'content ' => {"message":"There is no RADAR dataset for this tool"}
 		 *
 		 * RADAR Docs:
 		 *
@@ -210,14 +211,14 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	public function read() : bool
 	{
 		$this->reset();
-		if($this?->database?->radar_id == null || "$this->database->radar_id" == "")
+		if($this?->tool?->radar_id == null || "$this->tool->radar_id" == "")
 		{
 			$this->message = 'We can\'t read from the RADAR dataset, since it does not exist yet.';
 			return false;
 		}
-		$endpoint = '/datasets/'.$this->database->radar_id;
-		$this->content = null; // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
+		$endpoint = '/datasets/'.$this->tool->radar_id;
+		$this->content = null;
+		$this->endpoint = $endpoint;
 		$response = $this->get($endpoint);
 		if($response->status() == 404)
 		{
@@ -225,7 +226,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 			return false;
 		}
 		$this->message = 'The RADAR metadata has been successfully read from the RADAR server';
-		$this->radar_dataset = json_decode($response->content());
+		$this->radar_dataset = json_decode($response->content()); 
 		$this->radar_content = json_encode($this->radar_dataset, JSON_PRETTY_PRINT);
 		return true;
 	}
@@ -247,9 +248,9 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	public function metadataValidate() : bool
 	{
 		$this->reset();
-		$endpoint = '/datasets/'.$this->database->radar_id.'/metadata/validate';
-		$this->content = null; // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
+		$endpoint = '/datasets/'.$this->tool->radar_id.'/metadata/validate';
+		$this->content = null;
+		$this->endpoint = $endpoint;
 		$response = $this->get($endpoint);
 		if($response->status() == 200)
 		{
@@ -268,7 +269,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		}
 		else
 		{
-			$this->message = 'Metadata Validation: There was an error validating the RADAR metadata for this database!';
+			$this->message = 'Metadata Validation: There was an error validating the RADAR metadata for this tool!';
 			$this->details = $response->content();
 			return false;
 		}
@@ -290,9 +291,9 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	public function update() : bool
 	{
 		$this->reset();
-			// get Database in RADAR formatted array
+			// get Tool in RADAR formatted array
 			// eager load relationships so they appear in serializeJson()
-		$this->database->load(
+		$this->tool->load(
 			'creators',
 			'publishers',
 			'rightsholders',
@@ -300,45 +301,45 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 			'relatedidentifiers',
 			'subjectareas',
 		);
-		$resource = new RadarDatabaseResource($this->database);
+		$resource = new RadarToolResource($this->tool);
 		$arrayBody = $resource->toArray(request()); // route called with ?format=radar
-		$endpoint = '/datasets/'.$this->database->radar_id;
-		$this->content = $arrayBody; // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
+		$endpoint = '/datasets/'.$this->tool->radar_id;
+		$this->content = $arrayBody;
+		$this->endpoint = $endpoint;
 		$response = $this->put($endpoint, $arrayBody);
 		if($response->status() == 200)
 		{
-			$this->message = 'Successfully updated RADAR metadata for this database';
+			$this->message = 'Successfully updated RADAR metadata for this tool';
 			return true;
 		}
 		else
 		{
-			$this->message = 'Failed to update the RADAR metadata for this database';
+			$this->message = 'Failed to update the RADAR metadata for this tool';
 			$this->details = $response->content();
 			return false;
 		}
 	}
 
 	/**
-	 * Create a RADAR dataset from an Ecosystem Database
+	 * Create a RADAR dataset from an Ecosystem Tool
 	 *
-	 *  'database'	The database to use
+	 *  'tool'	The tool to use
 	 *
 	 * Response
 	 *
 	 *	Success:	status code 201 and 'id' => 'RADAR ID', 'message' => 'Success', 'status' => '201'
-	 *				status code 200, if our database already exists (done nothing)
+	 *				status code 200, if our tool already exists (done nothing)
 	 *	Failure:	status code !201 and 'message' and 'status'
 	 *
 	 */
 	public function create() : bool
 	{
 		$this->reset();
-		if($this->database->radar_id != null)
+		if($this->tool->radar_id != null)
 			return true; // we already have a RADAR dataset
-			// get Database in RADAR formatted array
+			// get Tool in RADAR formatted array
 			// eager load relationships so they appear in serializeJson()
-		$this->database->load(
+		$this->tool->load(
 			'creators',
 			'publishers',
 			'rightsholders',
@@ -346,18 +347,19 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 			'relatedidentifiers',
 			'subjectareas',
 		);
-			// get database as JSON
-		$resource = new RadarDatabaseResource($this->database);
+			// get tool as JSON
+		$resource = new RadarToolResource($this->tool);
 		$arrayBody = $resource->toArray(request()); // alternative would be json_decode($resource->toJson(), true);
 		
 		$endpoint = "/workspaces/$this->workspace/datasets/";
-		$this->content = $arrayBody; // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
+		$this->content = $arrayBody;
+		$this->endpoint = $endpoint;
 		$response = $this->post($endpoint, $arrayBody);
 		if($response->status() == '201')
 		{
-			$this->database->radar_id = $this->getJsonValue('id', $response);
-			$this->database->save();
+			$this->tool->radar_id = $this->getJsonValue('id', $response);
+			$this->tool->radar_upload_url = $this->getJsonValue('uploadUrl', $response);
+			$this->tool->save();
 			return true; // success
 		}
 		$content = json_decode($response->content());
@@ -382,9 +384,9 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	public function canUpload($filename)
 	{
 		$this->reset();
-		$endpoint = '/datasets/'.$this->database->radar_id.'/canupload?filename='.$filename;
-		$this->content = null; // save the content sent to RADAR
-		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
+		$endpoint = '/datasets/'.$this->tool->radar_id.'/canupload?filename='.$filename;
+		$this->content = null; 
+		$this->endpoint = $endpoint; 
 		$response = $this->get($endpoint);
 		if($response->status() == 200)
 		{
@@ -422,25 +424,29 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 			return false;
 		}
 
-		foreach($this->database->datasets as $dataset) // For each Ecosystem(!) dataset
+		if($this->tool->filename) // if tool file available
 		{
-			$radar = new DatasetRadarFolderBridge($dataset);
+			$radar = new ToolfileRadarFileBridge($this->tool);
 			if(!$radar->upload())
 			{
-				// failed to upload an Ecosystem dataset
+				// failed to upload the tool file
 				$this->message = $radar->message;
 				$this->details = $radar->details;
 				return false;
 			}
 		}
+		else
+		{
+			$this->message = 'The tool file is not available!';
+			return false;
+		}
 
-		$this->message = 'The database has been successfully uploaded to the RADAR backend!';
-
+		$this->message = 'The tool has been successfully uploaded to the Datathek!';
 		return true;
 	}
 
 	/*
-	 * Delete RADAR dataset corresponding to this database
+	 * Delete RADAR dataset corresponding to this tool and reset the DOI
 	 *
 	 * Returns
 	 *
@@ -454,15 +460,16 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	 */
 	public function delete()
 	{
-		$endpoint = '/datasets/'.$this->database->radar_id;
+		$endpoint = '/datasets/'.$this->tool->radar_id;
 		$response = $this->httpdelete($endpoint);
 		if($response->status() == 204)
 		{
-			$this->message = 'The RADAR dataset has been deleted';
+			$this->message = 'The RADAR dataset has been deleted and DOI assignment removed';
 			return true;
 		}
 		$this->message = 'Failed to delete the RADAR dataset';
 		$this->details = $response->content();
 		return false;
 	}
+
 }

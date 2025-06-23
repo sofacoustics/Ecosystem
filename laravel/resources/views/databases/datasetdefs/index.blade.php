@@ -8,6 +8,12 @@
 		<thead class="bg-gray-50">
 			<tr>
 				<th class="border p-2">#</th>
+				@if($edits)
+					<th class="border p-2">Edit</th>
+				@endif
+				@if($deletes)
+					<th class="border p-2">Delete</th>
+				@endif
 				<th class="border p-2">Name</th>
 				<th class="border p-2">Type</th>
 				<th class="border p-2">Widget</th>
@@ -21,15 +27,17 @@
 		<tbody class="bg-white divide-y divide-gray-200">
 		@foreach($database->datasetdefs as $datasetdef)
 			<tr>
-				<td class="border p-2">
-					{{ ($loop->index)+1 }}
-					@can('delete', [$datasetdef, $database])
-						<x-button method="DELETE" class="inline" action="{{ route('datasetdefs.destroy', [$datasetdef]) }}">Delete</x-button>
-					@endcan
-					@can('update', [$datasetdef, $database])
+				<td class="border p-2">{{ ($loop->index)+1 }}</td>
+				@can('update', [$datasetdef, $database])
+					<td class="border p-2">
 						<x-button method="GET" class="inline" action="{{ route('datasetdefs.edit', [$datasetdef]) }}">Edit</x-button>
-					@endcan
-				</td>
+					</td>
+				@endcan
+				@can('delete', [$datasetdef, $database])
+					<td class="border p-2">
+						<x-button method="DELETE" class="inline" action="{{ route('datasetdefs.destroy', [$datasetdef]) }}">Delete</x-button>
+					</td>
+				@endcan
 				<td class="px-6 py-4 whitespace-nowrap">{{ $datasetdef->name }}</td>
 				<td class="px-6 py-4 whitespace-nowrap">{{ $datasetdef->datafiletype->name }}</td>
 				<td class="px-6 py-4 whitespace-nowrap">
@@ -53,7 +61,7 @@
 		@if(count($database->datasets) == 0)
 				<livewire:datasetdef-form :database=$database />
 		@else
-				<p>Note: The definition cannot be expanded or shortened because the database contains datasets already.</p>
+				<p><b>Note:</b> The definition cannot be expanded or shortened because the database contains datasets already.</p>
 		@endif
 	@endcan
 		{{-- <p>resources\views\databases\datasetdefs\index.blade.php</p> --}}

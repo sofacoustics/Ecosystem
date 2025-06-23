@@ -33,7 +33,6 @@ class ToolForm extends Component
 	public $resourcetype_other_id; 
 	
 	public $descriptiontype_base_id; 
-	public $controlledrights_base_id;
 	public $controlledrights_other_id;
 	
 	protected $rules = [
@@ -67,11 +66,9 @@ class ToolForm extends Component
 		$resourcetype_base_id = (\App\Models\Metadataschema::where('name', 'resourcetype')->first()->id);
 		$this->resourcetype_other_id = (\App\Models\Metadataschema::where('name', 'resourcetype')->where('value', 'OTHER')->first()->id) - $resourcetype_base_id; 
 		$additionaltitletype_base_id = (\App\Models\Metadataschema::where('name', 'additionalTitleType')->first()->id);
-		$controlledrights_base_id = (\App\Models\Metadataschema::where('name', 'controlledRights')->first()->id);
-		$this->controlledrights_other_id = (\App\Models\Metadataschema::where('name', 'controlledRights')->where('value', 'OTHER')->first()->id) - $controlledrights_base_id; 
+		$this->controlledrights_other_id = (\App\Models\Metadataschema::where('name', 'controlledRights')->where('value', 'OTHER')->first()->id); 
 
 		$this->additionaltitletype_base_id = $additionaltitletype_base_id;
-		$this->controlledrights_base_id = $controlledrights_base_id; 
 		$this->resourcetype_base_id = $resourcetype_base_id;
 
 		if($tool) 
@@ -94,7 +91,7 @@ class ToolForm extends Component
 			$this->software = $tool->software;
 			$this->processing = $tool->processing;
 			$this->relatedinformation = $tool->relatedinformation;
-			$this->controlledrights = $tool->controlledrights-$controlledrights_base_id;
+			$this->controlledrights = $tool->controlledrights;
 			$this->additionalrights = $tool->additionalrights;
 			$this->resourcetype = $tool->resourcetype-$resourcetype_base_id; 
 			$this->resource = $tool->resource; 
@@ -102,7 +99,7 @@ class ToolForm extends Component
 		else
 		{
 			$this->language = "eng"; 
-			$this->controlledrights = 0; // CC BY
+			$this->controlledrights = (\App\Models\Metadataschema::where('name', 'controlledRights')->where('value', 'ECOSYSTEM_EUPL')->first()->id); // EUPL as default
 			$this->additionaltitletype = 0; // Subtitle
 			$this->publicationyear = "unknown"; // dummy, will be set by RADAR when Publishing
 			$this->resourcetype = (\App\Models\Metadataschema::where('name', 'resourcetype')->where('value', 'SOFTWARE')->first()->id) - $this->resourcetype_base_id;  
@@ -137,7 +134,7 @@ class ToolForm extends Component
 		$this->tool->software = $this->software;
 		$this->tool->processing = $this->processing;
 		$this->tool->relatedinformation = $this->relatedinformation;
-		$this->tool->controlledrights = $this->controlledrights+$this->controlledrights_base_id;
+		$this->tool->controlledrights = $this->controlledrights;
 		$this->tool->additionalrights = $this->additionalrights;
 
 		$this->tool->save();

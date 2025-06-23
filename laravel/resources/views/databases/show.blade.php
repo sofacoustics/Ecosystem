@@ -160,11 +160,11 @@ Parameters:
 		</h3>
 		<ul class="list-disc list-inside">
 			@if ($database->doi != null) 
-				@if($database->radarstatus==1)
+				@if($database->radar_status==1)
 					<li><b>DOI (assigned)</b>: {{ $database->doi }}
-				@elseif($database->radarstatus==2)
+				@elseif($database->radar_status==2)
 					<li><b>DOI (publication requested)</b>: {{ $database->doi }}
-				@elseif($database->radarstatus==3)
+				@elseif($database->radar_status==3)
 					<li><b>DOI (persistently published)</b>: <a href="https://doi.org/{{ $database->doi }}">{{ $database->doi }}</a>
 				@endif
 			@else
@@ -185,7 +185,7 @@ Parameters:
 			</li>
 
 			@if ($database->controlledrights != null) 
-				<li><b>Rights:</b> {{ \App\Models\Database::controlledrightsDisplay($database->controlledrights) }}
+				<li><b>Rights:</b> {{ \App\Models\Metadataschema::display($database->controlledrights) }}
 					@if ($database->additionalrights != null) ({{ $database->additionalrights }})@endif 
 				</li>
 			@endif 

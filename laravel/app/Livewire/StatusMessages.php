@@ -13,25 +13,28 @@ use Livewire\Component;
  */
 class StatusMessages extends Component
 {
-    public $messages = [];
+	public $messages = [];
 
 	protected $listeners = [
 		'status-message' => 'appendStatusMessage',
 	];
 
-    public function appendStatusMessage($message)
+	public function appendStatusMessage($message)
 	{
-        $this->messages[] = $message;
-        $this->dispatch('status-message-added');
-    }
+		if($message != "")
+		{
+			$this->messages[] = $message;
+			$this->dispatch('status-message-added');
+		}
+	}
 
-    public function removeFirstMessage()
-    {
-        array_shift($this->messages);
-    }
+	public function removeFirstMessage()
+	{
+		array_shift($this->messages);
+	}
 
-    public function render()
-    {
-        return view('livewire.status-messages');
-    }
+	public function render()
+	{
+		return view('livewire.status-messages');
+	}
 }
