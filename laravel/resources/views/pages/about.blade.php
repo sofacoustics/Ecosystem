@@ -49,4 +49,7 @@
 	@else
 	<p>You do not have the 'admin' role</p>
 	@endrole
+
+	@include('app.version')
+
 </x-app-layout>
