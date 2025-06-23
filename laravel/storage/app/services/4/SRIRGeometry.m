@@ -36,46 +36,43 @@ warning('off'); %jw:note disable all warnings
 
 %jw:note Check if function called with parameter. If not, use command line parameter^M
 if(exist("SOFAfile"))
-	if(length(SOFAfile)==0)
-		disp('The SOFA file name SOFAfile is empty');
-	end
+    if(length(SOFAfile)==0)
+        disp('The SOFA file name SOFAfile is empty');
+    end
 else
-	% Use command line parameter for SOFAfile
-	% disp("SOFAfile does not exist");
-	disp(argv);
-	arg_list = argv();
-	fn = arg_list{1};
-	disp(fn);
-	SOFAfile = fn;
+    % Use command line parameter for SOFAfile
+    % disp("SOFAfile does not exist");
+    disp(argv);
+    arg_list = argv();
+    fn = arg_list{1};
+    disp(fn);
+    SOFAfile = fn;
 end
 %disp(["SOFAfile = " SOFAfile]);
 
 %% Load SOFA file
 %disp(['Loading: ' SOFAfile]);
 Obj=SOFAload(SOFAfile);
-
-if isoctave; fputs(fid, [ "About to plot\n"]); end
+[Obj] = SOFAupgradeConventions(Obj);
+% figure('Name',SOFAfile);
+if isoctave; fputs(fid, [ "just done SOFA upgrade\n"]); end
+if isoctave; fputs(fid, [ "about to plot\n"]); end
 
 %% Plot a few figures
-% switch Obj.GLOBAL_SOFAConventions
-% 
-%     case 'SingleRoomSRIR', 'SingleRoomMIMOSRIR';
-        % if isoctave; fputs(fid, [ "case SingleRoomSRIR or SingleRoomMIMOSRIR\n"]); end
-        [Obj] = SOFAupgradeConventions(Obj);
-        % figure('Name',SOFAfile);
-        if isoctave; fputs(fid, [ "just done SOFA upgrade\n"]); end
-        % SOFAplotHRTF(Obj,'ETCHorizontal',1);
-        SOFAplotGeometry(Obj);
-        if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
-        set(gcf, 'Name', 'SOFAfile')
-        if isoctave; fputs(fid, [ "renamed figure\n"]); end
-        view(45,30);
-        set(gcf, 'Position', [300, 500, 800, 500]);
-        if isoctave; fputs(fid, [ "just adapted view and position\n"]); end
-        print ("-r600", [SOFAfile '_1.png']);
-        %print ("-r600", '/tmp/hrtf_1.png');
-        if isoctave; fputs(fid, [ "just printed " SOFAfile "_1.png\n"]); end
-% end
+% SOFAplotHRTF(Obj,'ETCHorizontal',1);
+SOFAplotGeometry(Obj);
+if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
+set(gcf, 'Name', 'SOFAfile')
+if isoctave; fputs(fid, [ "renamed figure\n"]); end
+view(45,30);
+set(gcf, 'Position', [300, 500, 800, 500]);
+if isoctave; fputs(fid, [ "just adapted view and position\n"]); end
+print ("-r600", [SOFAfile '_1.png']);
+%print ("-r600", '/tmp/hrtf_1.png');
+if isoctave; fputs(fid, [ "just printed " SOFAfile "_1.png\n"]); end
+
+
+
 
 
 %% Epilogue: (un)comment if you want to:

@@ -9,5 +9,14 @@
 			<a href="{{ $datafile->asset('_3.png') }}" target="_blank">
         <x-img class="p-2" :asset="$datafile->asset('_3.png')" />
 			</a>
+			<a href="{{ $datafile->asset('_4.png') }}" target="_blank">
+        <x-img class="p-2" :asset="$datafile->asset('_4.png')" />
+			</a>
+			<a href="{{ $datafile->asset('_5.png') }}" target="_blank">
+        <x-img class="p-2" :asset="$datafile->asset('_5.png')" />
+			</a>
+			<a href="{{ $datafile->asset('_6.png') }}" target="_blank">
+        <x-img class="p-2" :asset="$datafile->asset('_6.png')" />
+			</a>			
     </div>
 </div>

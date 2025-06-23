@@ -140,7 +140,8 @@ if ($view === 'livewire.datafiles.sofa-properties')
 			\Log::info('DatafileListener: csvPath (encoded) = ' . $csvPath);
 
 				// Get domain
-			$csvUrl = 'https://sonicom.amtoolbox.org' . $csvPath; 
+			$baseUrl = request()->getSchemeAndHttpHost(); // e.g., https://sonicom-dev.amtoolbox.org
+			$csvUrl = $baseUrl . $csvPath;
 
 				// load file
 			$csvContent = '';
@@ -179,7 +180,7 @@ if ($view === 'livewire.datafiles.sofa-properties')
     $csvFilenameProp = $filename . '.sofa_prop.csv';
     $csvFilenamePropEncoded = rawurlencode($csvFilenameProp);
     $csvPathProp = $dir . '/' . $csvFilenamePropEncoded;
-    $csvUrlProp = 'https://sonicom.amtoolbox.org' . $csvPathProp;
+    $csvUrlProp = $baseUrl . $csvPathProp;
 
     // Logging
     \Log::info('DatafileListener: csvPropPath (encoded) = ' . $csvPathProp);

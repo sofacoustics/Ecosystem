@@ -21,7 +21,7 @@ class WidgetSeeder extends Seeder
         Widget::create(array('name' => 'SOFA: HRTF ETC and Magnitudes',
             'description' => 'Plot three figures: horizontal-plane ETC and median-plane magnitude spectra for two channels.',
             'service_id' => 1,
-            'view' => 'sofa-hrtf-3-etc-mag',
+            'view' => 'hrtf-general',
         ));
         Widget::create(array('name' => 'Image',
             'description' => 'Display an image (PNG, JPG, WEBP, animated or static).',

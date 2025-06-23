@@ -25,7 +25,7 @@ class DatasetdefSeeder extends Seeder
 		Datasetdef::create([ 'database_id' => 3, 'name' => 'HRTF 48kHz', 'datafiletype_id' => 1, 'widget_id' => 1 ]);
 		Datasetdef::create([ 'database_id' => 3, 'name' => 'HPEQ 48kHz', 'datafiletype_id' => 1, 'widget_id' => 1 ]);
 		Datasetdef::create([ 'database_id' => 3, 'name' => 'Photogrammetry', 'datafiletype_id' => 1, 'widget_id' => 1 ]);
-		Datasetdef::create([ 'database_id' => 4, 'name' => 'sofa-hrtf-3-etc-mag', 'datafiletype_id' => 1, 'widget_id' => 2 ]);
+		Datasetdef::create([ 'database_id' => 4, 'name' => 'hrtf-general', 'datafiletype_id' => 1, 'widget_id' => 2 ]);
 		Datasetdef::create([ 'database_id' => 4, 'name' => 'sofa-hrtf-1-etc', 'datafiletype_id' => 1, 'widget_id' => 4 ]);
 		Datasetdef::create([ 'database_id' => 4, 'name' => 'sofa-brir-geometry', 'datafiletype_id' => 2, 'widget_id' => 6 ]);
 		Datasetdef::create([ 'database_id' => 4, 'name' => 'sofa-srir-geometry', 'datafiletype_id' => 3, 'widget_id' => 7 ]);
