@@ -1,0 +1,47 @@
+#!/bin/sh
+
+echo "Running 'post-checkout' hook"
+
+# Get the current branch name
+branch_name=$(git branch | grep "*" | sed "s/\* //")
+echo "branch: $branch_name"
+
+# we should be in the root folder of the git repository
+cd laravel
+
+echo "Running 'composer install'"
+composer install
+# Check for new migration files
+if git diff --name-only HEAD@{1} HEAD | grep -qE '^database/migrations/.*\.php'; then
+	echo "New migrations found. Running database migrations..."
+	php artisan migrate --force
+else
+	echo "No new migrations found. Skipping migration step."
+fi
+# Check for changes in config files
+if git diff --name-only HEAD@{1} HEAD | grep -qE '^config/.*\.php'; then
+	echo "Config changes detected. Recaching config..."
+	php artisan config:cache
+else
+	echo "No config changes detected. Skipping config cache."
+fi
+# Check for changes in route files
+if git diff --name-only HEAD@{1} HEAD | grep -qE '^route/.*\.php'; then
+	echo "Route changes detected. Recaching route..."
+	php artisan route:cache
+else
+	echo "No route changes detected. Skipping route cache."
+fi
+# Check for changes in view files
+if git diff --name-only HEAD@{1} HEAD | grep -qE '^resources/views/.*\.php'; then
+	echo "View changes detected. Recaching views..."
+	php artisan route:cache
+else
+	echo "No view changes detected. Skipping view cache."
+fi
+echo "Running ./artisan storage:unlink && ./artisan storage:link"
+./artisan storage:unlink && ./artisan storage:link
+echo "Running 'npm install and npm run build'"
+npm install && npm run build
+
+cd ..
