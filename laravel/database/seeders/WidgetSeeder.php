@@ -79,7 +79,7 @@ class WidgetSeeder extends Seeder
 		Widget::create(array('name' => 'SOFA: Headphones',
             'description' => 'Plot spectra of headphones.',
             'service_id' => 9,
-            'view' => 'sofa-headphones',
+            'view' => 'headphones-general',
         ));		
     }
 }

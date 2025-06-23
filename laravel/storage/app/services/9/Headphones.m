@@ -77,32 +77,33 @@ end
 
 for ii=1:Obj.API.M
   plot(20*log10(abs(fft(squeeze(Obj.Data.IR(ii,1,:)),Obj.Data.SamplingRate))),cols(ii));
-  if ii>1
+  % if ii>1
     % if ~isoctave; 
-	if ~isoctave
-      leg{ii}=['#' num2str(ii) ':' num2str(meastime(ii)) ' seconds later']; 
-    else
-      leg{ii}=['#' num2str(ii)]; 
-    end
-  end
+	% if ~isoctave
+    %   leg{ii}=['Left #' num2str(ii) ':' num2str(meastime(ii)) ' seconds later']; 
+    % else
+      leg{ii}=['Left #' num2str(ii)]; 
+    % end
+  % end
 end
 
 for ii=1:Obj.API.M
   plot(20*log10(abs(fft(squeeze(Obj.Data.IR(ii,2,:)),Obj.Data.SamplingRate)))-20,cols(ii));  
+  	% if ~isoctave
+    %   leg{ii+Obj.API.M}=['Right #' num2str(ii) ':' num2str(meastime(ii)) ' seconds later']; 
+    % else
+      leg{ii+Obj.API.M}=['Right #' num2str(ii)]; 
+    % end
 end
 
 xlim([-200 18200]);
 
 axis([-200 18200 -65 15]);
-leg{1}='#1, first measurement';
-legend(leg);
-title('Amplitude Spectra of Repeated Headphones Measurements (Left, Right)')
+% leg{1}='#1, first measurement';
+legend(leg,'Location','best');
+title('Amplitude Spectra of Headphones Measurements: Left, Right [-20 dB]')
 xlabel('Frequency (Hz)')
 ylabel('Amplitude (dB)')
-
-
-
-
 
         if isoctave; fputs(fid, [ "just done some figure adaptations\n"]); end
         
