@@ -17,6 +17,12 @@
 			</a>
 			<a href="{{ $datafile->asset('_6.png') }}" target="_blank">
         <x-img class="p-2" :asset="$datafile->asset('_6.png')" />
-			</a>			
+			</a>	
+			<a href="{{ $datafile->asset('_7.png') }}" target="_blank">
+        <x-img class="p-2" :asset="$datafile->asset('_7.png')" />
+			</a>	
+			<a href="{{ $datafile->asset('_8.png') }}" target="_blank">
+        <x-img class="p-2" :asset="$datafile->asset('_8.png')" />
+			</a>				
     </div>
 </div>
