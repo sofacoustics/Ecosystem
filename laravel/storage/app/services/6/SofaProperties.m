@@ -1,6 +1,7 @@
 % SofaProperties - Function to load SOFA files, create and save visualizing 1 figure
 % #Author: Michael Mihocic: SofaProperties extracted and stored (15.04.2025)
 % #Author: Michael Mihocic: Modified for Octave compatibility (25.04.2025)
+% #Author: Michael Mihocic: Dimensions displayed, 2 tables created (23.06.2025)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -58,67 +59,119 @@ catch ME
     error('Failed to load SOFA file "%s\": %s', SOFAfile, ME.message);
 end
 if isoctave; fputs(log_fid, "SOFA file loaded successfully.\n"); end
-%% Collect details
+
+%% Collect all details
 if isoctave; fputs(log_fid, "About to extract details.\n"); end
-data = {}; % Initialize cell array
+
 % Helper function to safely get fields
-    function value = get_sofa_field(obj, field_name, default_value)
-        if isfield(obj, field_name)
-            value = obj.(field_name);
-            % Convert numeric values to string for consistent CSV output
-            if isnumeric(value)
-                value = num2str(value);
-            end
-        else
-            value = default_value;
+function value = get_sofa_field(obj, field_name, default_value)
+    if isfield(obj, field_name)
+        value = obj.(field_name);
+        % Convert numeric values to string for consistent CSV output
+        if isnumeric(value)
+            value = num2str(value);
         end
+    else
+        value = default_value;
     end
+end
 % Populate data cell array
 
-% get dimensions definitions
-field_names = fieldnames(Obj.API);
-for i = 1:length(field_names)
-    field_name = field_names{i};
 
+%% get dimensions definitions
+% dataDim = {}; % Initialize cell array
+field_namesDim = fieldnames(Obj.API);
+for i = 1:length(field_namesDim)
+    field_name = field_namesDim{i};
 
     if ~startsWith(field_name, 'Dimensions')
         switch field_name
-            case 'M'
-                description = 'Number of measurements';
             case 'R'
-                description = 'Number of receivers or harmonic coefficients describing receivers';
+                % description = 'Number of receivers or harmonic coefficients describing receivers';
+                dimR = get_sofa_field(Obj.API, field_name, 'unknown');
             case 'E'
-                description = 'Number of emitters or harmonic coefficients describing emitters';
+                % description = 'Number of emitters or harmonic coefficients describing emitters';
+                dimE = get_sofa_field(Obj.API, field_name, 'unknown');
+            case 'M'
+                % description = 'Number of measurements';
+                dimM = get_sofa_field(Obj.API, field_name, 'unknown');
             case 'N'
-                description = 'Number of data samples describing one measurement';
+                % description = 'Number of data samples describing one measurement';
+                dimN = get_sofa_field(Obj.API, field_name, 'unknown');
             case 'S'
-                description = 'Number of characters in a string';
-                % case 'I'
-                %     description = 'singleton dimension, constant';
-                % case 'C'
-                %     description = 'coordinate triplet, constant';
+                % description = 'Number of characters in a string';
+                dimS = get_sofa_field(Obj.API, field_name, 'unknown');
+
             otherwise
-                description = '';
+                % description = '';
         end
 
-        if ~isempty(description)
-            data{end+1, 1} = [description];
-            % data{end+1, 1} = ['Dimension ' description];
-            data{end, 2} = get_sofa_field(Obj.API, field_name, 'unknown');
-        end
+        % if ~isempty(description)
+        %     dataDim{end+1, 1} = [description];
+        %     % data{end+1, 1} = ['Dimension ' description];
+        %     dataDim{end, 2} = get_sofa_field(Obj.API, field_name, 'unknown');
+        % end
     end
 end
 if isoctave; fputs(log_fid, "Collected dimensions definitions from SOFA file.\n"); end
 
 
-% Iterate over all fields in the SOFA object
-field_names = fieldnames(Obj);
-for i = 1:length(field_names)
-    field_name = field_names{i};
+%% Write dimensions data to CSV using Octave's file I/O
+header = {'SOFA Convention', 'Dim R', 'Dim E', 'Dim M', 'Dim N', 'Dim S'}; % Define header
+dataDim = {[Obj.GLOBAL_SOFAConventions ' ' Obj.GLOBAL_SOFAConventionsVersion], dimR, dimE, dimM, dimN, dimS}; % Define data
+output_filename = [SOFAfile, '_dim.csv']; % Construct output filename
+delimiter = ';'; % Define delimiter
+if isoctave; fputs(log_fid, ["Attempting to write CSV: " output_filename "\n"]); end
+csv_fid = fopen(output_filename, 'w'); % Open file for writing
+if csv_fid < 0
+    if isoctave; fputs(log_fid, ["Error opening output CSV file: " output_filename "\n"]); fclose(log_fid); end
+    error('Cannot open output file for writing: %s', output_filename);
+end
+try
+    % Write header
+    % fprintf(csv_fid, '%s%s%s%s%s%s\n', header{1}, delimiter, header{2}, delimiter, header{3}, delimiter, header{4}, delimiter, header{5}, delimiter, header{6});
+    fprintf(csv_fid, '%s%s%s%s%s%s%s%s%s%s%s\n', header{1}, delimiter, header{2}, delimiter, header{3}, delimiter, header{4}, delimiter, header{5}, delimiter, header{6});
+    
+    if isoctave; fputs(log_fid, "CSV header written.\n"); end
+    fprintf(csv_fid, '%s%s%s%s%s%s%s%s%s%s%s\n', dataDim{1}, delimiter, dataDim{2}, delimiter, dataDim{3}, delimiter, dataDim{4}, delimiter, dataDim{5}, delimiter, dataDim{6});
+
+    % fprintf(csv_fid, '%s%s%s\n', header{1}, delimiter, header{2}, delimiter, header{3}, delimiter, header{4}, delimiter, header{5}, delimiter, header{6});
+
+    % % Write data rows
+    % for i = 1:size(dataDim, 1)
+    %     % Ensure both elements are strings before writing
+    %     name_str = dataDim{i, 1};
+    %     value_str = dataDim{i, 2};
+    %     if ~ischar(name_str); name_str = num2str(name_str); end % Convert if not char
+    %     if ~ischar(value_str); value_str = num2str(value_str); end % Convert if not char
+    %     % Robust CSV quoting and newline removal:
+    %     name_str = ['"', strrep(strrep(name_str, char(10), ' '), char(13), ' '), '"']; % Quote, replace LF and CR with space
+    %     value_str = ['"', strrep(strrep(value_str, char(10), ' '), char(13), ' '), '"']; % Quote, replace LF and CR with space
+    %     fprintf(csv_fid, '%s%s%s\n', name_str, delimiter, value_str);
+    % end
+    if isoctave; fputs(log_fid, ["Data rows written to CSV.\n"]); end
+catch ME
+    fclose(csv_fid); % Close file even if error occurs during writing
+    if isoctave; fputs(log_fid, ["Error writing CSV data: " ME.message "\n"]); fclose(log_fid); end
+    error('Error writing data to CSV file "%s\": %s', output_filename, ME.message);
+end
+fclose(csv_fid); % Close the output file successfully
+if isoctave; fputs(log_fid, ["Successfully saved SOFA details to " output_filename "\n"]); end
+disp(['Successfully saved SOFA details to ' output_filename]);
+
+
+
+
+
+%% Iterate over all fields in the SOFA object
+dataProp = {}; % Initialize cell array
+field_namesProp = fieldnames(Obj);
+for i = 1:length(field_namesProp)
+    field_name = field_namesProp{i};
     % Check if the field starts with 'GLOBAL_'
     if startsWith(field_name, 'GLOBAL_')
-        data{end+1, 1} = field_name(8:end);  % extractAfter is not supported in Octave
-        data{end, 2} = get_sofa_field(Obj, field_name, 'unknown');
+        dataProp{end+1, 1} = field_name(8:end);  % extractAfter is not supported in Octave
+        dataProp{end, 2} = get_sofa_field(Obj, field_name, 'unknown');
     end
 end
 if isoctave; fputs(log_fid, "Collected GLOBAL data from SOFA file.\n"); end
@@ -128,10 +181,13 @@ if isoctave; fputs(log_fid, "Collected GLOBAL data from SOFA file.\n"); end
 % data = process_fields(Obj.API.Dimensions, 'Dimension', data, 1);
 % if isoctave; fputs(log_fid, "Collected dimensions of objects from SOFA file.\n"); end
 
-%% Write data to CSV using Octave's file I/O
+
+
+
+%% Write properties data to CSV using Octave's file I/O
 header = {'Name', 'Value'}; % Define header
-output_filename = [SOFAfile, '_1.csv']; % Construct output filename
-delimiter = ';'; % Define delimiter
+output_filename = [SOFAfile, '_prop.csv']; % Construct output filename
+% delimiter = ';'; % Define delimiter
 if isoctave; fputs(log_fid, ["Attempting to write CSV: " output_filename "\n"]); end
 csv_fid = fopen(output_filename, 'w'); % Open file for writing
 if csv_fid < 0
@@ -143,10 +199,10 @@ try
     fprintf(csv_fid, '%s%s%s\n', header{1}, delimiter, header{2});
     if isoctave; fputs(log_fid, "CSV header written.\n"); end
     % Write data rows
-    for i = 1:size(data, 1)
+    for i = 1:size(dataProp, 1)
         % Ensure both elements are strings before writing
-        name_str = data{i, 1};
-        value_str = data{i, 2};
+        name_str = dataProp{i, 1};
+        value_str = dataProp{i, 2};
         if ~ischar(name_str); name_str = num2str(name_str); end % Convert if not char
         if ~ischar(value_str); value_str = num2str(value_str); end % Convert if not char
         % Robust CSV quoting and newline removal:
@@ -163,6 +219,8 @@ end
 fclose(csv_fid); % Close the output file successfully
 if isoctave; fputs(log_fid, ["Successfully saved SOFA details to " output_filename "\n"]); end
 disp(['Successfully saved SOFA details to ' output_filename]);
+
+
 %% Epilogue: (un)comment if you want to:
 disp('DONE');
 if isoctave; fputs(log_fid, "Script finished.\n"); fclose(log_fid); end % Close log file at the end

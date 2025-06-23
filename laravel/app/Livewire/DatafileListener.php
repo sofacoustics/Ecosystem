@@ -106,14 +106,16 @@ class DatafileListener extends Component
 			$viewData['datasetdef_radar_id'] = $this->datafile->datasetdef_radar_id;
 			$viewData['datasetdef_radar_upload_url'] = $this->datafile->datasetdef_radar_upload_url;
 
-		} // Widget: Properties
-		
-		
-			// *****
-			// Widget: SOFA properties
-		if ($view === 'livewire.datafiles.sofa-properties') 
-		{
-			$sofaAsset = $this->datafile->asset();
+			} // Widget: Properties
+			
+			
+				// *****
+				// Widget: SOFA properties
+// *****
+// Widget: SOFA properties
+if ($view === 'livewire.datafiles.sofa-properties') 
+{
+    $sofaAsset = $this->datafile->asset();
 
 			// remove query string
 			$urlParts = parse_url($sofaAsset);
@@ -122,7 +124,10 @@ class DatafileListener extends Component
 			$dir = dirname($sofaPath); // eg. /data/9/57/135
 			$filename = basename($sofaPath, '.sofa'); // eg. 6 sofa-properties
 
-			$csvFilename = $filename . '.sofa_1.csv'; // eg. 6 sofa-properties.sofa_1.csv
+    // ====================
+    // Load 1st CSV: .sofa_dim.csv
+    // ====================
+    $csvFilename = $filename . '.sofa_dim.csv'; // eg. 6 sofa-properties.sofa_1.csv
 
 			// Encoding file name
 			$csvFilenameEncoded = rawurlencode($csvFilename);
@@ -163,11 +168,55 @@ class DatafileListener extends Component
 				}
 			}
 
-			$viewData['csvContent'] = $csvContent;
-			$viewData['csvPath'] = $csvUrl;
-			$viewData['csvRows'] = $csvRows;
-		} // Widget: SOFA Properties
+    // Pass first CSV data to view
+    $viewData['csvContent'] = $csvContent;
+    $viewData['csvPath'] = $csvUrl;
+    $viewData['csvRows'] = $csvRows;
 
-		return view($view, $viewData);
-	}
+    // ====================
+    // Load 2nd CSV: .sofa_prop.csv
+    // ====================
+    $csvFilenameProp = $filename . '.sofa_prop.csv';
+    $csvFilenamePropEncoded = rawurlencode($csvFilenameProp);
+    $csvPathProp = $dir . '/' . $csvFilenamePropEncoded;
+    $csvUrlProp = 'https://sonicom.amtoolbox.org' . $csvPathProp;
+
+    // Logging
+    \Log::info('DatafileListener: csvPropPath (encoded) = ' . $csvPathProp);
+
+    // load file
+    $csvContentProp = '';
+    try 
+    {
+        $csvContentProp = @file_get_contents($csvUrlProp);
+    } catch (\Exception $e) {
+        \Log::error('DatafileListener: Error loading .sofa_prop.csv: ' . $e->getMessage());
+    }
+
+    if ($csvContentProp === false || $csvContentProp === null) 
+    {
+        $csvContentProp = '';
+    }
+
+    // CSV as array for table
+    $csvRowsProp = [];
+    if ($csvContentProp !== '') 
+    {
+        $lines = preg_split('/\r\n|\r|\n/', $csvContentProp);
+        foreach ($lines as $line) {
+            if (trim($line) !== '') {
+                $csvRowsProp[] = str_getcsv($line, ';');
+            }
+        }
+    }
+
+    // Pass second CSV data to view
+    $viewData['csvContentProp'] = $csvContentProp;
+    $viewData['csvPathProp'] = $csvUrlProp;
+    $viewData['csvRowsProp'] = $csvRowsProp;
+}
+
+
+        return view($view, $viewData);
+    }
 }
