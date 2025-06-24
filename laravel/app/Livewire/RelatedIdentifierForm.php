@@ -46,21 +46,46 @@ class RelatedIdentifierForm extends Component
 			$reltype = \App\Models\Metadataschema::value($relatedidentifierable->resourcetype);
 		$this->relatedidentifierable = $relatedidentifierable;
 		if($relatedidentifier)
-		{
+		{		// Edit
 			$this->relatedidentifier = $relatedidentifier;
 			$this->relatedidentifierable_id = $relatedidentifier->relatedidentifierable_id;
 			$this->relatedidentifierable_type = $relatedidentifier->relatedidentifierable_type;
-			$this->name = $relatedidentifier->name;
-			$this->relatedidentifiertype = $relatedidentifier->relatedidentifiertype;
-			$this->relationtype = $relatedidentifier->relationtype;
-			$this->activeTab = 'external'; 
-			$this->databaserelation = ""; // put here the retrieval algorithm of the id
-			$this->databaserelatedable = ""; // put here the retrieval algorithm of the id
-			$this->toolrelation = ""; // put here the retrieval algorithm of the id
-			$this->toolrelatedable = ""; // put here the retrieval algorithm of the id
+			$isInternal = \App\Models\RelatedIdentifier::isInternalLink($relatedidentifier->name);
+			switch($isInternal)
+			{	
+				case 1: // our database/tool has been linked to a database
+					$this->activeTab = 'database'; 
+					$this->databaserelation = $relatedidentifier->relationtype;
+					$this->databaserelatedable = substr($relatedidentifier->name, strlen("ECOSYSTEM_DATABASE")+1);
+					$this->toolrelation = null;
+					$this->toolrelatedable = null;
+					$this->name = null;
+					$this->relatedidentifiertype = null;
+					$this->relationtype = null;
+					break;
+				case 2: // our database/tool has been linked to a tool
+					$this->activeTab = 'tool'; 
+					$this->databaserelation = null;
+					$this->databaserelatedable = null;
+					$this->toolrelation = $relatedidentifier->relationtype;
+					$this->toolrelatedable = substr($relatedidentifier->name, strlen("ECOSYSTEM_TOOL")+1);
+					$this->name = null;
+					$this->relatedidentifiertype = null;
+					$this->relationtype = null;
+					break;
+				default: // we have a general link
+					$this->activeTab = 'external'; 
+					$this->databaserelation = null;
+					$this->databaserelatedable = null;
+					$this->toolrelation = null;
+					$this->toolrelatedable = null;
+					$this->name = $relatedidentifier->name;
+					$this->relatedidentifiertype = $relatedidentifier->relatedidentifiertype;
+					$this->relationtype = $relatedidentifier->relationtype;
+			}
 		}
 		else
-		{
+		{		// New
 			$this->relatedidentifierable_id = $relatedidentifierable->id;
 			$this->relatedidentifierable_type = get_class($relatedidentifierable);
 			$this->relationtype = \App\Models\Metadataschema::where('name', 'relationType')->where('value', 'IS_DESCRIBED_BY')->first()->id; 
@@ -74,10 +99,10 @@ class RelatedIdentifierForm extends Component
 			elseif($reltype=="DATASET")
 			{		// default for Databases
 				$this->databaserelation = \App\Models\Metadataschema::where('name', 'relationType')->where('value', 'IS_NEW_VERSION_OF')->first()->id; 
-				$this->toolrelation = -2; // was created with
+				$this->toolrelation = -2; // "was created with"
 			}
 			else
-			{		// default for Tools: "Was Involved of Creation of"
+			{		// default for Tools: "was used to create"
 				$this->databaserelation = -1; 
 				$this->toolrelation = -1;
 			}
@@ -131,35 +156,15 @@ class RelatedIdentifierForm extends Component
 		{
 			case 'database':
 				$database = \App\Models\Database::find($this->databaserelatedable);
-				$this->relatedidentifier->name = route('databases.show',[ 'database' => $database->id]); // we store the URL to the database
+				$this->relatedidentifier->name = "ECOSYSTEM_DATABASE_".$database->id; // prefix and id
 				$this->relatedidentifier->relatedidentifiertype = \App\Models\Metadataschema::where('name', 'relatedIdentifierType')->where('value', 'URL')->first()->id;
-				switch($this->databaserelation)
-				{
-					case "-1":
-						$this->relatedidentifier->relationtype  = \App\Models\Metadataschema::where('name', 'relationType')->where('value', 'COMPILES')->first()->id;
-						break;
-					default:
-						$this->relatedidentifier->relationtype = $this->databaserelation;
-				}
+				$this->relatedidentifier->relationtype  = $this->databaserelation;
 				break;
 			case 'tool':
 				$tool = \App\Models\Tool::find($this->toolrelatedable);
-				$this->relatedidentifier->name = route('tools.show',[ 'tool' => $tool->id]); // we store the URL to the tool
+				$this->relatedidentifier->name = "ECOSYSTEM_TOOL_".$tool->id; // prefix and id
 				$this->relatedidentifier->relatedidentifiertype = \App\Models\Metadataschema::where('name', 'relatedIdentifierType')->where('value', 'URL')->first()->id;
-				switch($this->toolrelation)
-				{
-					case "-1":
-						$this->relatedidentifier->relationtype  = \App\Models\Metadataschema::where('name', 'relationType')->where('value', 'COMPILES')->first()->id;
-						break;
-					case "-2":
-						$this->relatedidentifier->relationtype  = \App\Models\Metadataschema::where('name', 'relationType')->where('value', 'IS_COMPILED_BY')->first()->id;
-						break;
-					case "-3":
-						$this->relatedidentifier->relationtype  = \App\Models\Metadataschema::where('name', 'relationType')->where('value', 'IS_CONTINUED_BY')->first()->id;
-						break;
-					default:
-						$this->relatedidentifier->relationtype = $this->toolrelation;
-				}
+				$this->relatedidentifier->relationtype  = $this->toolrelation;
 				break;
 			case 'external':
 				$this->relatedidentifier->name = $this->name;
