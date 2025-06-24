@@ -323,8 +323,16 @@ You can create a Livewire form and component (https://fly.io/laravel-bytes/livew
 
 ### Development Server
 
-URL: <https://sonicom.amtoolbox.org>
+URL: <https://sonicom-dev.amtoolbox.org>
 Host: ubuntu-vm-1.kfs.oeaw.ac.at
+Code Branch: dev
+
+### Live Server
+
+URL: <https://ecosystem.sonicom.eu>
+Host: ubuntu-vm-2.kfs.oeaw.ac.at
+Code Branch: live
+
 
 
 ## Firewall
