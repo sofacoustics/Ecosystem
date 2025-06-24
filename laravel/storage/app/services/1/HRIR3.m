@@ -90,7 +90,7 @@ switch Obj.GLOBAL_SOFAConventions
         figure('Name',SOFAfile);
         mySOFAplotHRTF(Obj,'MagMedian','nonormalization');
         print ("-r600", [SOFAfile '_4.png']);
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "4.png\n"]); end
+        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_4.png\n"]); end
 
         %% MagMedian, log
         figure('Name',SOFAfile);
@@ -103,16 +103,76 @@ switch Obj.GLOBAL_SOFAConventions
         print ("-r600", [SOFAfile '_6.png']);
         if isoctave;  fputs(fid, [ "just printed " SOFAfile "_6.png\n"]); end
 
-        figure('Name',SOFAfile);
-        mySOFAplotHRTF(Obj,'itdhorizontal');
-        print ("-r600", [SOFAfile '_7.png']);
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_7.png\n"]); end
+        % figure('Name',SOFAfile);
+        % if isoctave;  fputs(fid, [ "created empty figure for " SOFAfile "_7.png\n"]); end
+        % mySOFAplotHRTF(Obj,'itdhorizontal');
+        % if isoctave;  fputs(fid, [ "plotted " SOFAfile "_7.png\n"]); end
+        % title('ITD')
+        % if isoctave;  fputs(fid, [ "set title for " SOFAfile "_7.png\n"]); end
+        % print ("-r600", [SOFAfile '_7.png']);
+        % if isoctave;  fputs(fid, [ "just printed " SOFAfile "_7.png\n"]); end
 
-        % plot geometry
-        %  SOFAplotGeometry(Obj);
-        %  title(['Geometry SimpleFreeFieldHRIR, ' num2str(Obj.API.M) ' position(s)'])
-        %  set(gcf, 'Name', SOFAfile);
-        %  print ("-r600", [SOFAfile '_4.png']);
+
+
+[Obj] = SOFAupgradeConventions(Obj);
+% figure('Name',SOFAfile);
+if isoctave; fputs(fid, [ "just done SOFA upgrade\n"]); end
+% SOFAplotHRTF(Obj,'ETCHorizontal',1);
+SOFAplotGeometry(Obj);
+if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
+set(gcf, 'Name', 'SOFAfile')
+if isoctave; fputs(fid, [ "renamed figure\n"]); end
+view(45,30);
+if isoctave; fputs(fid, [ "adapted view\n"]); end
+set(gcf, 'Position', [300, 500, 800, 500]);
+if isoctave; fputs(fid, [ "adapted position\n"]); end
+if isoctave; fputs(fid, [ "trying to print " SOFAfile "_7.png\n"]); end
+
+% plot(rand(10))
+% print ("-r600", ['TESTPRINT_1.png']); % TO BE REMOVED
+% if isoctave; fputs(fid, [ "just printed TESTPRINT_1.png\n"]); end % TO BE REMOVED
+print ("-r600", [SOFAfile '_7.png']);
+%print ("-r600", '/tmp/hrtf_1.png');
+if isoctave; fputs(fid, [ "just printed " SOFAfile "_7.png\n"]); end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        figure('Name',SOFAfile);
+        if isoctave;  fputs(fid, [ "created empty figure for " SOFAfile "_8.png\n"]); end
+         SOFAplotGeometry(Obj);
+         if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
+         title(['Geometry, ' num2str(Obj.API.M) ' position(s)'])
+         if isoctave; fputs(fid, [ "changed title for figure\n"]); end
+         set(gcf, 'Name', 'SOFAfile')
+         if isoctave; fputs(fid, [ "renamed figure\n"]); end
+         view(45,30);
+         if isoctave; fputs(fid, [ "adapted view\n"]); end
+         print ("-r600", [SOFAfile '_8.png']);
+        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_8.png\n"]); end
 
         % plot geometry, only show every 45th measurement
         %  index = 1:45:Obj.API.M;
