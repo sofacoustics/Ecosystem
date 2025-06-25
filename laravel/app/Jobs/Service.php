@@ -53,12 +53,14 @@ class Service implements ShouldQueue
         $datafile_id = $this->datafile->id;
         $directory=storage_path('app/services/' . $this->service->id);
         $log .= "  widget=$widget_id, service=$service_id, datafile=$datafile_id, directory=$directory\n";
-        $process = $this->service->exe . ' ' . $this->service->parameters . ' "' . $this->datafile->absolutepath() . '"';
-        $log .= "  process=$process\n";
-        $result = Process::path($directory)->run($process); // run with output
+        $processstring = $this->service->exe . ' ' . $this->service->parameters . ' "' . $this->datafile->absolutepath() . '"';
+        $process = Process::path($directory)->start($processstring); // run with output
+        $pid = $process->id();
+        $log .= "  process=$processstring (PID: $pid)\n";
+        $result = $process->wait();
         // write output to a service log file in the datafile directory
-        $datafilelogfile = $this->datafile->directory() . '/service-' . $this->service->id . '.stdout';
-        $datafileerrorfile = $this->datafile->directory() . '/service-' . $this->service->id . '.stderr';
+        $datafilelogfile = $this->datafile->directory() . '/service-' . $this->service->id . '-PID-' . $pid . '.stdout';
+        $datafileerrorfile = $this->datafile->directory() . '/service-' . $this->service->id . '-PID-' . $pid . '.stderr';
         $log .= "  logging output to file " . Storage::disk('sonicom-data')->path($datafilelogfile) . "\n";
         $log .= "  logging errors to file " . Storage::disk('sonicom-data')->path($datafileerrorfile) . "\n";
         Storage::disk('sonicom-data')->put($datafilelogfile, $result->output());
