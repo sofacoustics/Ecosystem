@@ -12,21 +12,20 @@
 				</x-button>
 			@endcan
 			@if(\App\Models\RelatedIdentifier::isInternalLink($relatedidentifier->name) == 1)
-				<b>... {{ \App\Models\RelatedIdentifier::displayRelation($relatedidentifier->relationtype) }}</b>
+				<b>... {{ strtolower(\App\Models\RelatedIdentifier::displayRelation($relatedidentifier->relationtype)) }}</b>
 				the Database 
 				<a href="{{ \App\Models\RelatedIdentifier::internalUrl($relatedidentifier->name) }}">
-					{{ \App\Models\RelatedIdentifier::internalName($relatedidentifier->name) }}
-				</a>.
+					{{ \App\Models\RelatedIdentifier::internalName($relatedidentifier->name) }}</a>.
 			@elseif(\App\Models\RelatedIdentifier::isInternalLink($relatedidentifier->name) == 2)
-				<b>... {{ \App\Models\RelatedIdentifier::displayRelation($relatedidentifier->relationtype) }}</b>
+				<b>... {{ strtolower(\App\Models\RelatedIdentifier::displayRelation($relatedidentifier->relationtype)) }}</b>
 				the Tool 
 				<a href="{{ \App\Models\RelatedIdentifier::internalUrl($relatedidentifier->name) }}">
-					{{ \App\Models\RelatedIdentifier::internalName($relatedidentifier->name) }}
-				</a>.
+					{{ \App\Models\RelatedIdentifier::internalName($relatedidentifier->name) }}</a>.
 			@else
-					<b>... {{ \App\Models\Metadataschema::display($relatedidentifier->relatedidentifiertype) }}</b> 
-					 {{ $relatedidentifier->name }}
-					 ({{ \App\Models\Metadataschema::display($relatedidentifier->relationtype) }}).
+					<b>... {{ strtolower(\App\Models\Metadataschema::display($relatedidentifier->relationtype)) }}</b>
+					<a href="{{ \App\Models\RelatedIdentifier::externalUrl($relatedidentifier->relatedidentifiertype, $relatedidentifier->name) }}">
+					 {{ $relatedidentifier->name }}</a>
+					 ({{ \App\Models\Metadataschema::display($relatedidentifier->relatedidentifiertype) }}).
 			@endif
 		</li>
 	@empty

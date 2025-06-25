@@ -72,4 +72,26 @@ class RelatedIdentifier extends Model
 				return null;
 		}
 	}
+
+	static function externalUrl($type, $name)
+	{
+		switch(\App\Models\Metadataschema::display($type))
+		{
+			case "URL":
+				return $name;
+			case "arXiv":
+				return "http://arxiv.org/abs/".$name;
+			case "DOI":
+				return "https://doi.org/".$name;
+			case "IGSN":
+				return "http://hdl.handle.net/10273/".$name;
+			case "PMID":
+				return "https://pubmed.ncbi.nlm.nih.gov/".$name;
+			case "w3Id":
+				return "https://w3id.org/".$name;
+			default: // "ARK", "URN", "bibcode", "EAN13", "EISSN", "ePIC", "Handle", "ISBN", "ISSN", "ISTC", "LISSN", "LSID", "PURL", "UPC"
+				return null;
+		}
+	}
+
 }
