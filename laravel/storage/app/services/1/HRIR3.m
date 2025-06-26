@@ -3,7 +3,7 @@
 % #Author: Michael Mihocic: First version, loading and plotting a few figures, supporting a few conventions (31.08.2023)
 % #Author: Michael Mihocic: minor fixes when creating figures (03.06.2025)
 % #Author: Michael Mihocic: creating more figures; using (enhanced) mySOFAplotHRTF instead of SOFA function; ITD figures created (also working in Octave) (23.06.2025)
-% #Author: Michael Mihocic: creating more figures: Geometry plotted (26.06.2025)
+% #Author: Michael Mihocic: creating more figures: Geometry plotted; script ready to create 8 figures (26.06.2025)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -74,6 +74,7 @@ switch Obj.GLOBAL_SOFAConventions
 
         % if isoctave;  fputs(fid, [ "case SimpleFreeFieldHRIR\n"]); end
         % plot ETC horizontal plane
+        % close all;
         figure('Name',SOFAfile);
         % if isoctave;  fputs(fid, [ "just done figure\n"]); end
         mySOFAplotHRTF(Obj,'ETCHorizontal',2);
@@ -83,28 +84,50 @@ switch Obj.GLOBAL_SOFAConventions
         if isoctave;  fputs(fid, [ "just printed " SOFAfile "_2.png\n"]); end
 
         %% MagMedian, lin
+        % close all;
         figure('Name',SOFAfile);
-        mySOFAplotHRTF(Obj,'MagMedian',2);
+        mySOFAplotHRTF(Obj,'MagMedian',1);
         print ("-r600", [SOFAfile '_3.png']);
         if isoctave;  fputs(fid, [ "just printed " SOFAfile "_3.png\n"]); end
 
+        % close all;
         figure('Name',SOFAfile);
-        mySOFAplotHRTF(Obj,'MagMedian','nonormalization');
+        mySOFAplotHRTF(Obj,'MagMedian',2);
+        % mySOFAplotHRTF(Obj,'MagMedian','nonormalization');
         print ("-r600", [SOFAfile '_4.png']);
         if isoctave;  fputs(fid, [ "just printed " SOFAfile "_4.png\n"]); end
 
         %% MagMedian, log
+        % close all;
+        % pause(10)
+
+        if isoctave;  fputs(fid, [ "About to print MagMedian,log 1\n"]); end
         figure('Name',SOFAfile);
-        mySOFAplotHRTF(Obj,'MagMedianLog',2);
+        % if isoctave;  fputs(fid, [ "About to print MagMedian,log 1: figure created\n"]); end
+        mySOFAplotHRTF(Obj,'MagMedianLog',1);
+        % if isoctave;  fputs(fid, [ "About to print MagMedian,log 1: figure filled\n"]); end
+        % set(gcf, 'Position', [300, 500, 800, 500]);
+        % if isoctave; fputs(fid, [ "adapted position\n"]); end
+        if isoctave;  fputs(fid, [ "About to save: " SOFAfile "_5.png\n"]); end
         print ("-r600", [SOFAfile '_5.png']);
         if isoctave;  fputs(fid, [ "just printed " SOFAfile "_5.png\n"]); end
 
+        % close all;
+        % pause(10)
+        if isoctave;  fputs(fid, [ "About to print MagMedian,log 2\n"]); end
         figure('Name',SOFAfile);
-        mySOFAplotHRTF(Obj,'MagMedianLog','nonormalization');
+        % if isoctave;  fputs(fid, [ "About to print MagMedian,log 2: figure created\n"]); end
+        mySOFAplotHRTF(Obj,'MagMedianLog',2);
+        % if isoctave;  fputs(fid, [ "About to print MagMedian,log 2: figure filled\n"]); end
+        % mySOFAplotHRTF(Obj,'MagMedianLog','nonormalization');
+        % set(gcf, 'Position', [300, 500, 800, 500]);
+        % if isoctave; fputs(fid, [ "adapted position\n"]); end
+        if isoctave;  fputs(fid, [ "About to save: " SOFAfile "_6.png\n"]); end
         print ("-r600", [SOFAfile '_6.png']);
         if isoctave;  fputs(fid, [ "just printed " SOFAfile "_6.png\n"]); end
 
         %% ITD
+        % close all;
         figure('Name',SOFAfile);
         if isoctave;  fputs(fid, [ "created empty figure for " SOFAfile "_7.png\n"]); end
         mySOFAplotHRTF(Obj,'itdhorizontal');
@@ -115,32 +138,8 @@ switch Obj.GLOBAL_SOFAConventions
         if isoctave;  fputs(fid, [ "just printed " SOFAfile "_7.png\n"]); end
 
 
-
-        % [Obj] = SOFAupgradeConventions(Obj);
-        % % figure('Name',SOFAfile);
-        % if isoctave; fputs(fid, [ "just done SOFA upgrade\n"]); end
-        % % SOFAplotHRTF(Obj,'ETCHorizontal',1);
-        % SOFAplotGeometry(Obj);
-        % if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
-        % set(gcf, 'Name', 'SOFAfile')
-        % if isoctave; fputs(fid, [ "renamed figure\n"]); end
-        % view(45,30);
-        % if isoctave; fputs(fid, [ "adapted view\n"]); end
-        % set(gcf, 'Position', [300, 500, 800, 500]);
-        % if isoctave; fputs(fid, [ "adapted position\n"]); end
-        % if isoctave; fputs(fid, [ "trying to print " SOFAfile "_7.png\n"]); end
-        %
-        % % plot(rand(10))
-        % % print ("-r600", ['TESTPRINT_1.png']); % TO BE REMOVED
-        % % if isoctave; fputs(fid, [ "just printed TESTPRINT_1.png\n"]); end % TO BE REMOVED
-        % print ("-r600", [SOFAfile '_7.png']);
-        % %print ("-r600", '/tmp/hrtf_1.png');
-        % if isoctave; fputs(fid, [ "just printed " SOFAfile "_7.png\n"]); end
-
-
         %% Geometry
         % figure('Name',SOFAfile);
-        % if isoctave;  fputs(fid, [ "created empty figure for " SOFAfile "_8.png\n"]); end
         SOFAplotGeometry(Obj);
         if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
         title(['Geometry, ' num2str(Obj.API.M) ' position(s)'])
@@ -151,13 +150,6 @@ switch Obj.GLOBAL_SOFAConventions
         if isoctave; fputs(fid, [ "adapted view\n"]); end
         print ("-r600", [SOFAfile '_8.png']);
         if isoctave;  fputs(fid, [ "just printed " SOFAfile "_8.png\n"]); end
-
-        % plot geometry, only show every 45th measurement
-        %  index = 1:45:Obj.API.M;
-        %  SOFAplotGeometry(Obj,index);
-        %  title(['Geometry SimpleFreeFieldHRIR, reduced to ' num2str(size(index,2)) ' position(s)'])
-        %  set(gcf, 'Name', SOFAfile);
-        %  print ("-r600", [SOFAfile '_5.png']);
 
     case 'GeneralTF'
         fputs(fid, [ "case GeneralTF\n"]);
@@ -186,6 +178,7 @@ end
 
 %% Epilogue: (un)comment if you want to:
 disp('DONE');
+if isoctave;  fputs(fid, [ "\n### DONE ###\n"]); end
 fclose(fid);
 toc; % timer
 
@@ -205,10 +198,11 @@ if nargin == 3 && ischar(type) && isscalar(varargin{1})
     offset=0;
     noisefloor=-50;
     %     convert=1; more comples differing below:
-
+    % if isoctave;  fputs(fid, [ "Plot: debug check point 4\n"]); end
     if exist('OCTAVE_VERSION','builtin')
         % We're in Octave
-        if ismember(type,{'MagHorizontal','MagMedian','MagSpectrum','MagSagittal'}) && ismember(lower(Obj.GLOBAL_SOFAConventions),{'freefielddirectivitytf','generaltf','simplefreefieldhrtf'})
+        % if isoctave;  fputs(fid, [ "Plot: Octave detected\n"]); end
+        if ismember(type,{'MagHorizontal','MagMedian','MagMedianLog','MagSpectrum','MagSagittal'}) && ismember(lower(Obj.GLOBAL_SOFAConventions),{'freefielddirectivitytf','generaltf','simplefreefieldhrtf'})
             % In Octave 'contains' is not available, thus, the list has to be extended manually
             do_conversion2ir = 0;
         else
@@ -225,6 +219,7 @@ if nargin == 3 && ischar(type) && isscalar(varargin{1})
     end
 
 else
+    % if isoctave;  fputs(fid, [ "Plot: debug check point 6\n"]); end
     definput.keyvals.receiver=1;
     definput.keyvals.dir=[0,0];
     definput.keyvals.thr=2;
@@ -327,46 +322,46 @@ switch lower(type)
         ylabel('Azimuth (deg)');
         title([titleprefix 'receiver: ' num2str(R)],'Interpreter','none');
 
-        % Magnitude spectrum in the horizontal plane
-    case 'maghorizontal'
-        pos=Obj.SourcePosition;   % copy pos to temp. variable
-        pos(pos(:,1)>180,1)=pos(pos(:,1)>180,1)-360; % find horizontal plane
-        idx=find(pos(:,2)<(offset+thr) & pos(:,2)>(offset-thr)); % find indices
-        pos=pos(idx,:); % truncate pos
-        meta.idx=idx;
-        if do_conversion2ir == 1  % converted
-            hM=double(squeeze(Obj.Data.IR(:,R,:)));
-            M=(20*log10(abs(fft(hM(idx,:)')')));
-            M=M(:,1:floor(size(M,2)/2));  % only positive frequencies
-            if flags.do_normalization
-                M=M-max(max(M));
-            end
-
-            M(M<noisefloor)=noisefloor;
-            [azi,i]=sort(pos(:,1));
-            M=M(i,:);
-            meta.freq = 0:fs/size(hM,2):(size(M,2)-1)*fs/size(hM,2);
-            meta.azi = azi;
-            %         figure;
-            h=surface(meta.freq,azi,M(:,:));
-
-        else
-            M=20*log10(abs(sqrt(squeeze(Obj.Data.Real(idx,R,:)).^2 + squeeze(Obj.Data.Imag(idx,R,:)).^2)));
-            if flags.do_normalization
-                M=M-max(max(M));
-            end
-            M(M<noisefloor)=noisefloor;
-            [azi,i]=sort(pos(:,1));
-            M=M(i,:);
-            %         figure;
-
-            h=surface(Obj.N',azi,M);
-
-        end
-        shading flat
-        xlabel('Frequency (Hz)');
-        ylabel('Azimuth (deg)');
-        title([titleprefix 'receiver: ' num2str(R) titlepostfix],'Interpreter','none');
+    %     % Magnitude spectrum in the horizontal plane
+    % case 'maghorizontal'
+    %     pos=Obj.SourcePosition;   % copy pos to temp. variable
+    %     pos(pos(:,1)>180,1)=pos(pos(:,1)>180,1)-360; % find horizontal plane
+    %     idx=find(pos(:,2)<(offset+thr) & pos(:,2)>(offset-thr)); % find indices
+    %     pos=pos(idx,:); % truncate pos
+    %     meta.idx=idx;
+    %     if do_conversion2ir == 1  % converted
+    %         hM=double(squeeze(Obj.Data.IR(:,R,:)));
+    %         M=(20*log10(abs(fft(hM(idx,:)')')));
+    %         M=M(:,1:floor(size(M,2)/2));  % only positive frequencies
+    %         if flags.do_normalization
+    %             M=M-max(max(M));
+    %         end
+    % 
+    %         M(M<noisefloor)=noisefloor;
+    %         [azi,i]=sort(pos(:,1));
+    %         M=M(i,:);
+    %         meta.freq = 0:fs/size(hM,2):(size(M,2)-1)*fs/size(hM,2);
+    %         meta.azi = azi;
+    %         %         figure;
+    %         h=surface(meta.freq,azi,M(:,:));
+    % 
+    %     else
+    %         M=20*log10(abs(sqrt(squeeze(Obj.Data.Real(idx,R,:)).^2 + squeeze(Obj.Data.Imag(idx,R,:)).^2)));
+    %         if flags.do_normalization
+    %             M=M-max(max(M));
+    %         end
+    %         M(M<noisefloor)=noisefloor;
+    %         [azi,i]=sort(pos(:,1));
+    %         M=M(i,:);
+    %         %         figure;
+    % 
+    %         h=surface(Obj.N',azi,M);
+    % 
+    %     end
+    %     shading flat
+    %     xlabel('Frequency (Hz)');
+    %     ylabel('Azimuth (deg)');
+    %     title([titleprefix 'receiver: ' num2str(R) titlepostfix],'Interpreter','none');
 
         % Magnitude spectrum in the median plane
     case 'magmedian'
@@ -413,6 +408,7 @@ switch lower(type)
         title([titleprefix 'receiver: ' num2str(R) titlepostfix],'Interpreter','none');
 
     case 'magmedianlog'
+        % if isoctave;  fputs(fid, [ "Plot: magmedianlog\n"]); end
         azi=0;
         pos=Obj.SourcePosition;
         idx0=find(abs(pos(:,1))>90);
@@ -422,7 +418,11 @@ switch lower(type)
         pos=pos(idx,:);
         meta.idx=idx;
 
+        % if isoctave;  fputs(fid, [ "Plot: data manipulated\n"]); end
+
         if do_conversion2ir == 1  % converted
+            % if isoctave;  fputs(fid, [ "Plot: case do conversion\n"]); end
+
             hM=double(squeeze(Obj.Data.IR(:,R,:)));
             M=(20*log10(abs(fft(hM(idx,:)')')));
             M=M(:,1:floor(size(M,2)/2));  % only positive frequencies
@@ -437,10 +437,6 @@ switch lower(type)
             meta.ele = ele;
 
             h=surface(meta.freq,ele,M(:,:));
-            set(gca, 'XScale', 'log');
-            xlim([1e3 18e3]);
-            set(gca, 'XTick', [2000 4000 8000 16000]);
-            set(gca, 'XTickLabel', {'2000','4000','8000','16000'});
 
         else
             M=20*log10(abs(sqrt(squeeze(Obj.Data.Real(idx,R,:)).^2 + squeeze(Obj.Data.Imag(idx,R,:)).^2)));
@@ -451,178 +447,175 @@ switch lower(type)
             [ele,i]=sort(pos(:,2));
             M=M(i,:);
             h=surface(Obj.N',ele,M);
-            set(gca, 'XScale', 'log');
-            xlim([1e3 18e3]);
-            set(gca, 'XTick', [2000 4000 8000 16000]);
-            set(gca, 'XTickLabel', {'2000','4000','8000','16000'});
-
         end
+
+        set(gca, 'XScale', 'log');
+        % set(gca, 'XLim', [1000 19000]);
+        set(gca, 'XTick', [2000 4000 8000 16000]);
+        set(gca, 'XTickLabel', {'2000','4000','8000','16000'});
 
         shading flat
         xlabel('Frequency (Hz)');
         ylabel('Elevation (deg)');
         title([titleprefix 'receiver: ' num2str(R) titlepostfix ' (log scale)'],'Interpreter','none');
 
+    % case 'magsagittal'
+    % 
+    %     [lat,pol]=sph2hor(Obj.SourcePosition(:,1),Obj.SourcePosition(:,2));
+    %     pos=[lat pol];
+    %     idx=find(pos(:,1)<(offset+thr) & pos(:,1)>(offset-thr));
+    %     pos=pos(idx,:);
+    %     meta.idx=idx;
+    % 
+    %     if do_conversion2ir == 1  % converted
+    % 
+    %         hM=double(squeeze(Obj.Data.IR(:,R,:)));
+    %         M=(20*log10(abs(fft(hM(idx,:)')')));
+    %         M=M(:,1:floor(size(M,2)/2));  % only positive frequencies
+    %         if flags.do_normalization
+    %             M=M-max(max(M));
+    %         end
+    %         M(M<noisefloor)=noisefloor;
+    %         [ele,i]=sort(pos(:,2));
+    %         M=M(i,:);
+    %         meta.freq = 0:fs/size(hM,2):(size(M,2)-1)*fs/size(hM,2);
+    %         meta.ele = ele;
+    %         h=surface(meta.freq,ele,M(:,:));
+    %     else
+    %         M=20*log10(abs(sqrt(squeeze(Obj.Data.Real(idx,R,:)).^2 + squeeze(Obj.Data.Imag(idx,R,:)).^2)));
+    %         if flags.do_normalization
+    %             M=M-max(max(M));
+    %         end
+    %         M(M<noisefloor)=noisefloor;
+    %         [ele,i]=sort(pos(:,2));
+    %         M=M(i,:);
+    %         h=surface(Obj.N',ele,M(:,:));
+    % 
+    %     end
+    %     shading flat
+    %     xlabel('Frequency (Hz)');
+    %     ylabel('Polar angle (deg)');
+    %     title([titleprefix 'receiver: ' num2str(R) '; Lateral angle: ' num2str(offset) 'deg' titlepostfix],'Interpreter','none');
 
 
+    %     % ETC in the median plane
+    % case 'etcmedian'
+    %     %     noisefloor=-50;
+    %     azi=0;
+    %     Obj=SOFAexpand(Obj,'Data.Delay');
+    %     hM=double(squeeze(Obj.Data.IR(:,R,:)));
+    %     pos=Obj.SourcePosition;
+    %     idx0=find(abs(pos(:,1))>90);
+    %     pos(idx0,2)=180-pos(idx0,2);
+    %     pos(idx0,1)=180-pos(idx0,1);
+    %     idx=find(pos(:,1)<(azi+thr) & pos(:,1)>(azi-thr));
+    %     meta.idx=idx; % PM: TODO: Check if the correct index
+    %     M=(20*log10(abs(hM(idx,:))));
+    %     pos=pos(idx,:);
+    %     del=round(Obj.Data.Delay(idx,R));
+    %     M2=zeros(size(M)+[0 max(del)]);
+    %     for ii=1:size(M,1)
+    %         M2(ii,del(ii)+(1:Obj.API.N))=M(ii,:);
+    %     end
+    %     if flags.do_normalization
+    %         M=M2-max(max(M2));
+    %     else
+    %         M = M2;
+    %     end
+    %     M(M<noisefloor)=noisefloor;
+    %     [ele,i]=sort(pos(:,2));
+    %     M=M(i,:);
+    %     meta.time = 0:1/fs*1000:(size(M,2)-1)/fs*1000;
+    %     meta.ele = ele;
+    %     h=surface(meta.time,ele,M(:,:));
+    %     set(gca,'FontName','Arial','FontSize',10);
+    %     set(gca, 'TickLength', [0.02 0.05]);
+    %     set(gca,'LineWidth',1);
+    %     cmap=colormap(hot);
+    %     cmap=flipud(cmap);
+    %     shading flat
+    %     colormap(cmap);
+    %     box on;
+    %     colorbar;
+    %     xlabel('Time (ms)');
+    %     ylabel('Elevation (deg)');
+    %     title([titleprefix 'receiver: ' num2str(R)],'Interpreter','none');
 
-    case 'magsagittal'
-
-        [lat,pol]=sph2hor(Obj.SourcePosition(:,1),Obj.SourcePosition(:,2));
-        pos=[lat pol];
-        idx=find(pos(:,1)<(offset+thr) & pos(:,1)>(offset-thr));
-        pos=pos(idx,:);
-        meta.idx=idx;
-
-        if do_conversion2ir == 1  % converted
-
-            hM=double(squeeze(Obj.Data.IR(:,R,:)));
-            M=(20*log10(abs(fft(hM(idx,:)')')));
-            M=M(:,1:floor(size(M,2)/2));  % only positive frequencies
-            if flags.do_normalization
-                M=M-max(max(M));
-            end
-            M(M<noisefloor)=noisefloor;
-            [ele,i]=sort(pos(:,2));
-            M=M(i,:);
-            meta.freq = 0:fs/size(hM,2):(size(M,2)-1)*fs/size(hM,2);
-            meta.ele = ele;
-            h=surface(meta.freq,ele,M(:,:));
-        else
-            M=20*log10(abs(sqrt(squeeze(Obj.Data.Real(idx,R,:)).^2 + squeeze(Obj.Data.Imag(idx,R,:)).^2)));
-            if flags.do_normalization
-                M=M-max(max(M));
-            end
-            M(M<noisefloor)=noisefloor;
-            [ele,i]=sort(pos(:,2));
-            M=M(i,:);
-            h=surface(Obj.N',ele,M(:,:));
-
-        end
-        shading flat
-        xlabel('Frequency (Hz)');
-        ylabel('Polar angle (deg)');
-        title([titleprefix 'receiver: ' num2str(R) '; Lateral angle: ' num2str(offset) 'deg' titlepostfix],'Interpreter','none');
-
-
-        % ETC in the median plane
-    case 'etcmedian'
-        %     noisefloor=-50;
-        azi=0;
-        Obj=SOFAexpand(Obj,'Data.Delay');
-        hM=double(squeeze(Obj.Data.IR(:,R,:)));
-        pos=Obj.SourcePosition;
-        idx0=find(abs(pos(:,1))>90);
-        pos(idx0,2)=180-pos(idx0,2);
-        pos(idx0,1)=180-pos(idx0,1);
-        idx=find(pos(:,1)<(azi+thr) & pos(:,1)>(azi-thr));
-        meta.idx=idx; % PM: TODO: Check if the correct index
-        M=(20*log10(abs(hM(idx,:))));
-        pos=pos(idx,:);
-        del=round(Obj.Data.Delay(idx,R));
-        M2=zeros(size(M)+[0 max(del)]);
-        for ii=1:size(M,1)
-            M2(ii,del(ii)+(1:Obj.API.N))=M(ii,:);
-        end
-        if flags.do_normalization
-            M=M2-max(max(M2));
-        else
-            M = M2;
-        end
-        M(M<noisefloor)=noisefloor;
-        [ele,i]=sort(pos(:,2));
-        M=M(i,:);
-        meta.time = 0:1/fs*1000:(size(M,2)-1)/fs*1000;
-        meta.ele = ele;
-        h=surface(meta.time,ele,M(:,:));
-        set(gca,'FontName','Arial','FontSize',10);
-        set(gca, 'TickLength', [0.02 0.05]);
-        set(gca,'LineWidth',1);
-        cmap=colormap(hot);
-        cmap=flipud(cmap);
-        shading flat
-        colormap(cmap);
-        box on;
-        colorbar;
-        xlabel('Time (ms)');
-        ylabel('Elevation (deg)');
-        title([titleprefix 'receiver: ' num2str(R)],'Interpreter','none');
-
-    case 'magspectrum'
-        pos=round(Obj.SourcePosition*10)/10;
-        switch size(dir,2)
-            case 1
-                aziPos = pos(:,1);
-                aziDir=dir(:,1);
-                aziComp = intersect(aziPos,aziDir,'rows');
-                idx= find(ismember(aziPos,aziComp,'rows'));
-            case 2
-                aziPos = pos(:,1);
-                aziDir=dir(:,1);
-                elePos = pos(:,2);
-                eleDir=dir(:,2);
-                aziComp = intersect(aziPos,aziDir,'rows');
-                eleComp = intersect(elePos,eleDir,'rows');
-                idx=find(ismember(aziPos,aziComp,'rows') & ...
-                    ismember(elePos,eleComp,'rows'));
-            otherwise
-                aziPos = pos(:,1);
-                aziDir=dir(:,1);
-                elePos = pos(:,2);
-                eleDir=dir(:,2);
-                rPos = pos(:,3);
-                rDir=dir(:,3);
-                aziComp = intersect(aziPos,aziDir,'rows');
-                eleComp = intersect(elePos,eleDir,'rows');
-                rComp = intersect(rPos,rDir,'rows');
-                idx=find(ismember(aziPos,aziComp,'rows') & ...
-                    ismember(elePos,eleComp,'rows') & ismember(rPos,rComp,'rows'));
-        end
-        if isempty(idx), error('Position not found'); end
-        meta.idx=idx;
-
-        if do_conversion2ir == 1  % convert
-            IR=squeeze(Obj.Data.IR(idx,R,:));
-            if length(idx) > 1
-                M=20*log10(abs(fft(IR')))';
-                M=M(:,1:floor(size(M,2)/2));  % only positive frequencies
-                h=plot(0:fs/2/size(M,2):(size(M,2)-1)*fs/2/size(M,2),M);
-                for ii=1:length(idx)
-                    labels{ii}=['#' num2str(idx(ii)) ': (' num2str(pos(idx(ii),1)) ', ' num2str(pos(idx(ii),2)) ')'];
-                end
-                legend(labels);
-            else % only one curve
-                hM=20*log10(abs(fft(IR)));
-                M=hM(1:floor(length(hM)/2));
-                hold on;
-                h=plot(0:fs/2/length(M):(length(M)-1)*fs/2/length(M),M,color,...
-                    'DisplayName',['#' num2str(idx) ': (' num2str(pos(idx,1)) ', ' num2str(pos(idx,2)) ')']);
-                legend;
-            end
-            xlim([0 fs/2]);
-            titlepostfix=' (converted to IR)';
-        else
-
-            M=20*log10(abs(sqrt(squeeze(Obj.Data.Real(idx,R,:)).^2 + squeeze(Obj.Data.Imag(idx,R,:)).^2)));
-
-            if length(idx) > 1
-                h=plot(Obj.N',M);
-                for ii=1:length(idx)
-                    labels{ii}=['#' num2str(idx(ii)) ': (' num2str(pos(idx(ii),1)) ', ' num2str(pos(idx(ii),2)) ')'];
-                end
-                legend(labels);
-            else
-                hold on;
-                h=plot(Obj.N',M,color,...
-                    'DisplayName',['#' num2str(idx) ': (' num2str(pos(idx,1)) ', ' num2str(pos(idx,2)) ')']);
-                legend;
-            end
-            titlepostfix='';
-        end
-        ylabel('Magnitude (dB)');
-        xlabel('Frequency (Hz)');
-        ylim([max(max(M))+noisefloor-10 max(max(M))+10]);
-        title([titleprefix 'receiver: ' num2str(R) titlepostfix],'Interpreter','none');
+    % case 'magspectrum'
+    %     pos=round(Obj.SourcePosition*10)/10;
+    %     switch size(dir,2)
+    %         case 1
+    %             aziPos = pos(:,1);
+    %             aziDir=dir(:,1);
+    %             aziComp = intersect(aziPos,aziDir,'rows');
+    %             idx= find(ismember(aziPos,aziComp,'rows'));
+    %         case 2
+    %             aziPos = pos(:,1);
+    %             aziDir=dir(:,1);
+    %             elePos = pos(:,2);
+    %             eleDir=dir(:,2);
+    %             aziComp = intersect(aziPos,aziDir,'rows');
+    %             eleComp = intersect(elePos,eleDir,'rows');
+    %             idx=find(ismember(aziPos,aziComp,'rows') & ...
+    %                 ismember(elePos,eleComp,'rows'));
+    %         otherwise
+    %             aziPos = pos(:,1);
+    %             aziDir=dir(:,1);
+    %             elePos = pos(:,2);
+    %             eleDir=dir(:,2);
+    %             rPos = pos(:,3);
+    %             rDir=dir(:,3);
+    %             aziComp = intersect(aziPos,aziDir,'rows');
+    %             eleComp = intersect(elePos,eleDir,'rows');
+    %             rComp = intersect(rPos,rDir,'rows');
+    %             idx=find(ismember(aziPos,aziComp,'rows') & ...
+    %                 ismember(elePos,eleComp,'rows') & ismember(rPos,rComp,'rows'));
+    %     end
+    %     if isempty(idx), error('Position not found'); end
+    %     meta.idx=idx;
+    % 
+    %     if do_conversion2ir == 1  % convert
+    %         IR=squeeze(Obj.Data.IR(idx,R,:));
+    %         if length(idx) > 1
+    %             M=20*log10(abs(fft(IR')))';
+    %             M=M(:,1:floor(size(M,2)/2));  % only positive frequencies
+    %             h=plot(0:fs/2/size(M,2):(size(M,2)-1)*fs/2/size(M,2),M);
+    %             for ii=1:length(idx)
+    %                 labels{ii}=['#' num2str(idx(ii)) ': (' num2str(pos(idx(ii),1)) ', ' num2str(pos(idx(ii),2)) ')'];
+    %             end
+    %             legend(labels);
+    %         else % only one curve
+    %             hM=20*log10(abs(fft(IR)));
+    %             M=hM(1:floor(length(hM)/2));
+    %             hold on;
+    %             h=plot(0:fs/2/length(M):(length(M)-1)*fs/2/length(M),M,color,...
+    %                 'DisplayName',['#' num2str(idx) ': (' num2str(pos(idx,1)) ', ' num2str(pos(idx,2)) ')']);
+    %             legend;
+    %         end
+    %         xlim([0 fs/2]);
+    %         titlepostfix=' (converted to IR)';
+    %     else
+    % 
+    %         M=20*log10(abs(sqrt(squeeze(Obj.Data.Real(idx,R,:)).^2 + squeeze(Obj.Data.Imag(idx,R,:)).^2)));
+    % 
+    %         if length(idx) > 1
+    %             h=plot(Obj.N',M);
+    %             for ii=1:length(idx)
+    %                 labels{ii}=['#' num2str(idx(ii)) ': (' num2str(pos(idx(ii),1)) ', ' num2str(pos(idx(ii),2)) ')'];
+    %             end
+    %             legend(labels);
+    %         else
+    %             hold on;
+    %             h=plot(Obj.N',M,color,...
+    %                 'DisplayName',['#' num2str(idx) ': (' num2str(pos(idx,1)) ', ' num2str(pos(idx,2)) ')']);
+    %             legend;
+    %         end
+    %         titlepostfix='';
+    %     end
+    %     ylabel('Magnitude (dB)');
+    %     xlabel('Frequency (Hz)');
+    %     ylim([max(max(M))+noisefloor-10 max(max(M))+10]);
+    %     title([titleprefix 'receiver: ' num2str(R) titlepostfix],'Interpreter','none');
 
         % Interaural time delay in the horizontal plane
     case 'itdhorizontal'
@@ -658,15 +651,6 @@ switch lower(type)
         error([type , ' no supported plotting type.'])
 end
 
-
-% function f=myifftreal(c,N) % thanks goto the LTFAT <http://ltfat.sf.net>
-%     if rem(N,2)==0
-%       f=[c; flipud(conj(c(2:end-1,:)))];
-%     else
-%       f=[c; flipud(conj(c(2:end,:)))];
-%     end
-%     f=real(ifft(f,N,1));
-% end
 
 function newangle = mywrapTo180(angle)
 % transfer to range -180:180
