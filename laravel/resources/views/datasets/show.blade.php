@@ -19,6 +19,9 @@
 				<x-property name="Datafile Name">
 					<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a> @role('admin') (ID: {{ $datafile->id }}) @endrole
 				</x-property>
+				@hasrole('admin')
+					<x-button method="POST" action="{{ route('datafiles.touch', [$datafile]) }}">Touch</x-button>
+				@endhasrole
 				<livewire:DatafileListener :datafile="$datafile" :key="$datafile->id" />
 			</div>
 			<hr>

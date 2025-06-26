@@ -87,6 +87,7 @@ Route::delete('/datasets/{dataset}/deletefromradar', [DatasetController::class, 
 Route::resource('datafiles', DatafileController::class);
 Route::post('/datafiles/{datafile}/uploadtoradar', [DatafileController::class, 'uploadtoradar'])->name('datafiles.uploadtoradar');
 Route::delete('/datafiles/{datafile}/deletefromradar', [DatafileController::class, 'deletefromradar'])->name('datafiles.deletefromradar');
+Route::post('/datafiles/{datafile}/touch', [DatafileController::class, 'touch'])->name('datafiles.touch');
 // DATASETDEFS
 Route::resource('datasetdefs', DatasetdefController::class);
 
