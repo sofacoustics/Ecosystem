@@ -9,8 +9,9 @@
 	</x-slot>
 
 	<p>The SONICOM Ecosystem aims at providing an ecosystem for spatial auditory data closely linked with tools for binaural rendering and auditory modeling, reinforcing the idea of reproducible research. The stored data can be integrated in <a href="https://datathek.oeaw.ac.at">the ÖAW Datathek</a>, an electronic repository registered in re3data.org and providing a sustainable basis for further research within, outside and beyond SONICOM. The Ecosystem is open-accessible, citable via DOIs, documented, searchable by metadata via a web frontend, and provides an interface for machineable download of partial data. It enables other stakeholders such as researchers, end users, and practitioners to contribute to it in.</p>
-		
-	<p>The Ecosystem result from the SONICOM project. <b>SONICOM</b> is a research project that aims to investigate the way we interact socially within augmented and virtual reality (AR/VR) environments and applications, from online meetings to VR gaming. <a href="https://www.sonicom.eu/">More information on SONICOM...</a></p>
+	<br>
+	<p>The Ecosystem result from the SONICOM project.</p>
+	<p><b>SONICOM</b> is a research project that aims to investigate the way we interact socially within augmented and virtual reality (AR/VR) environments and applications, from online meetings to VR gaming. <a href="https://www.sonicom.eu/">More information on SONICOM...</a></p>
 
 	<br><hr><br>
 	
@@ -33,7 +34,7 @@
 		<li><b>Datafile</b>: A 'Datafile' is a file stored a the dataset. Each datafile is of the type defined in the dataset definition.
 		<li><b>Datafile type</b>: A 'Datafile type' is one of the predefined types of data which can be used in the dataset definition, e.g., 'HRTF', 'BRIR', 'SRIR' etc.
 		<li><b>RADAR Dataset</b>: The data stored at the Datathek are structured in 'datasets' because of the unterlying <a href="https://radar.products.fiz-karlsruhe.de/en">RADAR functionality</a>. The correspond to the Ecosystem Databases and, when interacting with RADAR, we call them 'RADAR Datasets' to make a distinction to our (Ecosystem) Datasets.</ul>
-	
+	</ul>
 	<br><hr><br>
 	
 	<h3>Resources and Support:</h3>
@@ -41,15 +42,22 @@
 		<li><b><a href="https://github.com/sofacoustics/Ecosystem/wiki">Wiki</a>:</b> We use Github Wiki pages to provide documentation. 
 		<li><b><a href="https://github.com/sofacoustics/Ecosystem/issues">Issues</a>:</b> Check the Github Issue pages in case of troubles. If your problem has not been reported yet, issue a ticket.
 		<li><b><a href="https://github.com/sofacoustics/Ecosystem">Code</a>:</b> The Ecosystem is open source: We use the <a href="https://github.com/sofacoustics/Ecosystem/tree/live">live</a> branch for the system tested and available to the users, and the <a href="https://github.com/sofacoustics/Ecosystem/tree/dev">dev</a> branch for improvements before going live. Check our source code or fork it for your own projects. 
+	</ul>
 	<br><hr><br>
 	
 	<h3>Permissions:</h3>
-	@role('admin')
-	<p>You have the 'admin' role</p>
-	@else
-	<p>You do not have the 'admin' role</p>
-	@endrole
-
-	@include('app.version')
+	<ul class="list-disc list-inside">
+		@role('admin')
+			<li>You have the 'admin' role
+		@else
+			<li>You do not have the 'admin' role
+		@endrole
+	</ul>
+	<br><hr><br>
+	
+	<h3>System information:</h3>
+	<ul class="list-disc list-inside">
+		<li>SONICOM Ecosystem version: {{ config('version.string') }}
+	</ul>
 
 </x-app-layout>
