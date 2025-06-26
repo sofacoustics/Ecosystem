@@ -77,6 +77,13 @@ class RadarDatabaseResource extends JsonResource
 		];
 			// get all related identifiers created by the user
 		$collection = RadarRelatedIdentifierResource::collection($this->whenLoaded('relatedidentifiers'));
+			// create a fake related identifier for the information how to get back to the Ecosystem
+		$infotext = [
+			'value' => "Click the link above to go to the Ecosystem",
+			'relatedIdentifierType' => "ARK",
+			'relationType' => "CONTINUES",
+			];
+		$collection = $collection->prepend($infotext); // prepend the fixed identifier to all those from the user
 			// create a related identifier for the callback to Ecosystem from RADAR
 		$callback = [
 			'value' => route('databases.show',[ 'database' => $database->id]),

@@ -70,7 +70,7 @@
 							title="Relation Type">
 							<option value="-1">{{ \App\Models\RelatedIdentifier::displayRelation(-1) }} ...</option>
 							<option value="-2">{{ \App\Models\RelatedIdentifier::displayRelation(-2) }} ...</option>
-							<option value="-3">{{ \App\Models\RelatedIdentifier::displayRelation(-2) }} ...</option>
+							<option value="-3">{{ \App\Models\RelatedIdentifier::displayRelation(-3) }} ...</option>
 							@foreach(\App\Models\Metadataschema::list_ids('relationType') as $t)
 								<option value="{{ $t->id }}">{{ strtolower(\App\Models\Metadataschema::display($t->id)) }} ...</option>
 							@endforeach

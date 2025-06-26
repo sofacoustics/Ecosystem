@@ -128,36 +128,6 @@ class Database extends Model
 		return \App\Models\Metadataschema::list('subjectArea');
 	}
 
-	static function relatedidentifierValue($relatedidentifiertypeindex)
-	{
-		return \App\Models\Metadataschema::value($relatedidentifiertypeindex);
-	}
-
-	static function relatedidentifierList()
-	{
-		return \App\Models\Metadataschema::list('relatedIdentifierType');
-	}
-
-	static function relatedidentifierDisplay($relatedidentifiertypeindex)
-	{
-		return \App\Models\Metadataschema::display($relatedidentifiertypeindex);
-	}
-
-	static function relationValue($relationtypeindex)
-	{
-		return \App\Models\Metadataschema::value($relationtypeindex);
-	}
-
-	static function relationList()
-	{
-		return \App\Models\Metadataschema::list('relationType');
-	}
-
-	static function relationDisplay($relationtypeindex)
-	{
-		return \App\Models\Metadataschema::display($relationtypeindex);
-	}
-
 	static function resourcetypeDisplay($resourcetype)
 	{
 		if($resourcetype == null)
