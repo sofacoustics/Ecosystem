@@ -45,7 +45,24 @@ class RelatedIdentifier extends Model
 		}
 	}
 	
-	static function internalUrl($name)
+	static function valueRelation($relationtype)
+	{
+		switch($relationtype)
+		{
+			case "-1":
+				return "COMPILES";
+				break;
+			case "-2":
+				return "IS_COMPILED_BY";
+				break;
+			case "-3":
+				return "IS_CONTINUED_BY";
+				break;
+			default:
+				return \App\Models\Metadataschema::value($relationtype);
+		}
+	}
+	static function internalUrl($name, $defaultUrl = null)
 	{
 		switch(\App\Models\RelatedIdentifier::isInternalLink($name))
 		{
@@ -54,11 +71,11 @@ class RelatedIdentifier extends Model
 			case 2: // tool
 				return route('tools.show',[ 'tool' => substr($name, strlen("ECOSYSTEM_TOOL")+1)]);
 			default:
-				return null;
+				return $defaultUrl;
 		}
 	}
 
-	static function internalName($name)
+	static function internalName($name, $defaultname = null)
 	{
 		switch(\App\Models\RelatedIdentifier::isInternalLink($name))
 		{
@@ -69,7 +86,7 @@ class RelatedIdentifier extends Model
 				$tool = \App\Models\Tool::find(substr($name, strlen("ECOSYSTEM_TOOL")+1));
 				return $tool->title." (".$tool->productionyear.")";
 			default:
-				return null;
+				return $defaultname;
 		}
 	}
 

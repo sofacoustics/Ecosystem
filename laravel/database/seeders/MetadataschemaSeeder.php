@@ -103,12 +103,12 @@ class MetadataschemaSeeder extends Seeder
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'descriptionType', 'value'=> 'Other', 'display' => 'Other'));
 			// relatedIdentifierType
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relatedIdentifierType', 'value'=> 'ARK', 'display' => 'ARK'));
-		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relatedIdentifierType', 'value'=> 'ARXIV', 'display' => 'arXiv'));
+		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relatedIdentifierType', 'value'=> 'AR_XIV', 'display' => 'arXiv'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relatedIdentifierType', 'value'=> 'BIBCODE', 'display' => 'bibcode'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relatedIdentifierType', 'value'=> 'DOI', 'display' => 'DOI'));
-		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relatedIdentifierType', 'value'=> 'EAN13', 'display' => 'EAN13'));
+		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relatedIdentifierType', 'value'=> 'EAN_13', 'display' => 'EAN13'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relatedIdentifierType', 'value'=> 'EISSN', 'display' => 'EISSN'));
-		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relatedIdentifierType', 'value'=> 'EPIC', 'display' => 'ePIC'));
+		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relatedIdentifierType', 'value'=> 'E_PIC', 'display' => 'ePIC'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relatedIdentifierType', 'value'=> 'HANDLE', 'display' => 'Handle'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relatedIdentifierType', 'value'=> 'IGSN', 'display' => 'IGSN'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relatedIdentifierType', 'value'=> 'ISBN', 'display' => 'ISBN'));
@@ -121,7 +121,7 @@ class MetadataschemaSeeder extends Seeder
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relatedIdentifierType', 'value'=> 'UPC', 'display' => 'UPC'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relatedIdentifierType', 'value'=> 'URL', 'display' => 'URL'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relatedIdentifierType', 'value'=> 'URN', 'display' => 'URN'));
-		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relatedIdentifierType', 'value'=> 'W3ID', 'display' => 'w3Id'));
+		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relatedIdentifierType', 'value'=> 'W_3_ID', 'display' => 'w3Id'));
 			// relationType
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relationType', 'value'=> 'IS_CITED_BY', 'display' => 'Is Cited By'));
 		Metadataschema::create(array('version' => '9.1', 'type' => 'controlledlist', 'name' => 'relationType', 'value'=> 'CITES', 'display' => 'Cites'));
