@@ -48,10 +48,10 @@ class WidgetSeeder extends Seeder
             'service_id' => 4,
             'view' => 'sofa-srir-geometry',
         ));		
-		Widget::create(array('name' => 'SOFA: Directivities Polar',
-            'description' => 'Plot the directivities as polar plots.',
+		Widget::create(array('name' => 'Directivities General',
+            'description' => 'Plot the directivities as polar plots, and as filled contour plot.',
             'service_id' => 5,
-            'view' => 'sofa-directivity-polar',
+            'view' => 'directivity-general',
         ));		
 		Widget::create(array('name' => 'SOFA: Metadata',
             'description' => 'Show SOFA Properties.',
