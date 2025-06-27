@@ -13,46 +13,47 @@
 	@else
 		<h3>Add a new relation:</h3>
 	@endif
+	
 	<div class="mx-auto shadow-md box-border">
 
-			<button wire:click="selectTab('database')"
-				class="focus:outline-none transition duration-150 ease-in-out
-					{{ $activeTab === 'database' ? $tabClass : $tabDisabledClass }}">
-				Relation within an Ecosystem Database
-			</button>
-			<button wire:click="selectTab('tool')"
-				class="focus:outline-none transition duration-150 ease-in-out
-					{{ $activeTab === 'tool' ? $tabClass : $tabDisabledClass }}">
-				Relation within an Ecosystem Tool/Document
-			</button>
-			<button wire:click="selectTab('external')"
-				class="focus:outline-none transition duration-150 ease-in-out
-				 {{ $activeTab === 'external' ? $tabClass : $tabDisabledClass }}">
-				Relation to external resources
-			</button>
+		<button wire:click="selectTab('database')"
+			class="focus:outline-none transition duration-150 ease-in-out
+				{{ $activeTab === 'database' ? $tabClass : $tabDisabledClass }}">
+			Relation within an Ecosystem Database
+		</button>
+		<button wire:click="selectTab('tool')"
+			class="focus:outline-none transition duration-150 ease-in-out
+				{{ $activeTab === 'tool' ? $tabClass : $tabDisabledClass }}">
+			Relation within an Ecosystem Tool/Document
+		</button>
+		<button wire:click="selectTab('external')"
+			class="focus:outline-none transition duration-150 ease-in-out
+			 {{ $activeTab === 'external' ? $tabClass : $tabDisabledClass }}">
+			Relation to external resources
+		</button>
+			
 		<div class="mt-6 p-6">
 			@if($activeTab === 'database')
 				<form wire:submit.prevent="saveDatabase">
 					<div class="flex items-center">
 						<label class="{{ $labelClass }}" for="databaserelation">{{ $prefix }}...</label>
-						<select wire:model.live="databaserelation" class="{{ $selectClass }}" required>
-							<option value="-1">was involved in creation of ...</option>
+						<select wire:model.live="databaserelation" class="{{ $selectClass }}" required
+							title="Relation Type">
+							<option value="-1">{{ \App\Models\RelatedIdentifier::displayRelation(-1) }} ...</option>
 							@foreach(\App\Models\Metadataschema::list_ids('relationType') as $t)
 								<option value="{{ $t->id }}">{{ strtolower(\App\Models\Metadataschema::display($t->id)) }} ...</option>
 							@endforeach
 						</select>
-						@error('databaserelation')
-							<span class="text-red-500">{{ $message }}</span>
-						@enderror
 						
-						<select wire:model.live="databaserelatedable" class="{{ $selectClass }}" required>
+						<select wire:model.live="databaserelatedable" class="{{ $selectClass }}" required
+							title="Visible Databases">
 							@foreach($databaserelatedable_ids as $r => $t)
 								<option value="{{ $t }}">{{ $databaserelatedable_names[$r] }}</option>
 							@endforeach
 						</select>
-						@error('databaserelatedable') <span class="text-red-500">{{ $message }}</span> @enderror
 					</div>
-					
+					@error('databaserelation') <span class="text-red-500">{{ $message }}</span> @enderror
+					@error('databaserelatedable') <span class="text-red-500">{{ $message }}</span> @enderror
 					<div class="mt-4">
 						<button type="submit" class="{{ $buttonClass }}">
 							{{ $relatedidentifier ? 'Update Relation' : 'Create Relation' }}
@@ -60,31 +61,30 @@
 					</div>
 				</form>
 			@endif
-				
+ 
 			@if($activeTab === 'tool')
 				<form wire:submit.prevent="saveTool">
 					<div class="flex items-center">
 						<label class="{{ $labelClass }}" for="toolrelation">{{ $prefix }}...</label>
-						<select wire:model.live="toolrelation" class="{{ $selectClass }}" required>
-							<option value="-1">was involved in creation of ...</option>
-							<option value="-2">was created with ...</option>
-							<option value="-3">can be processed by ...</option>
+						<select wire:model.live="toolrelation" class="{{ $selectClass }}" required
+							title="Relation Type">
+							<option value="-1">{{ \App\Models\RelatedIdentifier::displayRelation(-1) }} ...</option>
+							<option value="-2">{{ \App\Models\RelatedIdentifier::displayRelation(-2) }} ...</option>
+							<option value="-3">{{ \App\Models\RelatedIdentifier::displayRelation(-3) }} ...</option>
 							@foreach(\App\Models\Metadataschema::list_ids('relationType') as $t)
 								<option value="{{ $t->id }}">{{ strtolower(\App\Models\Metadataschema::display($t->id)) }} ...</option>
 							@endforeach
 						</select>
-						@error('toolrelation')
-							<span class="text-red-500">{{ $message }}</span>
-						@enderror
 						
-						<select wire:model.live="toolrelatedable" class="{{ $selectClass }}" required>
+						<select wire:model.live="toolrelatedable" class="{{ $selectClass }}" required
+							title="Tools and Documents">
 							@foreach($toolrelatedable_ids as $r => $t)
 								<option value="{{ $t }}">{{ $toolrelatedable_names[$r] }}</option>
 							@endforeach
 						</select>
-						@error('toolrelatedable') <span class="text-red-500">{{ $message }}</span> @enderror
 					</div>
-					
+					@error('toolrelation') <span class="text-red-500">{{ $message }}</span> @enderror
+					@error('toolrelatedable') <span class="text-red-500">{{ $message }}</span> @enderror
 					<div class="mt-4">
 						<button type="submit" class="{{ $buttonClass }}">
 							{{ $relatedidentifier ? 'Update Relation' : 'Create Relation' }}
@@ -97,29 +97,29 @@
 				<form wire:submit.prevent="saveExternal">
 					<div class="flex items-center">
 						<label class="{{ $labelClass }}" for="relationtype">{{ $prefix }}...</label>
-						<select wire:model.live="relationtype" class="{{ $selectClass }}" required>
+						<select wire:model.live="relationtype" class="{{ $selectClass }}" required
+							title="Relation Type">
 							<option value="">Select a relation...</option>
 							@foreach(\App\Models\Metadataschema::list_ids('relationType') as $t)
 								<option value="{{ $t->id }}">{{ strtolower(\App\Models\Metadataschema::display($t->id)) }}...</option>
 							@endforeach
 						</select>
-						@error('relationtype')
-							<span class="text-red-500">{{ $message }}</span>
-						@enderror
 						
 						<input wire:model="name" type="text" 
 							placeholder="... the identifier, e.g., a DOI or an URL (depending on the following type)"
 							id="name"
 							class="{{ $inputClass }}"/>
-						@error('name') <span class="text-red-500">{{ $message }}</span> @enderror
 
-						<select wire:model.live="relatedidentifiertype" class="{{ $selectClass }}" required>
+						<select wire:model.live="relatedidentifiertype" class="{{ $selectClass }}" required
+							title="Identifier Type">
 							@foreach(\App\Models\Metadataschema::list_ids('relatedIdentifierType') as $t)
 								<option value="{{ $t->id }}">{{ \App\Models\Metadataschema::display($t->id) }}</option>
 							@endforeach
 						</select>
-						@error('relatedidentifiertype') <span class="text-red-500">{{ $message }}</span> @enderror
 					</div>
+					@error('relationtype') <span class="text-red-500">{{ $message }}</span> @enderror
+					@error('name') <span class="text-red-500">{{ $message }}</span> @enderror
+					@error('relatedidentifiertype') <span class="text-red-500">{{ $message }}</span> @enderror
 					<div class="mt-4">
 						<button type="submit" class="{{ $buttonClass }}">
 							{{ $relatedidentifier ? 'Update Relation' : 'Create Relation' }}

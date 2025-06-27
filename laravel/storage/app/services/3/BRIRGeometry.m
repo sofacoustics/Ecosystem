@@ -62,30 +62,30 @@ if isoctave; fputs(fid, [ "About to plot\n"]); end
 
 %% Plot a few figures
 % switch Obj.GLOBAL_SOFAConventions
-    % differ cases, depending on SOFA conventions
+% differ cases, depending on SOFA conventions
 
-    % case 'MultiSpeakerBRIR', 'SingleRoomMIMOSRIR';
-        % if isoctave; fputs(fid, [ "case SingleRoomMIMOSRIR\n"]); end
-        [Obj] = SOFAupgradeConventions(Obj);
-        % figure('Name',SOFAfile);
-        if isoctave; fputs(fid, [ "just done SOFA upgrade\n"]); end
-        % SOFAplotHRTF(Obj,'ETCHorizontal',1);
-        SOFAplotGeometry(Obj);
-        if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
-        set(gcf, 'Name', 'SOFAfile')
-        if isoctave; fputs(fid, [ "renamed figure\n"]); end
-        view(45,30);
-        if isoctave; fputs(fid, [ "adapted view\n"]); end
-        set(gcf, 'Position', [300, 500, 800, 500]);
-        if isoctave; fputs(fid, [ "adapted position\n"]); end
-        if isoctave; fputs(fid, [ "trying to print " SOFAfile "_1.png\n"]); end
+% case 'MultiSpeakerBRIR', 'SingleRoomMIMOSRIR';
+% if isoctave; fputs(fid, [ "case SingleRoomMIMOSRIR\n"]); end
+[Obj] = SOFAupgradeConventions(Obj);
+% figure('Name',SOFAfile);
+if isoctave; fputs(fid, [ "just done SOFA upgrade\n"]); end
+% SOFAplotHRTF(Obj,'ETCHorizontal',1);
+SOFAplotGeometry(Obj);
+if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
+set(gcf, 'Name', 'SOFAfile')
+if isoctave; fputs(fid, [ "renamed figure\n"]); end
+view(45,30);
+if isoctave; fputs(fid, [ "adapted view\n"]); end
+set(gcf, 'Position', [300, 500, 800, 500]);
+if isoctave; fputs(fid, [ "adapted position\n"]); end
+if isoctave; fputs(fid, [ "trying to print " SOFAfile "_1.png\n"]); end
 
-        % plot(rand(10))
-        print ("-r600", ['TESTPRINT_1.png']); % TO BE REMOVED
-        if isoctave; fputs(fid, [ "just printed TESTPRINT_1.png\n"]); end % TO BE REMOVED
-        print ("-r600", [SOFAfile '_1.png']);
-        %print ("-r600", '/tmp/hrtf_1.png');
-        if isoctave; fputs(fid, [ "just printed " SOFAfile "_1.png\n"]); end
+% plot(rand(10))
+% print ("-r600", ['TESTPRINT_1.png']); % TO BE REMOVED
+% if isoctave; fputs(fid, [ "just printed TESTPRINT_1.png\n"]); end % TO BE REMOVED
+print ("-r600", [SOFAfile '_1.png']);
+%print ("-r600", '/tmp/hrtf_1.png');
+if isoctave; fputs(fid, [ "just printed " SOFAfile "_1.png\n"]); end
 % end
 
 

@@ -15,9 +15,9 @@ class ServiceSeeder extends Seeder
     public function run(): void
     {
             Service::create(array(
-                    'name' => 'Octave: ETC & Magnitude spectrum',
-                    'description' => 'Plot three figures: horizontal-plane ETC and median-plane magnitude spectra for two channels.',
-                    'exe' => 'octave-cli',
+                    'name' => 'Octave: HRTF General',
+                    'description' => 'Plot hrtf-related figures: time domain: ETC left/right; frequency domain (lin): magnitude spectrum left/right; frequency domain (log): magnitude spectrum left/right logarithmic; ITD; Geometry.',
+                    'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
                     'parameters' => 'HRIR3.m'
                 )
             );

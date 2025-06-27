@@ -5,7 +5,8 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-use App\Models\Database;
+use App\Models\Metadataschema;
+use App\Models\RelatedIdentifier;
 
 class RadarRelatedIdentifierResource extends JsonResource
 {
@@ -16,14 +17,15 @@ class RadarRelatedIdentifierResource extends JsonResource
 	 */
 	public function toArray(Request $request): array
 	{
-		$relatedidentifiertype = Database::relatedidentifierValue($this->relatedidentifiertype);
-		$relationtype = Database::relationValue($this->relationtype);
+		$relatedidentifiertype = Metadataschema::value($this->relatedidentifiertype);
+		$relationtype = RelatedIdentifier::valueRelation($this->relationtype);
 
 		$array = [
-			'value' => $this->name,
+			'value' => RelatedIdentifier::internalUrl($this->name, $this->name),
 			'relatedIdentifierType' => $relatedidentifiertype,
 			'relationType' => $relationtype,
 		];
+
 		return $array;
 	}
 }

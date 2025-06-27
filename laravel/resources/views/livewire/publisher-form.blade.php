@@ -9,6 +9,9 @@
 	@if ($publisher)
 		<h3>Edit a publisher:</h3>
 	@else
+		@can('update', $publisherable)
+			{{-- we need this later <small><x-livewire-button wire:click="copyFromCreators">Copy from Creators</x-livebutton-button></small> --}}
+		@endcan
 		<h3>Add a new publisher:</h3>
 	@endif
 			

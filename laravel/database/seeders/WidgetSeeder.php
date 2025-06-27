@@ -18,10 +18,10 @@ class WidgetSeeder extends Seeder
             'description' => 'Display datafile properties.',
             'view' => 'properties',
         ));
-        Widget::create(array('name' => 'SOFA: HRTF ETC and Magnitudes',
-            'description' => 'Plot three figures: horizontal-plane ETC and median-plane magnitude spectra for two channels.',
+        Widget::create(array('name' => 'HRTF General',
+            'description' => 'Plot hrtf-related figures: time domain: ETC left/right; frequency domain (lin): magnitude spectrum left/right; frequency domain (log): magnitude spectrum left/right logarithmic; ITD; Geometry.',
             'service_id' => 1,
-            'view' => 'sofa-hrtf-3-etc-mag',
+            'view' => 'hrtf-general',
         ));
         Widget::create(array('name' => 'Image',
             'description' => 'Display an image (PNG, JPG, WEBP, animated or static).',
@@ -76,10 +76,10 @@ class WidgetSeeder extends Seeder
             'service_id' => 8,
             'view' => 'sofa-annotated-receiver',
         ));		
-		Widget::create(array('name' => 'SOFA: Headphones',
+		Widget::create(array('name' => 'Headphones General',
             'description' => 'Plot spectra of headphones.',
             'service_id' => 9,
-            'view' => 'sofa-headphones',
+            'view' => 'headphones-general',
         ));		
     }
 }

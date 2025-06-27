@@ -28,10 +28,14 @@ class RelatedIdentifierForm extends Component
 	public $toolrelatedable_names; // options to select a tool, just the names
 
 	protected $messages = [
-		'name.required' => 'Input an identifier (e.g., URL) for the relation.',
+		'name.required' => 'Input an identifier (e.g., an URL, depends on the identifies type).',
 		'name.max' => 'The identifier can be only up to 255 characters.',
 		'relatedidentifiertype.required' => 'Select the type of the identifier.',
 		'relationtype.required' => 'Select the type of relation.',
+		'databaserelation.required' => 'Select the type of relation.',
+		'databaserelatedable.required' => 'Select a database',
+		'toolrelation.required' => 'Select the type of relation.',
+		'toolrelatedable.required' => 'Select a tool or document',
 	];
 
 	public function mount($relatedidentifierable, $relatedidentifier = null)
@@ -42,40 +46,65 @@ class RelatedIdentifierForm extends Component
 			$reltype = \App\Models\Metadataschema::value($relatedidentifierable->resourcetype);
 		$this->relatedidentifierable = $relatedidentifierable;
 		if($relatedidentifier)
-		{
+		{		// Edit
 			$this->relatedidentifier = $relatedidentifier;
 			$this->relatedidentifierable_id = $relatedidentifier->relatedidentifierable_id;
 			$this->relatedidentifierable_type = $relatedidentifier->relatedidentifierable_type;
-			$this->name = $relatedidentifier->name;
-			$this->relatedidentifiertype = $relatedidentifier->relatedidentifiertype;
-			$this->relationtype = $relatedidentifier->relationtype;
-			$this->activeTab = 'external'; 
-			$this->databaserelation = ""; // put here the retrieval algorithm of the id
-			$this->databaserelatedable = ""; // put here the retrieval algorithm of the id
-			$this->toolrelation = ""; // put here the retrieval algorithm of the id
-			$this->toolrelatedable = ""; // put here the retrieval algorithm of the id
+			$isInternal = \App\Models\RelatedIdentifier::isInternalLink($relatedidentifier->name);
+			switch($isInternal)
+			{	
+				case 1: // our database/tool has been linked to a database
+					$this->activeTab = 'database'; 
+					$this->databaserelation = $relatedidentifier->relationtype;
+					$this->databaserelatedable = substr($relatedidentifier->name, strlen("ECOSYSTEM_DATABASE")+1);
+					$this->toolrelation = null;
+					$this->toolrelatedable = null;
+					$this->name = null;
+					$this->relatedidentifiertype = null;
+					$this->relationtype = null;
+					break;
+				case 2: // our database/tool has been linked to a tool
+					$this->activeTab = 'tool'; 
+					$this->databaserelation = null;
+					$this->databaserelatedable = null;
+					$this->toolrelation = $relatedidentifier->relationtype;
+					$this->toolrelatedable = substr($relatedidentifier->name, strlen("ECOSYSTEM_TOOL")+1);
+					$this->name = null;
+					$this->relatedidentifiertype = null;
+					$this->relationtype = null;
+					break;
+				default: // we have a general link
+					$this->activeTab = 'external'; 
+					$this->databaserelation = null;
+					$this->databaserelatedable = null;
+					$this->toolrelation = null;
+					$this->toolrelatedable = null;
+					$this->name = $relatedidentifier->name;
+					$this->relatedidentifiertype = $relatedidentifier->relatedidentifiertype;
+					$this->relationtype = $relatedidentifier->relationtype;
+			}
 		}
 		else
-		{
+		{		// New
 			$this->relatedidentifierable_id = $relatedidentifierable->id;
 			$this->relatedidentifierable_type = get_class($relatedidentifierable);
-			$this->relationtype = (\App\Models\Metadataschema::where('name', 'relationType')->where('value', 'IS_COMPILED_BY')->first()->id); 
+			$this->relationtype = \App\Models\Metadataschema::where('name', 'relationType')->where('value', 'IS_DESCRIBED_BY')->first()->id; 
 			$this->relatedidentifiertype = (\App\Models\Metadataschema::where('name', 'relatedIdentifierType')->where('value', 'URL')->first()->id); 
 			$this->activeTab = 'database';
 			if($reltype=="TEXT")
-			{
-				$this->databaserelation = 2; // default for Documents: "Describes"
-				$this->toolrelation = 2; // default for Documents: "Describes"
+			{	// default for Documents
+				$this->databaserelation = \App\Models\Metadataschema::where('name', 'relationType')->where('value', 'DESCRIBES')->first()->id;
+				$this->toolrelation = \App\Models\Metadataschema::where('name', 'relationType')->where('value', 'DESCRIBES')->first()->id;
 			}
 			elseif($reltype=="DATASET")
-			{
-				$this->databaserelation = 3; // default for Databases: "Was Created With"
-				$this->toolrelation = 3; // default for Databases: "Was Created With"
+			{		// default for Databases
+				$this->databaserelation = \App\Models\Metadataschema::where('name', 'relationType')->where('value', 'IS_NEW_VERSION_OF')->first()->id; 
+				$this->toolrelation = -2; // "was created with"
 			}
 			else
-			{
-				$this->databaserelation = 4; // default for Tools: "Was Involved of Creation of"
-				$this->toolrelation = 4; // default for Tools: "Was Involved of Creation of"
+			{		// default for Tools: "was used to create"
+				$this->databaserelation = -1; 
+				$this->toolrelation = -1;
 			}
 		}
 
@@ -113,12 +142,9 @@ class RelatedIdentifierForm extends Component
 		$this->activeTab = $tab;
 	}
 
-
-	private function save($method, $rules)
+	public function save($method, $rules)
 	{
 		$this->validate($rules);
-		dd($method);
-
 		$isNew = !$this->relatedidentifier;
 		if($isNew)
 		{
@@ -130,34 +156,21 @@ class RelatedIdentifierForm extends Component
 		{
 			case 'database':
 				$database = \App\Models\Database::find($this->databaserelatedable);
-				$this->relatedidentifier->name = route('databases.show',[ 'database' => $database->id]); // we store the URL to the database
+				$this->relatedidentifier->name = "ECOSYSTEM_DATABASE_".$database->id; // prefix and id
 				$this->relatedidentifier->relatedidentifiertype = \App\Models\Metadataschema::where('name', 'relatedIdentifierType')->where('value', 'URL')->first()->id;
-				switch($this->databaserelation)
-				{
-					case -1:
-						$this->relatedidentifier->relationtype  = \App\Models\Metadataschema::where('name', 'relationType')->where('value', 'COMPILES')->first()->id;
-					default:
-						$this->relatedidentifier->relationtype = $this->databaserelation;
-				}
+				$this->relatedidentifier->relationtype  = $this->databaserelation;
+				break;
 			case 'tool':
 				$tool = \App\Models\Tool::find($this->toolrelatedable);
-				$this->relatedidentifier->name = route('tools.show',[ 'tool' => $tool->id]); // we store the URL to the tool
+				$this->relatedidentifier->name = "ECOSYSTEM_TOOL_".$tool->id; // prefix and id
 				$this->relatedidentifier->relatedidentifiertype = \App\Models\Metadataschema::where('name', 'relatedIdentifierType')->where('value', 'URL')->first()->id;
-				switch($this->toolrelation)
-				{
-					case -1:
-						$this->relatedidentifier->relationtype  = \App\Models\Metadataschema::where('name', 'relationType')->where('value', 'COMPILES')->first()->id;
-					case -2:
-						$this->relatedidentifier->relationtype  = \App\Models\Metadataschema::where('name', 'relationType')->where('value', 'IS_COMPILED_BY')->first()->id;
-					case -3:
-						$this->relatedidentifier->relationtype  = \App\Models\Metadataschema::where('name', 'relationType')->where('value', 'IS_CONTINUED_BY')->first()->id;
-					default:
-						$this->relatedidentifier->relationtype = $this->toolrelation;
-				}
+				$this->relatedidentifier->relationtype  = $this->toolrelation;
+				break;
 			case 'external':
 				$this->relatedidentifier->name = $this->name;
 				$this->relatedidentifier->relatedidentifiertype = $this->relatedidentifiertype; 
 				$this->relatedidentifier->relationtype = $this->relationtype; 
+				break;
 		}
 		
 		$this->relatedidentifier->save();
@@ -178,14 +191,20 @@ class RelatedIdentifierForm extends Component
 	public function saveDatabase()
 	{ 
 		$rules = [
-			'name' => ['required','max:255'],
-			'relatedidentifiertype' => 'required',
-			'relationtype' => 'required',
+			'databaserelation' => 'required',
+			'databaserelatedable' => 'required',
 		];
-
 		$this->save('database',$rules); 
 	}
-	public function saveTool() { save('tool'); }
+
+	public function saveTool()
+	{ 
+		$rules = [
+			'toolrelation' => 'required',
+			'toolrelatedable' => 'required',
+		];
+		$this->save('tool',$rules); 
+	}
 
 	public function saveExternal() 
 	{ 
@@ -195,58 +214,8 @@ class RelatedIdentifierForm extends Component
 			'relationtype' => 'required',
 		];
 
-		$this->save('external'); 
+		$this->save('external', $rules); 
 	}
-	
-
-/*	public function saveTool()
-	{
-		$this->validate();
-
-		$isNew = !$this->relatedidentifier;
-
-		if($isNew)
-		{
-			$this->relatedidentifier = new RelatedIdentifier();
-		}
-		$this->relatedidentifier->relatedidentifierable_id = $this->relatedidentifierable_id;
-		$this->relatedidentifier->relatedidentifierable_type = $this->relatedidentifierable_type;
-		if ($this->relatedidentifiertype == null)
-		{		// Other if not defined
-			$this->relatedidentifier->relatedidentifiertype = (\App\Models\Metadataschema::where('name', 'relatedIdentifierType')->where('value', 'OTHER')->first()->id); 
-		}
-		else
-		{	 
-			$this->relatedidentifier->relatedidentifiertype = $this->relatedidentifiertype; 
-		}
-		if ($this->relationtype == null)
-		{		// Other if not defined
-			$this->relatedidentifier->relationtype = (\App\Models\Metadataschema::where('name', 'relationType')->where('value', 'OTHER')->first()->id); 
-		}
-		else
-		{
-			$this->relatedidentifier->relationtype = $this->relationtype; 
-		}
-		$this->relatedidentifier->name = $this->name;
-		
-		$this->relatedidentifier->save();
-
-		session()->flash('message', $isNew ? 'related identifier created successfully.' : 'related identifier updated successfully.');
-
-		if($this->relatedidentifierable_type === 'App\Models\Database')
-		{
-			\App\Models\Database::find($this->relatedidentifier->relatedidentifierable_id)->touch();
-			return redirect()->route('databases.relatedidentifiers',[ 'database' => $this->relatedidentifierable->id ]);
-		}
-		else
-		{
-			\App\Models\Tool::find($this->relatedidentifier->relatedidentifierable_id)->touch();
-			return redirect()->route('tools.relatedidentifiers',[ 'tool' => $this->relatedidentifierable->id ]);
-		}
-	}
-
-*/
-
 
 	public function render()
 	{
