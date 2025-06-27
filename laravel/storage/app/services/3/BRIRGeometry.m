@@ -3,6 +3,7 @@
 % #Author: Michael Mihocic: First version, loading and plotting a few figures, supporting a few conventions (31.08.2023)
 % #Author: Michael Mihocic: support of SingleRoomMIMOSRIR SOFA files implemented (11.04.2025)
 % #Author: Michael Mihocic: conventions restriction removed (03.06.2025)
+% #Author: Michael Mihocic: conventions restriction removed (03.06.2025)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -88,6 +89,19 @@ print ("-r600", [SOFAfile '_1.png']);
 if isoctave; fputs(fid, [ "just printed " SOFAfile "_1.png\n"]); end
 % end
 
+%% MagSpectrum
+% close all;
+figure('Name',SOFAfile);
+SOFAplotHRTF(Obj,'MagSpectrum', 1);
+print ("-r600", [SOFAfile '_2.png']);
+if isoctave;  fputs(fid, [ "just printed " SOFAfile "_2.png\n"]); end
+
+% close all;
+figure('Name',SOFAfile);
+SOFAplotHRTF(Obj,'MagSpectrum', 2);
+% mySOFAplotHRTF(Obj,'MagMedian','nonormalization');
+print ("-r600", [SOFAfile '_3.png']);
+if isoctave;  fputs(fid, [ "just printed " SOFAfile "_3.png\n"]); end
 
 %% Epilogue: (un)comment if you want to:
 disp('DONE');
