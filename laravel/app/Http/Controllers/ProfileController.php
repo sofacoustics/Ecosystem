@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewUser;
+use App\Models\User;
+
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -9,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 
 class ProfileController extends Controller
 {
@@ -101,7 +105,7 @@ class ProfileController extends Controller
      */
     public function orcidLink(Request $request)
     {
-				$orcidFromForm = $request->input('orcid');
+		$orcidFromForm = $request->input('orcid');
 				
         // Configuration for the ORCID API 
         $orcidApiUrl = config('services.orcid.api_url'); 
@@ -138,7 +142,7 @@ class ProfileController extends Controller
             return redirect()->route('profile.edit')->withErrors(['orcid' => 'ORCID authorization failed: ' . $error]);
         }
 
-				if (!$code ) {
+		if (!$code ) {
             return redirect()->route('profile.edit')->withErrors(['orcid' => 'Invalid ORCID authorization response.']);
         }
 
@@ -163,13 +167,19 @@ class ProfileController extends Controller
             $accessTokenData = $response->json();
             $accessToken = $accessTokenData['access_token'] ?? null;
             $orcidFromToken = $accessTokenData['orcid'] ?? null;
-						$nameFromToken = $accessTokenData['name'] ?? null;
+			$nameFromToken = $accessTokenData['name'] ?? null;
 
             if ($accessToken && $orcidFromToken) {
                 // ORCID ID successfully verified! Update the fields
-								auth()->user()->update(['orcid' => $orcidFromToken]);
-								auth()->user()->update(['name' => $nameFromToken]);
-                auth()->user()->update(['orcid_verified_at' => now()]);
+				auth()->user()->update(['orcid' => $orcidFromToken]);
+				auth()->user()->update(['name' => $nameFromToken]);
+				auth()->user()->update(['orcid_verified_at' => now()]);
+
+				// send 'NewUser' email
+				$adminEmails = config('mail.to.admins'); 
+				Mail::to(explode(',',$adminEmails))->send(new NewUser($request->user()));
+				app('log')->info("New user " . $request->user()->name . " (". $request->user()->id . ") created. Sending NewUser email to $adminEmails"); 
+
                 return redirect()->route('profile.edit')->with('status', 'ORCID Link successful...');;
 
             } else {
