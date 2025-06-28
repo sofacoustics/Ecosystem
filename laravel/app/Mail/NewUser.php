@@ -29,11 +29,7 @@ class NewUser extends Mailable
     public function envelope(): Envelope
     {
 		return new Envelope(
-	//		from: new Address('jonathan.stuefer@oeaw.ac.at', 'Jonathan Stuefer'),
-	//		replyTo: [
-	//			new Address('jonathan.stuefer@oeaw.ac.at', 'Jonathan Stuefer'),
-			//		],
-            subject: 'New Ecosystem User',
+            subject: 'New Ecosystem user created and verified',
 		);
     }
 
