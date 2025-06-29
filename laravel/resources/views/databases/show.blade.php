@@ -242,12 +242,10 @@ Parameters:
 			<ul class="list-disc list-inside">
 			@foreach($database->comments as $comment)
 				<li>
-					@auth
-						@if ($comment->user_id == Auth::id()) 
-							<x-button method="DELETE" class="inline" action="{{ route('comments.destroy', $comment) }}">Delete</x-button>
-							<x-button method="GET" class="inline" action="{{ route('comments.edit', $comment) }}" >Edit</x-button>
-						@endif
-					@endauth
+					@can('update',$comment)
+						<x-button method="DELETE" class="inline" action="{{ route('comments.destroy', $comment) }}">Delete</x-button>
+						<x-button method="GET" class="inline" action="{{ route('comments.edit', $comment) }}" >Edit</x-button>
+					@endcan
 					<b> {{ $comment->user->name }} </b><small>({{ $comment->created_at }})</small>: {{ $comment->text }}
 				</li>
 			@endforeach
