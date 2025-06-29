@@ -16,11 +16,13 @@ class CommentController extends Controller
 		if($route->named('databases.comments'))
 		{
 			$commentable = Database::find($id);
+			if($commentable == null) return; // no entry found
 			return view('databases.comments.index', ['commentable' =>$commentable]);
 		}
 		else
 		{
 			$commentable = Tool::find($id);
+			if($commentable == null) return; // no entry found
 			return view('tools.comments.index', ['commentable' =>$commentable]);
 		}
 	}

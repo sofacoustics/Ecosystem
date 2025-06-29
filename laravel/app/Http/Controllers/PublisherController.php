@@ -16,11 +16,13 @@ class PublisherController extends Controller
 		if($route->named('databases.publishers'))
 		{
 			$publisherable = Database::find($id);
+			if($publisherable == null) return; // no entry found
 			return view('databases.publishers.index', ['publisherable' =>$publisherable]);
 		}
 		else
 		{
 			$publisherable = Tool::find($id);
+			if($publisherable == null) return; // no entry found
 			return view('tools.publishers.index', ['publisherable' =>$publisherable]);
 		}
 	}

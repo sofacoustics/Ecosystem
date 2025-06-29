@@ -16,11 +16,13 @@ class RelatedIdentifierController extends Controller
 		if($route->named('databases.relatedidentifiers'))
 		{
 			$relatedidentifierable = Database::find($id);
+			if($relatedidentifierable == null) return; // no entry found
 			return view('databases.relatedidentifiers.index', ['relatedidentifierable' =>$relatedidentifierable]);
 		}
 		else
 		{
 			$relatedidentifierable = Tool::find($id);
+			if($relatedidentifierable == null) return; // no entry found
 			return view('tools.relatedidentifiers.index', ['relatedidentifierable' =>$relatedidentifierable]);
 		}
 	}

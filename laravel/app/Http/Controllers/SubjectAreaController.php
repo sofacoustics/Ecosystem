@@ -16,11 +16,13 @@ class SubjectAreaController extends Controller
 		if($route->named('databases.subjectareas'))
 		{
 			$subjectareaable = Database::find($id);
+			if($subjectareaable == null) return; // no entry found
 			return view('databases.subjectareas.index', ['subjectareaable' =>$subjectareaable]);
 		}
 		else
 		{
 			$subjectareaable = Tool::find($id);
+			if($subjectareaable == null) return; // no entry found
 			return view('tools.subjectareas.index', ['subjectareaable' =>$subjectareaable]);
 		}
 	}
