@@ -1,5 +1,4 @@
 <div>
-	<p>Internal path: {{ $fullPath }}</p>
 	<p>Size: {{ $fileSizeInBytes }} bytes 
 		@if($fileSizeInKilobytes > 0)
 		= {{ $fileSizeInKilobytes }} kbytes 
@@ -13,9 +12,11 @@
 	</p>
 	<p>Date created: {{ $created_at }}</p>
 	<p>Date updated: {{ $updated_at }}</p>
-    @hasrole('admin')
-        <p>RADAR ID: {{ $radar_id }}</p>
-        <p>RADAR Datasetdef ID: {{ $datasetdef_radar_id }}</p>
-        <p>RADAR Datasetdef Upload URL: {{ $datasetdef_radar_upload_url }}</p>
-    @endhasrole
+
+	@hasrole('admin')
+		<p>Internal path: {{ $fullPath }}</p>
+		<p>RADAR ID: {{ $radar_id }}</p>
+		<p>RADAR Datasetdef ID: {{ $datasetdef_radar_id }}</p>
+		<p>RADAR Datasetdef Upload URL: {{ $datasetdef_radar_upload_url }}</p>
+	@endhasrole
 </div>

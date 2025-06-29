@@ -6,8 +6,8 @@
     $buttonClass = 'bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white';
 @endphp
 <div>
-	@auth
-		@if (Auth::user()->id == $database->user_id)
+{{--	@auth
+@if (Auth::user()->id == $database->user_id) --}}
 			<p>
 				@if ($datasetdef)
 					<h3>Edit the datafile definition:</h3>
@@ -71,7 +71,7 @@
 					</x-button>
 				</div>
 			</form>
-		@endif
-	@endauth
+			{{--		@endif
+			@endauth --}}
 	<!-- <p>resources\views\livewire\datasetdef-form.blade.php</p> --!>
 </div>

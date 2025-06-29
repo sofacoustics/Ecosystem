@@ -2,7 +2,9 @@
 	<x-slot name="header">
 		<x-tool.header :tool="$keywordable" />
 	</x-slot>
-	<div>
+	@can('update', $keywordable)
 		<livewire:keyword-form :keywordable="$keyword->keywordable" :keyword=$keyword />
-	</div>
+	@else
+		You can not edit this keyword because you do not own the corresponding tool. 
+	@endcan
 </x-app-layout>

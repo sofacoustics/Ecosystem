@@ -14,6 +14,9 @@
 					@error('resourcetype') <span class="text-red-500">{{ $message }}</span> @enderror
 				</select>
 			</th>
+			@auth
+				<th class="border p-2"></th>
+			@endauth
 			<th><input type="text" wire:model.live.debounce.500ms="filters.keyword" placeholder="... by Keyword" class="border rounded p-2"></th>
 			<th><button wire:click="clearFilters" class="bg-gray-200 rounded p-2">Clear Filters</button></th>
 		</thead>
@@ -80,6 +83,9 @@
 					@endif
 				</button>
 			</th>
+			@auth
+				<th class="border p-2">Uploaded by</th>
+			@endauth
 			<th class="border p-2">Keywords</th>
 			<th class="border p-2">
 				<button wire:click="sortBy('updated_at')">Last update
@@ -96,9 +102,6 @@
 					@endif
 				</button>
 			</th>
-			@auth
-				<th class="border p-2">Uploaded by</th>
-			@endauth
 		</thead>
 		<tbody class="bg-white divide-y divide-gray-200">
 			@foreach($tools as $tool)
@@ -116,11 +119,11 @@
 					</td>
 					<td class="px-6 py-4 whitespace-nowrap text-center">{{ $tool->productionyear }}</td>
 					<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Models\Tool::resourcetypeDisplay($tool->resourcetype) }}</td>
-					<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Livewire\ToolTableFilter::getKeywords($tool->id) }}</td>
-					<td class="px-6 py-4 whitespace-nowrap text-center">{{ $tool->updated_at }}</td>
 					@auth
 						<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Livewire\ToolTableFilter::userName($tool->user_id) }}</td>
 					@endauth
+					<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Livewire\ToolTableFilter::getKeywords($tool->id) }}</td>
+					<td class="px-6 py-4 whitespace-nowrap text-center">{{ $tool->updated_at }}</td>
 				</tr>
 			@endforeach
 			@if($tools->isEmpty())

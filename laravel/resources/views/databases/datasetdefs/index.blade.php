@@ -56,13 +56,12 @@
 		</tbody>
 		</table>
 	@endif
-
 	@can('update', $database)
+		can update<br>
 		@if(count($database->datasets) == 0)
-				<livewire:datasetdef-form :database=$database />
+			<livewire:datasetdef-form :database=$database />
 		@else
-				<p><b>Note:</b> The definition cannot be expanded or shortened because the database contains datasets already.</p>
+			<p><b>Note:</b> The definition cannot be expanded or shortened because the database contains datasets already.</p>
 		@endif
 	@endcan
-		{{-- <p>resources\views\databases\datasetdefs\index.blade.php</p> --}}
 </x-app-layout>

@@ -3,6 +3,9 @@
 		<x-tool.header :tool="$commentable" />
 	</x-slot>
 	
-	<h3>New comment:</h3>
-	<livewire:comment-form :commentable="$commentable" />
+	@can('create', \App\Models\Tool::class)
+		<livewire:comment-form :commentable="$commentable" />
+	@else
+		You can not add comments because your account is not ORCiD approved.
+	@endcan
 </x-app-layout>

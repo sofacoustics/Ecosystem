@@ -16,17 +16,20 @@ class KeywordController extends Controller
 		if($route->named('databases.keywords'))
 		{
 			$keywordable = Database::find($id);
+			if($keywordable == null) return; // no entry found
 			return view('databases.keywords.index', ['keywordable' =>$keywordable]);
 		}
 		else
 		{
 			$keywordable = Tool::find($id);
+			if($keywordable == null) return; // no entry found
 			return view('tools.keywords.index', ['keywordable' =>$keywordable]);
 		}
 	}
 	
 	public function edit(Keyword $keyword)
 	{
+		if($keyword->keywordable == null) return; // no database or tool found
 		if($keyword->keywordable_type === 'App\Models\Database')
 			return view('databases.keywords.edit', ['keywordable' =>$keyword->keywordable, 'keyword' => $keyword]);
 		else

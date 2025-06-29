@@ -16,17 +16,20 @@ class RightsholderController extends Controller
 		if($route->named('databases.rightsholders'))
 		{
 			$rightsholderable = Database::find($id);
+			if($rightsholderable == null) return; // no entry found
 			return view('databases.rightsholders.index', ['rightsholderable' =>$rightsholderable]);
 		}
 		else
 		{
 			$rightsholderable = Tool::find($id);
+			if($rightsholderable == null) return; // no entry found
 			return view('tools.rightsholders.index', ['rightsholderable' =>$rightsholderable]);
 		}
 	}
 	
 	public function edit(Rightsholder $rightsholder)
 	{
+		if($rightsholder->rightsholderable == null) return; // no database or tool found
 		if($rightsholder->rightsholderable_type === 'App\Models\Database')
 			return view('databases.rightsholders.edit', ['rightsholderable' =>$rightsholder->rightsholderable, 'rightsholder' => $rightsholder]);
 		else

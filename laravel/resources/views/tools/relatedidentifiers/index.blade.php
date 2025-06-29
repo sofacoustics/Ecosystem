@@ -4,8 +4,11 @@
 	</x-slot>
 	<h3>Relations</h3>
 	<p>List of relations with the tool:</p>
+	
 	<x-relatedidentifier.list :relatedidentifierable=$relatedidentifierable />
 	
-	<livewire:related-identifier-form :relatedidentifierable="$relatedidentifierable" />
-
+	@can('update', $relatedidentifierable)
+		<livewire:related-identifier-form :relatedidentifierable="$relatedidentifierable" />
+	@endcan
+	
 </x-app-layout>

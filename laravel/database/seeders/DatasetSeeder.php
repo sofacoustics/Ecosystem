@@ -19,7 +19,7 @@ class DatasetSeeder extends Seeder
 		Dataset::create(array('name' => 'test services', 'description' => 'test services', 'database_id' => 4));
         Dataset::create(array('name' => 'test service sofa-brir-geometry', 'description' => 'test service 3', 'database_id' => 5));
         Dataset::create(array('name' => 'test service sofa-srir-geometry', 'description' => 'test service 4', 'database_id' => 7));
-        Dataset::create(array('name' => 'test service sofa-directivity-polar', 'description' => 'test service 5', 'database_id' => 8));
+        Dataset::create(array('name' => 'test service directivity-general', 'description' => 'test service 5', 'database_id' => 8));
 		Dataset::create(array('name' => 'test service sofa-properties', 'description' => 'test service 6', 'database_id' => 9));
     }
 }

@@ -7,6 +7,7 @@
 	<p>Person(s) or institution(s) responsible for publishing this database at the Ecosystem:</p>
 	<x-publisher.list :publisherable=$publisherable />
 
-	<livewire:publisher-form :publisherable="$publisherable" />
-
+	@can('update', $publisherable)
+		<livewire:publisher-form :publisherable="$publisherable" />
+	@endcan
 </x-app-layout>

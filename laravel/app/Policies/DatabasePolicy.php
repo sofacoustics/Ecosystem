@@ -16,23 +16,21 @@ class DatabasePolicy
 		return true;
 	}
 
-	/* This seems to have no effect
-	public function show(?User $user, Database $database): bool
-	{
-			dd($database);
-			return true;
-	}*/ 
-	
 	/**
-	 * Determine whether the user can view the model.
+	 * Determine whether the user can view the model. Admin role overwrites.
 	 */
 	public function view(?User $user, Database $database): Response
 	{
-			// Access only if public or owned by the user
-		if (empty($user))
-			$access = $database->visible;
+			// Access only if public or owned by the user or admin
+		if(isset($user->id))
+		{
+			if(auth()->user()->hasRole('admin'))
+				$access = true;
+			else
+				$access = ($user->id == $database->user_id) || $database->visible;
+		}
 		else
-			$access = ($user->id == $database->user_id) || $database->visible;
+			$access = $database->visible; // visible only
 		return $access
 					? Response::allow()
 					: Response::deny('You can not see this database because it is not public and you do not own it!');
@@ -51,55 +49,56 @@ class DatabasePolicy
 	}
 
 	/**
-	 * Determine whether the user can update the model.
+	 * Determine whether the user can update the model. Admin role overwrites.
 	 */
 	public function own(User $user, Database $database): Response
-	{
-			// this is called from the controller edit function, when $this->authorize($database) is called.
-		return ($user->id == $database->user_id) // allow only for owners 
+	{ 
+		if(isset($user->id))
+		{
+			if(auth()->user()->hasRole('admin'))
+				$access = true;
+			else
+				$access = ($user->id == $database->user_id); // allow only for owners 
+		}
+		else
+			$access = false;
+		return $access
 				? Response::allow()
-				: Response::deny('You can not update this database because you do not own it!');
+				: Response::deny('You can not edit this database because you do not own it!');
 	}
 
 
 	/**
-	 * Determine whether the user can update the model.
+	 * Determine whether the user can update the model. Admin role overwrites.
 	 */
 	public function update(?User $user, Database $database): Response
-	{
-			// this is called from the controller edit function, when $this->authorize($database) is called.
-		if (isset($user->id))
-			$enable = ($user->id == $database->user_id) && ($database->radar_status < 2); // allow only for owners and if not submitted for persistent publication yet
+	{ 
+		if(isset($user->id))
+		{
+			if(auth()->user()->hasRole('admin'))
+				$access = true;
+			else
+				$access = ($user->id == $database->user_id) && ($database->radar_status < 2); // allow only for owners and if not submitted for persistent publication yet
+		}
 		else
-			$enable = false; // do not allow if non-authorized
-		return $enable
+			$access = false; // do not allow if non-authorized
+		return $access
 				? Response::allow()
 				: Response::deny('You can not update this database because you do not own it or it is locked for persistent publication!');
 	}
 
 
 	/**
-	 * Determine whether the user can delete the model.
+	 * Determine whether the user can delete the model. Admin role overwrites.
 	 */
 	public function delete(User $user, Database $database): Response
 	{
-		return ($user->id == $database->user_id) && ($database->radar_status < 2) // allow only for owners and if DOI not assigned yet
-				? Response::allow()
-				: Response::deny('You may not delete this database, since you do not own it!');
-
-	}
-
-	/**
-	 * Determine whether the user can restore the model.
-	 */
-	public function restore(User $user, Database $database): bool
-	{
-	}
-
-	/**
-	 * Determine whether the user can permanently delete the model.
-	 */
-	public function forceDelete(User $user, Database $database): bool
-	{
+		if(auth()->user()->hasRole('admin'))
+			$access = true;
+		else
+			$access = ($user->id == $database->user_id) && ($database->radar_status < 2); // allow only for owners and if DOI not assigned yet
+		return $access
+			? Response::allow()
+			: Response::deny('You may not delete this database, since you do not own it!');
 	}
 }

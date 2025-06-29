@@ -43,10 +43,10 @@ class ServiceSeeder extends Seeder
                )
             );
 			Service::create(array(
-                   'name' => 'Octave: Directivities Polar',
-                   'description' => 'Plot the directivities as polar plots.',
+                   'name' => 'Octave: Directivities General',
+                   'description' => 'Plot the directivities as polar plots, and as filled contour plot.',
                    'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
-                   'parameters' => 'DirectivityPolar.m'
+                   'parameters' => 'DirectivityGeneral.m'
                )
             );
 			Service::create(array(

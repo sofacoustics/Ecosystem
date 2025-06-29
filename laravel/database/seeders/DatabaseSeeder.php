@@ -143,7 +143,7 @@ class DatabaseSeeder extends Seeder
 			'radardataset' => null,
 			'user_id' => 4, )
 			);
-		Database::create(array('title' => 'Test sofa-directivity-polar',
+		Database::create(array('title' => 'Test directivity-general',
 			'additionaltitle' => null,
 			'productionyear' => '2025',
 			'publicationyear' => 'unknown',

@@ -16,17 +16,20 @@ class PublisherController extends Controller
 		if($route->named('databases.publishers'))
 		{
 			$publisherable = Database::find($id);
+			if($publisherable == null) return; // no entry found
 			return view('databases.publishers.index', ['publisherable' =>$publisherable]);
 		}
 		else
 		{
 			$publisherable = Tool::find($id);
+			if($publisherable == null) return; // no entry found
 			return view('tools.publishers.index', ['publisherable' =>$publisherable]);
 		}
 	}
 	
 	public function edit(Publisher $publisher)
 	{
+		if($publisher->publisherable == null) return; // no database or tool found
 		if($publisher->publisherable_type === 'App\Models\Database')
 			return view('databases.publishers.edit', ['publisherable' =>$publisher->publisherable, 'publisher' => $publisher]);
 		else

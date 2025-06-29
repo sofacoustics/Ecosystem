@@ -17,17 +17,20 @@ class CreatorController extends Controller
 		if($route->named('databases.creators'))
 		{
 			$creatorable = Database::find($id);
+			if($creatorable == null) return; // no entry found
 			return view('databases.creators.index', ['creatorable' =>$creatorable]);
 		}
 		else
 		{
 			$creatorable = Tool::find($id);
+			if($creatorable == null) return; // no entry found
 			return view('tools.creators.index', ['creatorable' =>$creatorable]);
 		}
 	}
 
 	public function edit(Creator $creator)
 	{
+		if($creator->creatorable == null) return; // no database or tool found
 		if($creator->creatorable_type === 'App\Models\Database')
 			return view('databases.creators.edit', ['creatorable' =>$creator->creatorable, 'creator' => $creator]);
 		else

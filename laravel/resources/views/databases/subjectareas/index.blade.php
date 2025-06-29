@@ -6,6 +6,8 @@
 	<p>List of scientific research areas that the database can be assigned to:</p>
 	<x-subjectarea.list :subjectareaable=$subjectareaable />
 	
-	<livewire:subject-area-form :subjectareaable="$subjectareaable" />
+	@can('update', $subjectareaable)
+		<livewire:subject-area-form :subjectareaable="$subjectareaable" />
+	@endcan
 
 </x-app-layout>

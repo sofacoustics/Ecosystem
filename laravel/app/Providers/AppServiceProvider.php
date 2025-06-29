@@ -47,6 +47,13 @@ class AppServiceProvider extends ServiceProvider
 		View::share('buttonColorDelete', 'red-400 bg-red-400 hover:bg-red-600 text-white');
 		View::share('buttonStyle', 'font-bold mx-1 my-1 py-1 px-2 rounded');
 
+		// if there is no .env setting for admin email list, then get list from the database
+		if(config('mail.to.admins') == "")
+		{
+			$admin_emails = \App\Models\User::role('admin')->pluck('email')->toArray();
+			config(['mail.to.admins' => implode(',',$admin_emails)]);
+		}
+
         //$this->app->useStoragePath(config('app.app_storage_path')); //jw:note this could be used to put all files including cache on external disk in conjunctino with app.php
 
         //jw:note throw excption if attemptinng to fill and unfillable attribute (https://laravel.com/docs/11.x/eloquent#mass-assignment-json-columns) for local development (production should still ignore silently).

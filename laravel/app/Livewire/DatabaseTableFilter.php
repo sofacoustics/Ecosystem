@@ -38,18 +38,17 @@ class DatabaseTableFilter extends Component
 
 	public function applyFilters()
 	{
-		$query = DB::table('databases'); 
+		if (!empty($this->filters['keyword'])) 
+		{
+			$query = Database::whereHas('keywords', function ($q) {
+				$q->where('keywordName', 'like', '%' . $this->filters['keyword'] . '%'); });
+		}
+		else
+			$query = Database::query();
 
 		if (!empty($this->filters['title'])) 
 		{
 			$query->where('title', 'like', '%' . $this->filters['title'] . '%');
-			$this->databases = $query->get();
-		}
-
-		if (!empty($this->filters['keyword'])) 
-		{
-				$query = Database::whereHas('keywords', function ($q) {
-					$q->where('keywordName', 'like', '%' . $this->filters['keyword'] . '%'); });
 		}
 
 		if (!empty($this->filters['productionyear'])) 
