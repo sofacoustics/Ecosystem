@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Mail\DOIAssigned;
+use App\Mail\PersistentPublicationRequested;
 use App\Models\Database;
 
 use App\Http\Resources\DatabaseResource;
@@ -129,7 +130,7 @@ class DatabaseVisibility extends Component
 		$this->database->save();
 		$adminEmails = config('mail.to.admins'); 
 		Mail::to(explode(',',$adminEmails))->send(new DOIAssigned($this->database));
-		app('log')->info("DOI assigned for database. Sending DOIAssigned email to $adminEmails"); 
+		app('log')->info("DOI assigned for database " . $this->database->title . " (" . $this->database->id . "). Sending DOIAssigned email to $adminEmails");
 		$this->radar_status = $this->database->radar_status;
 	}
 
@@ -187,6 +188,9 @@ class DatabaseVisibility extends Component
 
 		$this->database->radar_status=2;
 		$this->database->save();
+		$adminEmails = config('mail.to.admins');
+		Mail::to(explode(',',$adminEmails))->send(new PersistentPublicationRequested($this->database));
+		app('log')->info("Persistent publication requested for " . $this->database->title . " (" . $this->database->id . "). Sending PersistentPublicationRequested email to $adminEmails");
 		$this->radar_status = $this->database->radar_status;
 		$this->dispatch('status-message', 'The database has been successfully published!');
 		$this->js('window.location.reload()'); //jw:note I think this refreshes page removing status messages too early and is unnecessary
