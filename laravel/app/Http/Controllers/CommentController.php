@@ -27,6 +27,7 @@ class CommentController extends Controller
 	
 	public function edit(Comment $comment)
 	{
+		if($comment->commentable == null) return; // no database or tool found
 		if($comment->commentable_type === 'App\Models\Database')
 			return view('databases.comments.edit', ['commentable' =>$comment->commentable, 'comment' => $comment]);
 		else

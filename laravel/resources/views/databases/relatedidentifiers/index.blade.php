@@ -6,6 +6,7 @@
 	<p>List of relations with the database:</p>
 	<x-relatedidentifier.list :relatedidentifierable=$relatedidentifierable />
 	
-	<livewire:related-identifier-form :relatedidentifierable="$relatedidentifierable" />
-
+	@can('update', $relatedidentifierable)
+		<livewire:related-identifier-form :relatedidentifierable="$relatedidentifierable" />
+	@endcan
 </x-app-layout>

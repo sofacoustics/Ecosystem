@@ -7,6 +7,10 @@
 	<p>Keyword(s) describing the subject focus of the database:</p>
 	<x-keyword.list :keywordable=$keywordable />
 
-	<livewire:keyword-form :keywordable="$keywordable" />
+	@can('update', $keywordable)
+			<livewire:keyword-form :keywordable="$keywordable" />
+	@endcan
+
+
 
 </x-app-layout>

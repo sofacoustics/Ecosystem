@@ -2,11 +2,13 @@
 	<x-slot name="header">
 		<x-tool.header :tool="$publisherable" />
 	</x-slot>
-	
 	<h3>Publishers</h3>
 	<p>Person(s) or institution(s) responsible for publishing this tool at the Ecosystem:</p>
+
 	<x-publisher.list :publisherable=$publisherable />
 
-	<livewire:publisher-form :publisherable="$publisherable" />
+	@can('update', $publisherable)
+		<livewire:publisher-form :publisherable="$publisherable" />
+	@endcan
 
 </x-app-layout>

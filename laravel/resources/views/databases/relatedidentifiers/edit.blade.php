@@ -2,7 +2,9 @@
 	<x-slot name="header">
 		<x-database.header :database="$relatedidentifierable" />
 	</x-slot>
-	<div>
+	@can('update', $relatedidentifierable)
 		<livewire:related-identifier-form :relatedidentifierable="$relatedidentifier->relatedidentifierable" :relatedidentifier=$relatedidentifier />
-	</div>
+	@else
+		You can not edit this relation because you do not own the corresponding database. 
+	@endcan
 </x-app-layout>

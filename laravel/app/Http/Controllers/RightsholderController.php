@@ -27,6 +27,7 @@ class RightsholderController extends Controller
 	
 	public function edit(Rightsholder $rightsholder)
 	{
+		if($rightsholder->rightsholderable == null) return; // no database or tool found
 		if($rightsholder->rightsholderable_type === 'App\Models\Database')
 			return view('databases.rightsholders.edit', ['rightsholderable' =>$rightsholder->rightsholderable, 'rightsholder' => $rightsholder]);
 		else

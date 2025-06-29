@@ -2,7 +2,9 @@
 	<x-slot name="header">
 		<x-database.header :database="$subjectareaable" />
 	</x-slot>
-	<div>
+	@can('update', $subjectareaable)
 		<livewire:subject-area-form :subjectareaable="$subjectarea->subjectareaable" :subjectarea=$subjectarea />
-	</div>
+	@else
+		You can not edit this subject area because you do not own the corresponding database. 
+	@endcan
 </x-app-layout>

@@ -27,6 +27,7 @@ class RelatedIdentifierController extends Controller
 	
 	public function edit(RelatedIdentifier $relatedidentifier)
 	{
+		if($relatedidentifier->relatedidentifierable == null) return; // no database or tool found
 		if($relatedidentifier->relatedidentifierable_type === 'App\Models\Database')
 			return view('databases.relatedidentifiers.edit', ['relatedidentifierable' =>$relatedidentifier->relatedidentifierable, 'relatedidentifier' => $relatedidentifier]);
 		else

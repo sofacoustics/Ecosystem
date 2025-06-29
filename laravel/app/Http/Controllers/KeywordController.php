@@ -27,6 +27,7 @@ class KeywordController extends Controller
 	
 	public function edit(Keyword $keyword)
 	{
+		if($keyword->keywordable == null) return; // no database or tool found
 		if($keyword->keywordable_type === 'App\Models\Database')
 			return view('databases.keywords.edit', ['keywordable' =>$keyword->keywordable, 'keyword' => $keyword]);
 		else

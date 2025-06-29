@@ -27,6 +27,7 @@ class SubjectAreaController extends Controller
 	
 	public function edit(SubjectArea $subjectarea)
 	{
+		if($subjectarea->subjectareaable == null) return; // no database or tool found
 		if($subjectarea->subjectareaable_type === 'App\Models\Database')
 			return view('databases.subjectareas.edit', ['subjectareaable' =>$subjectarea->subjectareaable, 'subjectarea' => $subjectarea]);
 		else

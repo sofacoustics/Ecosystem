@@ -2,7 +2,9 @@
 	<x-slot name="header">
 		<x-tool.header :tool="$publisherable" />
 	</x-slot>
-	<div>
+	@can('update', $publisherable)
 		<livewire:publisher-form :publisherable="$publisher->publisherable" :publisher=$publisher />
-	</div>
+	@else
+		You can not edit this publisher because you do not own the corresponding tool. 
+	@endcan
 </x-app-layout>
