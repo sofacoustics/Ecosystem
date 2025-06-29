@@ -1,11 +1,10 @@
 	<x-app-layout>
-		@can('create', [App\Models\Dataset::class, $database])
-			<x-slot name="header">
-					<x-database.header :database=$database />
-			</x-slot>
+		<x-slot name="header">
+				<x-database.header :database=$database />
+		</x-slot>
+		@can('update', $database)
 			<h3>Create a new dataset:</h3>
 			<div>
-				 <!-- <p>resources/views/datasets/create.blade.php</p> --!>
 				<livewire:dataset-form :database=$database />
 			</div>
 		@else
