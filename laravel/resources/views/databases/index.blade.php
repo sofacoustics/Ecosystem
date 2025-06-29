@@ -3,6 +3,11 @@
 		<h2 class="font-semibold text-xl text-gray-800 leading-tight">
 			The SONICOM Ecosystem contains {{ @count($allDatabases) }} databases
 		</h2>
+		@role('admin')
+			<p><b>Accessible Databases:</b> All databases.</p>
+		@else
+			<p><b>Accesible Databases:</b> Visible databases or uploaded by you.</p>
+		@endrole
 		@can('create', \App\Models\Database::class)
 			<x-button method="GET" action="{{ route('databases.create') }}" class="inline">
 				Create New Database

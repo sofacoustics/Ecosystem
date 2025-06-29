@@ -32,13 +32,13 @@ class Database extends Model
     ];*/
 
 	protected static function booted()
-    {
-    }
+	{
+	}
 
-    public function metadata()
-    {
-        return App\Models\Metadataschema::all();
-    }
+	public function metadata()
+	{
+		return App\Models\Metadataschema::all();
+	}
 
 	//
 	// RELATIONSHIPS

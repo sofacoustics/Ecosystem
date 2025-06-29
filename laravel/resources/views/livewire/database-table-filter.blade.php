@@ -1,5 +1,4 @@
 <div>
-
 	<table class="table-auto border border-slate-399">
 		<thead class="bg-gray-50">
 			<th></th>
@@ -75,6 +74,9 @@
 				</button>
 			</th>
 			<th class="border p-2"># Datasets</th>
+			@auth
+				<th class="border p-2">Uploaded by</th>
+			@endauth
 			<th class="border p-2">Keywords</th>
 			<th class="border p-2">
 				<button wire:click="sortBy('updated_at')">Last update
@@ -91,13 +93,10 @@
 					@endif
 				</button>
 			</th>
-			@auth
-				<th class="border p-2">Uploaded by</th>
-			@endauth
 		</thead>
 		<tbody class="bg-white divide-y divide-gray-200">
 			@foreach($databases as $database)
-				@if($database->visible || ($user_id == $database->user_id))
+				@can('view', $database)
 				<tr>
 					<td class="text-center">
 						@if($database->visible)
@@ -119,13 +118,13 @@
 					</td>
 					<td class="px-6 py-4 whitespace-nowrap text-center">{{ $database->productionyear }}</td>
 					<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Livewire\DatabaseTableFilter::countDatasets($database->id) }}</td>
-					<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Livewire\DatabaseTableFilter::getKeywords($database->id) }}</td>
-					<td class="px-6 py-4 whitespace-nowrap text-center">{{ $database->updated_at }}</td>
 					@auth
 						<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Livewire\DatabaseTableFilter::userName($database->user_id) }}</td>
 					@endauth
+					<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Livewire\DatabaseTableFilter::getKeywords($database->id) }}</td>
+					<td class="px-6 py-4 whitespace-nowrap text-center">{{ $database->updated_at }}</td>
 				</tr>
-				@endif
+				@endcan
 			@endforeach
 			@if($databases->isEmpty())
 				<tr>
