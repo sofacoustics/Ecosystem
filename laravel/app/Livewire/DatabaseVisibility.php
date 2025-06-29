@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Mail\DOIAssigned;
 use App\Models\Database;
 
 use App\Http\Resources\DatabaseResource;
@@ -11,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 use Livewire\Component;
 
@@ -125,6 +127,9 @@ class DatabaseVisibility extends Component
 		$this->database->radar_status = 1;
 		$this->database->doi = $this->doi;
 		$this->database->save();
+		$adminEmails = config('mail.to.admins'); 
+		Mail::to(explode(',',$adminEmails))->send(new DOIAssigned($this->database));
+		app('log')->info("DOI assigned for database. Sending DOIAssigned email to $adminEmails"); 
 		$this->radar_status = $this->database->radar_status;
 	}
 
