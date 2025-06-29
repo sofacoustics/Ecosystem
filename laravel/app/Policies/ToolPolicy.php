@@ -13,7 +13,6 @@ class ToolPolicy
 	 */
 	public function viewAny(?User $user): bool
 	{
-		//
 		return true;
 	}
 
@@ -38,15 +37,22 @@ class ToolPolicy
 	}
 
 	/**
-	 * Determine whether the user can update the model.
+	 * Determine whether the user can update the model. Admin role overwrites.
 	 */
 	public function own(User $user, Tool $tool): Response
 	{
-		// this is called from the controller edit function, when $this->authorize($tool) is called.
-		//dd($user);
-		return ($user->id == $tool->user_id) // allow only for owners 
+		if(isset($user->id))
+		{
+			if(auth()->user()->hasRole('admin'))
+				$access = true;
+			else
+				$access = ($user->id == $tool->user_id); // allow only for owners 
+		}
+		else
+			$access = false;
+		return $access
 			? Response::allow()
-			: Response::deny('You can not update this tool because you do not own it!');
+			: Response::deny('You can not edit this tool because you do not own it!');
 	}
 
 
@@ -55,12 +61,16 @@ class ToolPolicy
 	 */
 	public function update(?User $user, Tool $tool): Response
 	{
-		// this is called from the controller edit function, when $this->authorize($tool) is called.
-		if (isset($user->id))
-			$enable = ($user->id == $tool->user_id) && ($tool->radar_status < 2); // allow only for owners and if not submitted for persistent publication
+		if(isset($user->id))
+		{
+			if(auth()->user()->hasRole('admin'))
+				$access = true;
+			else
+				$access = ($user->id == $tool->user_id) && ($tool->radar_status < 2); // allow only for owners and if not submitted for persistent publication yet
+		}
 		else
-			$enable = false; // do not allow if non-authorized
-		return $enable
+			$access = false; // do not allow if non-authorized
+		return $access
 			? Response::allow()
 			: Response::deny('You can not update this tool because you do not own it or it is locked for persistent publication!');
 	}
@@ -71,27 +81,12 @@ class ToolPolicy
 	 */
 	public function delete(User $user, Tool $tool): Response
 	{
-		return ($user->id == $tool->user_id) && ($tool->radar_status < 2) // allow only for owners and if DOI not assigned yet
+		if(auth()->user()->hasRole('admin'))
+			$access = true;
+		else
+			$access = ($user->id == $tool->user_id) && ($tool->radar_status < 2); // allow only for owners and if DOI not assigned yet
+		return $access
 			? Response::allow()
-			: Response::deny('You may not delete this tool, since you do not own it!');
-
+			: Response::deny('You can not delete this tool because you do not own it or it is locked for persistent publication!');
 	}
-
-
-	/**
-	 * Determine whether the user can restore the model.
-	 */
-/*    public function restore(User $user, Database $database): bool
-	{
-			//
-	}
-*/
-	/**
-	 * Determine whether the user can permanently delete the model.
-	 */
-/*    public function forceDelete(User $user, Database $database): bool
-	{
-			//
-	} 
-*/
 }

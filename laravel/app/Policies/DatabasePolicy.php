@@ -64,7 +64,7 @@ class DatabasePolicy
 			$access = false;
 		return $access
 				? Response::allow()
-				: Response::deny('You can not update this database because you do not own it!');
+				: Response::deny('You can not edit this database because you do not own it!');
 	}
 
 
@@ -98,22 +98,7 @@ class DatabasePolicy
 		else
 			$access = ($user->id == $database->user_id) && ($database->radar_status < 2); // allow only for owners and if DOI not assigned yet
 		return $access
-				? Response::allow()
-				: Response::deny('You may not delete this database, since you do not own it!');
-
-	}
-
-	/**
-	 * Determine whether the user can restore the model.
-	 */
-	public function restore(User $user, Database $database): bool
-	{
-	}
-
-	/**
-	 * Determine whether the user can permanently delete the model.
-	 */
-	public function forceDelete(User $user, Database $database): bool
-	{
+			? Response::allow()
+			: Response::deny('You may not delete this database, since you do not own it!');
 	}
 }
