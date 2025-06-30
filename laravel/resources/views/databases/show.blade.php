@@ -181,9 +181,9 @@ Parameters:
 			@endif
 			<li><b>Uploaded by:</b> {{ $user->name }}</li>
 			
-			<li><b>Date created:</b> {{ $database->created_at }}</li>
+			<li><b>Date (created):</b> {{ $database->created_at }}</li>
 
-			<li><b>Date updated:</b> {{ $database->updated_at }}</li>
+			<li><b>Date (updated):</b> {{ $database->updated_at }}</li>
 
 			@if ($database->productionyear != null) <li><b>Production Year</b>: {{ $database->productionyear }}</li>@endif
 			
@@ -223,7 +223,7 @@ Parameters:
 
 			@if ($database->language != null) <li><b>Language</b>: {{ $database->language }}</li>@endif 
 			
-			@if ($database->datasources != null) <li><b>Datasoures</b>: {{ $database->datasources }}</li>@endif 
+			@if ($database->datasources != null) <li><b>Data Source</b>: {{ $database->datasources }}</li>@endif 
 			
 			@if ($database->software != null) <li><b>Software</b>: {{ $database->software }}</li>@endif 
 			

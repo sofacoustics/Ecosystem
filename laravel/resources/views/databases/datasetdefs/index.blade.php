@@ -57,7 +57,6 @@
 		</table>
 	@endif
 	@can('update', $database)
-		can update<br>
 		@if(count($database->datasets) == 0)
 			<livewire:datasetdef-form :database=$database />
 		@else

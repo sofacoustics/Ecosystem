@@ -123,7 +123,7 @@ class RelatedIdentifierForm extends Component
 		foreach($tools as $tool)
 		{
 			array_push($this->toolrelatedable_ids, $tool->id);
-			array_push($this->toolrelatedable_names, $tool->title." (".$tool->publicationyear.")");
+			array_push($this->toolrelatedable_names, $tool->title." (".$tool->productionyear.")");
 		}
 
 		$this->databaserelatedable_ids[] = "";
@@ -133,7 +133,7 @@ class RelatedIdentifierForm extends Component
 			if($database->visible)
 			{
 				array_push($this->databaserelatedable_ids, $database->id);
-				array_push($this->databaserelatedable_names, $database->title." (".$database->publicationyear.")");
+				array_push($this->databaserelatedable_names, $database->title." (".$database->productionyear.")");
 			}
 	}
 
