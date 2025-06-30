@@ -113,17 +113,17 @@
 							<img id="nodoi" src="{{ asset('images/noDOI.png') }}" alt="noDOI" style="display: block; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em;">
 						@endif
 					</td>
-					<td class="px-6 py-4 whitespace-nowrap">
+					<td class="px-6 py-4 whitespace-normal">
 						<a class="btn btn-primary" href="{{ route('tools.show', $tool->id) }}">{{ $tool->title }}</a><br>
 						<small>{{ $tool->additionaltitle }}</small>
 					</td>
-					<td class="px-6 py-4 whitespace-nowrap text-center">{{ $tool->productionyear }}</td>
-					<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Models\Tool::resourcetypeDisplay($tool->resourcetype) }}</td>
+					<td class="px-6 py-4 text-center">{{ $tool->productionyear }}</td>
+					<td class="px-6 py-4 text-center">{{ \App\Models\Tool::resourcetypeDisplay($tool->resourcetype) }}</td>
 					@auth
-						<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Livewire\ToolTableFilter::userName($tool->user_id) }}</td>
+						<td class="px-6 py-4 text-center">{{ \App\Livewire\ToolTableFilter::userName($tool->user_id) }}</td>
 					@endauth
-					<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Livewire\ToolTableFilter::getKeywords($tool->id) }}</td>
-					<td class="px-6 py-4 whitespace-nowrap text-center">{{ $tool->updated_at }}</td>
+					<td class="px-6 py-4 whitespace-nowrap text-center">{!! nl2br(e(\App\Livewire\ToolTableFilter::getKeywords($tool->id))) !!}</td>
+					<td class="px-6 py-4 text-center">{{ $tool->updated_at }}</td>
 				</tr>
 			@endforeach
 			@if($tools->isEmpty())

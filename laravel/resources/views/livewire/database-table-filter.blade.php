@@ -112,17 +112,17 @@
 							<img id="nodoi" src="{{ asset('images/noDOI.png') }}" alt="noDOI"  style="display: block; margin: 0 auto; width: 100%; height: auto; max-width: 2em;">
 						@endif
 					</td>
-					<td class="px-6 py-4 whitespace-nowrap">
+					<td class="px-6 py-4 whitespace-normal">
 						<a class="btn btn-primary" href="{{ route('databases.show', $database->id) }}">{{ $database->title }}</a><br>
 						<small>{{ $database->additionaltitle }}</small>
 					</td>
-					<td class="px-6 py-4 whitespace-nowrap text-center">{{ $database->productionyear }}</td>
-					<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Livewire\DatabaseTableFilter::countDatasets($database->id) }}</td>
+					<td class="px-6 py-4 text-center">{{ $database->productionyear }}</td>
+					<td class="px-6 py-4 text-center">{{ \App\Livewire\DatabaseTableFilter::countDatasets($database->id) }}</td>
 					@auth
-						<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Livewire\DatabaseTableFilter::userName($database->user_id) }}</td>
+						<td class="px-6 py-4 text-center">{{ \App\Livewire\DatabaseTableFilter::userName($database->user_id) }}</td>
 					@endauth
-					<td class="px-6 py-4 whitespace-nowrap text-center">{{ \App\Livewire\DatabaseTableFilter::getKeywords($database->id) }}</td>
-					<td class="px-6 py-4 whitespace-nowrap text-center">{{ $database->updated_at }}</td>
+					<td class="px-6 py-4 whitespace-nowrap text-center">{!! nl2br(e(\App\Livewire\DatabaseTableFilter::getKeywords($database->id))) !!}</td>
+					<td class="px-6 py-4 text-center">{{ $database->updated_at }}</td>
 				</tr>
 				@endcan
 			@endforeach

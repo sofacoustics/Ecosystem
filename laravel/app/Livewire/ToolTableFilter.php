@@ -94,7 +94,7 @@ class ToolTableFilter extends Component
 		foreach($keywords as $index => $keyword)
 		{
 			if($index>0)
-				$s = $s . "; " . $keyword->keywordName;
+				$s = $s . "\n" . $keyword->keywordName;
 			else
 				$s = $keyword->keywordName;
 		}
