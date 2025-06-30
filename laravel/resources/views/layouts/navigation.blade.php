@@ -1,5 +1,5 @@
 	{{-- https://v1.tailwindcss.com/components/navigation --}}
-@if(str_contains(config('app.name'),"dev"))
+@if(str_contains(config('app.name'),"(dev)"))
 	<nav class="flex items-center justify-between flex-wrap bg-orange-500  p-6">
 @else
 	<nav class="flex items-center justify-between flex-wrap bg-white  p-6">

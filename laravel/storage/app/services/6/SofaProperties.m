@@ -117,7 +117,7 @@ if isoctave; fputs(log_fid, "Collected dimensions definitions from SOFA file.\n"
 
 
 %% Write dimensions data to CSV using Octave's file I/O
-header = {'SOFA Conventions', 'Dim R', 'Dim E', 'Dim M', 'Dim N', 'Dim S'}; % Define header
+header = {'SOFA Conventions', 'R', 'E', 'M', 'N', 'S'}; % Define header
 dataDim = {[Obj.GLOBAL_SOFAConventions ' ' Obj.GLOBAL_SOFAConventionsVersion], dimR, dimE, dimM, dimN, dimS}; % Define data
 output_filename = [SOFAfile, '_dim.csv']; % Construct output filename
 delimiter = ';'; % Define delimiter
