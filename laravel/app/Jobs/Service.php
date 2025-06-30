@@ -24,6 +24,8 @@ class Service implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $timeout = 180; // This 'timeout' appears to be independent of the Process timeout and needs to be high enough
+
     private ServiceModel $service;
 
     /**
@@ -52,12 +54,11 @@ class Service implements ShouldQueue
         //  since otherwise your changes won't be used (old version cached).
         //
         ////////////////////////////////////////////////////////////////////////////////
-        $log = "Service::handle()\n";
         $widget_id=$this->widget->id;
         $service_id = $this->service->id;
         $datafile_id = $this->datafile->id;
         $directory=storage_path('app/services/' . $this->service->id);
-        $log .= "  widget=$widget_id, service=$service_id, datafile=$datafile_id, directory=$directory\n";
+        $log = "  widget=$widget_id, service=$service_id, datafile=$datafile_id, directory=$directory\n";
 		#$command = 'bash -c "setsid bash -c \'' .  $this->service->exe . ' ' . $this->service->parameters . ' \"' . $this->datafile->absolutepath() . '\"' . '\'"';
 		#$command = 'bash -c "setsid bash -c \'' .  $this->service->exe . ' ' . $this->service->parameters . ' \"' . $this->datafile->absolutepath() . '\"' . '\'"';
 		//$command = 'bash -c "setsid bash -c \'sleep 20 && echo \"Child finished.\" >> /tmp/child_output.txt\'"';
@@ -67,7 +68,7 @@ class Service implements ShouldQueue
 
 		$start = microtime(true);
 
-		$timeout = 60; // seconds
+		$timeout = 120; // seconds
 
         /*
         $process = Process::timeout($timeout)
@@ -90,9 +91,9 @@ class Service implements ShouldQueue
         $args[] = $this->service->parameters;
         $args[] = $this->datafile->absolutepath();
         foreach($envvars as $k => $v)
-            $log .= " environmental variable: $k => $v\n";
+            $log .= "  environmental variable: $k => $v\n";
         foreach($args as $arg)
-            $log .= " command argument: $arg\n";
+            $log .= "  command argument: $arg\n";
 
         //$process = new Process([$this->service->exe, $this->service->parameters, $this->datafile->absolutepath()], null,[
         $process = new Process($args, null,$envvars);
@@ -108,6 +109,7 @@ class Service implements ShouldQueue
 
         $pid = $process->getPid();
 
+		app('log')->info("Process $pid has started:", ['data' => $args]);
 		try {
 			// Periodically check for timeout while the process is running
 			while ($process->isRunning()) {
@@ -120,12 +122,13 @@ class Service implements ShouldQueue
 			}
 			$output = $process->getOutput();
 			$errorOutput = $process->getErrorOutput();
+			app('log')->info("Process $pid has finished");
 		} catch (ProcessTimedOutException $e) {
-			$log .= " Process timed out\n: " . $e->getMessage();
+			app('log')->info("Process $pid has reached it's timeout");
 			// Kill child processes
 			foreach ($childPids as $childPid) {
 				if (is_numeric($childPid)) {
-					$log .= " Killing $childPid\n";
+					$log .= "  Killing $childPid\n";
 					posix_kill((int)$childPid, SIGKILL);
 				}
 			}
@@ -167,13 +170,15 @@ class Service implements ShouldQueue
         $this->datafile->last_service_error_code = $exitCode;
         $this->datafile->save();
 		$duration = microtime(true) - $start;
-		Storage::disk('sonicom-data')->put($datafilelogfile, $output);
+		if(isset($output))
+			Storage::disk('sonicom-data')->put($datafilelogfile, $output);
+		if(isset($errorOutput))
 		Storage::disk('sonicom-data')->put($datafileerrorfile, $errorOutput);
 		if($process->isSuccessful())
 			$log .= "  process finished successfully after $duration seconds (exitCode: " . $exitCode . ")\n";
 		else
 			$log .= "  process failed after $duration seconds (exitCode: " . $exitCode . ")\n";
 		DatafileProcessed::dispatch($this->datafile->id);
-		app('log')->info($log); // log all in one go so it doesn't get interspersed with other log messages
+		app('log')->info("Process $pid info:\n$log"); // log all in one go so it doesn't get interspersed with other log messages
  }
 }
