@@ -95,8 +95,8 @@ SOFAplotHRTF(Obj,'MagHorizontal','noconversion2ir');
 
 % Use TF data if available
 receiver = 1;  % Left ear
-freqs = [2000, 4000];  % Frequencies to plot (Hz)
-% freqs = [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];  % Frequencies to plot (Hz)
+%freqs = [2000, 4000];  % Frequencies to plot (Hz)
+freqs = [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];  % Frequencies to plot (Hz)
 
 % Check if TF data exists
 if isfield(Obj.Data, 'Real') && isfield(Obj.Data, 'Imag')

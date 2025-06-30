@@ -22,7 +22,7 @@ class DatafileListener extends Component
 	public Datasetdef $datasetdef;
 	public Datafiletype $datafiletype;
 	public ?Widget $widget;
-	public $result;#
+	public $result;
 	public $isExpanded = false; // for boxes to be expanded
 
 
@@ -42,30 +42,11 @@ class DatafileListener extends Component
 	public function minus()
 	{ $this->result--;
 	}
-	// it appears that just listening for an event will cause a re-render
+		// it appears that just listening for an event will cause a re-render
 	public function datafileProcessed($payload)
 	{
 		\Log::info('DatafileListener('.$this->id.'): processed sonicom-ecosystem datafile-processed event(id='.$payload['id'].')');
-		/*
-			if($this->id == $payload['id'])
-			{
-				// render again! jw:note what would be a better way to do this
-				$this->id = $payload['id'];
-				\Log::info('DatafileListener('.$this->id.'): processed sonicom-ecosystem datafile-processed event(id='.$payload['id'].')');
-			}
-			else
-			{
-				\Log::info('DatafileListener('.$this->id.'): skipping sonicom-ecosystem datafile-processed event(id='.$payload['id'].')');
-			}
-		 */
-		}
-	/*
-	#[On('echo:sonicom-ecosystem,.datafile-processed')]
-	public function onDatafileProcessed($event)
-	{
-			// this would also work instead of $listeners
 	}
-	 */
 
 	public function mount(Datafile $datafile)
 	{
@@ -217,6 +198,9 @@ class DatafileListener extends Component
 				$viewData['csvRowsProp'] = $csvRowsProp;
 				break;
 		
+			case 'livewire.datafiles.sofa-directivity-polar':
+				$this->result=5;
+				break;
 		}
 		return view($view, $viewData);
 	}
