@@ -4,7 +4,10 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
+use App\Mail\NewComment;
 use App\Models\Comment;
+
+use Illuminate\Support\Facades\Mail;
 
 class CommentForm extends Component
 {
@@ -52,13 +55,19 @@ class CommentForm extends Component
 		{
 			$this->comment = new Comment();
 		}
-		
+
 		$this->comment->commentable_id = $this->commentable_id;
 		$this->comment->commentable_type = $this->commentable_type;
 		$this->comment->user_id = $this->user_id;
 		$this->comment->text = $this->text;
 
 		$this->comment->save();
+
+		$adminEmails = config('mail.to.admins');
+		$userEmail = $this->comment->user->email;
+		$recipients = "$adminEmails,$userEmail";
+		Mail::to(explode(',',$recipients))->send(new NewComment($this->comment));
+		app('log')->info("New comment created. Sending NewComment email to $recipients");
 
 		session()->flash('message', $isNew ? 'comment created successfully.' : 'comment updated successfully.');
 
