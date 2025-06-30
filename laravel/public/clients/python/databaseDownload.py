@@ -25,7 +25,7 @@ def databaseDownload(download_path: str, database_id: int):
             raise Exception(f'downloadFilesFromHTTPServer:createFolder - Failed to create download directory: {download_path}. Error: {e}')
 
     # Fetch the list of files from the Ecosystem
-    server_url = f'https://sonicom.amtoolbox.org/databases/{database_id}/download?type=json'
+    server_url = f'https://ecosystem.sonicom.eu/databases/{database_id}/download?type=json'
     try:
         response = requests.get(server_url)
         response.raise_for_status()  # Raise an HTTPError for bad responses (4xx or 5xx)

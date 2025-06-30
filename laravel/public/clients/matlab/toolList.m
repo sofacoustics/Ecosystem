@@ -1,7 +1,7 @@
 % Displays the list of all visible tools in the Ecosystem
 %
 
-serverURL='https://sonicom.amtoolbox.org/tools?type=json';
+serverURL='https://ecosystem.sonicom.eu/tools?type=json';
 
 %% Fetch the list of tools from the Ecosystem
 try

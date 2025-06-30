@@ -7,7 +7,7 @@ def toolList():
     Author: Piotr Majdak (2025)
     
     """
-    server_url = 'https://sonicom.amtoolbox.org/tools?type=json'
+    server_url = 'https://ecosystem.sonicom.eu/tools?type=json'
 
     # Fetch the list of tools from the Ecosystem
     try:

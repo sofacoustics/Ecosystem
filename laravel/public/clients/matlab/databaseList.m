@@ -1,7 +1,7 @@
 % Displays the list of all visible Databases in the Ecosystem
 %
 
-serverURL='https://sonicom.amtoolbox.org/databases?type=json';
+serverURL='https://ecosystem.sonicom.eu/databases?type=json';
 
 %% Fetch the list of databases from the Ecosystem
 try

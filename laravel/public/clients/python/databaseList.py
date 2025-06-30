@@ -7,7 +7,7 @@ def databaseList():
     Author: Piotr Majdak (2025)
     
     """
-    server_url = 'https://sonicom.amtoolbox.org/databases?type=json'
+    server_url = 'https://ecosystem.sonicom.eu/databases?type=json'
 
     # Fetch the list of databases from the Ecosystem
     try:
