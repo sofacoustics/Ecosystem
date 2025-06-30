@@ -52,7 +52,7 @@ class DatasetdefForm extends Component
 			$this->widget_id = 1; // default widget
 
 		$this->datafiletypes = \App\Models\Datafiletype::all();
-		$this->widgets = \App\Models\Widget::all(); //jw:todo get widgets based on datafiletype
+		$this->widgets = \App\Models\Widget::orderBy('name', 'asc')->get(); 
 		//dd($this->datafiletypes);
 	}
 

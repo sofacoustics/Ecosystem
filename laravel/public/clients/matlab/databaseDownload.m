@@ -17,7 +17,7 @@ if ~isfolder(downloadPath)
 end
 
 %% Fetch the list of files from the Ecosystem
-serverURL=['https://sonicom.amtoolbox.org/databases/' num2str(databaseID) '/download?type=json'];
+serverURL=['https://ecosystem.sonicom.eu/databases/' num2str(databaseID) '/download?type=json'];
 try
   options=weboptions; options.CertificateFilename=(''); 
   jsonData = webread(serverURL, options);

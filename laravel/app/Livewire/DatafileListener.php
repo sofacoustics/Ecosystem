@@ -22,35 +22,31 @@ class DatafileListener extends Component
 	public Datasetdef $datasetdef;
 	public Datafiletype $datafiletype;
 	public ?Widget $widget;
+	public $result;
+	public $isExpanded = false; // for boxes to be expanded
+
 
 	protected $listeners = [
 		'echo:sonicom-ecosystem,.datafile-processed' => 'datafileProcessed',
 	];
 
-	// it appears that just listening for an event will cause a re-render
+	public function toggleExpand()
+	{
+		$this->isExpanded = !$this->isExpanded; // Toggle the boolean value
+	}
+
+	public function plus()
+	{ $this->result++;
+	}
+
+	public function minus()
+	{ $this->result--;
+	}
+		// it appears that just listening for an event will cause a re-render
 	public function datafileProcessed($payload)
 	{
 		\Log::info('DatafileListener('.$this->id.'): processed sonicom-ecosystem datafile-processed event(id='.$payload['id'].')');
-		/*
-			if($this->id == $payload['id'])
-			{
-				// render again! jw:note what would be a better way to do this
-				$this->id = $payload['id'];
-				\Log::info('DatafileListener('.$this->id.'): processed sonicom-ecosystem datafile-processed event(id='.$payload['id'].')');
-			}
-			else
-			{
-				\Log::info('DatafileListener('.$this->id.'): skipping sonicom-ecosystem datafile-processed event(id='.$payload['id'].')');
-			}
-		 */
-		}
-	/*
-	#[On('echo:sonicom-ecosystem,.datafile-processed')]
-	public function onDatafileProcessed($event)
-	{
-			// this would also work instead of $listeners
 	}
-	 */
 
 	public function mount(Datafile $datafile)
 	{
@@ -59,6 +55,7 @@ class DatafileListener extends Component
 		$this->datasetdef = $datafile->datasetdef;
 		$this->datafiletype = $datafile->datasetdef->datafiletype;
 		$this->widget = $datafile->datasetdef->widget;
+		$this->result = 0;
 	}
 
 	public function render()
@@ -74,150 +71,137 @@ class DatafileListener extends Component
 		};
 
 		// widget view?
-		if ($this?->widget?->view) {
-				$view = "livewire.datafiles." . $this->widget->view;
-		}
+		if ($this?->widget?->view) 
+			$view = "livewire.datafiles." . $this->widget->view;
 
 		// view existing?
-		if (!View::exists($view)) {
-				\Log::info('DatafileListener: View not found, fallback to generic');
-				$view = 'livewire.datafiles.generic';
+		if (!View::exists($view)) 
+		{
+			\Log::info('DatafileListener: View not found, fallback to generic');
+			$view = 'livewire.datafiles.generic';
 		}
 
 		$viewData = []; // clear the array which will be passed to the blade
-			
-			// *****
-			// Widget: Properties
-		if ($view === 'livewire.datafiles.properties')
+		
+		switch($view)
 		{
-			$fullPath = $this->datafile->absolutepath();
-			$viewData['fullPath'] = $fullPath; 
-			//if (Storage::exists($fullPath)) 
-				$fileSizeInBytes = filesize($fullPath);
-			//else
-			//	$fileSizeInBytes = -1;
-			$viewData['fileSizeInBytes'] = $fileSizeInBytes;
-			$viewData['fileSizeInKilobytes'] = round($fileSizeInBytes / 1024, 2);
-			$viewData['fileSizeInMegabytes'] = round($fileSizeInBytes / (1024*1024), 2);
-			$viewData['fileSizeInGigabytes'] = round($fileSizeInBytes / (1024*1024*1024), 2);
-			$viewData['created_at'] = $this->datafile->created_at;
-			$viewData['updated_at'] = $this->datafile->updated_at;
-			$viewData['radar_id'] = $this->datafile->radar_id;
-			$viewData['datasetdef_radar_id'] = $this->datafile->datasetdef_radar_id;
-			$viewData['datasetdef_radar_upload_url'] = $this->datafile->datasetdef_radar_upload_url;
+				// GENERIC DATAFILE PROPERTIES
+				//
+			case 'livewire.datafiles.properties':
+				$fullPath = $this->datafile->absolutepath();
+				$viewData['fullPath'] = $fullPath; 
+				//if (Storage::exists($fullPath)) 
+					$fileSizeInBytes = filesize($fullPath);
+				//else
+				//	$fileSizeInBytes = -1;
+				$viewData['fileSizeInBytes'] = $fileSizeInBytes;
+				$viewData['fileSizeInKilobytes'] = round($fileSizeInBytes / 1024, 2);
+				$viewData['fileSizeInMegabytes'] = round($fileSizeInBytes / (1024*1024), 2);
+				$viewData['fileSizeInGigabytes'] = round($fileSizeInBytes / (1024*1024*1024), 2);
+				$viewData['created_at'] = $this->datafile->created_at;
+				$viewData['updated_at'] = $this->datafile->updated_at;
+				$viewData['radar_id'] = $this->datafile->radar_id;
+				$viewData['datasetdef_radar_id'] = $this->datafile->datasetdef_radar_id;
+				$viewData['datasetdef_radar_upload_url'] = $this->datafile->datasetdef_radar_upload_url;
+				break;
 
-			} // Widget: Properties
-			
-			
-				// *****
-				// Widget: SOFA properties
-// *****
-// Widget: SOFA properties
-if ($view === 'livewire.datafiles.sofa-properties') 
-{
-    $sofaAsset = $this->datafile->asset();
+				// SOFA properties
+				//
+			case 'livewire.datafiles.sofa-properties': 
+				$sofaAsset = $this->datafile->asset();
+				$urlParts = parse_url($sofaAsset);
+				$sofaPath = $urlParts['path']; // eg. /data/9/57/135/6 sofa-properties.sofa
+				$dir = dirname($sofaPath); // eg. /data/9/57/135
+				$filename = basename($sofaPath, '.sofa'); // eg. 6 sofa-properties
 
-			// remove query string
-			$urlParts = parse_url($sofaAsset);
-			$sofaPath = $urlParts['path']; // eg. /data/9/57/135/6 sofa-properties.sofa
+				// ====================
+				// Load 1st CSV: .sofa_dim.csv
+				// ====================
+				$csvFilename = $filename . '.sofa_dim.csv'; // eg. 6 sofa-properties.sofa_1.csv
+				$csvFilenameEncoded = rawurlencode($csvFilename); 			// Encoding file name
+				$csvPath = $dir . '/' . $csvFilenameEncoded;
 
-			$dir = dirname($sofaPath); // eg. /data/9/57/135
-			$filename = basename($sofaPath, '.sofa'); // eg. 6 sofa-properties
+					// Logging
+				\Log::info('DatafileListener: sofaAsset = ' . $sofaAsset);
+				\Log::info('DatafileListener: sofaPath (no Query) = ' . $sofaPath);
+				\Log::info('DatafileListener: csvPath (encoded) = ' . $csvPath);
 
-    // ====================
-    // Load 1st CSV: .sofa_dim.csv
-    // ====================
-    $csvFilename = $filename . '.sofa_dim.csv'; // eg. 6 sofa-properties.sofa_1.csv
+					// Get domain
+				$baseUrl = request()->getSchemeAndHttpHost(); // e.g., https://sonicom-dev.amtoolbox.org
+				$csvUrl = $baseUrl . $csvPath;
+					// load file
+				$csvContent = '';
+				try 
+				{
+					$csvContent = @file_get_contents($csvUrl);
+				} catch (\Exception $e) {
+					\Log::error('DatafileListener: Error loading: ' . $e->getMessage());
+				}
 
-			// Encoding file name
-			$csvFilenameEncoded = rawurlencode($csvFilename);
+				if ($csvContent === false || $csvContent === null) 
+					$csvContent = '';
 
-			$csvPath = $dir . '/' . $csvFilenameEncoded;
+					// CSV as array for table
+				$csvRows = [];
+				if ($csvContent !== '') 
+				{
+					$lines = preg_split('/\r\n|\r|\n/', $csvContent);
+					foreach ($lines as $line) 
+					{
+						if (trim($line) !== '') 
+							$csvRows[] = str_getcsv($line, ';');
+					}
+				}
 
-			// Logging
-			\Log::info('DatafileListener: sofaAsset = ' . $sofaAsset);
-			\Log::info('DatafileListener: sofaPath (no Query) = ' . $sofaPath);
-			\Log::info('DatafileListener: csvPath (encoded) = ' . $csvPath);
+				// Pass first CSV data to view
+				$viewData['csvContent'] = $csvContent;
+				$viewData['csvPath'] = $csvUrl;
+				$viewData['csvRows'] = $csvRows;
 
-				// Get domain
-			$baseUrl = request()->getSchemeAndHttpHost(); // e.g., https://sonicom-dev.amtoolbox.org
-			$csvUrl = $baseUrl . $csvPath;
+				// ====================
+				// Load 2nd CSV: .sofa_prop.csv
+				// ====================
+				$csvFilenameProp = $filename . '.sofa_prop.csv';
+				$csvFilenamePropEncoded = rawurlencode($csvFilenameProp);
+				$csvPathProp = $dir . '/' . $csvFilenamePropEncoded;
+				$csvUrlProp = $baseUrl . $csvPathProp;
+
+				// Logging
+				\Log::info('DatafileListener: csvPropPath (encoded) = ' . $csvPathProp);
 
 				// load file
-			$csvContent = '';
-			try 
-			{
-				$csvContent = @file_get_contents($csvUrl);
-			} catch (\Exception $e) {
-				\Log::error('DatafileListener: Error loading: ' . $e->getMessage());
-			}
-
-			if ($csvContent === false || $csvContent === null) 
-			{
-				$csvContent = '';
-			}
-
-				// CSV as array for table
-			$csvRows = [];
-			if ($csvContent !== '') 
-			{
-				$lines = preg_split('/\r\n|\r|\n/', $csvContent);
-				foreach ($lines as $line) {
-						if (trim($line) !== '') {
-								$csvRows[] = str_getcsv($line, ';');
-						}
+				$csvContentProp = '';
+				try 
+				{
+					$csvContentProp = @file_get_contents($csvUrlProp);
+				} catch (\Exception $e) {
+						\Log::error('DatafileListener: Error loading .sofa_prop.csv: ' . $e->getMessage());
 				}
-			}
 
-    // Pass first CSV data to view
-    $viewData['csvContent'] = $csvContent;
-    $viewData['csvPath'] = $csvUrl;
-    $viewData['csvRows'] = $csvRows;
+				if ($csvContentProp === false || $csvContentProp === null) 
+					$csvContentProp = '';
 
-    // ====================
-    // Load 2nd CSV: .sofa_prop.csv
-    // ====================
-    $csvFilenameProp = $filename . '.sofa_prop.csv';
-    $csvFilenamePropEncoded = rawurlencode($csvFilenameProp);
-    $csvPathProp = $dir . '/' . $csvFilenamePropEncoded;
-    $csvUrlProp = $baseUrl . $csvPathProp;
+				$csvRowsProp = [];
+				if ($csvContentProp !== '') 
+				{
+					$lines = preg_split('/\r\n|\r|\n/', $csvContentProp);
+					foreach ($lines as $line) 
+					{
+						if (trim($line) !== '') 
+							$csvRowsProp[] = str_getcsv($line, ';');
+					}
+				}
 
-    // Logging
-    \Log::info('DatafileListener: csvPropPath (encoded) = ' . $csvPathProp);
-
-    // load file
-    $csvContentProp = '';
-    try 
-    {
-        $csvContentProp = @file_get_contents($csvUrlProp);
-    } catch (\Exception $e) {
-        \Log::error('DatafileListener: Error loading .sofa_prop.csv: ' . $e->getMessage());
-    }
-
-    if ($csvContentProp === false || $csvContentProp === null) 
-    {
-        $csvContentProp = '';
-    }
-
-    // CSV as array for table
-    $csvRowsProp = [];
-    if ($csvContentProp !== '') 
-    {
-        $lines = preg_split('/\r\n|\r|\n/', $csvContentProp);
-        foreach ($lines as $line) {
-            if (trim($line) !== '') {
-                $csvRowsProp[] = str_getcsv($line, ';');
-            }
-        }
-    }
-
-    // Pass second CSV data to view
-    $viewData['csvContentProp'] = $csvContentProp;
-    $viewData['csvPathProp'] = $csvUrlProp;
-    $viewData['csvRowsProp'] = $csvRowsProp;
-}
-
-
-        return view($view, $viewData);
-    }
+					// Pass second CSV data to view
+				$viewData['csvContentProp'] = $csvContentProp;
+				$viewData['csvPathProp'] = $csvUrlProp;
+				$viewData['csvRowsProp'] = $csvRowsProp;
+				break;
+		
+			case 'livewire.datafiles.sofa-directivity-polar':
+				$this->result=5;
+				break;
+		}
+		return view($view, $viewData);
+	}
 }

@@ -18,8 +18,8 @@ class WidgetSeeder extends Seeder
             'description' => 'Display datafile properties.',
             'view' => 'properties',
         ));
-        Widget::create(array('name' => 'HRTF General',
-            'description' => 'Plot hrtf-related figures: time domain: ETC left/right; frequency domain (lin): magnitude spectrum left/right; frequency domain (log): magnitude spectrum left/right logarithmic; ITD; Geometry.',
+        Widget::create(array('name' => 'SOFA: HRTF General',
+            'description' => 'Plot HRTF-related figures: ETC, magnitude spectra (logarithmic and linear frequencies), ITD, and the geometry.',
             'service_id' => 1,
             'view' => 'hrtf-general',
         ));
@@ -48,8 +48,8 @@ class WidgetSeeder extends Seeder
             'service_id' => 4,
             'view' => 'sofa-srir-geometry',
         ));		
-		Widget::create(array('name' => 'Directivities General',
-            'description' => 'Plot the directivities as polar plots, and as filled contour plot.',
+		Widget::create(array('name' => 'SOFA: Directivities Polar',
+            'description' => 'Plot the directivities as polar plots.',
             'service_id' => 5,
             'view' => 'directivity-general',
         ));		
@@ -59,11 +59,11 @@ class WidgetSeeder extends Seeder
             'view' => 'sofa-properties',
         ));		
 		Widget::create(array('name' => 'Geometry: Mesh',
-            'description' => 'Show Geometry as Mesh.',
+            'description' => 'Show Geometry as a mesh.',
             'view' => 'mesh',
         ));		
-		Widget::create(array('name' => 'Geometry: Parametric (CSV)',
-            'description' => 'Render PPM if BezierPPM, show CSV file properties otherwise.',
+		Widget::create(array('name' => 'Geometry: BezierPPM',
+            'description' => 'Render a mesh with the BezierPPM.',
             'service_id' => 7,
             'view' => 'bezierppm',
         ));		
@@ -76,7 +76,7 @@ class WidgetSeeder extends Seeder
             'service_id' => 8,
             'view' => 'sofa-annotated-receiver',
         ));		
-		Widget::create(array('name' => 'Headphones General',
+		Widget::create(array('name' => 'SOFA: Headphones General',
             'description' => 'Plot spectra of headphones.',
             'service_id' => 9,
             'view' => 'headphones-general',

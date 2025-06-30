@@ -1,12 +1,12 @@
 	{{-- https://v1.tailwindcss.com/components/navigation --}}
-@if(str_contains(config('app.name'),"dev"))
+@if(str_contains(config('app.name'),"(dev)"))
 	<nav class="flex items-center justify-between flex-wrap bg-orange-500  p-6">
 @else
 	<nav class="flex items-center justify-between flex-wrap bg-white  p-6">
 @endif
 
 	<div class="flex items-center flex-shrink-0 text-black mr-6">
-		<a href="/"><x-application-logo /></a>
+		<a href="/"><img id="logo" src="{{ asset('images/logo/logo_only.png') }}" alt="Logo" class="inline h-8"></a>&nbsp;
 		<a href="/"><span class="font-semibold text-xl tracking-tight">SONICOM Ecosystem</span></a>
 	</div>
 	<div class="block lg:hidden">
