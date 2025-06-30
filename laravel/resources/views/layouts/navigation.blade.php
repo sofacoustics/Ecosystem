@@ -6,7 +6,7 @@
 @endif
 
 	<div class="flex items-center flex-shrink-0 text-black mr-6">
-		<a href="/"><x-application-logo /></a>
+		<a href="/"><img id="logo" src="{{ asset('images/logo/logo_only.png') }}" alt="Logo" class="inline h-8"></a>&nbsp;
 		<a href="/"><span class="font-semibold text-xl tracking-tight">SONICOM Ecosystem</span></a>
 	</div>
 	<div class="block lg:hidden">

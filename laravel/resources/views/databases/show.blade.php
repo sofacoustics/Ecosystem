@@ -181,9 +181,9 @@ Parameters:
 			@endif
 			<li><b>Uploaded by:</b> {{ $user->name }}</li>
 			
-			<li><b>Date (created):</b> {{ $database->created_at }}</li>
+			<li><b>Date (created):</b> {{ $database->created_at }} (GMT)</li>
 
-			<li><b>Date (updated):</b> {{ $database->updated_at }}</li>
+			<li><b>Date (updated):</b> {{ $database->updated_at }} (GMT)</li>
 
 			@if ($database->productionyear != null) <li><b>Production Year</b>: {{ $database->productionyear }}</li>@endif
 			

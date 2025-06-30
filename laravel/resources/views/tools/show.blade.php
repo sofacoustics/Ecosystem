@@ -202,9 +202,9 @@ Parameters:
 			
 			<li><b>Uploaded by:</b> {{ $user->name }}</li>
 			
-			<li><b>Date created:</b> {{ $tool->created_at }}</li>
+			<li><b>Date (created):</b> {{ $tool->created_at }} (GMT)</li>
 			
-			<li><b>Date updated:</b> {{ $tool->updated_at }}</li>
+			<li><b>Date (updated):</b> {{ $tool->updated_at }} (GMT)</li>
 			
 			@if ($tool->productionyear != null) <li><b>Production Year</b>: {{ $tool->productionyear }}</li>@endif
 			
