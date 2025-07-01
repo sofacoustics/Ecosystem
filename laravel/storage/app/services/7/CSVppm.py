@@ -1,3 +1,4 @@
+#!/usr/bin/env -S uv run --script
 # /// script
 # requires-python = "==3.11.*"
 # dependencies = [
@@ -7,14 +8,18 @@
 
 import argparse
 from bezierppm import BezierPPM
+
+
 def main(args):
     ppm = BezierPPM(from_csv_file=args.input)
-    ppm.export_stl(f'{args.input}_1.stl')
+    ppm.export_stl(f"{args.input}_1.stl")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--input", type=str, help="Path to the csv file with the PPM parameters.")
+    parser.add_argument(
+        "--input", type=str, help="Path to the csv file with the PPM parameters."
+    )
 
     main(parser.parse_args())
-
