@@ -64,15 +64,48 @@ if isoctave; fputs(fid, [ "About to plot\n"]); end
 % close all;
 figure('Name',SOFAfile);
 mySOFAplotHRTF(Obj,'ETCHorizontalLV', 1);
-print ("-r600", [SOFAfile '_1.png']);
-if isoctave;  fputs(fid, [ "just printed " SOFAfile "_1.png\n"]); end
+print ("-r600", [SOFAfile '_1_1.png']);
+if isoctave;  fputs(fid, [ "just printed " SOFAfile "_1_1.png\n"]); end
+
+xlim(get(gca, 'XLim') / 2); % Scale x-axis to half
+print ("-r600", [SOFAfile '_1_2.png']);
+if isoctave;  fputs(fid, [ "just printed " SOFAfile "_1_2.png\n"]); end
+
+xlim(get(gca, 'XLim') / 2); % Scale x-axis to half
+print ("-r600", [SOFAfile '_1_3.png']);
+if isoctave;  fputs(fid, [ "just printed " SOFAfile "_1_3.png\n"]); end
+
+xlim(get(gca, 'XLim') / 2); % Scale x-axis to half
+print ("-r600", [SOFAfile '_1_4.png']);
+if isoctave;  fputs(fid, [ "just printed " SOFAfile "_1_4.png\n"]); end
+
+xlim(get(gca, 'XLim') / 2); % Scale x-axis to half
+print ("-r600", [SOFAfile '_1_5.png']);
+if isoctave;  fputs(fid, [ "just printed " SOFAfile "_1_5.png\n"]); end
+
 
 % close all;
 figure('Name',SOFAfile);
 mySOFAplotHRTF(Obj,'ETCHorizontalLV', 2);
 % mySOFAplotHRTF(Obj,'MagMedian','nonormalization');
-print ("-r600", [SOFAfile '_2.png']);
-if isoctave;  fputs(fid, [ "just printed " SOFAfile "_2.png\n"]); end
+print ("-r600", [SOFAfile '_2_1.png']);
+if isoctave;  fputs(fid, [ "just printed " SOFAfile "_2_1.png\n"]); end
+
+xlim(get(gca, 'XLim') / 2); % Scale x-axis to half
+print ("-r600", [SOFAfile '_2_2.png']);
+if isoctave;  fputs(fid, [ "just printed " SOFAfile "_2_2.png\n"]); end
+
+xlim(get(gca, 'XLim') / 2); % Scale x-axis to half
+print ("-r600", [SOFAfile '_2_3.png']);
+if isoctave;  fputs(fid, [ "just printed " SOFAfile "_2_3.png\n"]); end
+
+xlim(get(gca, 'XLim') / 2); % Scale x-axis to half
+print ("-r600", [SOFAfile '_2_4.png']);
+if isoctave;  fputs(fid, [ "just printed " SOFAfile "_2_4.png\n"]); end
+
+xlim(get(gca, 'XLim') / 2); % Scale x-axis to half
+print ("-r600", [SOFAfile '_2_5.png']);
+if isoctave;  fputs(fid, [ "just printed " SOFAfile "_2_5.png\n"]); end
 
 %% Plot Geometry
 SOFAplotGeometry(Obj);
