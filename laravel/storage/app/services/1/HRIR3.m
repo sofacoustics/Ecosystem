@@ -451,8 +451,8 @@ switch lower(type)
 
         set(gca, 'XScale', 'log');
         % set(gca, 'XLim', [1000 19000]);
-        set(gca, 'XTick', [2000 4000 8000 16000]);
-        set(gca, 'XTickLabel', {'2000','4000','8000','16000'});
+        set(gca, 'XTick', [1000 2000 4000 8000 16000]);
+        set(gca, 'XTickLabel', {'1000','2000','4000','8000','16000'});
 
         shading flat
         xlabel('Frequency (Hz)');

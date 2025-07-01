@@ -94,7 +94,7 @@ class DatabaseSeeder extends Seeder
 			'visible' => 1,
 			'radardataset' => null,
 			'user_id' => 4, ));
-		Database::create(array('title' => 'Test sofa-brir-geometry',
+		Database::create(array('title' => 'Test brir-general',
 			'additionaltitle' => null,
 			'productionyear' => '2025',
 			'publicationyear' => 'unknown',

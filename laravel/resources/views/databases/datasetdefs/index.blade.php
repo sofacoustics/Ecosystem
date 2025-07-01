@@ -12,6 +12,7 @@
 					<th class="border p-2">Edit</th>
 				@endif
 				@if($deletes)
+					<th class="border p-2">Duplicate</th>
 					<th class="border p-2">Delete</th>
 				@endif
 				<th class="border p-2">Name</th>
@@ -34,6 +35,9 @@
 					</td>
 				@endcan
 				@can('delete', [$datasetdef, $database])
+					<td class="border p-2">
+						<x-button method="GET" class="inline" action="{{ route('datasetdefs.duplicate', [$datasetdef]) }}">Duplicate</x-button>
+					</td>
 					<td class="border p-2">
 						<x-button method="DELETE" class="inline" action="{{ route('datasetdefs.destroy', [$datasetdef]) }}">Delete</x-button>
 					</td>

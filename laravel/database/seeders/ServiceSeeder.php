@@ -29,10 +29,10 @@ class ServiceSeeder extends Seeder
                 )
             );
 			Service::create(array(
-                    'name' => 'Octave: BRIR Geometry',
-                    'description' => 'Plot BRIR Geometry.',
+                    'name' => 'Octave: BRIR General',
+                    'description' => 'Plot BRIR General.',
                     'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
-                    'parameters' => 'BRIRGeometry.m'
+                    'parameters' => 'BRIRGeneral.m'
                 )
             );
 			Service::create(array(
@@ -76,6 +76,13 @@ class ServiceSeeder extends Seeder
                    'exe' => 'octave-cli',
                    'parameters' => 'Headphones.m'
                )
+            );
+			Service::create(array(
+                    'name' => 'Octave: BRIR ListenerView',
+                    'description' => 'Plot BRIR with ListenerView as parameter.',
+                    'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
+                    'parameters' => 'BRIRListenerView.m'
+                )
             );
     }
 }

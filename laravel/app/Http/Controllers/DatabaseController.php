@@ -154,16 +154,6 @@ class DatabaseController extends Controller
 		return redirect()->route('databases.index')->with('success', 'Database deleted successfully');
 	}
 
-	/*public function radarShow(Database $database)
-	{
-		return view('databases.radar.show',['database' => $database]);
-	}
-
-	public function radarEdit(Database $database)
-	{
-		return view('databases.radar.edit',['database' => $database]);
-	}*/
-
 	public function datasetdefs(Database $database)
 	{
 		$edits = false;
@@ -181,7 +171,7 @@ class DatabaseController extends Controller
 		{ 
 			if(Gate::allows('delete', [Datasetdef::class, $datasetdef, $database]))
 			{ 
-				$deletable = true;
+				$deletes = true;
 				break;
 			}
 		}
