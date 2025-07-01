@@ -90,6 +90,7 @@ Route::delete('/datafiles/{datafile}/deletefromradar', [DatafileController::clas
 Route::post('/datafiles/{datafile}/touch', [DatafileController::class, 'touch'])->name('datafiles.touch');
 // DATASETDEFS
 Route::resource('datasetdefs', DatasetdefController::class);
+Route::get('datasetdefs/{datasetdef}/duplicate', [DatasetdefController::class, 'duplicate'])->name('datasetdefs.duplicate');
 
 // CREATORS
 Route::resource('creators', CreatorController::class);
