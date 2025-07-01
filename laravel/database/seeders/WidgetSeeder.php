@@ -38,10 +38,10 @@ class WidgetSeeder extends Seeder
         ));
 		
 		
-		Widget::create(array('name' => 'SOFA: BRIR Geometry',
-            'description' => 'Plot the geometry of the BRIR measurements.',
+		Widget::create(array('name' => 'SOFA: BRIR General',
+            'description' => 'Plot ETC, and the geometry of the BRIR measurements.',
             'service_id' => 3,
-            'view' => 'sofa-brir-geometry',
+            'view' => 'brir-general',
         ));		
 		Widget::create(array('name' => 'SOFA: SRIR Geometry',
             'description' => 'Plot the geometry of the SRIR measurements.',
