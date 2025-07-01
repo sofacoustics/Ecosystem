@@ -77,5 +77,12 @@ class ServiceSeeder extends Seeder
                    'parameters' => 'Headphones.m'
                )
             );
+			Service::create(array(
+                    'name' => 'Octave: BRIR ListenerView',
+                    'description' => 'Plot BRIR with ListenerView as parameter.',
+                    'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
+                    'parameters' => 'BRIRListenerView.m'
+                )
+            );
     }
 }

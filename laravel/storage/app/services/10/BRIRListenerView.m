@@ -1,10 +1,6 @@
-%BRIRGeneral - Function to load SOFA files, create and save visualizing 1 figure
+%BRIRListenerView - Function to load SOFA files, create and save visualizing 1 figure
 
-% #Author: Michael Mihocic: First version, loading and plotting a few figures, supporting a few conventions (31.08.2023)
-% #Author: Michael Mihocic: support of SingleRoomMIMOSRIR SOFA files implemented (11.04.2025)
-% #Author: Michael Mihocic: conventions restriction removed (03.06.2025)
-% #Author: Michael Mihocic: file renamed BRIRGeometry.m -> BRIRGeneral.m (26.06.2025)
-% #Author: Michael Mihocic: SOFAplotHRTF extracted to mySOFAplotHRTF (01.07.2025)
+% #Author: Michael Mihocic: First version of BRIRListenerView.m based on BRIRGeneral.m (01.07.2025)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -13,14 +9,14 @@
 % Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 % See the License for the specific language governing  permissions and limitations under the License.
 
-function BRIRGeneral(SOFAfile)
+function BRIRListenerView(SOFAfile)
 % for debug purpose comment function row above, and uncomment this one:
 % SOFAfile= 'hrtf_nh4.sofa';
 
 isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
 
 %jw:tmp logfile
-logfile="BRIRGeneral.log";
+logfile="BRIRListenerView.log";
 fid = fopen(logfile, "w");
 s = pwd;
 disp(["pwd = " s]);
@@ -67,13 +63,13 @@ if isoctave; fputs(fid, [ "About to plot\n"]); end
 %% Plot MagSpectrum
 % close all;
 figure('Name',SOFAfile);
-mySOFAplotHRTF(Obj,'MagSpectrum', 1);
+mySOFAplotHRTF(Obj,'ETCHorizontalLV', 1);
 print ("-r600", [SOFAfile '_1.png']);
 if isoctave;  fputs(fid, [ "just printed " SOFAfile "_1.png\n"]); end
 
 % close all;
 figure('Name',SOFAfile);
-mySOFAplotHRTF(Obj,'MagSpectrum', 2);
+mySOFAplotHRTF(Obj,'ETCHorizontalLV', 2);
 % mySOFAplotHRTF(Obj,'MagMedian','nonormalization');
 print ("-r600", [SOFAfile '_2.png']);
 if isoctave;  fputs(fid, [ "just printed " SOFAfile "_2.png\n"]); end
@@ -91,8 +87,6 @@ if isoctave; fputs(fid, [ "trying to print " SOFAfile "_3.png\n"]); end
 
 print ("-r600", [SOFAfile '_3.png']);
 if isoctave; fputs(fid, [ "just printed " SOFAfile "_3.png\n"]); end
-
-
 
 %% Epilogue: (un)comment if you want to:
 disp('DONE');
@@ -198,7 +192,43 @@ end
 
 %% Plot according to the type
 switch lower(type)
-    % Energy-time curve (ETC) in the horizontal plane
+    % Energy-time curve (ETC) in the horizontal plane, with ListenerView as parameter
+  case 'etchorizontallv'
+    Obj=SOFAexpand(Obj,'Data.Delay');
+    hM=double(squeeze(Obj.Data.IR(:,R,:)));
+    pos=Obj.ListenerView;
+    pos(pos(:,1)>180,1)=pos(pos(:,1)>180,1)-360;
+    idx=find(pos(:,2)<(offset+thr) & pos(:,2)>(offset-thr));
+    M=(20*log10(abs(hM(idx,:))));
+    pos=pos(idx,:);
+    del=round(Obj.Data.Delay(idx,R));
+    meta.idx=idx;
+    M2=noisefloor*ones(size(M)+[0 max(del)]);
+    for ii=1:size(M,1)
+      M2(ii,del(ii)+(1:Obj.API.N))=M(ii,:);
+    end
+    [lv,i]=sort(pos(:,1));
+    M=M2(i,:);
+    if flags.do_normalization
+      M=M-max(max(M));
+    end
+    M(M<=noisefloor)=noisefloor;
+    meta.time = 0:1/fs*1000:(size(M,2)-1)/fs*1000;
+    meta.lv = lv;
+    % h=surface(meta.time(1:1000),lv,M(:,1:1000));
+    h=surface(meta.time,lv,M(:,:));
+    set(gca,'FontName','Arial','FontSize',10);
+    set(gca, 'TickLength', [0.02 0.05]);
+    set(gca,'LineWidth',1);
+    cmap=colormap(hot);
+    cmap=flipud(cmap);
+    shading flat
+    colormap(cmap);
+    box on;
+    colorbar;
+    xlabel('Time (ms)');
+    ylabel('ListenerView (deg)');
+    title([titleprefix 'receiver: ' num2str(R)],'Interpreter','none');
   case 'etchorizontal'
     Obj=SOFAexpand(Obj,'Data.Delay');
     hM=double(squeeze(Obj.Data.IR(:,R,:)));

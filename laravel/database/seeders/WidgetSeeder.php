@@ -81,5 +81,10 @@ class WidgetSeeder extends Seeder
             'service_id' => 9,
             'view' => 'headphones-general',
         ));		
+		Widget::create(array('name' => 'SOFA: BRIR ListenerView',
+            'description' => 'Plot ETC, and the geometry of the BRIR measurements with ListenerView as parameter.',
+            'service_id' => 10,
+            'view' => 'brir-listenerview',
+        ));	
     }
 }
