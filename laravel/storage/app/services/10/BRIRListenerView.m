@@ -1026,9 +1026,9 @@ switch Obj0.GLOBAL_SOFAConventions
             legendDescription{end+1} = 'SourceUp';
         end
         legend(legendEntries,legendDescription,'Location','NorthEastOutside');
-        xlabel(['X / ' Obj.ListenerPosition_Units]);
-        ylabel(['Y / ' Obj.ListenerPosition_Units]);
-        zlabel(['Z / ' Obj.ListenerPosition_Units]);
+        xlabel(['X (' strrep(Obj.ListenerPosition_Units, 'metre', 'm') ')']);
+        ylabel(['Y (' strrep(Obj.ListenerPosition_Units, 'metre', 'm') ')']);
+        zlabel(['Z (' strrep(Obj.ListenerPosition_Units, 'metre', 'm') ')']);
 
     otherwise
         error('This SOFAConventions is not supported for plotting');
