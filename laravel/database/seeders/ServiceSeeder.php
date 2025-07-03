@@ -18,7 +18,7 @@ class ServiceSeeder extends Seeder
                     'name' => 'Octave: HRTF General',
                     'description' => 'Plot hrtf-related figures: time domain: ETC left/right; frequency domain (lin): magnitude spectrum left/right; frequency domain (log): magnitude spectrum left/right logarithmic; ITD; Geometry.',
                     'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
-                    'parameters' => 'HRIR3.m'
+                    'parameters' => 'HRTFGeneral.m'
                 )
             );
             Service::create(array(
