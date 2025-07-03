@@ -43,10 +43,10 @@ class WidgetSeeder extends Seeder
             'service_id' => 3,
             'view' => 'brir-general',
         ));		
-		Widget::create(array('name' => 'SOFA: SRIR Geometry',
-            'description' => 'Plot the geometry of the SRIR measurements.',
+		Widget::create(array('name' => 'SOFA: SRIR General',
+            'description' => 'Plot the geometry, and aplitude spectra of the SRIR measurements.',
             'service_id' => 4,
-            'view' => 'sofa-srir-geometry',
+            'view' => 'srir-general',
         ));		
 		Widget::create(array('name' => 'SOFA: Directivities Polar',
             'description' => 'Plot the directivities as polar plots.',

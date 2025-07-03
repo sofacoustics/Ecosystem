@@ -39,7 +39,7 @@ class ServiceSeeder extends Seeder
                    'name' => 'Octave: SRIR Geometry',
                    'description' => 'Plot SRIR Geometry.',
                     'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
-                   'parameters' => 'SRIRGeometry.m'
+                   'parameters' => 'SRIRGeneral.m'
                )
             );
 			Service::create(array(
