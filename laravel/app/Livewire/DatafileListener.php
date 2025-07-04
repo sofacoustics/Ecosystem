@@ -67,6 +67,8 @@ class DatafileListener extends Component
 
 	public function render()
 	{
+		// update in 'render' to get latest value
+		$this->latestLog = $this->datafile->datasetdef->widget->service->latestLog;
 		\Log::info('DatafileListener: datafiletype name = ' . ($this->datafiletype->name ?? 'NULL'));
 		\Log::info('DatafileListener: widget view = ' . ($this->widget->view ?? 'NULL'));
 
