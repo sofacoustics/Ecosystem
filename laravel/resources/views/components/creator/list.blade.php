@@ -1,8 +1,8 @@
 
 <b>{{ $creator->creatorName }}</b>
-@if($creator->familyName) <!-- person -->
+@if($creator->familyName)<!-- person -->
 	@if($creator->nameIdentifier)
-		@if($creator->nameIdentifierSchemeIndex==1) <!-- ORCID -->
+		@if($creator->nameIdentifierSchemeIndex==1)<!-- ORCID -->
 			<a href="{{ $creator->schemeURI($creator->nameIdentifierSchemeIndex).$creator->nameIdentifier }}">
 				<img id="visible" src="{{ asset('images/orcid_16x16.webp') }}"
 					alt="ORCID: {{ $creator->nameIdentifier }}" 
@@ -14,7 +14,7 @@
 			</a>
 		@endif
 	@endif
-	@if($creator->creatorAffiliation) <!-- person with affiliation -->
+	@if($creator->creatorAffiliation)<!-- person with affiliation -->
 		, {{$creator->creatorAffiliation}} 
 		@if($creator->affiliationIdentifierScheme==2) <!-- ROR -->
 			<a href="{{ $creator->schemeURI($creator->affiliationIdentifierScheme).$creator->affiliationIdentifier }}">

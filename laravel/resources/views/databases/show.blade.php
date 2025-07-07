@@ -23,12 +23,9 @@ Parameters:
 		@else
 			<h3>Creators:</h3>
 		@endcan
-		
 		<ul class="list-disc list-inside">
 			@forelse ($database->creators as $creator)
-			<li>
-				<x-creator.list :creator=$creator/>
-			</li>
+			<li><x-creator.list :creator=$creator/></li>
 			@empty
 				@cannot('update', $database)
 					<li>No creators defined.</li>
@@ -49,9 +46,7 @@ Parameters:
 		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($database->publishers as $publisher)
-			<li>
-				<x-publisher.list :publisher=$publisher/>
-			</li>
+			<li><x-publisher.list :publisher=$publisher/></li>
 			@empty
 				@cannot('update', $database)
 					<li>No publishers defined.</li>
@@ -72,9 +67,7 @@ Parameters:
 		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($database->rightsholders as $rightsholder)
-			<li>
-				<x-rightsholder.list :rightsholder=$rightsholder />
-			</li>
+			<li><x-rightsholder.list :rightsholder=$rightsholder /></li>
 			@empty
 				@cannot('update', $database)
 					<li>No rightsholder defined.</li>
@@ -167,7 +160,18 @@ Parameters:
 			@else
 				<li><b>DOI</b>: not assigned yet
 			@endif
-			<li><b>Uploaded by:</b> {{ $user->name }}</li>
+			<li><b>Uploaded by:</b> {{ $user->name }}
+				<a href="{{ \App\Models\Radar::schemeURI(1).$user->orcid }}">
+				<img id="orcid" src="{{ asset('images/orcid_16x16.webp') }}"
+					alt="ORCID: {{ $user->orcid }}" 
+					title="{{ $user->orcid }}" 
+					style="display: inline; margin: 0 auto; width: 100%; height: auto; max-width: 1em; min-width: 1em;"></a>
+				<a href="mailto:{{ $user->email }}">
+				<img id="orcid" src="{{ asset('images/envelope.png') }}"
+					alt="Email address: {{ $user->email }}" 
+					title="{{ $user->email }}" 
+					style="display: inline; margin: 0 auto; width: 100%; height: auto; max-width: 1.5em; min-width: 1.5em;"></a>
+			</li>
 			
 			<li><b>Date (created):</b> {{ $database->created_at }} (GMT)</li>
 
