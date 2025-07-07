@@ -1,4 +1,5 @@
 <div>
+	<x-servicelog :log="$latestLog"></x-servicelog>
 	<table class="min-w-full border border-gray-300 rounded">
 		<thead>
 			<th class="bg-gray-100 max-w-1/3"></th>

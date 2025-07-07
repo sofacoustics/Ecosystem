@@ -99,21 +99,24 @@ class Datafile extends Model
         return Storage::disk('sonicom-data')->url($this->path());
     }
 
-    /**
-     * Return the publicly available asset we can then use in HTML code.
-     *
-     * $suffix: A suffix to add to the asset (since this appears to be difficult to do in livewire syntax)
-     */
-    public function asset($suffix = "")
-    {
-        $pathwithsuffix = $this->absolutepath().$suffix;
-        // check asset exists and return.
-        if(file_exists($pathwithsuffix))
-            // Add a file time modification query string to force reload, if file has changed
-            return $this->url().$suffix.'?'.filemtime($pathwithsuffix);
-        else
-            return "";
-    }
+	/**
+	 * Return the publicly available asset we can then use in HTML code.
+	 *
+	 * $suffix: A suffix to add to the asset (since this appears to be difficult to do in livewire syntax)
+	 * $notimestamp: Set to anything to prevent adding the time stamp. Required for STL-based views.
+	 */
+	public function asset($suffix = "", $notimestamp = null)
+	{
+		$pathwithsuffix = $this->absolutepath().$suffix;
+		// check asset exists and return.
+		if(file_exists($pathwithsuffix))
+			if($notimestamp == null)
+					// Add a file time modification query string to force reload, if file has changed
+				return $this->url().$suffix.'?'.filemtime($pathwithsuffix);
+			else
+				return $this->url().$suffix;
+		return "";
+	}
 
     public function isImage()
     {

@@ -1,4 +1,5 @@
 <div>
+	<x-servicelog :log="$latestLog"></x-servicelog>
 	<div class="mb-8">
 
 		@if (!empty($csvRows))

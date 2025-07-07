@@ -23,16 +23,9 @@ Parameters:
 		@else
 			<h3>Creators:</h3>
 		@endcan
-		
 		<ul class="list-disc list-inside">
 			@forelse ($database->creators as $creator)
-			<li><b>Name</b>: {{ $creator->creatorName }}
-				@if ($creator->givenName != null) <b>Given Name</b>: {{ $creator->givenName }}@endif 
-				@if($creator->familyName != null) <b>Family Name</b>: {{ $creator->familyName }}@endif
-				@if ($creator->nameIdentifier != null) <b>{{ $creator->nameIdentifierScheme($creator->nameIdentifierSchemeIndex) }}</b>: {{ $creator->nameIdentifier }}@endif
-				@if ($creator->creatorAffiliation != null) <b>Affiliation</b>: {{ $creator->creatorAffiliation }}@endif
-				@if ($creator->affiliationIdentifier != null) <b>{{ $creator->affiliationIdentifierScheme }}</b>: {{ $creator->affiliationIdentifier }}@endif 
-			</li>
+			<li><x-creator.list :creator=$creator/></li>
 			@empty
 				@cannot('update', $database)
 					<li>No creators defined.</li>
@@ -53,13 +46,7 @@ Parameters:
 		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($database->publishers as $publisher)
-			<li><b>Name</b>: {{ $publisher->publisherName }}
-				@if ($publisher->nameIdentifier != null) <b>{{ $publisher->nameIdentifierScheme($publisher->nameIdentifierSchemeIndex) }}</b>: 
-					@if ($publisher->schemeURI != null) <a href="{{ $publisher->schemeURI }}"> @endif
-					{{ $publisher->nameIdentifier }}
-					@if ($publisher->schemeURI != null) </a> @endif
-				@endif
-			</li>
+			<li><x-publisher.list :publisher=$publisher/></li>
 			@empty
 				@cannot('update', $database)
 					<li>No publishers defined.</li>
@@ -80,13 +67,7 @@ Parameters:
 		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($database->rightsholders as $rightsholder)
-			<li><b>Name</b>: {{ $rightsholder->rightsholderName }}
-				@if ($rightsholder->nameIdentifier != null) <b>{{ $rightsholder->nameIdentifierScheme($rightsholder->nameIdentifierSchemeIndex) }}</b>: 
-					@if ($rightsholder->schemeURI != null) <a href="{{ $rightsholder->schemeURI }}"> @endif
-					{{ $rightsholder->nameIdentifier }}
-					@if ($rightsholder->schemeURI != null) </a> @endif
-				@endif
-			</li>
+			<li><x-rightsholder.list :rightsholder=$rightsholder /></li>
 			@empty
 				@cannot('update', $database)
 					<li>No rightsholder defined.</li>
@@ -179,7 +160,18 @@ Parameters:
 			@else
 				<li><b>DOI</b>: not assigned yet
 			@endif
-			<li><b>Uploaded by:</b> {{ $user->name }}</li>
+			<li><b>Uploaded by:</b> {{ $user->name }}
+				<a href="{{ \App\Models\Radar::schemeURI(1).$user->orcid }}">
+				<img id="orcid" src="{{ asset('images/orcid_16x16.webp') }}"
+					alt="ORCID: {{ $user->orcid }}" 
+					title="{{ $user->orcid }}" 
+					style="display: inline; margin: 0 auto; width: 100%; height: auto; max-width: 1em; min-width: 1em;"></a>
+				<a href="mailto:{{ $user->email }}">
+				<img id="orcid" src="{{ asset('images/envelope.png') }}"
+					alt="Email address: {{ $user->email }}" 
+					title="{{ $user->email }}" 
+					style="display: inline; margin: 0 auto; width: 100%; height: auto; max-width: 1.5em; min-width: 1.5em;"></a>
+			</li>
 			
 			<li><b>Date (created):</b> {{ $database->created_at }} (GMT)</li>
 

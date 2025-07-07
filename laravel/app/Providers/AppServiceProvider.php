@@ -42,10 +42,15 @@ class AppServiceProvider extends ServiceProvider
 		});
 
 		// global variables available in all blades
-		View::share('buttonColorEnabled', 'blue-500 bg-blue-500 hover:bg-blue-700 text-white');
-		View::share('buttonColorDisabled', 'gray-400 bg-gray-400 text-white');
-		View::share('buttonColorDelete', 'red-400 bg-red-400 hover:bg-red-600 text-white');
+		$primary_color = config('settings.primary_color');
+		$admin_color = config('settings.admin_color');
+		$danger_color = config('settings.danger_color');
+		$debug_color = config('settings.debug_color');
+		View::share('buttonColorEnabled', "bg-$primary_color-500 hover:bg-$primary_color-700 text-white");
+		View::share('buttonColorDisabled', 'bg-gray-400 text-white');
+		View::share('buttonColorDelete', "bg-$danger_color-300 hover:bg-$danger_color-700 text-white");
 		View::share('buttonStyle', 'font-bold mx-1 my-1 py-1 px-2 rounded');
+		View::share('adminInfo', "bg-$admin_color-100 border border-$admin_color-500");
 
 		// if there is no .env setting for admin email list, then get list from the database
 		if(config('mail.to.admins') == "")

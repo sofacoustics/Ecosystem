@@ -59,5 +59,13 @@
 	<ul class="list-disc list-inside">
 		<li>SONICOM Ecosystem version: {{ config('version.string') }}
 	</ul>
-
+	<br><hr><br>
+	
+	<h3>Attributions</h3>
+	<ul class="list-disc list-inside">
+		<li><img id="email" src="{{ asset('images/envelope.png') }}"
+			style="display: inline; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em;">
+			by <a href="https://thenounproject.com/creator/iconisland/">Icon Island</a> licensed under CC BY 3.0.
+		</li>
+	</ul>
 </x-app-layout>

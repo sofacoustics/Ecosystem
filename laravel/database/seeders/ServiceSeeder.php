@@ -59,7 +59,7 @@ class ServiceSeeder extends Seeder
 			Service::create(array(
                    'name' => 'Blender: Render PPM',
                    'description' => 'Render PPM if BezierPPM, show CSV file properties otherwise.',
-                   'exe' => 'python',
+                   'exe' => 'python3',
                    'parameters' => 'CSVppm.py'
                )
             );

@@ -8,11 +8,14 @@ use Livewire\Component;
 use App\Models\Datafile;
 use App\Models\Datasetdef;
 use App\Models\Datafiletype;
+use App\Models\ServiceLog;
 use App\Models\Widget;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
+
 
 class DatafileListener extends Component
 {
@@ -21,6 +24,8 @@ class DatafileListener extends Component
 	public Datafile $datafile;
 	public Datasetdef $datasetdef;
 	public Datafiletype $datafiletype;
+	public Collection $serviceLogs;
+	public ?ServiceLog $latestLog;
 	public ?Widget $widget;
 	public $result;
 	public $isExpanded = false; // for boxes to be expanded
@@ -55,11 +60,15 @@ class DatafileListener extends Component
 		$this->datasetdef = $datafile->datasetdef;
 		$this->datafiletype = $datafile->datasetdef->datafiletype;
 		$this->widget = $datafile->datasetdef->widget;
+		$this->serviceLogs = $datafile->datasetdef->widget->service->logs;
+		$this->latestLog = $datafile->datasetdef->widget->service->latestLog;
 		$this->result = 0;
 	}
 
 	public function render()
 	{
+		// update in 'render' to get latest value
+		$this->latestLog = $this->datafile->datasetdef->widget->service->latestLog;
 		\Log::info('DatafileListener: datafiletype name = ' . ($this->datafiletype->name ?? 'NULL'));
 		\Log::info('DatafileListener: widget view = ' . ($this->widget->view ?? 'NULL'));
 
@@ -82,7 +91,7 @@ class DatafileListener extends Component
 		}
 
 		$viewData = []; // clear the array which will be passed to the blade
-		
+
 		switch($view)
 		{
 				// GENERIC DATAFILE PROPERTIES
