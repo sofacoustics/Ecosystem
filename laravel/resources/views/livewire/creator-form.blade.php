@@ -23,6 +23,7 @@
 		
 		<fieldset>
 			<div class="py-4">
+				&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
 				<input class="p-2" type="radio" id="person" name="type" value="person" wire:model.live="option"/>
 				<label for="person">&nbsp; Person and affiliation</label>
 				&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
