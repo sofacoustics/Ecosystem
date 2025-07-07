@@ -15,19 +15,19 @@ class RightsholderForm extends Component
 	public $rightsholderName;
 	public $nameIdentifier;
 	public $nameIdentifierSchemeIndex;
-	public $schemeURI;
+	public $schemeURIother;
 
 	protected $rules = [
 		'rightsholderName' => ['required','max:255'],
 		'nameIdentifier' => 'max:255',
-		'schemeURI' => 'max:255',
+		'schemeURIother' => 'max:255',
 	];
 
 	protected $messages = [
 		'rightsholderName.required' => 'A name is required.',
 		'rightsholderName.max' => 'The name can be only up to 255 characters.',
 		'nameIdentifier.max' => 'The name can be only up to 255 characters.',
-		'schemeURI.max' => 'The name can be only up to 255 characters.',
+		'schemeURIother.max' => 'The name can be only up to 255 characters.',
 	];
 
 	public function mount($rightsholderable, $rightsholder = null)
@@ -41,7 +41,7 @@ class RightsholderForm extends Component
 			$this->rightsholderName = $rightsholder->rightsholderName;
 			$this->nameIdentifier = $rightsholder->nameIdentifier;
 			$this->nameIdentifierSchemeIndex = $rightsholder->nameIdentifierSchemeIndex;
-			$this->schemeURI = $rightsholder->schemeURI;
+			$this->schemeURIother = $rightsholder->schemeURI;
 		}
 		else
 		{
@@ -64,12 +64,18 @@ class RightsholderForm extends Component
 		$this->rightsholder->rightsholderable_id = $this->rightsholderable_id;
 		$this->rightsholder->rightsholderable_type = $this->rightsholderable_type;
 		$this->rightsholder->rightsholderName = $this->rightsholderName;
-		$this->rightsholder->nameIdentifier = $this->nameIdentifier;
-		if (empty($this->nameIdentifierSchemeIndex) and !empty($this->nameIdentifier))
-		{	 $this->rightsholder->nameIdentifierSchemeIndex = 0; }
+		if($this->nameIdentifierSchemeIndex!=null)
+		{
+			$this->rightsholder->nameIdentifierSchemeIndex = $this->nameIdentifierSchemeIndex;
+			$this->rightsholder->nameIdentifier = $this->nameIdentifier;
+			$this->rightsholder->schemeURI = $this->schemeURIother;
+		}
 		else
-		{	 $this->rightsholder->nameIdentifierSchemeIndex = $this->nameIdentifierSchemeIndex; }
-		$this->rightsholder->schemeURI = $this->schemeURI;
+		{
+			$this->rightsholder->nameIdentifierSchemeIndex = null;
+			$this->rightsholder->nameIdentifier = null;
+			$this->rightsholder->schemeURI = null;
+		}
 
 		$this->rightsholder->save();
 
