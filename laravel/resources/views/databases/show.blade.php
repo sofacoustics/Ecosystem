@@ -72,12 +72,8 @@ Parameters:
 		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($database->rightsholders as $rightsholder)
-			<li><b>Name</b>: {{ $rightsholder->rightsholderName }}
-				@if ($rightsholder->nameIdentifier != null) <b>{{ $rightsholder->nameIdentifierScheme($rightsholder->nameIdentifierSchemeIndex) }}</b>: 
-					@if ($rightsholder->schemeURI != null) <a href="{{ $rightsholder->schemeURI }}"> @endif
-					{{ $rightsholder->nameIdentifier }}
-					@if ($rightsholder->schemeURI != null) </a> @endif
-				@endif
+			<li>
+				<x-rightsholder.list :rightsholder=$rightsholder />
 			</li>
 			@empty
 				@cannot('update', $database)
