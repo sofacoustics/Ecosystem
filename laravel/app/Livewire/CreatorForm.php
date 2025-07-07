@@ -48,34 +48,25 @@ class CreatorForm extends Component
 			$this->creatorable_id = $creator->creatorable_id;
 			$this->creatorable_type = $creator->creatorable_type;
 			$this->nameIdentifierSchemeIndex = $creator->nameIdentifierSchemeIndex;
-			switch($this->nameIdentifierSchemeIndex)
-			{
-				case 1: // ORCID -> person
-					$this->option = "person";
-					$this->givenName = $creator->givenName;
-					$this->familyName = $creator->familyName;
-					$this->nameIdentifier = $creator->nameIdentifier;
-					$this->creatorAffiliation = $creator->creatorAffiliation;
-					$this->affiliationIdentifier = $creator->affiliationIdentifier;
-					$this->affiliationIdentifierScheme = $creator->affiliationIdentifierScheme;
-					break;
-				case 2: // ROR -> institution
-					$this->option = "institution";
-					$this->creatorAffiliation = $creator->creatorName;
-					$this->affiliationIdentifier = $creator->affiliationIdentifier;
-					$this->affiliationIdentifierScheme = $creator->affiliationIdentifierScheme;
-					break;
-					
-				default: // Other -> whatever
-					$this->option = "person"; // not supported yet
-					$this->creatorName = $creator->creatorName;
-					$this->givenName = $creator->givenName;
-					$this->familyName = $creator->familyName;
-					$this->nameIdentifier = $creator->nameIdentifier;
-					$this->nameIdentifierSchemeIndex = $creator->nameIdentifierSchemeIndex;
-					$this->creatorAffiliation = $creator->creatorAffiliation;
-					$this->affiliationIdentifier = $creator->affiliationIdentifier;
-					$this->affiliationIdentifierScheme = $creator->affiliationIdentifierScheme;
+			if($creator->familyName)
+			{		// Person
+				$this->option = "person";
+				$this->givenName = $creator->givenName;
+				$this->familyName = $creator->familyName;
+				$this->nameIdentifier = $creator->nameIdentifier;
+				$this->creatorAffiliation = $creator->creatorAffiliation;
+				$this->affiliationIdentifier = $creator->affiliationIdentifier;
+				$this->affiliationIdentifierScheme = $creator->affiliationIdentifierScheme;
+			}
+			else
+			{		// Institution
+				$this->option = "institution";
+				$this->givenName = null;
+				$this->familyName = null;
+				$this->nameIdentifier = null;
+				$this->creatorAffiliation = $creator->creatorName;
+				$this->affiliationIdentifier = $creator->nameIdentifier;
+				$this->affiliationIdentifierScheme = $creator->nameIdentifierSchemeIndex;
 			}
 		}
 		else
@@ -99,40 +90,40 @@ class CreatorForm extends Component
 		switch($this->option)
 		{
 			case "person":
-				$this->creator->nameIdentifierSchemeIndex = 1; // ORCID
-				$this->creator->givenName = $this->givenName;
-				$this->creator->familyName = $this->familyName;
 				if($this->givenName)
 					$this->creator->creatorName = $this->familyName.", ".$this->givenName;
 				else
 					$this->creator->creatorName = $this->familyName;
+				$this->creator->givenName = $this->givenName;
+				$this->creator->familyName = $this->familyName;
+				$this->creator->nameIdentifier = $this->nameIdentifier;
 				if($this->nameIdentifier)
-					$this->creator->nameIdentifier = $this->nameIdentifier;
+					$this->creator->nameIdentifierSchemeIndex = 1; // ORCID
+				else
+					$this->creator->nameIdentifierSchemeIndex = null;
+				$this->creator->creatorAffiliation = $this->creatorAffiliation;
 				if($this->creatorAffiliation)
 				{
-					$this->creator->creatorAffiliation = $this->creatorAffiliation;
-					$this->creator->affiliationIdentifierScheme = 2; // ROR
+					$this->creator->affiliationIdentifier = $this->affiliationIdentifier;
 					if($this->affiliationIdentifier)
-						$this->creator->affiliationIdentifier = $this->affiliationIdentifier;
+						$this->creator->affiliationIdentifierScheme = 2; // ROR
+					else
+						$this->creator->affiliationIdentifierScheme = null;
 				}
 				break;
 				
 			case "institution":
-				$this->creator->nameIdentifierSchemeIndex = 2; // ROR
 				$this->creator->creatorName = $this->creatorAffiliation;
+				$this->creator->givenName = null;
+				$this->creator->familyName = null;
+				$this->creator->nameIdentifier = $this->affiliationIdentifier;
 				if($this->affiliationIdentifier)
-				{
-					$this->creator->affiliationIdentifier = $this->affiliationIdentifier;
-					$this->creator->affiliationIdentifierScheme = 2; // ROR
-				}
+					$this->creator->nameIdentifierSchemeIndex = 2; // ROR
 				else
-				{
-					$this->creator->affiliationIdentifier = null;
-					$this->creator->affiliationIdentifierScheme = null;
-				}
+					$this->creator->nameIdentifierSchemeIndex = null;
+				$this->creator->creatorAffiliation = null; 
+				$this->creator->affiliationIdentifierScheme = null; 
 				break;
-			
-			default: // whatever
 		}
 		
 		$this->creator->save();
