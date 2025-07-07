@@ -49,12 +49,8 @@ Parameters:
 		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($database->publishers as $publisher)
-			<li><b>Name</b>: {{ $publisher->publisherName }}
-				@if ($publisher->nameIdentifier != null) <b>{{ $publisher->nameIdentifierScheme($publisher->nameIdentifierSchemeIndex) }}</b>: 
-					@if ($publisher->schemeURI != null) <a href="{{ $publisher->schemeURI }}"> @endif
-					{{ $publisher->nameIdentifier }}
-					@if ($publisher->schemeURI != null) </a> @endif
-				@endif
+			<li>
+				<x-publisher.list :publisher=$publisher/>
 			</li>
 			@empty
 				@cannot('update', $database)
