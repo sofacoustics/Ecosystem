@@ -36,8 +36,8 @@ class ServiceSeeder extends Seeder
                 )
             );
 			Service::create(array(
-                   'name' => 'Octave: SRIR Geometry',
-                   'description' => 'Plot SRIR Geometry.',
+                   'name' => 'Octave: SRIR General',
+                   'description' => 'Plot SRIR General.',
                     'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
                    'parameters' => 'SRIRGeneral.m'
                )
@@ -59,15 +59,15 @@ class ServiceSeeder extends Seeder
 			Service::create(array(
                    'name' => 'Blender: Render PPM',
                    'description' => 'Render PPM if BezierPPM, show CSV file properties otherwise.',
-                   'exe' => 'python3',
-                   'parameters' => 'CSVppm.py'
+                   'exe' => '/var/www/.local/bin/uv',
+                   'parameters' => 'run CSVppm.py --input'
                )
             );
 			Service::create(array(
                    'name' => 'Octave: AnnotatedReceiver',
                    'description' => 'Plot the progress of receivers.',
                    'exe' => 'octave-cli',
-                   'parameters' => 'SOFAAnnotatedReceiver.m'
+                   'parameters' => 'AnnotatedReceiver.m'
                )
             );
 			Service::create(array(

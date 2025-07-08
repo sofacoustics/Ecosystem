@@ -74,7 +74,7 @@ class WidgetSeeder extends Seeder
 		Widget::create(array('name' => 'SOFA: AnnotatedReceiver',
             'description' => 'Plot the progress of receivers.',
             'service_id' => 8,
-            'view' => 'sofa-annotated-receiver',
+            'view' => 'annotated-receiver',
         ));		
 		Widget::create(array('name' => 'SOFA: Headphones General',
             'description' => 'Plot spectra of headphones.',

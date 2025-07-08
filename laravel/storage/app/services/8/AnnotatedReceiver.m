@@ -1,4 +1,4 @@
-%SOFAAnnotatedReceiver - Function to load SOFA files, create and save visualizing 1 figure
+%AnnotatedReceiver - Function to load SOFA files, create and save visualizing 1 figure
 
 % #Author: Michael Mihocic: support of AnnotatedReceiverAudio SOFA files implemented (22.04.2025)
 %
@@ -9,14 +9,14 @@
 % Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 % See the License for the specific language governing  permissions and limitations under the License.
 
-function SOFAAnnotatedReceiver(SOFAfile)
+function AnnotatedReceiver(SOFAfile)
 % for debug purpose comment function row above, and uncomment this one:
 % SOFAfile= 'hrtf_nh4.sofa';
 
 isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
 
 %jw:tmp logfile
-logfile="SOFAAnnotatedReceiver.log";
+logfile="AnnotatedReceiver.log";
 fid = fopen(logfile, "w");
 s = pwd;
 disp(["pwd = " s]);
