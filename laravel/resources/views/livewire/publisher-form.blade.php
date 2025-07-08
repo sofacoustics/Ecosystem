@@ -34,37 +34,50 @@
 
 		<div class="block">
 			<label class="{{ $labelClass }}" for="nameIdentifierSchemeIndex">Name Identifier Scheme:</label>
-			<select class="{{ $selectClass }}" id="nameIdentifierSchemeIndex" wire:model="nameIdentifierSchemeIndex">
-				<option value="">Select an identifier scheme</option>
-				<option value="0">{{ \App\Models\Creator::nameIdentifierScheme(0) }}</option>
-				<option value="1">{{ \App\Models\Creator::nameIdentifierScheme(1) }}</option>
+			<select class="{{ $selectClass }}" id="nameIdentifierSchemeIndex" wire:model.live="nameIdentifierSchemeIndex">
+				<option value="">None</option>
 				<option value="2">{{ \App\Models\Creator::nameIdentifierScheme(2) }}</option>
+				<option value="1">{{ \App\Models\Creator::nameIdentifierScheme(1) }}</option>
+				<option value="0">{{ \App\Models\Creator::nameIdentifierScheme(0) }}</option>
 			</select>
 			@error('nameIdentifierSchemeIndex')
 				<span class="text-red-500">{{ $message }}</span>
 			@enderror
 		</div>
 
-		<div class="mb-4">
-			<label for="nameIdentifier" class="{{ $labelClass }}">Name Identifier:</label>
-			<input wire:model="nameIdentifier" type="text" 
-								placeholder="ROR identifier (if institution), ORCID (if person), free text (if other)."
-								id="nameIdentifier" class="{{ $inputClass }}" />
-			@error('nameIdentifier')
-				<span class="text-red-500">{{ $message }}</span>
-			@enderror
-		</div>
-
-		<div class="mb-4">
-			<label for="schemeURI" class="{{ $labelClass }}">Scheme URI:</label>
-			<input wire:model="schemeURI" type="text" 
-									placeholder="If name identifier is Other, provide the URI."
-									id="schemeURI"
-				class="{{ $inputClass }}" />
-			@error('schemeURI')
-				<span class="text-red-500">{{ $message }}</span>
-			@enderror
-		</div>
+		@if ($nameIdentifierSchemeIndex!="")
+			<div class="mb-4">
+				<label for="nameIdentifier" class="{{ $labelClass }}">Name Identifier:</label>
+				@if ($nameIdentifierSchemeIndex==2)<!-- ROR -->
+					<input wire:model="nameIdentifier" type="text" 
+										placeholder="ROR identifier."
+										id="nameIdentifier" class="{{ $inputClass }}" />
+				@elseif ($nameIdentifierSchemeIndex==1)<!-- ORCID -->
+					<input wire:model="nameIdentifier" type="text" 
+										placeholder="ORCID."
+										id="nameIdentifier" class="{{ $inputClass }}" />
+				@else <!-- Other -->
+					<input wire:model="nameIdentifier" type="text" 
+										placeholder="Identifier as free text."
+										id="nameIdentifier" class="{{ $inputClass }}" />
+				@endif
+				@error('nameIdentifier')
+					<span class="text-red-500">{{ $message }}</span>
+				@enderror
+			</div>
+			@if($nameIdentifierSchemeIndex==0)<!--OTHER-->
+				<div class="mb-4">
+					<label for="schemeURIother" class="{{ $labelClass }}">Scheme URI:</label>
+					<input wire:model="schemeURIother" type="text" 
+										placeholder="URI of the identifier."
+										id="schemeURIother"
+						class="{{ $inputClass }}" />
+					@error('schemeURIother')
+						<span class="text-red-500">{{ $message }}</span>
+					@enderror
+				</div>
+			@endif
+		@endif
 
 		<div class="mt-4">
 			<button type="submit" class="{{ $buttonClass }}">

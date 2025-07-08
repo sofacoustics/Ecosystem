@@ -42,7 +42,7 @@
 			@enderror
 		</div>
 		
-		@if ($nameIdentifierSchemeIndex!=null)
+		@if ($nameIdentifierSchemeIndex!="")
 			<div class="mb-4">
 				<label for="nameIdentifier" class="{{ $labelClass }}">Name Identifier:</label>
 				@if ($nameIdentifierSchemeIndex==2)<!-- ROR -->
