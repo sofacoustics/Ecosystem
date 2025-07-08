@@ -45,16 +45,9 @@ Parameters:
 		@else
 			<h3>Creators:</h3>
 		@endcan
-
 		<ul class="list-disc list-inside">
 			@forelse ($tool->creators as $creator)
-			<li><b>Name</b>: {{ $creator->creatorName }}
-				@if ($creator->givenName != null) <b>Given Name</b>: {{ $creator->givenName }}@endif 
-				@if($creator->familyName != null) <b>Family Name</b>: {{ $creator->familyName }}@endif
-				@if ($creator->nameIdentifier != null) <b>{{ $creator->nameIdentifierScheme($creator->nameIdentifierSchemeIndex) }}</b>: {{ $creator->nameIdentifier }}@endif
-				@if ($creator->creatorAffiliation != null) <b>Affiliation</b>: {{ $creator->creatorAffiliation }}@endif
-				@if ($creator->affiliationIdentifier != null) <b>{{ $creator->affiliationIdentifierScheme }}</b>: {{ $creator->affiliationIdentifier }}@endif 
-			</li>
+			<li><x-creator.list :creator=$creator/></li>
 			@empty
 				@cannot('update', $tool)
 					<li>No creators defined.</li>
@@ -75,13 +68,7 @@ Parameters:
 		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($tool->publishers as $publisher)
-			<li><b>Name</b>: {{ $publisher->publisherName }}
-				@if ($publisher->nameIdentifier != null) <b>{{ $publisher->nameIdentifierScheme($publisher->nameIdentifierSchemeIndex) }}</b>: 
-					@if ($publisher->schemeURI != null) <a href="{{ $publisher->schemeURI }}"> @endif
-					{{ $publisher->nameIdentifier }}
-					@if ($publisher->schemeURI != null) </a> @endif
-				@endif
-			</li>
+			<li><x-publisher.list :publisher=$publisher/></li>
 			@empty
 				@cannot('update', $tool)
 					<li>No publishers defined.</li>
@@ -102,13 +89,7 @@ Parameters:
 		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($tool->rightsholders as $rightsholder)
-			<li><b>Name</b>: {{ $rightsholder->rightsholderName }}
-				@if ($rightsholder->nameIdentifier != null) <b>{{ $rightsholder->nameIdentifierScheme($rightsholder->nameIdentifierSchemeIndex) }}</b>: 
-					@if ($rightsholder->schemeURI != null) <a href="{{ $rightsholder->schemeURI }}"> @endif
-					{{ $rightsholder->nameIdentifier }}
-					@if ($rightsholder->schemeURI != null) </a> @endif
-				@endif
-			</li>
+			<li><x-rightsholder.list :rightsholder=$rightsholder /></li>
 			@empty
 				@cannot('update', $tool)
 					<li>No rightsholder defined.</li>
@@ -129,13 +110,7 @@ Parameters:
 		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($tool->keywords as $keyword)
-			<li>
-				<b>{{ $keyword->keywordName }}</b> 
-				@if($keyword->classificationCode)
-					(@if ($keyword->schemeURI != null)<a href="{{ $keyword->schemeURI }}">@endif{{ \App\Models\Keyword::keywordScheme($keyword->keywordSchemeIndex)}}@if ($keyword->schemeURI != null)</a>@endif: 
-					@if ($keyword->valueURI != null)<a href="{{ $keyword->valueURI }}">@endif{{ $keyword->classificationCode }}@if ($keyword->valueURI != null)</a>@endif)
-				@endif
-			</li>
+			<li><x-keyword.list :keyword=$keyword /></li>
 			@empty
 				@cannot('update', $tool)
 					<li>No keywords defined.</li>
