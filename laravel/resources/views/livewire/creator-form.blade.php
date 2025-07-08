@@ -65,11 +65,14 @@
 							<input wire:model="nameIdentifier" type="text" 
 											placeholder="ORCID of the creator (without https://orcid.org/)"
 											id="nameIdentifier" class="{{ $inputClass }}" />
-							@error('nameIdentifier')
-								<span class="text-red-500">{{ $message }}</span>
-							@enderror
+						</div></td>
+						<td class="px-4"><div class="mb-4">
+							<x-livewire-button class="{{$buttonClass}}" wire:click="fillinmydata()">Fill in my data</x-livewire-button>
 						</div></td>
 					</tr>
+					@error('nameIdentifier')
+						<tr><span class="text-red-500">{{ $message }}</span></tr>
+					@enderror
 					<tr>
 						<td class="px-4"><label for="creatorAffiliation" class="{{ $labelClass }}">Affiliation:</label></td>
 					</tr>

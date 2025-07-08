@@ -3,9 +3,9 @@
 
 	Call with, e.g.
 
-		<x-button wire:click="save" loading="Saving...">
+		<x-livewire-button wire:click="save" loading="Saving...">
 			Save
-		</x-button>
+		</<x-livewire-button>
 
 	Or for form submission (outside of Livewire):
 

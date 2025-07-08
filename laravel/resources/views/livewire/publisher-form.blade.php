@@ -2,7 +2,7 @@
 	// https://laravel.com/docs/11.x/blade#conditional-classes
 	$labelClass = 'text-gray-700 mb-2 block font-bold';
 	$selectClass = 'form-control text-gray-700 rounded-lg mb-2 block font-bold';
-	$inputClass = 'text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none';
+	$inputClass = 'text-gray-700 w-1/2 rounded-lg border px-3 py-2 focus:outline-none';
 	$buttonClass = 'bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white';
 @endphp
 <div>
@@ -27,6 +27,7 @@
 			<input wire:model="publisherName" type="text" 
 								placeholder="Name of the person or institution."
 								id="publisherName" class="{{ $inputClass }}" required />
+			<x-livewire-button wire:click="fillinmydata()">Fill in my data</x-livewire-button>
 			@error('publisherName')
 				<span class="text-red-500">{{ $message }}</span>
 			@enderror
@@ -44,6 +45,7 @@
 				<span class="text-red-500">{{ $message }}</span>
 			@enderror
 		</div>
+
 
 		@if ($nameIdentifierSchemeIndex!="")
 			<div class="mb-4">

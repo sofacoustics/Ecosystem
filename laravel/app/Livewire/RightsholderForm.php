@@ -50,6 +50,14 @@ class RightsholderForm extends Component
 		}
 	}
 
+	public function fillinmydata()
+	{
+		$this->rightsholderName = auth()->user()->name;
+		$this->nameIdentifier = auth()->user()->orcid;
+		$this->nameIdentifierSchemeIndex = 1; // ORCID
+		$this->schemeURIother = null;
+	}
+
 	public function save()
 	{
 		$this->validate();

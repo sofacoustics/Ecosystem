@@ -76,6 +76,20 @@ class CreatorForm extends Component
 		}
 	}
 
+	public function fillinmydata()
+	{
+		$names = explode(" ", auth()->user()->name, 2);
+		if(count($names)==2)
+		{
+			$this->givenName = $names[0];
+			$this->familyName = $names[1];
+		}
+		else
+			$this->familyName = $names[0];
+		$this->nameIdentifier = auth()->user()->orcid;
+		$this->nameIdentifierSchemeIndex = 1; // ORCID
+	}
+
 	public function save()
 	{
 		//$this->validate();

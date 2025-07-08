@@ -13,7 +13,7 @@
 				alt="{{ $publisher->nameIdentifier }}" 
 				style="display: inline; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em;"></a>
 	@else
-		<a href="{{ $publisher->schemeURI($publisher->nameIdentifierSchemeIndex).$publisher->nameIdentifier }}">
+		<a href="{{ $publisher->schemeURI }}">
 			{{ $publisher->nameIdentifier }}
 		</a>
 	@endif

@@ -51,6 +51,14 @@ class PublisherForm extends Component
 		}
 	}
 	
+	public function fillinmydata()
+	{
+		$this->publisherName = auth()->user()->name;
+		$this->nameIdentifier = auth()->user()->orcid;
+		$this->nameIdentifierSchemeIndex = 1; // ORCID
+		$this->schemeURIother = null;
+	}
+	
 	public function reload()
 	{
 		if($this->publisherable_type === 'App\Models\Database')
