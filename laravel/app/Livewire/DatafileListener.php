@@ -60,7 +60,8 @@ class DatafileListener extends Component
 		$this->datasetdef = $datafile->datasetdef;
 		$this->datafiletype = $datafile->datasetdef->datafiletype;
 		$this->widget = $datafile->datasetdef->widget;
-		$this->serviceLogs = $datafile->datasetdef->widget->service->logs;
+		if(isset($datafile->datasetdef->widget->service?->logs))
+			$this->serviceLogs = $datafile->datasetdef->widget->service->logs;
 		$this->latestLog = $datafile->datasetdef->widget->service->latestLog;
 		$this->result = 0;
 	}

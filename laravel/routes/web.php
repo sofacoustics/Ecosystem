@@ -66,6 +66,8 @@ Route::get('/databases/{database}/datathek', [DatabaseController::class, 'datath
 //Route::get('/databases/{database}/radar/edit', [DatabaseController::class, 'radarEdit'])->name('databases.radar.edit');
 Route::get('/databases/{database}/datasetdefs', [DatabaseController::class, 'datasetdefs'])->name('databases.datasetdefs');
 Route::get('/databases/{database}/creators', [CreatorController::class, 'index'])->name('databases.creators');
+Route::get('/databases/{database}/creators/up', [CreatorController::class, 'up'])->name('creators.up');
+Route::get('/databases/{database}/creators/down', [CreatorController::class, 'down'])->name('creators.down');
 Route::get('/databases/{database}/publishers', [PublisherController::class, 'index'])->name('databases.publishers');
 Route::get('/databases/{database}/subjectareas', [SubjectAreaController::class, 'index'])->name('databases.subjectareas');
 Route::get('/databases/{database}/rightsholders', [RightsholderController::class, 'index'])->name('databases.rightsholders');
