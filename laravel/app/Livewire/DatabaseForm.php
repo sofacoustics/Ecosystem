@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Database;
 use App\Models\SubjectArea;
+use App\Models\Publisher;
 
 use Livewire\Component;
 
@@ -143,6 +144,14 @@ class DatabaseForm extends Component
 			$sa->controlledSubjectAreaIndex = (\App\Models\Metadataschema::where('name', 'subjectArea')->where('value', 'OTHER')->first()->id); // Other
 			$sa->additionalSubjectArea = "SONICOM Ecosystem"; 
 			$sa->save(); 
+			
+			$pub = new Publisher(); 
+			$pub->publisherable_id = $this->database->id;
+			$pub->publisherable_type = "App\Models\Database"; 
+			$pub->publisherName = "The SONICOM Ecosystem of the Austrian Academy of Sciences"; 
+			$pub->nameIdentifier = "03anc3s24"; 
+			$pub->nameIdentifierSchemeIndex = 2; // ROR
+			$pub->save(); 
 		}
 		session()->flash('message', $isNew ? 'Database created successfully.' : 'Database updated successfully.');
 		return redirect()->route('databases.show', $this->database);

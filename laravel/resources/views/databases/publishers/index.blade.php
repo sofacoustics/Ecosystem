@@ -4,7 +4,9 @@
 	</x-slot>
 	
 	<h3>Publishers</h3>
-	<p>Person(s) or institution(s) responsible for publishing this database at the Ecosystem:</p>
+	<p>Person(s) or institution(s) responsible for publishing this database at the Ecosystem. </p>
+	<p>Per default, the database is published here, at the SONICOM Ecosystem, thus we start with this entry. However, this entry can be removed, edited, and extended.</p>
+	<p>Note that the publisher is used to formulate the citation, thus consider a proper entry.</p>
 
 	@if(count($publisherable->publishers)>0)
 		<table class="table-auto px-4">
