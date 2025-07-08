@@ -69,9 +69,15 @@ Route::get('/databases/{database}/creators', [CreatorController::class, 'index']
 Route::get('/databases/{database}/creators/up', [CreatorController::class, 'up'])->name('creators.up');
 Route::get('/databases/{database}/creators/down', [CreatorController::class, 'down'])->name('creators.down');
 Route::get('/databases/{database}/publishers', [PublisherController::class, 'index'])->name('databases.publishers');
+Route::get('/databases/{database}/publishers/up', [PublisherController::class, 'up'])->name('publishers.up');
+Route::get('/databases/{database}/publishers/down', [PublisherController::class, 'down'])->name('publishers.down');
 Route::get('/databases/{database}/subjectareas', [SubjectAreaController::class, 'index'])->name('databases.subjectareas');
 Route::get('/databases/{database}/rightsholders', [RightsholderController::class, 'index'])->name('databases.rightsholders');
+Route::get('/databases/{database}/rightsholders/up', [RightsholderController::class, 'up'])->name('rightsholders.up');
+Route::get('/databases/{database}/rightsholders/down', [RightsholderController::class, 'down'])->name('rightsholders.down');
 Route::get('/databases/{database}/keywords', [KeywordController::class, 'index'])->name('databases.keywords');
+Route::get('/databases/{database}/keywords/up', [KeywordController::class, 'up'])->name('keywords.up');
+Route::get('/databases/{database}/keywords/down', [KeywordController::class, 'down'])->name('keywords.down');
 Route::get('/databases/{database}/relatedidentifiers', [RelatedIdentifierController::class, 'index'])->name('databases.relatedidentifiers');
 Route::get('/databases/{database}/update', [DatabaseController::class, 'upload'])->name('databases.upload');
 Route::get('/databases/{database}/download', [DatabaseController::class, 'download'])->name('databases.download');

@@ -46,4 +46,40 @@ class RightsholderController extends Controller
 		return redirect()->back();
 	}
 
+	public function copyRightsholder(Rightsholder $A, Rightsholder $B)
+	{
+		$B->rightsholderName = $A->rightsholderName;
+		$B->nameIdentifier = $A->nameIdentifier;
+		$B->nameIdentifierSchemeIndex = $A->nameIdentifierSchemeIndex;
+		$B->schemeURI = $A->schemeURI;
+		$B->created_at = $A->created_at;
+		$B->updated_at = $A->updated_at;
+		return $B;
+	}
+	
+	public function up($id)
+	{
+		$rightsholderA = Rightsholder::where('id', $id)->get()->first();
+		$rightsholderB = Rightsholder::where('rightsholderable_id',$rightsholderA->rightsholderable_id)->where('id','<', $id)->get()->last();
+		$temp = new Rightsholder;
+		$temp = $this->copyRightsholder($rightsholderA, $temp); 
+		$rightsholderA = $this->copyRightsholder($rightsholderB, $rightsholderA);
+		$rightsholderB = $this->copyRightsholder($temp, $rightsholderB);
+		$rightsholderA->save(); 
+		$rightsholderB->save();
+		return redirect()->back();
+	}
+
+	public function down($id)
+	{
+		$rightsholderA = Rightsholder::where('id', $id)->get()->first();
+		$rightsholderB = Rightsholder::where('rightsholderable_id',$rightsholderA->rightsholderable_id)->where('id','>', $id)->get()->first();
+		$temp = new Rightsholder;
+		$temp = $this->copyRightsholder($rightsholderA, $temp); 
+		$rightsholderA = $this->copyRightsholder($rightsholderB, $rightsholderA);
+		$rightsholderB = $this->copyRightsholder($temp, $rightsholderB);
+		$rightsholderA->save(); 
+		$rightsholderB->save();
+		return redirect()->back();
+	}
 }

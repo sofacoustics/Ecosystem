@@ -47,7 +47,7 @@ class CreatorController extends Controller
 		return redirect()->back();
 	}
 	
-	public function copycreator(Creator $A, Creator $B)
+	public function copyCreator(Creator $A, Creator $B)
 	{
 		$B->creatorName = $A->creatorName;
 		$B->givenName = $A->givenName;
@@ -66,14 +66,12 @@ class CreatorController extends Controller
 	{
 		$creatorA = Creator::where('id', $id)->get()->first();
 		$creatorB = Creator::where('creatorable_id',$creatorA->creatorable_id)->where('id','<', $id)->get()->last();
-		//dd([$creatorA->id, $creatorB->id]); 
 		$temp = new Creator;
-		$temp = $this->copycreator($creatorA, $temp); 
-		$creatorA = $this->copycreator($creatorB, $creatorA);
-		$creatorB = $this->copycreator($temp, $creatorB);
+		$temp = $this->copyCreator($creatorA, $temp); 
+		$creatorA = $this->copyCreator($creatorB, $creatorA);
+		$creatorB = $this->copyCreator($temp, $creatorB);
 		$creatorA->save(); 
 		$creatorB->save();
-		
 		return redirect()->back();
 	}
 
@@ -81,14 +79,12 @@ class CreatorController extends Controller
 	{
 		$creatorA = Creator::where('id', $id)->get()->first();
 		$creatorB = Creator::where('creatorable_id',$creatorA->creatorable_id)->where('id','>', $id)->get()->first();
-		//dd([$creatorA->id, $creatorB->id]); 
 		$temp = new Creator;
-		$temp = $this->copycreator($creatorA, $temp); 
-		$creatorA = $this->copycreator($creatorB, $creatorA);
-		$creatorB = $this->copycreator($temp, $creatorB);
+		$temp = $this->copyCreator($creatorA, $temp); 
+		$creatorA = $this->copyCreator($creatorB, $creatorA);
+		$creatorB = $this->copyCreator($temp, $creatorB);
 		$creatorA->save(); 
 		$creatorB->save();
-		
 		return redirect()->back();
 	}
 

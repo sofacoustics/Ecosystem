@@ -5,25 +5,49 @@
 	
 	<h3>Rightsholders</h3>
 	<p>The person(s) or institution(s) owning or managing the property rights of this database:</p>
-	<ul class="list-disc list-inside">
-		@forelse($rightsholderable->rightsholders as $rightsholder)
-			<li>
+		
+	@if(count($rightsholderable->rightsholders)>0)
+		<table class="table-auto px-4">
+		@foreach($rightsholderable->rightsholders as $rightsholder)
+			<tr>
 				@can('update', $rightsholderable)
-					<x-button method="GET" action="{{ route('rightsholders.edit', [$rightsholder]) }}" class="inline">
+					<td>
+						<x-button method="GET" action="{{ route('rightsholders.edit', [$rightsholder]) }}" class="inline">
 							Edit
-					</x-button>
+						</x-button>
+					</td>
+					<td>
+						@if($loop->index > 0)
+							<x-button method="GET" action="{{ route('rightsholders.up', $rightsholder) }}" class="inline">
+								&uarr;
+							</x-button>
+						@endif
+					</td>
+					<td>
+						@if($loop->index < count($rightsholderable->rightsholders)-1)
+						<x-button method="GET" action="{{ route('rightsholders.down', [$rightsholder]) }}" class="inline">
+							&darr;
+						</x-button>
+						@endif
+					</td>
 				@endcan
 				@can('delete', $rightsholderable)
-					<x-button method="DELETE" action="{{ route('rightsholders.destroy', [$rightsholder]) }}" class="inline">
+					<td>
+						<x-button method="DELETE" action="{{ route('rightsholders.destroy', [$rightsholder]) }}" class="inline">
 							Delete
-					</x-button>
+						</x-button>
+					</td>
 				@endcan
-				<x-rightsholder.list :rightsholder=$rightsholder />
-			</li>
-		@empty
-			<li>No rights holders defined yet.</li>
-		@endforelse
-	</ul>
+				<td class="px-4">
+					<x-rightsholder.list :rightsholder=$rightsholder />
+				</td>
+			</tr>
+		@endforeach
+		</table>
+	@else
+			<li>No rightsholders defined yet.</li>
+	@endif
+
 
 	@can('update', $rightsholderable)
 		<livewire:rightsholder-form :rightsholderable="$rightsholderable" />

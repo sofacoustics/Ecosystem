@@ -45,7 +45,7 @@
 		</table>
 	@else
 			<li>No creators defined yet.</li>
-	@endforelse
+	@endif
 
 	@can('update', $creatorable)
 		<livewire:creator-form :creatorable="$creatorable" />

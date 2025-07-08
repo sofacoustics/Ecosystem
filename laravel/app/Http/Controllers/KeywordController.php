@@ -45,4 +45,43 @@ class KeywordController extends Controller
 		$keyword->delete();
 		return redirect()->back();
 	}
+
+	public function copyKeyword(Keyword $A, Keyword $B)
+	{
+		$B->keywordName = $A->keywordName;
+		$B->keywordSchemeIndex = $A->keywordSchemeIndex;
+		$B->schemeURI = $A->schemeURI;
+		$B->valueURI = $A->valueURI;
+		$B->classificationCode = $A->classificationCode;
+		$B->created_at = $A->created_at;
+		$B->updated_at = $A->updated_at;
+		return $B;
+	}
+	
+	public function up($id)
+	{
+		$keywordA = Keyword::where('id', $id)->get()->first();
+		$keywordB = Keyword::where('keywordable_id',$keywordA->keywordable_id)->where('id','<', $id)->get()->last();
+		$temp = new Keyword;
+		$temp = $this->copyKeyword($keywordA, $temp); 
+		$keywordA = $this->copyKeyword($keywordB, $keywordA);
+		$keywordB = $this->copyKeyword($temp, $keywordB);
+		$keywordA->save(); 
+		$keywordB->save();
+		return redirect()->back();
+	}
+
+	public function down($id)
+	{
+		$keywordA = Keyword::where('id', $id)->get()->first();
+		$keywordB = Keyword::where('keywordable_id',$keywordA->keywordable_id)->where('id','>', $id)->get()->first();
+		$temp = new Keyword;
+		$temp = $this->copyKeyword($keywordA, $temp); 
+		$keywordA = $this->copyKeyword($keywordB, $keywordA);
+		$keywordB = $this->copyKeyword($temp, $keywordB);
+		$keywordA->save(); 
+		$keywordB->save();
+		return redirect()->back();
+	}
+
 }
