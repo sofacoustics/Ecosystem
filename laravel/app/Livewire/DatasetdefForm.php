@@ -18,6 +18,7 @@ class DatasetdefForm extends Component
 	public $database_id;
 	public $datafiletype_id;
 	public $widget_id;
+	public $datafiletype_description;
 
 	public $datafiletypes; // get from Datafiletyp
 	public $widgets; // get from Widgets
@@ -45,15 +46,15 @@ class DatasetdefForm extends Component
 		}
 		else
 		{
-			$this->datafiletype_id = null;
 			$this->database_id = $this->database->id;
+			$this->datafiletype_id = 1; // HRTF
+			$this->widget_id = 2; // HRTF General
 		}
 		if($this->widget_id == null)
 			$this->widget_id = 1; // default widget
 
 		$this->datafiletypes = \App\Models\Datafiletype::all();
 		$this->widgets = \App\Models\Widget::orderBy('name', 'asc')->get(); 
-		//dd($this->datafiletypes);
 	}
 
 	public function save()
@@ -112,4 +113,5 @@ class DatasetdefForm extends Component
 	{
 		return view('livewire.datasetdef-form');
 	}
+	
 }
