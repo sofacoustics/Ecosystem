@@ -39,12 +39,12 @@ class WidgetSeeder extends Seeder
 		
 		
 		Widget::create(array('name' => 'SOFA: BRIR General',
-            'description' => 'Plot ETC, and the geometry of the BRIR measurements.',
+            'description' => 'Plot ETC, and the geometry of BRIRs.',
             'service_id' => 3,
             'view' => 'brir-general',
         ));		
 		Widget::create(array('name' => 'SOFA: SRIR General',
-            'description' => 'Plot the geometry, and aplitude spectra of the SRIR measurements.',
+            'description' => 'Plot the geometry, and aplitude spectra of the SRIRs.',
             'service_id' => 4,
             'view' => 'srir-general',
         ));		
@@ -83,7 +83,7 @@ class WidgetSeeder extends Seeder
         ));		
 		Widget::create(array('name' => 'SOFA: BRIR ListenerView',
             'description' => 'Plot ETC, and the geometry of the BRIR measurements with ListenerView as parameter.',
-            'service_id' => 10,
+            'service_id' => 2,
             'view' => 'brir-listenerview',
         ));	
     }
