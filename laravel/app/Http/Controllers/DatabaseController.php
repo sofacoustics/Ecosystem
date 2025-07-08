@@ -7,6 +7,7 @@ use Carbon;
 use App\Models\User;
 use App\Models\Database;
 use App\Models\Datafile;
+use App\Models\Datasetdef;
 use App\Models\Radardataset;
 use App\Models\Radardatasetresourcetype;
 
@@ -175,7 +176,11 @@ class DatabaseController extends Controller
 				break;
 			}
 		}
-		return view('databases.datasetdefs.index', ['database' => $database, 'edits' => $edits, 'deletes' => $deletes]);
+		$colspan=0;
+		if($edits) $colspan=1; // button: edit
+		if($deletes) $colspan=$colspan+2; // buttons: delete and duplicate
+		if(count($database->datasetdefs)>1 & $deletes) $colspan=$colspan+2; // buttons: up and down
+		return view('databases.datasetdefs.index', ['database'=>$database, 'edits'=>$edits, 'deletes'=>$deletes, 'colspan' =>$colspan]);
 	}
 
 	public function upload(Database $database)
@@ -258,4 +263,42 @@ class DatabaseController extends Controller
 		]);
 	}
 
+	public function copyDatasetdef(Datasetdef $A, Datasetdef $B)
+	{
+		$B->name = $A->name;
+		$B->description = $A->description;
+		$B->datafiletype_id = $A->datafiletype_id;
+		$B->bulk_upload_filename_filter = $A->bulk_upload_filename_filter;
+		$B->bulk_upload_pattern_description = $A->bulk_upload_pattern_description;
+		$B->widget_id = $A->widget_id;
+		$B->created_at = $A->created_at;
+		$B->updated_at = $A->updated_at;
+		return $B;
+	}
+	
+	public function datasetdefup($id)
+	{
+		$datasetdefA = Datasetdef::where('id', $id)->get()->first();
+		$datasetdefB = Datasetdef::where('database_id',$datasetdefA->database_id)->where('id','<', $id)->get()->last();
+		$temp = new Datasetdef;
+		$temp = $this->copyDatasetdef($datasetdefA, $temp); 
+		$datasetdefA = $this->copyDatasetdef($datasetdefB, $datasetdefA);
+		$datasetdefB = $this->copyDatasetdef($temp, $datasetdefB);
+		$datasetdefA->save(); 
+		$datasetdefB->save();
+		return redirect()->back();
+	}
+
+	public function datasetdefdown($id)
+	{
+		$datasetdefA = Datasetdef::where('id', $id)->get()->first();
+		$datasetdefB = Datasetdef::where('database_id',$datasetdefA->database_id)->where('id','>', $id)->get()->first();
+		$temp = new Datasetdef;
+		$temp = $this->copyDatasetdef($datasetdefA, $temp); 
+		$datasetdefA = $this->copyDatasetdef($datasetdefB, $datasetdefA);
+		$datasetdefB = $this->copyDatasetdef($temp, $datasetdefB);
+		$datasetdefA->save(); 
+		$datasetdefB->save();
+		return redirect()->back();
+	}
 }

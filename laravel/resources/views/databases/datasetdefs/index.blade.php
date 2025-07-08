@@ -9,11 +9,7 @@
 			<tr>
 				<th class="border p-2">#</th>
 				@if($edits)
-					<th class="border p-2">Edit</th>
-				@endif
-				@if($deletes)
-					<th class="border p-2">Duplicate</th>
-					<th class="border p-2">Delete</th>
+					<th class="border p-2" colspan="{{ $colspan }}">Commands</th>
 				@endif
 				<th class="border p-2">Name</th>
 				<th class="border p-2">Type</th>
@@ -35,6 +31,20 @@
 					</td>
 				@endcan
 				@can('delete', [$datasetdef, $database])
+					<td class="border p-2">
+						@if($loop->index > 0)
+							<x-button method="GET" action="{{ route('datasetdefs.up', $datasetdef) }}" class="inline">
+								&uarr;
+							</x-button>
+						@endif
+					</td>
+					<td class="border p-2">
+						@if($loop->index < count($database->datasetdefs)-1)
+						<x-button method="GET" action="{{ route('datasetdefs.down', [$datasetdef]) }}" class="inline">
+							&darr;
+						</x-button>
+						@endif
+					</td>
 					<td class="border p-2">
 						<x-button method="GET" class="inline" action="{{ route('datasetdefs.duplicate', [$datasetdef]) }}">Duplicate</x-button>
 					</td>

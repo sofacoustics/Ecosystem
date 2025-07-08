@@ -65,6 +65,8 @@ Route::get('/databases/{database}/visibility', [DatabaseController::class, 'visi
 Route::get('/databases/{database}/datathek', [DatabaseController::class, 'datathek'])->name('databases.datathek')->middleware('admin'); // display Datathek status and actions for admin testing
 //Route::get('/databases/{database}/radar/edit', [DatabaseController::class, 'radarEdit'])->name('databases.radar.edit');
 Route::get('/databases/{database}/datasetdefs', [DatabaseController::class, 'datasetdefs'])->name('databases.datasetdefs');
+Route::get('/databases/{database}/datasetdefs/up', [DatabaseController::class, 'datasetdefup'])->name('datasetdefs.up');
+Route::get('/databases/{database}/datasetdefs/down', [DatabaseController::class, 'datasetdefdown'])->name('datasetdefs.down');
 Route::get('/databases/{database}/creators', [CreatorController::class, 'index'])->name('databases.creators');
 Route::get('/databases/{database}/creators/up', [CreatorController::class, 'up'])->name('creators.up');
 Route::get('/databases/{database}/creators/down', [CreatorController::class, 'down'])->name('creators.down');
