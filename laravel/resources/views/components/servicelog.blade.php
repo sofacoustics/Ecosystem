@@ -1,3 +1,4 @@
+@hasrole('admin')
 <div class="{{ $adminInfo }}">
 	@if($log)
 		<p>Service: {{ $log->name }} ({{ $log->service_id }})</p>
@@ -10,3 +11,8 @@
 		<p>No service log yet!</p>
 	@endif
 </div>
+@else
+	@if($log->exit_code != 0)
+		<x-alert>Last service job exited with the code {{ $log->exit_code }} ({{ $log->exit_code_text }})</x-alert>
+	@endif
+@endhasrole
