@@ -131,7 +131,7 @@ if isfield(Obj.Data, 'Real') && isfield(Obj.Data, 'Imag')
         % Save figure as PNG
         filename = sprintf('%s_%d', SOFAfile, round(freq(idxF)));
         % print('-dpng', '-r300', filename);
-        print ("-r600", [filename '.png'])
+        print ('-dpng', "-r600", [filename '.png'])
         disp(['Saved figure: ' filename]);
         if isoctave; fputs(fid, [ "just printed " filename "_1.png\n"]); end
     end
