@@ -113,7 +113,7 @@ ylabel('Amplitude (dB)')
         
         % set(gcf, 'Name', 'SOFAfile')
         % if isoctave; fputs(fid, [ "renamed figure\n"]); end
-        print ("-r600", [SOFAfile '_1.png'])
+        print ('-dpng', "-r600", [SOFAfile '_1.png'])
         %print ("-r600", '/tmp/hrtf_1.png');
         if isoctave; fputs(fid, [ "just printed " SOFAfile "_1.png\n"]); end
 end
