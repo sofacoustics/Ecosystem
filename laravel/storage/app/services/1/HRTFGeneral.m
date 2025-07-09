@@ -647,21 +647,10 @@ switch lower(type)
         angles = deg2rad(pos);
         %figure('Renderer', 'painters', 'Position', [10 10 700 450]);
         if isoctave
-
-
-
-
             polar(angles, abs(itd*1000), 'b');
             view(-90, 90)
             rticks([round(1000*max(itd*1000))/1000*2/3, round(1000*max(itd*1000))/1000]);
             text(0.7, 0.7, 'ITD (ms)')
-            %            text(0, 1.08, "ITD (ms)", "horizontalalignment", "right");
-            % labels = { [num2str(round(10*max(itd)*2/3*1e6)/10) ' ' char(181) 's'], [num2str(round(10*max(itd)*1e6)/10) ' ' char(181) 's'] };
-            % ax = gca;
-            % ax.RTickLabel = labels;
-
-
-
             grid on;
         else
             polarplot(angles, abs(itd), 'linewidth', 1.2);

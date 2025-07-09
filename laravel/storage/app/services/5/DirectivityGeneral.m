@@ -4,6 +4,7 @@
 % #Author: Michael Mihocic: support of Directivity SOFA files implemented (15.04.2025)
 % #Author: Michael Mihocic: conventions restriction removed (03.06.2025)
 % #Author: Michael Mihocic: file renamed; attempting to create new figures, still work in progress... (27.06.2025)
+% #Author: Michael Mihocic: figure creation finished, Octave also supported; SOFA properties stored to csv files (09.07.2025)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -118,7 +119,12 @@ if isfield(Obj.Data, 'Real') && isfield(Obj.Data, 'Imag')
         mag = 20 * log10(abs(TF(:, idxF)));
 
         figure;
-        polarplot(theta, mag, 'LineWidth', 30); % Piotr: empty figures are created...
+        if isoctave
+            polar(repmat(theta, size(mag)), mag); % Piotr: empty figures are created...
+        else
+            % polarplot(theta, mag, 'LineWidth', 30); % Piotr: empty figures are created...
+            polarplot(repmat(theta, size(mag)), mag); % Piotr: empty figures are created...
+        end
         title(sprintf('HRTF magnitude at %d Hz', round(freq(idxF))));
         set(gcf, 'Name', sprintf('HRTF_%d', f));
         if isoctave; fputs(fid, [ "renamed figure\n"]); end
@@ -132,13 +138,6 @@ if isfield(Obj.Data, 'Real') && isfield(Obj.Data, 'Imag')
 else
     error('No valid data.');
 end
-
-
-
-
-
-
-
 % end
 
 
