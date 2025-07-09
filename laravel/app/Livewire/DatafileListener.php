@@ -64,6 +64,7 @@ class DatafileListener extends Component
 			$this->serviceLogs = $datafile->datasetdef->widget->service->logs;
 		$this->latestLog = $datafile->datasetdef->widget->service->latestLog;
 		$this->result = 0;
+		$this->isExpanded = false;
 	}
 
 	public function render()
@@ -115,10 +116,44 @@ class DatafileListener extends Component
 				$viewData['datasetdef_radar_upload_url'] = $this->datafile->datasetdef_radar_upload_url;
 				break;
 
+			case 'livewire.datafiles.srir-general':
+				$fullPath = $this->datafile->absolutepath();
+				$files = glob($fullPath . '_iso_1_Mmax=*.png');
+				$postfixes=[];
+				$Mmax = 0;
+				if(!empty($files))
+				{
+					preg_match('/_Mmax=\d+\.png/', $files[0], $match);
+					sscanf($match[0], "_Mmax=%d.png", $Mmax);
+					for ($i=0; $i<$Mmax; $i++)
+						array_push($postfixes,'_'.($i+1).'_Mmax='.$Mmax.'.png');
+				}
+				$viewData['Mmax'] = $Mmax;
+				$viewData['postfixes'] = $postfixes;
+				
+				$sofaAsset = $this->datafile->asset();
+				$viewData['csvRows'] = $this->readCSV($sofaAsset, '.sofa_dim.csv');
+				$viewData['csvRowsProp'] = $this->readCSV($sofaAsset, '.sofa_prop.csv');
+
+				break;
+
 				// SOFA properties
 				//
 			case 'livewire.datafiles.sofa-properties': 
 				$sofaAsset = $this->datafile->asset();
+				$viewData['csvRows'] = $this->readCSV($sofaAsset, '.sofa_dim.csv');
+				$viewData['csvRowsProp'] = $this->readCSV($sofaAsset, '.sofa_prop.csv');
+				break;
+		
+			case 'livewire.datafiles.sofa-directivity-polar':
+				$this->result=5;
+				break;
+		}
+		return view($view, $viewData);
+	}
+	
+	private function readCSV($sofaAsset, $postfix) 
+	{
 				$urlParts = parse_url($sofaAsset);
 				$sofaPath = $urlParts['path']; // eg. /data/9/57/135/6 sofa-properties.sofa
 				$dir = dirname($sofaPath); // eg. /data/9/57/135
@@ -127,7 +162,7 @@ class DatafileListener extends Component
 				// ====================
 				// Load 1st CSV: .sofa_dim.csv
 				// ====================
-				$csvFilename = $filename . '.sofa_dim.csv'; // eg. 6 sofa-properties.sofa_1.csv
+				$csvFilename = $filename . $postfix; // eg. 6 sofa-properties.sofa_1.csv
 				$csvFilenameEncoded = rawurlencode($csvFilename); 			// Encoding file name
 				$csvPath = $dir . '/' . $csvFilenameEncoded;
 
@@ -162,56 +197,7 @@ class DatafileListener extends Component
 							$csvRows[] = str_getcsv($line, ';');
 					}
 				}
-
-				// Pass first CSV data to view
-				$viewData['csvContent'] = $csvContent;
-				$viewData['csvPath'] = $csvUrl;
-				$viewData['csvRows'] = $csvRows;
-
-				// ====================
-				// Load 2nd CSV: .sofa_prop.csv
-				// ====================
-				$csvFilenameProp = $filename . '.sofa_prop.csv';
-				$csvFilenamePropEncoded = rawurlencode($csvFilenameProp);
-				$csvPathProp = $dir . '/' . $csvFilenamePropEncoded;
-				$csvUrlProp = $baseUrl . $csvPathProp;
-
-				// Logging
-				\Log::info('DatafileListener: csvPropPath (encoded) = ' . $csvPathProp);
-
-				// load file
-				$csvContentProp = '';
-				try 
-				{
-					$csvContentProp = @file_get_contents($csvUrlProp);
-				} catch (\Exception $e) {
-						\Log::error('DatafileListener: Error loading .sofa_prop.csv: ' . $e->getMessage());
-				}
-
-				if ($csvContentProp === false || $csvContentProp === null) 
-					$csvContentProp = '';
-
-				$csvRowsProp = [];
-				if ($csvContentProp !== '') 
-				{
-					$lines = preg_split('/\r\n|\r|\n/', $csvContentProp);
-					foreach ($lines as $line) 
-					{
-						if (trim($line) !== '') 
-							$csvRowsProp[] = str_getcsv($line, ';');
-					}
-				}
-
-					// Pass second CSV data to view
-				$viewData['csvContentProp'] = $csvContentProp;
-				$viewData['csvPathProp'] = $csvUrlProp;
-				$viewData['csvRowsProp'] = $csvRowsProp;
-				break;
-		
-			case 'livewire.datafiles.sofa-directivity-polar':
-				$this->result=5;
-				break;
-		}
-		return view($view, $viewData);
+		return $csvRows;
 	}
+
 }
