@@ -103,93 +103,91 @@ class ProfileController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function orcidLink(Request $request)
-    {
+	public function orcidLink(Request $request)
+	{
 		$orcidFromForm = $request->input('orcid');
-				
-        // Configuration for the ORCID API 
-        $orcidApiUrl = config('services.orcid.api_url'); 
-        $orcidClientId = config('services.orcid.client_id');
-        $orcidClientSecret = config('services.orcid.client_secret');
-        $orcidRedirectUri = route('profile.callback'); 
-        $orcidScope = '/authenticate'; 
+		
+			// Configuration for the ORCID API 
+		$orcidApiUrl = config('services.orcid.api_url'); 
+		$orcidClientId = config('services.orcid.client_id');
+		$orcidClientSecret = config('services.orcid.client_secret');
+		$orcidRedirectUri = route('profile.callback'); 
+		$orcidScope = '/authenticate'; 
 
-        // Construct the authorization URL
-        $authorizationUrl = $orcidApiUrl . '/oauth/authorize?' . http_build_query([
-            'client_id' => $orcidClientId,
-            'response_type' => 'code',
-            'scope' => $orcidScope,
-            'redirect_uri' => $orcidRedirectUri,
-            'orcid' => $orcidFromForm, // Optionally pre-fill the ORCID ID
-        ]);
+			// Construct the authorization URL
+		$authorizationUrl = $orcidApiUrl . '/oauth/authorize?' . http_build_query([
+				'client_id' => $orcidClientId,
+				'response_type' => 'code',
+				'scope' => $orcidScope,
+				'redirect_uri' => $orcidRedirectUri,
+				'orcid' => $orcidFromForm, // Optionally pre-fill the ORCID ID
+		]);
 
-        // Redirect the user to the ORCID authorization page
-        return redirect()->away($authorizationUrl);
-		}
+			// Redirect the user to the ORCID authorization page
+		return redirect()->away($authorizationUrl);
+	}
 
-    /**
-     * Handles the callback from ORCID after authorization.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function callback(Request $request)
-    {
-        $code = $request->input('code');
-        $error = $request->input('error');
+	/**
+	 * Handles the callback from ORCID after authorization.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @return \Illuminate\Http\RedirectResponse
+	 */
+	public function callback(Request $request)
+	{
+		$code = $request->input('code');
+		$error = $request->input('error');
 
-        if ($error) {
-            return redirect()->route('profile.edit')->withErrors(['orcid' => 'ORCID authorization failed: ' . $error]);
-        }
+		if ($error)
+			return redirect()->route('profile.edit')->withErrors(['orcid' => 'ORCID authorization failed: ' . $error]);
 
-		if (!$code ) {
-            return redirect()->route('profile.edit')->withErrors(['orcid' => 'Invalid ORCID authorization response.']);
-        }
+		if (!$code )
+			return redirect()->route('profile.edit')->withErrors(['orcid' => 'Invalid ORCID authorization response.']);
 
-        // Configuration for the ORCID API
-        $orcidApiUrl = config('services.orcid.api_url');
-        $orcidClientId = config('services.orcid.client_id');
-        $orcidClientSecret = config('services.orcid.client_secret');
-        $orcidTokenUrl = $orcidApiUrl . '/oauth/token';
+			// Configuration for the ORCID API
+		$orcidApiUrl = config('services.orcid.api_url');
+		$orcidClientId = config('services.orcid.client_id');
+		$orcidClientSecret = config('services.orcid.client_secret');
+		$orcidTokenUrl = $orcidApiUrl . '/oauth/token';
 
-        try {
-            // Exchange the authorization code for an access token
-            $response = Http::asForm()->post($orcidTokenUrl, [
-                'client_id' => $orcidClientId,
-                'client_secret' => $orcidClientSecret,
-                'grant_type' => 'authorization_code',
-                'code' => $code,
-                'redirect_uri' => route('profile.callback'),
-            ]);
+		try 
+		{		// Exchange the authorization code for an access token
+			$response = Http::asForm()->post($orcidTokenUrl, [
+					'client_id' => $orcidClientId,
+					'client_secret' => $orcidClientSecret,
+					'grant_type' => 'authorization_code',
+					'code' => $code,
+					'redirect_uri' => route('profile.callback'),
+			]);
 
-            $response->throw(); // Throw an exception for HTTP errors
+			$response->throw(); // Throw an exception for HTTP errors
 
-            $accessTokenData = $response->json();
-            $accessToken = $accessTokenData['access_token'] ?? null;
-            $orcidFromToken = $accessTokenData['orcid'] ?? null;
+			$accessTokenData = $response->json();
+			$accessToken = $accessTokenData['access_token'] ?? null;
+			$orcidFromToken = $accessTokenData['orcid'] ?? null;
 			$nameFromToken = $accessTokenData['name'] ?? null;
 
-            if ($accessToken && $orcidFromToken) {
-                // ORCID ID successfully verified! Update the fields
+			if ($accessToken && $orcidFromToken) 
+			{		// ORCID ID successfully verified! Update the fields
 				auth()->user()->update(['orcid' => $orcidFromToken]);
 				auth()->user()->update(['name' => $nameFromToken]);
 				auth()->user()->update(['orcid_verified_at' => now()]);
 
-				// send 'NewUser' email
+					// send 'NewUser' email
 				$adminEmails = config('mail.to.admins'); 
 				Mail::to(explode(',',$adminEmails))->send(new NewUser($request->user()));
 				app('log')->info("New user " . $request->user()->name . " (". $request->user()->id . ") created. Sending NewUser email to $adminEmails"); 
 
-                return redirect()->route('profile.edit')->with('status', 'ORCID Link successful...');;
-
-            } else {
-                return redirect()->route('profile.edit')->withErrors(['orcid' => 'ORCID verification failed: Could not retrieve or match ORCID ID.']);
-            }
-
-        } catch (\Illuminate\Http\Client\RequestException $e) {
-            return redirect()->route('profile.edit')->withErrors(['orcid' => 'Error communicating with ORCID: ' . $e->getMessage()]);
-        }
-    }
+				return redirect()->route('profile.edit')->with('status', 'ORCID Link successful...');
+			} 
+			else
+				return redirect()->route('profile.edit')->withErrors(['orcid' => 'ORCID verification failed: Could not retrieve or match ORCID ID.']);
+		} 
+		catch (\Illuminate\Http\Client\RequestException $e) 
+		{
+			return redirect()->route('profile.edit')->withErrors(['orcid' => 'Error communicating with ORCID: ' . $e->getMessage()]);
+		}
+	}
 
 
 }

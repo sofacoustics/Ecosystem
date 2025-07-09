@@ -18,8 +18,8 @@
 	<h3>The Ecosystem Team:</h3>
 	The Ecosystem is developed and maintained at the <a href="https://www.oeaw.ac.at/en/ari/">Acoustics Research Institute</a> of the <a href="https://www.oeaw.ac.at/en/">Austrian Academy of Sciences</a>:
 	<ul class="list-disc list-inside">
-		<li><b><a href="https://www.oeaw.ac.at/en/ari/our-team/majdak-piotr">Piotr Majdak</a>:</b> Project lead, Development
-		<li><b><a href="https://www.oeaw.ac.at/en/ari/our-team/stuefer-jonathan">Jonnathan Stuefer</a>:</b> Main programming
+		<li><b><a href="https://www.oeaw.ac.at/en/ari/our-team/majdak-piotr">Piotr Majdak</a>:</b> Project lead, Development, Programming
+		<li><b><a href="https://www.oeaw.ac.at/en/ari/our-team/stuefer-jonathan">Jonnathan Stuefer</a>:</b> Main programming, IT management
 		<li><b><a href="https://www.oeaw.ac.at/en/ari/our-team/mihocic-michael">Michael Mihocic</a>:</b> Widgets, Testing, Data management
 	</ul>
 	The Ecosystem uses the <a href="https://datathek.oeaw.ac.at">the ÖAW Datathek</a> as a backend. The ÖAW Datathek is maintained and supported by the <a href="https://verlag.oeaw.ac.at/en/press/contact/c-40">Austrian Academy of Sciences Press</a> with <b>Herwig Stöger</b> as the contact person. 
@@ -61,11 +61,31 @@
 	</ul>
 	<br><hr><br>
 	
-	<h3>Attributions</h3>
+	<h3>Attributions:</h3>
 	<ul class="list-disc list-inside">
-		<li><img id="email" src="{{ asset('images/envelope.png') }}"
-			style="display: inline; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em;">
-			by <a href="https://thenounproject.com/creator/iconisland/">Icon Island</a> licensed under CC BY 3.0.
+		<li>
+			<img src="{{ asset('images/envelope.png') }}" style="display: inline; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em;">
+			by <a href="https://thenounproject.com/creator/iconisland/" target="_blank">Icon Island</a> licensed under CC BY 3.0.
+		</li>
+		<li>
+			<img src="{{ asset('images/copy-to-clipboard.png') }}" style="display: inline; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em;">
+			by <a href="https://github.com/javisperez/toe-icons?ref=svgrepo.com" target="_blank">Javisperez</a>
+			licensed under <a href="https://www.svgrepo.com/page/licensing#Apache" target="_blank">Apache license</a>
+			via <a href="https://www.svgrepo.com/" target="_blank">SVG Repo</a>.
+		</li>
+		<li>
+			<img src="{{ asset('images/ROR_logo.svg') }}" style="display: inline; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em;">
+			by the <a href="https://ror.org/" target="_blank">Research Organization Registry (ROR) initiative</a>
+			licensed under <a href="https://creativecommons.org/licenses/by-nd/4.0/" target="_blank">CC BY-ND 4.0 license</a>.
+		</li>
+		<li>
+			<img src="{{ asset('images/visible.svg') }}" style="display: inline; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em;">
+			<img src="{{ asset('images/hidden.svg') }}" style="display: inline; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em;">
+			are from <a href="https://iconmonstr.com/" target="_blank">iconmonstr</a>
+			licensed under the <a href="https://iconmonstr.com/license/" target="_blank">iconmonstr license</a>.
+		</li>
+		<li>
+			All other logos and images are either public domain or created by the Ecosystem.
 		</li>
 	</ul>
 </x-app-layout>
