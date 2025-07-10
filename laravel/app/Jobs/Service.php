@@ -31,7 +31,7 @@ class Service implements ShouldQueue
 {
 	use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-	public $timeout = 180; // This 'timeout' appears to be independent of the Process timeout and needs to be high enough
+	public $timeout = 60; // This 'timeout' appears to be independent of the Process timeout and needs to be high enough
 
 	private ServiceModel $service;
 
@@ -43,6 +43,7 @@ class Service implements ShouldQueue
 		public Datafile $datafile
 	) {
 		$this->service = $this->widget->service;
+		$this->timeout = $this->service->timeout + 10; // maybe process timeout needs to be longer than job timeout so try/catch work
 	}
 
 	/**
@@ -115,7 +116,7 @@ class Service implements ShouldQueue
 			'XDG_RUNTIME_DIR' => '/run/user/33',
 		]);*/
 		$process->setWorkingDirectory($directory);
-		$process->setTimeout($timeout); // in seconds
+		$process->setTimeout($this->service->timeout); // use class timeout (set from service column)
 
 		$process->start();
 
