@@ -26,17 +26,17 @@
 			<tr>
 				<td rowspan=2 class="px-6 py-4 whitespace-normal">
 					<b>Index of M:</b> 
-					<select wire:model.live="selection" class="text-gray-700 mb-2 font-bold" title="Measurement index">
+					<select wire:model.live="counter" class="text-gray-700 mb-2 font-bold" title="Measurement index">
 						@foreach($postfixes as $postfix)
 							<option value="{{$loop->index+1}}">{{$loop->index+1}}</option>
 						@endforeach
 					</select>
 				</td>
-				<td><x-img class="p-2" :asset="$datafile->asset('',1).'_yz'.$postfixes[$selection-1]" /></td>
-				<td><x-img class="p-2" :asset="$datafile->asset('',1).'_xz'.$postfixes[$selection-1]" /></td>
+				<td><x-img class="p-2" :asset="$datafile->asset('',1).'_yz'.$postfixes[$counter-1]" /></td>
+				<td><x-img class="p-2" :asset="$datafile->asset('',1).'_xz'.$postfixes[$counter-1]" /></td>
 			</tr>
-				<td><x-img class="p-2" :asset="$datafile->asset('',1).'_iso'.$postfixes[$selection-1]" /></td>
-				<td><x-img class="p-2" :asset="$datafile->asset('',1).'_xy'.$postfixes[$selection-1]" /></td>
+				<td><x-img class="p-2" :asset="$datafile->asset('',1).'_iso'.$postfixes[$counter-1]" /></td>
+				<td><x-img class="p-2" :asset="$datafile->asset('',1).'_xy'.$postfixes[$counter-1]" /></td>
 			</tr>
 		</tbody>
 	</table>

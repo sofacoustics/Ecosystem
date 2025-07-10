@@ -30,7 +30,6 @@ class DatafileListener extends Component
 	public $counter = 0;
 	public $counter_max = 1; 
 	public $counter_min = 0;
-	public $selection=1;
 	public $isExpanded = false; // for boxes to be expanded
 
 
@@ -134,11 +133,8 @@ class DatafileListener extends Component
 					for ($i=0; $i<$Mmax; $i++)
 						array_push($postfixes,'_'.($i+1).'_Mmax='.$Mmax.'.png');
 				}
-				$viewData['Mmax'] = $Mmax;
 				$viewData['postfixes'] = $postfixes;
-				$this->counter_max = $Mmax;
-				$this->counter_min = $Mmax > 0 ? 1 : 0;
-				$this->counter = $Mmax > 0 ? 1 : 0;
+				if($this->counter<1) $this->counter=1;
 					// SOFA properties
 				$sofaAsset = $this->datafile->asset();
 				$viewData['csvRows'] = $this->readCSV($sofaAsset, '.sofa_dim.csv');
