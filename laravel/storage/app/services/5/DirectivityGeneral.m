@@ -153,9 +153,9 @@ if isfield(Obj.Data, 'Real') && isfield(Obj.Data, 'Imag')
 
         fTitle = freq(idxF);
         if mod(fTitle,1) == 0
-            title(sprintf('HRTF magnitude at %.0f Hz', fTitle));
+            title(sprintf('Magnitudes (in dB) at %.0f Hz', fTitle));
         else
-            title(sprintf('HRTF magnitude at %.1f Hz', fTitle));
+            title(sprintf('Magnitudes (in dB) at %.1f Hz', fTitle));
         end
         % title(sprintf('HRTF magnitude at %.1f Hz', freq(idxF)));
 
