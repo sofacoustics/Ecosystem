@@ -133,7 +133,7 @@ if isfield(Obj.Data, 'Real') && isfield(Obj.Data, 'Imag')
         % print('-dpng', '-r300', filename);
         print ('-dpng', "-r600", [filename '.png'])
         disp(['Saved figure: ' filename]);
-        if isoctave; fputs(fid, [ "just printed " filename "_1.png\n"]); end
+        if isoctave; fputs(fid, [ "just printed " filename ".png\n"]); end
     end
 else
     error('No valid data.');
@@ -143,6 +143,7 @@ end
 
 %% Epilogue: (un)comment if you want to:
 disp('DONE');
+if isoctave; fputs(fid, [ "DONE\n"]); end
 if isoctave; fclose(fid); end;
 toc; % timer
 
