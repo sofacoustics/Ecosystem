@@ -143,8 +143,12 @@ class DatafileListener extends Component
 				$viewData['csvRowsProp'] = $this->readCSV($sofaAsset, '.sofa_prop.csv');
 				break;
 
-				// SOFA PROPERTIES
-			case 'livewire.datafiles.sofa-properties': 
+				// SOFA PROPERTIES and other SOFA-related viewers
+			case 'livewire.datafiles.sofa-properties':
+			case 'livewire.datafiles.brir-general':
+			case 'livewire.datafiles.headphones-general':
+			case 'livewire.datafiles.hrtf-general':
+			case 'livewire.datafiles.sofa-annotated-receiver': 
 				$sofaAsset = $this->datafile->asset();
 				$viewData['csvRows'] = $this->readCSV($sofaAsset, '.sofa_dim.csv');
 				$viewData['csvRowsProp'] = $this->readCSV($sofaAsset, '.sofa_prop.csv');
