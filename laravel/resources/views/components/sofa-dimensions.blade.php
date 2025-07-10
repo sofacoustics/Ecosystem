@@ -20,5 +20,7 @@
 					@endforeach
 				</tbody>
 			</table>
+		@else
+			No SOFA dimensions found
 		@endif
 	</div>

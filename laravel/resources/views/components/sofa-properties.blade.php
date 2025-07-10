@@ -15,5 +15,7 @@
 			@endforeach
 		</tbody>
 	</table>
+@else
+	No SOFA properties found
 @endif
 

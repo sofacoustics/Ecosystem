@@ -21,20 +21,24 @@
 			<th class="bg-gray-100 max-w-1/6">Frequency</th>
 			<th class="bg-gray-100">Amplitudes in the horizontal plane</th>
 		</thead>
-		<tbody>
-			<tr class="py-2 border">
-				<td class="px-6 py-4 whitespace-normal text-center align-middle">
-					<select wire:model.live="counter" class="text-gray-700 mb-2 font-bold" title="Measurement index">
-						@foreach($frequencies as $freq)
-							<option value="{{$freq}}">{{$freq}} Hz</option>
-						@endforeach
-					</select>
-				</td>
-				<td class="text-center align-middle">
-					<x-img class="p-2" :asset="$datafile->asset('',1).'_amphorizontal_'.$counter.'.png'" />
-				</td>
-			</tr>
-		</tbody>
+		@if($frequencies)
+			<tbody>
+				<tr class="py-2 border">
+					<td class="px-6 py-4 whitespace-normal text-center align-middle">
+						<select wire:model.live="counter" class="text-gray-700 mb-2 font-bold" title="Measurement index">
+							@foreach($frequencies as $freq)
+								<option value="{{$freq}}">{{$freq}} Hz</option>
+							@endforeach
+						</select>
+					</td>
+					<td class="text-center align-middle">
+						<x-img class="p-2" :asset="$datafile->asset('',1).'_amphorizontal_'.$counter.'.png'" />
+					</td>
+				</tr>
+			</tbody>
+		@else
+			<tbody><tr><td>No frequencies found</td></tr></tbody>
+		@endif
 	</table>
 
 	<table class="min-w-full border border-gray-300 rounded">

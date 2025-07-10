@@ -98,6 +98,8 @@ class DatafileListener extends Component
 		}
 
 		$viewData = []; // clear the array which will be passed to the blade
+		$viewData['csvRows']=[]; // assume no CSV file
+		$viewData['csvRowsProp']=[]; // assume no CSV property file
 
 		switch($view)
 		{
@@ -165,14 +167,15 @@ class DatafileListener extends Component
 					asort($freqs);
 				}
 				$viewData['frequencies'] = $freqs;
-				if($this->counter==0)	// If we run this for the first time
-				{
-					$idx=array_search(1000, $freqs);
-					if($idx)
-						$this->counter=1000;	// If 1000 Hz found, set to 1000 Hz
-					else
-						$this->counter=$freqs[0]; // If 1000 Hz not available, set to the first frequency
-				}
+				if($freqs)
+					if($this->counter==0) // If we run this for the first time
+					{
+						$idx=array_search(1000, $freqs);
+						if($idx)
+							$this->counter=1000; // If 1000 Hz found, set to 1000 Hz
+						else
+							$this->counter=$freqs[0]; // If 1000 Hz not available, set to the first frequency
+					}
 					// SOFA properties
 				$sofaAsset = $this->datafile->asset();
 				$viewData['csvRows'] = $this->readCSV($sofaAsset, '.sofa_dim.csv');
