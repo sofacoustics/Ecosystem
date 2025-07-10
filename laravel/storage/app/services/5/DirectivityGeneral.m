@@ -78,9 +78,9 @@ if isoctave; fputs(fid, [ "About to plot\n"]); end
 
 
 %% FILLED CONTOUR PLOT
-figure('Name',SOFAfile);
+% figure('Name',SOFAfile);
 % fputs(fid, [ "just done figure\n"]);
-SOFAplotHRTF(Obj,'MagHorizontal','noconversion2ir');
+% SOFAplotHRTF(Obj,'MagHorizontal','noconversion2ir');
 % SOFAplotHRTF(Obj,'MagHorizontal');
 
 % ask Piotr...:
@@ -104,7 +104,12 @@ freqs = [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];  % Frequencies
 
 % Check if TF data exists
 if isfield(Obj.Data, 'Real') && isfield(Obj.Data, 'Imag')
-    TF = double(squeeze(Obj.Data.Real(:, receiver, :) + 1i * Obj.Data.Imag(:, receiver, :)));  % MN
+
+    % get MxN dimension; squeeze had the problem when M=1
+    % TF = double(squeeze(Obj.Data.Real(:, receiver, :) + 1i * Obj.Data.Imag(:, receiver, :)));
+    C = Obj.Data.Real(:, receiver, :) + 1i * Obj.Data.Imag(:, receiver, :);
+    TF = reshape(C, size(Obj.Data.Real,1), size(Obj.Data.Real,3));
+
     freq = double(Obj.N);  % Frequency axis from file
 
     % @Piotr: I think the problem is that the source position is Obj.SourcePosition
@@ -125,11 +130,12 @@ if isfield(Obj.Data, 'Real') && isfield(Obj.Data, 'Imag')
             % polarplot(theta, mag, 'LineWidth', 30); % Piotr: empty figures are created...
             polarplot(repmat(theta, size(mag)), mag); % Piotr: empty figures are created...
         end
-        title(sprintf('HRTF magnitude at %d Hz', round(freq(idxF))));
-        set(gcf, 'Name', sprintf('HRTF_%d', f));
+        title(sprintf('HRTF magnitude at %.1f Hz', freq(idxF)));
+        set(gcf, 'Name', sprintf('HRTF_%d', round(f)));
         if isoctave; fputs(fid, [ "renamed figure\n"]); end
         % Save figure as PNG
-        filename = sprintf('%s_%d', SOFAfile, round(freq(idxF)));
+        filename = sprintf('%s_%d', SOFAfile, round(f));
+        % filename = sprintf('%s_%d', SOFAfile, round(freq(idxF)));
         % print('-dpng', '-r300', filename);
         print ('-dpng', "-r600", [filename '.png'])
         disp(['Saved figure: ' filename]);
