@@ -102,7 +102,6 @@ class DatafileListener extends Component
 		switch($view)
 		{
 				// GENERIC DATAFILE PROPERTIES
-				//
 			case 'livewire.datafiles.properties':
 				$fullPath = $this->datafile->absolutepath();
 				$viewData['fullPath'] = $fullPath; 
@@ -121,6 +120,7 @@ class DatafileListener extends Component
 				$viewData['datasetdef_radar_upload_url'] = $this->datafile->datasetdef_radar_upload_url;
 				break;
 
+				// SRIR GENERAL
 			case 'livewire.datafiles.srir-general':
 				$fullPath = $this->datafile->absolutepath();
 				$files = glob($fullPath . '_iso_1_Mmax=*.png');
@@ -141,16 +141,42 @@ class DatafileListener extends Component
 				$viewData['csvRowsProp'] = $this->readCSV($sofaAsset, '.sofa_prop.csv');
 				break;
 
-				// SOFA properties
-				//
+				// SOFA PROPERTIES
 			case 'livewire.datafiles.sofa-properties': 
 				$sofaAsset = $this->datafile->asset();
 				$viewData['csvRows'] = $this->readCSV($sofaAsset, '.sofa_dim.csv');
 				$viewData['csvRowsProp'] = $this->readCSV($sofaAsset, '.sofa_prop.csv');
 				break;
 		
-			case 'livewire.datafiles.sofa-directivity-polar':
-				$this->counter=5;
+				// DIRECTIVITY GENERAL
+			case 'livewire.datafiles.directivity-general':
+				$fullPath = $this->datafile->absolutepath();
+				$files = glob($fullPath . '_amphorizontal_*.png');
+				$postfixes=[];
+				$freqs = [];
+				if(!empty($files))
+				{
+					for ($i=0; $i<count($files); $i++)
+					{
+						preg_match('/_amphorizontal_\d+\.png/', $files[$i], $match);
+						sscanf($match[0], "_amphorizontal_%d.png", $f);
+						array_push($freqs,$f);
+					}
+					asort($freqs);
+				}
+				$viewData['frequencies'] = $freqs;
+				if($this->counter==0)	// If we run this for the first time
+				{
+					$idx=array_search(1000, $freqs);
+					if($idx)
+						$this->counter=1000;	// If 1000 Hz found, set to 1000 Hz
+					else
+						$this->counter=$freqs[0]; // If 1000 Hz not available, set to the first frequency
+				}
+					// SOFA properties
+				$sofaAsset = $this->datafile->asset();
+				$viewData['csvRows'] = $this->readCSV($sofaAsset, '.sofa_dim.csv');
+				$viewData['csvRowsProp'] = $this->readCSV($sofaAsset, '.sofa_prop.csv');
 				break;
 		}
 		return view($view, $viewData);

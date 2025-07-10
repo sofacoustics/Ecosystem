@@ -130,11 +130,11 @@ if isfield(Obj.Data, 'Real') && isfield(Obj.Data, 'Imag')
             % polarplot(theta, mag, 'LineWidth', 30); % Piotr: empty figures are created...
             polarplot(repmat(theta, size(mag)), mag); % Piotr: empty figures are created...
         end
-        title(sprintf('HRTF magnitude at %.1f Hz', freq(idxF)));
+        title(sprintf('Magnitudes (in dB) at %.1f Hz', freq(idxF)));
         set(gcf, 'Name', sprintf('HRTF_%d', round(f)));
         if isoctave; fputs(fid, [ "renamed figure\n"]); end
         % Save figure as PNG
-        filename = sprintf('%s_%d', SOFAfile, round(f));
+        filename = sprintf('%s_amphorizontal_%d', SOFAfile, round(f));
         % filename = sprintf('%s_%d', SOFAfile, round(freq(idxF)));
         % print('-dpng', '-r300', filename);
         print ('-dpng', "-r600", [filename '.png'])
