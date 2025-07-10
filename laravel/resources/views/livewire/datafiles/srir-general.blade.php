@@ -1,5 +1,6 @@
 <div>
 	<x-servicelog :log="$latestLog"></x-servicelog>
+	
 	<b>SOFA Properties:</b>
 	<x-sofa-dimensions :csvRows="$csvRows"/>
 	
@@ -18,21 +19,25 @@
 	<table class="min-w-full border border-gray-300 rounded">
 		<thead>
 			<th class="bg-gray-100">Measurement</th>
-			<th class="bg-gray-100">XY</th>
-			<th class="bg-gray-100">XZ</th>
-			<th class="bg-gray-100">YZ</th>
-			<th class="bg-gray-100">ISO</th>
+			<th colspan=2 class="bg-gray-100">Geometry</th>
 		</thead>
+		
 		<tbody>
-		@foreach($postfixes as $postfix)
 			<tr>
-				<td class="px-6 py-4 whitespace-normal"><b>#{{$loop->index+1}}</b></td>
-				<td><x-img :asset="$datafile->asset('',1).'_xy'.$postfix" /></td>
-				<td><x-img class="p-2" :asset="$datafile->asset('',1).'_xz'.$postfix" /></td>
-				<td><x-img class="p-2" :asset="$datafile->asset('',1).'_yz'.$postfix" /></td>
-				<td><x-img class="p-2" :asset="$datafile->asset('',1).'_iso'.$postfix" /></td>
+				<td rowspan=2 class="px-6 py-4 whitespace-normal">
+					<b>Index of M:</b> 
+					<select wire:model.live="selection" class="text-gray-700 mb-2 font-bold" title="Measurement index">
+						@foreach($postfixes as $postfix)
+							<option value="{{$loop->index+1}}">{{$loop->index+1}}</option>
+						@endforeach
+					</select>
+				</td>
+				<td><x-img class="p-2" :asset="$datafile->asset('',1).'_yz'.$postfixes[$selection-1]" /></td>
+				<td><x-img class="p-2" :asset="$datafile->asset('',1).'_xz'.$postfixes[$selection-1]" /></td>
 			</tr>
-		@endforeach
+				<td><x-img class="p-2" :asset="$datafile->asset('',1).'_iso'.$postfixes[$selection-1]" /></td>
+				<td><x-img class="p-2" :asset="$datafile->asset('',1).'_xy'.$postfixes[$selection-1]" /></td>
+			</tr>
 		</tbody>
 	</table>
 	

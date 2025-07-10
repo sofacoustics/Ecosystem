@@ -27,7 +27,10 @@ class DatafileListener extends Component
 	public Collection $serviceLogs;
 	public ?ServiceLog $latestLog;
 	public ?Widget $widget;
-	public $result;
+	public $counter = 0;
+	public $counter_max = 1; 
+	public $counter_min = 0;
+	public $selection=1;
 	public $isExpanded = false; // for boxes to be expanded
 
 
@@ -41,11 +44,15 @@ class DatafileListener extends Component
 	}
 
 	public function plus()
-	{ $this->result++;
+	{ 
+		if($this->counter < $this->counter_max)
+			$this->counter++;
 	}
 
 	public function minus()
-	{ $this->result--;
+	{ 
+		if($this->counter > $this->counter_min)
+			$this->counter--;
 	}
 		// it appears that just listening for an event will cause a re-render
 	public function datafileProcessed($payload)
@@ -63,7 +70,6 @@ class DatafileListener extends Component
 		if(isset($datafile->datasetdef->widget->service?->logs))
 			$this->serviceLogs = $datafile->datasetdef->widget->service->logs;
 		$this->latestLog = $datafile->datasetdef->widget->service->latestLog;
-		$this->result = 0;
 		$this->isExpanded = false;
 	}
 
@@ -130,11 +136,13 @@ class DatafileListener extends Component
 				}
 				$viewData['Mmax'] = $Mmax;
 				$viewData['postfixes'] = $postfixes;
-				
+				$this->counter_max = $Mmax;
+				$this->counter_min = $Mmax > 0 ? 1 : 0;
+				$this->counter = $Mmax > 0 ? 1 : 0;
+					// SOFA properties
 				$sofaAsset = $this->datafile->asset();
 				$viewData['csvRows'] = $this->readCSV($sofaAsset, '.sofa_dim.csv');
 				$viewData['csvRowsProp'] = $this->readCSV($sofaAsset, '.sofa_prop.csv');
-
 				break;
 
 				// SOFA properties
@@ -146,7 +154,7 @@ class DatafileListener extends Component
 				break;
 		
 			case 'livewire.datafiles.sofa-directivity-polar':
-				$this->result=5;
+				$this->counter=5;
 				break;
 		}
 		return view($view, $viewData);

@@ -22,7 +22,7 @@
 					</select>
 				</td>
 				<td class="text-center align-middle">
-					<x-img :asset="$datafile->asset('_2_'.$result.'.png')"/>
+					<x-img :asset="$datafile->asset('_2_'.$counter.'.png')"/>
 				</td>
 				<td class="text-center align-middle">
 					<x-img :asset="$datafile->asset('_1.png')"/>
