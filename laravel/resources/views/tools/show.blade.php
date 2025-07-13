@@ -132,23 +132,8 @@ Parameters:
 		<ul class="list-disc list-inside">
 			@forelse ($tool->relatedidentifiers as $relatedidentifier)
 			<li>
-				@if(\App\Models\RelatedIdentifier::isInternalLink($relatedidentifier->name) == 1)
-					<b>... {{ strtolower(\App\Models\RelatedIdentifier::displayRelation($relatedidentifier->relationtype)) }}</b>
-					the Database 
-					<a href="{{ \App\Models\RelatedIdentifier::internalUrl($relatedidentifier->name) }}">
-						{{ \App\Models\RelatedIdentifier::internalName($relatedidentifier->name) }}</a>.
-				@elseif(\App\Models\RelatedIdentifier::isInternalLink($relatedidentifier->name) == 2)
-					<b>... {{ strtolower(\App\Models\RelatedIdentifier::displayRelation($relatedidentifier->relationtype)) }}</b>
-					the Tool 
-					<a href="{{ \App\Models\RelatedIdentifier::internalUrl($relatedidentifier->name) }}">
-						{{ \App\Models\RelatedIdentifier::internalName($relatedidentifier->name) }}</a>.
-				@else
-						<b>... {{ strtolower(\App\Models\Metadataschema::display($relatedidentifier->relationtype)) }}</b>
-						<a href="{{ \App\Models\RelatedIdentifier::externalUrl($relatedidentifier->relatedidentifiertype, $relatedidentifier->name) }}">
-						 {{ $relatedidentifier->name }}</a>
-						 ({{ \App\Models\Metadataschema::display($relatedidentifier->relatedidentifiertype) }}).
-				@endif
-			</li>
+				<x-relatedidentifier.list :relatedidentifier=$relatedidentifier />
+			</li> 
 			@empty
 				@cannot('update', $tool)
 					<li>No relations defined.</li>

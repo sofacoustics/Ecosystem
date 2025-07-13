@@ -17,7 +17,6 @@ class RelatedIdentifierForm extends Component
 	public $relatedidentifiertype;
 	public $relationtype;
 	public $option = "database";
-	public $prefix; // dealing with database or tool? 
 	public $databaserelation; // what is the relation to a database?
 	public $databaserelatedable; // selected database
 	public $databaserelatedable_ids; // options to select a database, just the IDs
@@ -108,15 +107,6 @@ class RelatedIdentifierForm extends Component
 			}
 		}
 
-		if($this->relatedidentifierable_type === 'App\Models\Database')
-			$this->prefix = "Database";
-		else
-		{
-			if($reltype=="TEXT")
-				$this->prefix = "Document";
-			else
-				$this->prefix = "Tool";
-		}
 		$this->toolrelatedable_ids[] = "";
 		$this->toolrelatedable_names[] = "... a Tool or Document";
 		$tools = \App\Models\Tool::all();

@@ -33,7 +33,7 @@
 				@if($option === 'database')
 					<form wire:submit.prevent="saveDatabase">
 						<div class="flex items-center">
-							<label class="{{ $labelClass }}" for="databaserelation">{{ $prefix }}...</label>
+							<label class="{{ $labelClass }}" for="databaserelation">{{$relatedidentifierable->title}}</label>
 							<select wire:model.live="databaserelation" class="{{ $selectClass }}" required
 								title="Relation Type">
 								<option value="-1">{{ \App\Models\RelatedIdentifier::displayRelation(-1) }} ...</option>
@@ -62,7 +62,7 @@
 				@if($option === 'tool')
 					<form wire:submit.prevent="saveTool">
 						<div class="flex items-center">
-							<label class="{{ $labelClass }}" for="toolrelation">{{ $prefix }}...</label>
+							<label class="{{ $labelClass }}" for="toolrelation">{{$relatedidentifierable->title}}</label>
 							<select wire:model.live="toolrelation" class="{{ $selectClass }}" required
 								title="Relation Type">
 								<option value="-1">{{ \App\Models\RelatedIdentifier::displayRelation(-1) }} ...</option>
@@ -93,7 +93,7 @@
 				@if($option === 'external')
 					<form wire:submit.prevent="saveExternal">
 						<div class="flex items-center">
-							<label class="{{ $labelClass }}" for="relationtype">{{ $prefix }}...</label>
+							<label class="{{ $labelClass }}" for="relationtype">{{$relatedidentifierable->title}}</label>
 							<select wire:model.live="relationtype" class="{{ $selectClass }}" required
 								title="Relation Type">
 								<option value="">Select a relation...</option>
