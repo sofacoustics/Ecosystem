@@ -52,22 +52,6 @@
 	</ul>
 	<br><hr><br>
 	
-	<h3>Your Permissions:</h3>
-	<ul class="list-disc list-inside">
-		@role('admin')
-			<li>You have the 'admin' role.
-		@else
-			<li>You do not have the 'admin' role.
-		@endrole
-	</ul>
-	<br><hr><br>
-	
-	<h3>System Information:</h3>
-	<ul class="list-disc list-inside">
-		<li>Version: {{ config('version.string') }}
-	</ul>
-	<br><hr><br>
-	
 	<h3>Attributions:</h3>
 	<ul class="list-disc list-inside max-w-prose">
 		<li>
@@ -95,4 +79,13 @@
 			All other logos and images are either public domain or created by the Ecosystem.
 		</li>
 	</ul>
+	<br><hr><br>
+	
+	<h3>System Information:</h3>
+	<ul class="list-disc list-inside max-w-prose">
+		<li>Version: {{ config('version.string') }}
+	</ul>
+	<br><hr><br>
+	
+
 </x-app-layout>
