@@ -1,4 +1,4 @@
-<div>
+<div class="max-w-prose">
 <h3>Visibility within the Ecosystem:</h3>
 @if($visible)
 	<p><b>Status:</b> The database is <b>visible</b> to all Ecosystem visitors.</p>
@@ -41,8 +41,8 @@
 		<p>By clicking the button below, a DOI can be assigned to your database.</p>
 		<p>To this end, the following steps will happen:
 			<ul class="list-disc list-inside">
-				<li>Your database will be registered at the ÖAW Datathek as a new "dataset".
-				<li>The database metadata will be sent to the Datathek. This is a quick process.
+				<li>Your database will be registered at the ÖAW Datathek as a new "Datathek dataset".
+				<li>Your metadata will be sent to the Datathek. This is a quick process.
 				<li>A DOI for your database will be requested and assigned to your database within the Ecosystem.
 			</ul>
 		<p>Once a DOI has been assigned, the DOI will be a permanent part of your database.</p>
