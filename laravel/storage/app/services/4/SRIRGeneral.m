@@ -1,10 +1,11 @@
 %SRIRGeneral - Function to load SOFA files, create and save visualizing 1 figure
 
-% #Author: Michael Mihocic: First version, loading and plotting a few figures, supporting a few conventions (31.08.2023)
+% #Authorr: Michael Mihocic: First version, loading and plotting a few figures, supporting a few conventions (31.08.2023)
 % #Author: Michael Mihocic: support of SRIRGeometry, SingleRoomMIMOSRIR SOFA files implemented (14.04.2025)
 % #Author: Michael Mihocic: conventions restriction removed (03.06.2025)
 % #Author: Michael Mihocic: file renamed from SRIRGeometry.m to SRIRGeneral.m (03.07.2025)
 % #Author: Michael Mihocic: geometry figures enhanced, several figures and several views stored as png; plotting HRTFs removed (07.07.2025)
+% #Author: Michael Mihocic: logging improved (14.07.2025)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -74,37 +75,41 @@ Obj=SOFAremoveVariable(Obj,'RoomCorners');
 M=Obj.API.M;
 for Midx = 1:M
     mySOFAplotGeometry(Obj,Midx);
-    if isoctave; fputs(fid, [ "just done SOFAplotGeometry # " num2str(Midx) "/" num2str(M) "\n"]); end
+    if isoctave; fputs(fid, [ "just done SOFAplotGeometry for file " SOFAfile " --  #" num2str(Midx) "/" num2str(M) "\n"]); end
 
     % mySOFAplotRoom(Obj);
 
     xlabel(['x (' labelUnits ')']);
     ylabel(['y (' labelUnits ')']);
     zlabel(['z (' labelUnits ')']);
-    if isoctave; fputs(fid, [ "renamed labels\n"]); end
+    % if isoctave; fputs(fid, [ "renamed labels\n"]); end
 
     set(gcf, 'Name', 'SOFAfile')
-    if isoctave; fputs(fid, [ "renamed figure\n"]); end
+    % if isoctave; fputs(fid, [ "renamed figure\n"]); end
 
     set(gcf, 'Position', [300, 500, 800, 500]);
     if isoctave; fputs(fid, [ "just adapted position\n"]); end
 
     print ('-dpng', "-r600", [SOFAfile '_xy_' num2str(Midx) '_Mmax=' num2str(M) '.png']);
+    if isoctave; fputs(fid, [ "  printed figure 1/4: " SOFAfile '_xy_' num2str(Midx) '_Mmax=' num2str(M) ".png\n"]); end
 
     view(0,0);
     legend('Location', 'best');
     print ('-dpng', "-r600", [SOFAfile '_xz_' num2str(Midx) '_Mmax=' num2str(M) '.png']);
+    if isoctave; fputs(fid, [ "  printed figure 2/4: " SOFAfile '_xz_' num2str(Midx) '_Mmax=' num2str(M) ".png\n"]); end
 
     view(90,0);
     legend('Location', 'best');
     print ('-dpng', "-r600", [SOFAfile '_yz_' num2str(Midx) '_Mmax=' num2str(M) '.png']);
+    if isoctave; fputs(fid, [ "  printed figure 3/4: " SOFAfile '_yz_' num2str(Midx) '_Mmax=' num2str(M) ".png\n"]); end
 
     view(45,30);
     legend('Location', 'best');
     print ('-dpng', "-r600", [SOFAfile '_iso_' num2str(Midx) '_Mmax=' num2str(M) '.png']);
+    if isoctave; fputs(fid, [ "  printed figure 4/4: " SOFAfile '_iso_' num2str(Midx) '_Mmax=' num2str(M) ".png\n"]); end
 
     %print ("-r600", '/tmp/hrtf_1.png');
-    if isoctave; fputs(fid, [ "just printed figures for" SOFAfile "\n"]); end
+    if isoctave; fputs(fid, [ "printed successfully all figures for " SOFAfile "\n"]); end
 end
 
 
@@ -118,6 +123,7 @@ end
 
 %% Epilogue: (un)comment if you want to:
 disp('DONE');
+if isoctave;  fputs(fid, [ "\n### DONE ###\n"]); end
 if isoctave; fclose(fid); end;
 toc; % timer
 
