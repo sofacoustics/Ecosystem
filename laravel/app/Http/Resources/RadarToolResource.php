@@ -5,6 +5,8 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use App\Http\Resources\RadarRelatedIdentifierResourceCollection;
+
 class RadarToolResource extends JsonResource
 {
 	/**
@@ -18,11 +20,12 @@ class RadarToolResource extends JsonResource
 
 		// special RADAR JSON variant here
 		$tool = $this->resource; // get the tool model, since using '$this->resource' retrieves the whole tool model from the ToolResource rather than the 'resource' column.
-		$array = 
+
+		$array =
 		[
 			'id' => $tool->radar_id,
 			'parentId' => config('services.radar.workspace'),
-			'technicalMetadata' => 
+			'technicalMetadata' =>
 			[
 				'schema' => [
 					'key' => 'RDDM',
@@ -72,28 +75,9 @@ class RadarToolResource extends JsonResource
 				'subjectArea' => RadarSubjectAreaResource::collection($this->whenLoaded('subjectareas')),
 			],
 			'relatedIdentifiers' => [
-				'relatedIdentifier' => RadarRelatedIdentifierResource::collection($this->whenLoaded('relatedidentifiers')),
+				'relatedIdentifier' => new RadarRelatedIdentifierResourceCollection($this->whenLoaded('relatedidentifiers'), $tool),
 			],
 		];
-			// get all related identifiers created by the user
-		$collection = RadarRelatedIdentifierResource::collection($this->whenLoaded('relatedidentifiers'));
-			// create a fake related identifier for the information how to get back to the Ecosystem
-		$infotext = [
-			'value' => "Click the link above to go to the Ecosystem",
-			'relatedIdentifierType' => "ARK",
-			'relationType' => "CONTINUES",
-			];
-		$collection = $collection->prepend($infotext); // prepend the fixed identifier to all those from the user
-			// create a related identifier for the callback to Ecosystem from RADAR
-		$callback = [
-			'value' => route('tools.show',[ 'tool' => $tool->id]),
-			'relatedIdentifierType' => "URL",
-			'relationType' => "IS_DESCRIBED_BY",
-			];
-		$collection = $collection->prepend($callback); // prepend the fixed identifier to all those from the user
-			// combine all metadata
-		$relatedIdentifiers['relatedIdentifier'] = $collection; 
-		$descriptiveMetadata['relatedIdentifiers'] = $relatedIdentifiers;
 		$array['descriptiveMetadata'] = $descriptiveMetadata;
 		return $array; 
 	}

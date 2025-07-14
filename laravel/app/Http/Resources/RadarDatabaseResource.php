@@ -5,6 +5,8 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use App\Http\Resources\RadarRelatedIdentifierResourceCollection;
+
 class RadarDatabaseResource extends JsonResource
 {
 	/**
@@ -18,7 +20,7 @@ class RadarDatabaseResource extends JsonResource
 
 		// special RADAR JSON variant here
 		$database = $this->resource; // get the database model, since using '$this->resource' retrieves the whole database model from the DatabaseResource rather than the 'resource' column.
-		$array = 
+		$array =
 		[
 			'id' => $database->radar_id,
 			'parentId' => config('services.radar.workspace'),
@@ -27,10 +29,10 @@ class RadarDatabaseResource extends JsonResource
 				'schema' => [
 					'key' => 'RDDM',
 					'version' => '9.1',
-				]
+                ]
 			],
 		];
-		
+
 		$cr = \App\Models\Metadataschema::value($database->controlledrights);
 		if(str_contains($cr, 'ECOSYSTEM'))
 		{
@@ -41,8 +43,8 @@ class RadarDatabaseResource extends JsonResource
 		{
 			$ar = $database->additionalrights;
 		}
-		
-		$descriptiveMetadata = 
+
+		$descriptiveMetadata =
 		[
 			'title' => $database->title . " (Database #" . $database->id . ")",
 			'creators' => [
@@ -72,28 +74,9 @@ class RadarDatabaseResource extends JsonResource
 				'subjectArea' => RadarSubjectAreaResource::collection($this->whenLoaded('subjectareas')),
 			],
 			'relatedIdentifiers' => [
-				'relatedIdentifier' => RadarRelatedIdentifierResource::collection($this->whenLoaded('relatedidentifiers')),
+				'relatedIdentifier' => new RadarRelatedIdentifierResourceCollection($this->whenLoaded('relatedidentifiers'), $database),
 			],
 		];
-			// get all related identifiers created by the user
-		$collection = RadarRelatedIdentifierResource::collection($this->whenLoaded('relatedidentifiers'));
-			// create a fake related identifier for the information how to get back to the Ecosystem
-		$infotext = [
-			'value' => "Click the link above to go to the Ecosystem",
-			'relatedIdentifierType' => "ARK",
-			'relationType' => "CONTINUES",
-			];
-		$collection = $collection->prepend($infotext); // prepend the fixed identifier to all those from the user
-			// create a related identifier for the callback to Ecosystem from RADAR
-		$callback = [
-			'value' => route('databases.show',[ 'database' => $database->id]),
-			'relatedIdentifierType' => "URL",
-			'relationType' => "IS_DESCRIBED_BY",
-			];
-		$collection = $collection->prepend($callback); // prepend the fixed identifier to all those from the user
-			// combine all metadata
-		$relatedIdentifiers['relatedIdentifier'] = $collection; 
-		$descriptiveMetadata['relatedIdentifiers'] = $relatedIdentifiers;
 		$array['descriptiveMetadata'] = $descriptiveMetadata;
 		return $array; 
 	}
