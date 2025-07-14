@@ -193,7 +193,8 @@ class DatabaseVisibility extends Component
 		app('log')->info("Persistent publication requested for " . $this->database->title . " (" . $this->database->id . "). Sending PersistentPublicationRequested email to $adminEmails");
 		$this->radar_status = $this->database->radar_status;
 		$this->dispatch('status-message', 'The database has been successfully published!');
-		$this->js('window.location.reload()'); //jw:note I think this refreshes page removing status messages too early and is unnecessary
+		//$this->js('window.location.reload()'); 
+		return redirect()->route('databases.show', $this->database);
 	}
 
 	public function render()

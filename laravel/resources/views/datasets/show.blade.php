@@ -10,15 +10,20 @@
 	<p>This dataset contains {{ count($dataset->datafiles) }} files.</p>
 	<div class="ml-2">
 		@foreach ($dataset->datafiles as $datafile)
-			<h3>Name: {{ $datafile->datasetdef->name }}
-				@can('delete', $datafile)
-					<x-button method="DELETE" class="inline" action="{{ route('datafiles.destroy', [$datafile]) }}">Delete</x-button>
-				@endcan
-			</h3>
+			<h3>Name: {{ $datafile->datasetdef->name }}</h3>
 			<div wire:key="{{ $datafile->id }}">
 				<x-property name="Datafile Name">
-					<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a> @role('admin') (ID: {{ $datafile->id }}) @endrole
+					<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a> 
 				</x-property>
+				<x-property name="Updated at">
+					<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->updated_at }} (GMT)</a> 
+				</x-property>
+				<x-property name="Created at">
+					<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->created_at }} (GMT)</a> 
+				</x-property>
+				@can('delete', $datafile)
+					<x-button method="DELETE" class="inline" action="{{ route('datafiles.destroy', [$datafile]) }}">Delete Datafile</x-button>
+				@endcan				
 				@hasrole('admin')
 					<x-button method="POST" action="{{ route('datafiles.touch', [$datafile]) }}">Touch</x-button>
 				@endhasrole

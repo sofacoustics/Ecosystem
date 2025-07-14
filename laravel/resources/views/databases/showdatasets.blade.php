@@ -18,7 +18,8 @@
 						<th class="border p-2">Name</th>
 						<th class="border p-2"># Datafiles</th>
 						<th class="border p-2 text-left">Description</th>
-						<th class="border p-2">ID</th>
+						<th class="border p-2">Updated (GMT)</th>
+						<th class="border p-2">Created (GMT)</th>
 					</tr>
 				</thead>
 				<tbody class="bg-white divide-y divide-gray-200">
@@ -34,7 +35,8 @@
 							<td class="border p-2 text-center"><a href="{{ route('datasets.show', $dataset->id) }}">{{ $dataset->name }}</a></td>
 							<td class="border p-2 text-center">{{ count($dataset->datafiles) }}</td>
 							<td class="border p-2">{{ $dataset->description }}</td>
-							<td class="border p-2 text-center"><small>{{ $dataset->id }}</small></td>
+							<td class="border p-2 text-center"><small>{{ $dataset->updated_at }}</small></td>
+							<td class="border p-2 text-center"><small>{{ $dataset->created_at }}</small></td>
 						</tr>
 					@endforeach
 				</tbody>

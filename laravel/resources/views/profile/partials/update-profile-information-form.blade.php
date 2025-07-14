@@ -41,7 +41,7 @@
 
 					@if (session('status') === 'verification-link-sent')
 						<p class="mt-2 font-medium text-sm text-green-600">
-							A new verification link has been sent to your email address.
+							A new verification link has been sent to your email address. If you don't receive the email within a few minutes, contact the Ecosystem team. 
 						</p>
 					@endif
 				</div>

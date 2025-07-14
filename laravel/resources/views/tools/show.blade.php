@@ -39,7 +39,7 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.creators', $tool->id) }}">Edit</x-button></small>
 					Creators:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.creators', $tool->id) }}">Add creators</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.creators', $tool->id) }}">Add Creators</x-button></small>
 				</h3>
 			@endif
 		@else
@@ -60,7 +60,7 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.publishers', $tool->id) }}">Edit</x-button></small>
 					Publishers:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.publishers', $tool->id) }}">Add publishers</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.publishers', $tool->id) }}">Add Publishers</x-button></small>
 				</h3>
 			@endif
 		@else
@@ -81,7 +81,7 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.rightsholders', $tool->id) }}">Edit</x-button></small>
 				Rightsholders:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.rightsholders', $tool->id) }}">Add rightholders</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.rightsholders', $tool->id) }}">Add Rightholders</x-button></small>
 				<h3>
 			@endif
 		@else
@@ -102,7 +102,7 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.keywords', $tool->id) }}">Edit</x-button></small>
 				Keywords:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.keywords', $tool->id) }}">Add keywords</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.keywords', $tool->id) }}">Add Keywords</x-button></small>
 				</h3>
 			@endif
 		@else
@@ -123,7 +123,7 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.relatedidentifiers', $tool->id) }}">Edit</x-button></small>
 				Relations:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.relatedidentifiers', $tool->id) }}">Add relations</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.relatedidentifiers', $tool->id) }}">Add Relations</x-button></small>
 				</h3>
 			@endif
 		@else
@@ -221,7 +221,7 @@ Parameters:
 			</ul>
 		@endif
 		@can('create', \App\Models\Tool::class)
-			<x-button method="GET" class="inline" action="{{ route('tools.comments', $tool->id) }}">Add a comment</x-button>
+			<x-button method="GET" class="inline" action="{{ route('tools.comments', $tool->id) }}">New Comment</x-button>
 		@endcan
 
 <script>

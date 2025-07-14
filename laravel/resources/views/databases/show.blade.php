@@ -17,7 +17,7 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.creators', $database->id) }}">Edit</x-button></small>
 					Creators:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.creators', $database->id) }}">Add creators</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.creators', $database->id) }}">Add Creators</x-button></small>
 				</h3>
 			@endif
 		@else
@@ -38,7 +38,7 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.publishers', $database->id) }}">Edit</x-button></small>
 					Publishers:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.publishers', $database->id) }}">Add publishers</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.publishers', $database->id) }}">Add Publishers</x-button></small>
 				</h3>
 			@endif
 		@else
@@ -59,7 +59,7 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.rightsholders', $database->id) }}">Edit</x-button></small>
 				Rightsholders:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.rightsholders', $database->id) }}">Add rightholders</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.rightsholders', $database->id) }}">Add Rightholders</x-button></small>
 				<h3>
 			@endif
 		@else
@@ -80,7 +80,7 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.keywords', $database->id) }}">Edit</x-button></small>
 				Keywords:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.keywords', $database->id) }}">Add keywords</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.keywords', $database->id) }}">Add Keywords</x-button></small>
 				</h3>
 			@endif
 		@else
@@ -102,7 +102,7 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.relatedidentifiers', $database->id) }}">Edit</x-button></small>
 				Relations:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.relatedidentifiers', $database->id) }}">Add relations</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.relatedidentifiers', $database->id) }}">Add Relations</x-button></small>
 				</h3>
 			@endif
 		@else
@@ -223,7 +223,7 @@ Parameters:
 			</ul>
 		@endif
 		@can('create', \App\Models\Database::class)
-			<x-button method="GET" class="inline" action="{{ route('databases.comments', $database->id) }}">Add a comment</x-button>
+			<x-button method="GET" class="inline" action="{{ route('databases.comments', $database->id) }}">New Comment</x-button>
 		@endcan
 
 	<hr>
