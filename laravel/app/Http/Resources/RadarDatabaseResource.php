@@ -29,7 +29,8 @@ class RadarDatabaseResource extends JsonResource
 				'schema' => [
 					'key' => 'RDDM',
 					'version' => '9.1',
-                ]
+                ],
+                'responsibleEmail' => $database->user->email
 			],
 		];
 

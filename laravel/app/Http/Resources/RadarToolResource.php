@@ -30,7 +30,8 @@ class RadarToolResource extends JsonResource
 				'schema' => [
 					'key' => 'RDDM',
 					'version' => '9.1',
-				]
+				],
+                'responsibleEmail' => $tool->user->email
 			],
 		];
 		
