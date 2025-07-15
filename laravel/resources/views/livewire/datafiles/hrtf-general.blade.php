@@ -1,5 +1,21 @@
 <div>
 	<x-servicelog :log="$latestLog"></x-servicelog>
+	
+	<b>SOFA Properties:</b>
+	<x-sofa-dimensions :csvRows="$csvRows"/>
+	
+	<div wire:click="toggleExpand">
+		@if($isExpanded==false)
+			<div class="flex justify-end">
+			<small><button class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white ">Show more SOFA properties...</button></small>
+			</div>
+		@else
+			<x-sofa-properties :csvRowsProp="$csvRowsProp"/>
+		@endif
+	</div>
+		
+	<br><hr><br>
+		
 	<table class="min-w-full border border-gray-300 rounded">
 		<thead>
 			<th class="bg-gray-100 max-w-1/3"></th>
@@ -17,9 +33,9 @@
 				</td>
 			</tr>
 			<tr class="py-2 border">
-				@if($result)
+				@if($counter)
 					<td class="px-6 py-4 whitespace-normal"><b>Domain:</b> Amplitude spectral<br><b>Plane:</b> Median<br><b>Frequency axis:</b> Logarithmic<br>
-						<small><button wire:click="plus" class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">Change axis</button></small>
+						<small><button wire:click="minus" class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">Change axis</button></small>
 					</td>
 					<td class="text-center align-middle py-2">
 						<x-img :asset="$datafile->asset('_5.png')"/>
@@ -29,7 +45,7 @@
 					</td>
 				@else
 					<td class="px-6 py-4 whitespace-normal"><b>Domain:</b> Amplitude spectral<br><b>Plane:</b> Median<br><b>Frequency axis:</b> Linear</b><br>
-						<small><button wire:click="minus" class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">Change axis</button></small>
+						<small><button wire:click="plus" class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">Change axis</button></small>
 					</td>
 					<td class="text-center align-middle py-2">
 						<x-img :asset="$datafile->asset('_3.png')"/>

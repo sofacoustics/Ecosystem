@@ -1,4 +1,4 @@
-	<div class="mb-8">
+	<div>
 		@if (!empty($csvRows))
 			<table class="min-w-full border border-gray-300 rounded">
 				<thead>
@@ -20,5 +20,7 @@
 					@endforeach
 				</tbody>
 			</table>
+		@else
+			No SOFA dimensions found
 		@endif
 	</div>

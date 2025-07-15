@@ -27,7 +27,9 @@ class DatafileListener extends Component
 	public Collection $serviceLogs;
 	public ?ServiceLog $latestLog;
 	public ?Widget $widget;
-	public $result;
+	public $counter = 0;
+	public $counter_max = 1; 
+	public $counter_min = 0;
 	public $isExpanded = false; // for boxes to be expanded
 
 
@@ -41,11 +43,15 @@ class DatafileListener extends Component
 	}
 
 	public function plus()
-	{ $this->result++;
+	{ 
+		if($this->counter < $this->counter_max)
+			$this->counter++;
 	}
 
 	public function minus()
-	{ $this->result--;
+	{ 
+		if($this->counter > $this->counter_min)
+			$this->counter--;
 	}
 		// it appears that just listening for an event will cause a re-render
 	public function datafileProcessed($payload)
@@ -62,17 +68,14 @@ class DatafileListener extends Component
 		$this->widget = $datafile->datasetdef->widget;
 		if(isset($datafile->datasetdef->widget->service?->logs))
 			$this->serviceLogs = $datafile->datasetdef->widget->service->logs;
-		if(isset($datafile->datasetdef->widget->service?->latestLog))
-			$this->latestLog = $datafile->datasetdef->widget->service->latestLog;
-		$this->result = 0;
+		$this->latestLog = $datafile->datasetdef->widget->service->latestLog;
 		$this->isExpanded = false;
 	}
 
 	public function render()
 	{
 		// update in 'render' to get latest value
-		if(isset($datafile->datasetdef->widget->service?->latestLog))
-			$this->latestLog = $this->datafile->datasetdef->widget->service->latestLog;
+		$this->latestLog = $this->datafile->datasetdef->widget->service->latestLog;
 		\Log::info('DatafileListener: datafiletype name = ' . ($this->datafiletype->name ?? 'NULL'));
 		\Log::info('DatafileListener: widget view = ' . ($this->widget->view ?? 'NULL'));
 
@@ -95,11 +98,12 @@ class DatafileListener extends Component
 		}
 
 		$viewData = []; // clear the array which will be passed to the blade
+		$viewData['csvRows']=[]; // assume no CSV file
+		$viewData['csvRowsProp']=[]; // assume no CSV property file
 
 		switch($view)
 		{
 				// GENERIC DATAFILE PROPERTIES
-				//
 			case 'livewire.datafiles.properties':
 				$fullPath = $this->datafile->absolutepath();
 				$viewData['fullPath'] = $fullPath; 
@@ -118,6 +122,7 @@ class DatafileListener extends Component
 				$viewData['datasetdef_radar_upload_url'] = $this->datafile->datasetdef_radar_upload_url;
 				break;
 
+				// SRIR GENERAL
 			case 'livewire.datafiles.srir-general':
 				$fullPath = $this->datafile->absolutepath();
 				$files = glob($fullPath . '_iso_1_Mmax=*.png');
@@ -130,25 +135,55 @@ class DatafileListener extends Component
 					for ($i=0; $i<$Mmax; $i++)
 						array_push($postfixes,'_'.($i+1).'_Mmax='.$Mmax.'.png');
 				}
-				$viewData['Mmax'] = $Mmax;
 				$viewData['postfixes'] = $postfixes;
-				
+				if($this->counter<1) $this->counter=1;
+					// SOFA properties
 				$sofaAsset = $this->datafile->asset();
 				$viewData['csvRows'] = $this->readCSV($sofaAsset, '.sofa_dim.csv');
 				$viewData['csvRowsProp'] = $this->readCSV($sofaAsset, '.sofa_prop.csv');
-
 				break;
 
-				// SOFA properties
-				//
-			case 'livewire.datafiles.sofa-properties': 
+				// SOFA PROPERTIES and other SOFA-related viewers
+			case 'livewire.datafiles.sofa-properties':
+			case 'livewire.datafiles.brir-general':
+			case 'livewire.datafiles.headphones-general':
+			case 'livewire.datafiles.hrtf-general':
+			case 'livewire.datafiles.sofa-annotated-receiver': 
 				$sofaAsset = $this->datafile->asset();
 				$viewData['csvRows'] = $this->readCSV($sofaAsset, '.sofa_dim.csv');
 				$viewData['csvRowsProp'] = $this->readCSV($sofaAsset, '.sofa_prop.csv');
 				break;
 		
-			case 'livewire.datafiles.sofa-directivity-polar':
-				$this->result=5;
+				// DIRECTIVITY GENERAL
+			case 'livewire.datafiles.directivity-general':
+				$fullPath = $this->datafile->absolutepath();
+				$files = glob($fullPath . '_amphorizontal_*.png');
+				$postfixes=[];
+				$freqs = [];
+				if(!empty($files))
+				{
+					for ($i=0; $i<count($files); $i++)
+					{
+						preg_match('/_amphorizontal_\d+\.png/', $files[$i], $match);
+						sscanf($match[0], "_amphorizontal_%d.png", $f);
+						array_push($freqs,$f);
+					}
+					asort($freqs);
+				}
+				$viewData['frequencies'] = $freqs;
+				if($freqs)
+					if($this->counter==0) // If we run this for the first time
+					{
+						$idx=array_search(1000, $freqs);
+						if($idx)
+							$this->counter=1000; // If 1000 Hz found, set to 1000 Hz
+						else
+							$this->counter=$freqs[0]; // If 1000 Hz not available, set to the first frequency
+					}
+					// SOFA properties
+				$sofaAsset = $this->datafile->asset();
+				$viewData['csvRows'] = $this->readCSV($sofaAsset, '.sofa_dim.csv');
+				$viewData['csvRowsProp'] = $this->readCSV($sofaAsset, '.sofa_prop.csv');
 				break;
 		}
 		return view($view, $viewData);
