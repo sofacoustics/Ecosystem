@@ -22,6 +22,7 @@ class ToolRadarActions extends Component
 	public $pending = false;
 	public $review = false;
 	public $radar_status = null; // this will be set to the value of the tool field 'radar_status'.
+	public $last_retrieved = null;
 
 	// true if we haven't uploaded yet
 	public $canUpload = false;
@@ -141,10 +142,14 @@ class ToolRadarActions extends Component
 	*/
 	public function approvePersistentPublication() 
 	{
-		$this->tool->radar_status = 3;
-		$this->tool->save();
-
-		$this->js('window.location.reload()'); 
+		$this->reset('error');
+		$radar = new ToolRadarDatasetBridge($this->tool);
+		if($radar->publish())
+			$this->dispatch('radar-status-changed', 'Tool published'); // let other livewire components know the radar status has changed
+		else
+			$this->error = $radar->details; // output error message
+		$this->dispatch('status-message', $radar->message);
+		$this->refreshStatus();
 	}
 
 	/*
@@ -185,11 +190,7 @@ class ToolRadarActions extends Component
 		return view('livewire.tool-radar-actions');
 	}
 
-	////////////////////////////////////////////////////////////////////////////////
-	// Private
-	////////////////////////////////////////////////////////////////////////////////
-
-	private function refreshStatus()
+	public function refreshStatus()
     {
 		$radar = new ToolRadarDatasetBridge($this->tool);
 		if($radar->read())
@@ -201,6 +202,7 @@ class ToolRadarActions extends Component
 			$this->radar_content = $radar->radar_content;
 			$this->canUpload = true;
 			$this->setState($radar?->radar_dataset?->state ?? '');
+			$this->last_retrieved = now();
 		}
 		else
 		{
