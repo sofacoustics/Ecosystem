@@ -68,14 +68,17 @@ class DatafileListener extends Component
 		$this->widget = $datafile->datasetdef->widget;
 		if(isset($datafile->datasetdef->widget->service?->logs))
 			$this->serviceLogs = $datafile->datasetdef->widget->service->logs;
-		$this->latestLog = $datafile->datasetdef->widget->service->latestLog;
+		if(isset($datafile->datasetdef->widget->service?->latestLog))
+			$this->latestLog = $datafile->datasetdef->widget->service->latestLog;
+		$this->result = 0;
 		$this->isExpanded = false;
 	}
 
 	public function render()
 	{
 		// update in 'render' to get latest value
-		$this->latestLog = $this->datafile->datasetdef->widget->service->latestLog;
+		if(isset($datafile->datasetdef->widget->service?->latestLog))
+			$this->latestLog = $this->datafile->datasetdef->widget->service->latestLog;
 		\Log::info('DatafileListener: datafiletype name = ' . ($this->datafiletype->name ?? 'NULL'));
 		\Log::info('DatafileListener: widget view = ' . ($this->widget->view ?? 'NULL'));
 

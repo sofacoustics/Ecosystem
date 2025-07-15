@@ -17,10 +17,18 @@
 			<x-button method="DELETE" class="inline" action="{{ route('datafiles.destroy', [$datafile]) }}">Delete</x-button>
 		@endcan
 		<div class="ml-2" wire:key="{{ $datafile->id }}">
-			<x-property name="Datafile Type">{{ $datafile->datasetdef->datafiletype->name }}<br></x-property>
-			<x-property name="Datafile Name">
-				<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a> @role('admin') (ID: {{ $datafile->id }}) @endrole
+			<x-property name="Datafile Type">
+				{{ $datafile->datasetdef->datafiletype->name }}
 			</x-property>
+			<x-property name="Datafile Name">
+				<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a>
+			</x-property>
+			<x-property name="Updated at">
+				<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->updated_at }} (GMT)</a> 
+			</x-property>
+			<x-property name="Created at">
+				<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->created_at }} (GMT)</a> 
+			</x-property>			
 			@hasrole('admin')
 				<x-button method="POST" action="{{ route('datafiles.touch', [$datafile]) }}">Rerun service</x-button>
 			@endhasrole
