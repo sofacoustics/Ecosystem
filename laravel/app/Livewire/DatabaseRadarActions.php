@@ -65,6 +65,7 @@ class DatabaseRadarActions extends Component
 
 	public function createDataset()
 	{
+		$this->reset('error');
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		$this->dispatch('status-message', 'Starting RADAR dataset creation process.');
 		if($radar->create())
@@ -77,6 +78,7 @@ class DatabaseRadarActions extends Component
 
 	public function startReview()
 	{
+		$this->reset('error');
 		$this->dispatch('status-message', 'Starting review process.');
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if($radar->startreview())
@@ -89,6 +91,7 @@ class DatabaseRadarActions extends Component
 
 	public function endReview()
 	{
+		$this->reset('error');
 		$this->dispatch('status-message', 'Ending review process.');
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if($radar->endreview())
@@ -101,7 +104,7 @@ class DatabaseRadarActions extends Component
 
 	public function uploadToRadar() // note that the 'upload()' function is reserved in Livewire
 	{
-		$this->error = "";
+		$this->reset('error');
 		$this->dispatch('status-message', 'Starting upload.');
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if(!$radar->upload())
@@ -114,8 +117,22 @@ class DatabaseRadarActions extends Component
 	*/
 	public function deleteFromRadar()
 	{
+		$this->reset('error');
 		$this->dispatch('status-message', 'Starting to delete the RADAR dataset');
 		$radar = new DatabaseRadarDatasetBridge($this->database);
+
+		// if in review, stop review first
+		if($this->database->radar_status == 2)
+		{
+			// persistent publication has already been requested.
+			// Therefore we must first end the review (can't delete a dataset in review)
+			if(!$radar->endreview())
+			{
+				$this->error = $radar->message.' ('.$radar->details.')';
+				return;
+			}
+		}
+
 		if($radar->delete())
 		{
 			$this->id = null;
@@ -128,7 +145,7 @@ class DatabaseRadarActions extends Component
 		$this->database->doi = null;
 		$this->database->radar_status = null;
 		$this->database->save();
-			// set dataset and datafile radar_ids back to null
+		// set dataset and datafile radar_ids back to null
 		foreach($this->database->datasets as $dataset) // iterate through all Dataset of the Database
 		{
 			$dataset->radar_id = null;
@@ -148,34 +165,38 @@ class DatabaseRadarActions extends Component
 	}
 
 	/* 
-	* Approve the persistent publication: Set the Status to "Persistently published". 
+	* Approve the persistent publication: Set the Status to "Persistently published".
 	*
-	* Note: nothing happens at the Datathek currently. 
+	* Note: nothing happens at the Datathek currently.
 	*/
-	public function approvePersistentPublication() 
+	public function approvePersistentPublication()
 	{
-		$this->database->radar_status = 3;
-		$this->database->save();
-
-		$this->js('window.location.reload()'); 
+		$this->reset('error');
+		$radar = new DatabaseRadarDatasetBridge($this->database);
+		if($radar->publish())
+			$this->dispatch('radar-status-changed', 'Database published'); // let other livewire components know the radar status has changed
+		else
+			$this->error = $radar->details; // output error message
+		$this->dispatch('status-message', $radar->message);
+		$this->refreshStatus();
 	}
 
 	/*
 	* Reject the persistent publication: End the review at Datathek and set the Status to "DOI assigned"
 	*/
 	public function rejectPersistentPublication()
-	{		// end the review
+	{
+		$this->reset('error');
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if(!$radar->endreview())
 		{
 			$this->error = 'End Review: '.$radar->message . ' ('.$radar->details .')';
 		}
-			// set status to "DOI assigned"
+		// set status to "DOI assigned"
 		$this->database->radar_status = 1;
 		$this->database->save();
 
 		$this->refreshStatus();
-		$this->js('window.location.reload()'); 
 	}
 
 	/*
@@ -183,6 +204,7 @@ class DatabaseRadarActions extends Component
 	*/
 	public function resetDOI()
 	{	
+		$this->reset('error');
 		$this->database->radar_id = null;
 		$this->database->doi = null;
 		$this->database->radar_status = null;
@@ -202,9 +224,7 @@ class DatabaseRadarActions extends Component
 			}
 		}
 
-
 		$this->refreshStatus();
-		$this->js('window.location.reload()'); 
 	}
 
 	public function render()
@@ -244,3 +264,5 @@ class DatabaseRadarActions extends Component
 		$this->radar_status = $this->database->radar_status;
 	}
 }
+
+
