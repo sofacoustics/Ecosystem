@@ -1,4 +1,4 @@
-<div>
+<div class="max-w-prose">
 <h3>Visibility within the Ecosystem:</h3>
 @if($visible)
 	<p><b>Status:</b> The database is <b>visible</b> to all Ecosystem visitors.</p>
@@ -41,8 +41,8 @@
 		<p>By clicking the button below, a DOI can be assigned to your database.</p>
 		<p>To this end, the following steps will happen:
 			<ul class="list-disc list-inside">
-				<li>Your database will be registered at the ÖAW Datathek as a new "dataset".
-				<li>The database metadata will be sent to the Datathek. This is a quick process.
+				<li>Your database will be registered at the ÖAW Datathek as a new "Datathek dataset".
+				<li>Your metadata will be sent to the Datathek. This is a quick process.
 				<li>A DOI for your database will be requested and assigned to your database within the Ecosystem.
 			</ul>
 		<p>Once a DOI has been assigned, the DOI will be a permanent part of your database.</p>
@@ -116,8 +116,9 @@
 				<p>Once the curator approves your database, it will be published at the Datathek and the DOI will be valid.</p>
 			@endif
 		@elseif($radar_status==2)
-			<p>The database has been submitted to be persistently published.</p>
-			<p>The curator has been notified. Please check later...</p>
+			<p>The database has been submitted for persistent publication.<br>
+			The curator has been notified.<br>
+			You will receive an email when publication has been approved.</p>
 		@elseif($radar_status==3)
 			<p>The database has been persistently published under the following link: <a href="https://doi.org/{{$doi}}">https://doi.org/{{$doi}}</a>.
 			</p>

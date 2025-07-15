@@ -1,32 +1,42 @@
 <x-app-layout>
 	<x-slot name="header">
-	<x-database.header :dataset="$dataset" tabTitle="Dataset | {{ $dataset->name }}"/>
+		<x-database.header :dataset="$dataset" tabTitle="Dataset | {{ $dataset->name }}"/>
 	</x-slot>
 	<h2>
-		Dataset: {{ $dataset->name }} @role('admin')
+		Dataset name: {{ $dataset->name }} @role('admin')
 			(ID: {{ $dataset->id }})
 		@endrole
 	</h2>
-	<p>This dataset contains {{ count($dataset->datafiles) }} files.</p>
-	<div class="ml-2">
-		@foreach ($dataset->datafiles as $datafile)
-			<h3>Name: {{ $datafile->datasetdef->name }}
-				@can('delete', $datafile)
-					<x-button method="DELETE" class="inline" action="{{ route('datafiles.destroy', [$datafile]) }}">Delete</x-button>
-				@endcan
-			</h3>
-			<div wire:key="{{ $datafile->id }}">
-				<x-property name="Datafile Name">
-					<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a> @role('admin') (ID: {{ $datafile->id }}) @endrole
-				</x-property>
-				@hasrole('admin')
-					<x-button method="POST" action="{{ route('datafiles.touch', [$datafile]) }}">Touch</x-button>
-				@endhasrole
-				<livewire:DatafileListener :datafile="$datafile" :key="$datafile->id" />
-			</div>
-			<hr>
-		@endforeach
-	</div>
+	@foreach ($dataset->datafiles as $datafile)
+		@if(count($dataset->datafiles) == 1)
+			<h3>Datafile: {{ $datafile->datasetdef->name }}</h3>
+		@else
+			<h3>Datafile #{{$loop->index+1}}: {{ $datafile->datasetdef->name }}</h3>
+		@endif
+		@can('delete', $datafile)
+			<x-button method="DELETE" class="inline" action="{{ route('datafiles.destroy', [$datafile]) }}">Delete</x-button>
+		@endcan
+		@hasrole('admin')
+			<x-button method="POST" class="inline" action="{{ route('datafiles.touch', [$datafile]) }}">Rerun service</x-button>
+		@endhasrole
+		<div class="ml-2" wire:key="{{ $datafile->id }}">
+			<x-property name="Datafile Type">
+				{{ $datafile->datasetdef->datafiletype->name }}
+			</x-property>
+			<x-property name="Datafile Name">
+				<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a>
+			</x-property>
+			<x-property name="Updated at">
+				<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->updated_at }} (GMT)</a> 
+			</x-property>
+			<x-property name="Created at">
+				<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->created_at }} (GMT)</a> 
+			</x-property>			
+			<livewire:DatafileListener :datafile="$datafile" :key="$datafile->id" />
+		</div>
+		
+		<br><br><hr>
+	@endforeach
 
 	@if (count($dataset->datafiles) < count($dataset->database->datasetdefs))
 		<p>According to the dataset definition, the following

@@ -20,14 +20,15 @@ class CreatorForm extends Component
 	public $creatorAffiliation;
 	public $affiliationIdentifier;
 	public $affiliationIdentifierScheme;
+	public $option = "person";
 
 	protected $rules = [
-		'creatorName' => ['required','max:255'],
+/*		'creatorName' => ['required','max:255'],
 		'givenName' => 'max:255',
 		'familyName' => 'max:255',
 		'nameIdentifier' => 'max:255',
 		'creatorAffiliation' => 'max:255',
-	];
+	*/];
 
 	protected $messages = [
 		'creatorName.required' => 'A name is required.',
@@ -46,14 +47,27 @@ class CreatorForm extends Component
 			$this->creator = $creator;
 			$this->creatorable_id = $creator->creatorable_id;
 			$this->creatorable_type = $creator->creatorable_type;
-			$this->creatorName = $creator->creatorName;
-			$this->givenName = $creator->givenName;
-			$this->familyName = $creator->familyName;
-			$this->nameIdentifier = $creator->nameIdentifier;
 			$this->nameIdentifierSchemeIndex = $creator->nameIdentifierSchemeIndex;
-			$this->creatorAffiliation = $creator->creatorAffiliation;
-			$this->affiliationIdentifier = $creator->affiliationIdentifier;
-			$this->affiliationIdentifierScheme = $creator->affiliationIdentifierScheme;
+			if($creator->familyName)
+			{		// Person
+				$this->option = "person";
+				$this->givenName = $creator->givenName;
+				$this->familyName = $creator->familyName;
+				$this->nameIdentifier = $creator->nameIdentifier;
+				$this->creatorAffiliation = $creator->creatorAffiliation;
+				$this->affiliationIdentifier = $creator->affiliationIdentifier;
+				$this->affiliationIdentifierScheme = $creator->affiliationIdentifierScheme;
+			}
+			else
+			{		// Institution
+				$this->option = "institution";
+				$this->givenName = null;
+				$this->familyName = null;
+				$this->nameIdentifier = null;
+				$this->creatorAffiliation = $creator->creatorName;
+				$this->affiliationIdentifier = $creator->nameIdentifier;
+				$this->affiliationIdentifierScheme = $creator->nameIdentifierSchemeIndex;
+			}
 		}
 		else
 		{
@@ -62,34 +76,70 @@ class CreatorForm extends Component
 		}
 	}
 
+	public function fillinmydata()
+	{
+		$names = explode(" ", auth()->user()->name, 2);
+		if(count($names)==2)
+		{
+			$this->givenName = $names[0];
+			$this->familyName = $names[1];
+		}
+		else
+			$this->familyName = $names[0];
+		$this->nameIdentifier = auth()->user()->orcid;
+		$this->nameIdentifierSchemeIndex = 1; // ORCID
+	}
+
 	public function save()
 	{
-		$this->validate();
+		//$this->validate();
 
 		$isNew = !$this->creator;
-
 		if($isNew)
-		{
 			$this->creator = new Creator();
-		}
 		
 		$this->creator->creatorable_id = $this->creatorable_id;
 		$this->creator->creatorable_type = $this->creatorable_type;
 
-		$this->creator->creatorName = $this->creatorName;
-		$this->creator->givenName = $this->givenName;
-		$this->creator->familyName = $this->familyName;
-		$this->creator->nameIdentifier = $this->nameIdentifier;
-		if (empty($this->nameIdentifierSchemeIndex) and !empty($this->nameIdentifier))
-		{	 $this->creator->nameIdentifierSchemeIndex = 0; }
-		else
-		{	 $this->creator->nameIdentifierSchemeIndex = $this->nameIdentifierSchemeIndex; }
-		if ($this->creator->nameIdentifierSchemeIndex == '')
-			$this->creator->nameIdentifierSchemeIndex = null; 
-		$this->creator->creatorAffiliation = $this->creatorAffiliation;
-		$this->creator->affiliationIdentifier = $this->affiliationIdentifier;
-		$this->creator->affiliationIdentifierScheme = $this->affiliationIdentifierScheme;
-
+		switch($this->option)
+		{
+			case "person":
+				if($this->givenName)
+					$this->creator->creatorName = $this->familyName.", ".$this->givenName;
+				else
+					$this->creator->creatorName = $this->familyName;
+				$this->creator->givenName = $this->givenName;
+				$this->creator->familyName = $this->familyName;
+				$this->creator->nameIdentifier = $this->nameIdentifier;
+				if($this->nameIdentifier)
+					$this->creator->nameIdentifierSchemeIndex = 1; // ORCID
+				else
+					$this->creator->nameIdentifierSchemeIndex = null;
+				$this->creator->creatorAffiliation = $this->creatorAffiliation;
+				if($this->creatorAffiliation)
+				{
+					$this->creator->affiliationIdentifier = $this->affiliationIdentifier;
+					if($this->affiliationIdentifier)
+						$this->creator->affiliationIdentifierScheme = 2; // ROR
+					else
+						$this->creator->affiliationIdentifierScheme = null;
+				}
+				break;
+				
+			case "institution":
+				$this->creator->creatorName = $this->creatorAffiliation;
+				$this->creator->givenName = null;
+				$this->creator->familyName = null;
+				$this->creator->nameIdentifier = $this->affiliationIdentifier;
+				if($this->affiliationIdentifier)
+					$this->creator->nameIdentifierSchemeIndex = 2; // ROR
+				else
+					$this->creator->nameIdentifierSchemeIndex = null;
+				$this->creator->creatorAffiliation = null; 
+				$this->creator->affiliationIdentifierScheme = null; 
+				break;
+		}
+		
 		$this->creator->save();
     session()->flash('message', $isNew ? 'creator created successfully.' : 'creator updated successfully.');
 

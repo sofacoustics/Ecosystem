@@ -63,21 +63,6 @@ if isoctave; fputs(log_fid, "SOFA file loaded successfully.\n"); end
 %% Collect all details
 if isoctave; fputs(log_fid, "About to extract details.\n"); end
 
-% Helper function to safely get fields
-function value = get_sofa_field(obj, field_name, default_value)
-    if isfield(obj, field_name)
-        value = obj.(field_name);
-        % Convert numeric values to string for consistent CSV output
-        if isnumeric(value)
-            value = num2str(value);
-        end
-    else
-        value = default_value;
-    end
-end
-% Populate data cell array
-
-
 %% get dimensions definitions
 % dataDim = {}; % Initialize cell array
 field_namesDim = fieldnames(Obj.API);
@@ -120,7 +105,7 @@ if isoctave; fputs(log_fid, "Collected dimensions definitions from SOFA file.\n"
 header = {'SOFA Conventions', 'R', 'E', 'M', 'N', 'S'}; % Define header
 dataDim = {[Obj.GLOBAL_SOFAConventions ' ' Obj.GLOBAL_SOFAConventionsVersion], dimR, dimE, dimM, dimN, dimS}; % Define data
 output_filename = [SOFAfile, '_dim.csv']; % Construct output filename
-delimiter = ';'; % Define delimiter
+delimiter = char(9); % Define tabulator as delimiter
 if isoctave; fputs(log_fid, ["Attempting to write CSV: " output_filename "\n"]); end
 csv_fid = fopen(output_filename, 'w'); % Open file for writing
 if csv_fid < 0
@@ -135,20 +120,6 @@ try
     if isoctave; fputs(log_fid, "CSV header written.\n"); end
     fprintf(csv_fid, '%s%s%s%s%s%s%s%s%s%s%s\n', dataDim{1}, delimiter, dataDim{2}, delimiter, dataDim{3}, delimiter, dataDim{4}, delimiter, dataDim{5}, delimiter, dataDim{6});
 
-    % fprintf(csv_fid, '%s%s%s\n', header{1}, delimiter, header{2}, delimiter, header{3}, delimiter, header{4}, delimiter, header{5}, delimiter, header{6});
-
-    % % Write data rows
-    % for i = 1:size(dataDim, 1)
-    %     % Ensure both elements are strings before writing
-    %     name_str = dataDim{i, 1};
-    %     value_str = dataDim{i, 2};
-    %     if ~ischar(name_str); name_str = num2str(name_str); end % Convert if not char
-    %     if ~ischar(value_str); value_str = num2str(value_str); end % Convert if not char
-    %     % Robust CSV quoting and newline removal:
-    %     name_str = ['"', strrep(strrep(name_str, char(10), ' '), char(13), ' '), '"']; % Quote, replace LF and CR with space
-    %     value_str = ['"', strrep(strrep(value_str, char(10), ' '), char(13), ' '), '"']; % Quote, replace LF and CR with space
-    %     fprintf(csv_fid, '%s%s%s\n', name_str, delimiter, value_str);
-    % end
     if isoctave; fputs(log_fid, ["Data rows written to CSV.\n"]); end
 catch ME
     fclose(csv_fid); % Close file even if error occurs during writing
@@ -176,18 +147,10 @@ for i = 1:length(field_namesProp)
 end
 if isoctave; fputs(log_fid, "Collected GLOBAL data from SOFA file.\n"); end
 
-
-% % get dimensions of objects, use function to scan sub-structures
-% data = process_fields(Obj.API.Dimensions, 'Dimension', data, 1);
-% if isoctave; fputs(log_fid, "Collected dimensions of objects from SOFA file.\n"); end
-
-
-
-
 %% Write properties data to CSV using Octave's file I/O
 header = {'Name', 'Value'}; % Define header
 output_filename = [SOFAfile, '_prop.csv']; % Construct output filename
-% delimiter = ';'; % Define delimiter
+% delimiter = char(9); % Define tabulator as delimiter
 if isoctave; fputs(log_fid, ["Attempting to write CSV: " output_filename "\n"]); end
 csv_fid = fopen(output_filename, 'w'); % Open file for writing
 if csv_fid < 0
@@ -220,6 +183,20 @@ fclose(csv_fid); % Close the output file successfully
 if isoctave; fputs(log_fid, ["Successfully saved SOFA details to " output_filename "\n"]); end
 disp(['Successfully saved SOFA details to ' output_filename]);
 
+%% Helper function to safely get fields
+function value = get_sofa_field(obj, field_name, default_value)
+    if isfield(obj, field_name)
+        value = obj.(field_name);
+        % Convert numeric values to string for consistent CSV output
+        if isnumeric(value)
+            value = num2str(value);
+        end
+    else
+        value = default_value;
+    end
+end
+
+
 
 %% Epilogue: (un)comment if you want to:
 disp('DONE');
@@ -228,24 +205,3 @@ toc; % timer
 end % End of function SofaProperties
 
 
-% function data = process_fields(s, prefix, data, depth)
-%     fields = fieldnames(s);
-%     for i = 1:length(fields)
-%         field = fields{i};
-%         value = getfield(s, field);
-%
-%         % Je nach Tiefe Leerzeichen oder Punkt verwenden
-%         if depth == 1
-%             full_name = [prefix ' ' field];
-%         else
-%             full_name = [prefix '.' field];
-%         end
-%
-%         if isstruct(value)
-%             data = process_fields(value, full_name, data, depth + 1);
-%         else
-%             data{end+1, 1} = full_name;
-%             data{end, 2} = value;
-%         end
-%     end
-% end

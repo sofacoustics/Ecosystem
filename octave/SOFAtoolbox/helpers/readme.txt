@@ -1,1 +1,0 @@
-this folder is prepared for third-party helper files and folders

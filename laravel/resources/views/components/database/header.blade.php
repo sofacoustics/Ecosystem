@@ -61,7 +61,7 @@
 	@endif
 
 	@if(count($database->datasets))
-		<x-button class="inline" method="GET" action="{{ route('databases.download', $database->id) }}">Download</x-button>
+		<x-button class="inline" method="GET" action="{{ route('databases.download', $database->id) }}">Downloads</x-button>
 	@endif
 
 	@can('update', $database)

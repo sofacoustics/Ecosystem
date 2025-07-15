@@ -17,22 +17,15 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.creators', $database->id) }}">Edit</x-button></small>
 					Creators:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.creators', $database->id) }}">Add creators</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.creators', $database->id) }}">Add Creators</x-button></small>
 				</h3>
 			@endif
 		@else
 			<h3>Creators:</h3>
 		@endcan
-		
 		<ul class="list-disc list-inside">
 			@forelse ($database->creators as $creator)
-			<li><b>Name</b>: {{ $creator->creatorName }}
-				@if ($creator->givenName != null) <b>Given Name</b>: {{ $creator->givenName }}@endif 
-				@if($creator->familyName != null) <b>Family Name</b>: {{ $creator->familyName }}@endif
-				@if ($creator->nameIdentifier != null) <b>{{ $creator->nameIdentifierScheme($creator->nameIdentifierSchemeIndex) }}</b>: {{ $creator->nameIdentifier }}@endif
-				@if ($creator->creatorAffiliation != null) <b>Affiliation</b>: {{ $creator->creatorAffiliation }}@endif
-				@if ($creator->affiliationIdentifier != null) <b>{{ $creator->affiliationIdentifierScheme }}</b>: {{ $creator->affiliationIdentifier }}@endif 
-			</li>
+			<li><x-creator.list :creator=$creator/></li>
 			@empty
 				@cannot('update', $database)
 					<li>No creators defined.</li>
@@ -45,7 +38,7 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.publishers', $database->id) }}">Edit</x-button></small>
 					Publishers:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.publishers', $database->id) }}">Add publishers</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.publishers', $database->id) }}">Add Publishers</x-button></small>
 				</h3>
 			@endif
 		@else
@@ -53,13 +46,7 @@ Parameters:
 		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($database->publishers as $publisher)
-			<li><b>Name</b>: {{ $publisher->publisherName }}
-				@if ($publisher->nameIdentifier != null) <b>{{ $publisher->nameIdentifierScheme($publisher->nameIdentifierSchemeIndex) }}</b>: 
-					@if ($publisher->schemeURI != null) <a href="{{ $publisher->schemeURI }}"> @endif
-					{{ $publisher->nameIdentifier }}
-					@if ($publisher->schemeURI != null) </a> @endif
-				@endif
-			</li>
+			<li><x-publisher.list :publisher=$publisher/></li>
 			@empty
 				@cannot('update', $database)
 					<li>No publishers defined.</li>
@@ -72,7 +59,7 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.rightsholders', $database->id) }}">Edit</x-button></small>
 				Rightsholders:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.rightsholders', $database->id) }}">Add rightholders</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.rightsholders', $database->id) }}">Add Rightholders</x-button></small>
 				<h3>
 			@endif
 		@else
@@ -80,13 +67,7 @@ Parameters:
 		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($database->rightsholders as $rightsholder)
-			<li><b>Name</b>: {{ $rightsholder->rightsholderName }}
-				@if ($rightsholder->nameIdentifier != null) <b>{{ $rightsholder->nameIdentifierScheme($rightsholder->nameIdentifierSchemeIndex) }}</b>: 
-					@if ($rightsholder->schemeURI != null) <a href="{{ $rightsholder->schemeURI }}"> @endif
-					{{ $rightsholder->nameIdentifier }}
-					@if ($rightsholder->schemeURI != null) </a> @endif
-				@endif
-			</li>
+			<li><x-rightsholder.list :rightsholder=$rightsholder /></li>
 			@empty
 				@cannot('update', $database)
 					<li>No rightsholder defined.</li>
@@ -99,7 +80,7 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.keywords', $database->id) }}">Edit</x-button></small>
 				Keywords:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.keywords', $database->id) }}">Add keywords</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.keywords', $database->id) }}">Add Keywords</x-button></small>
 				</h3>
 			@endif
 		@else
@@ -107,13 +88,7 @@ Parameters:
 		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($database->keywords as $keyword)
-			<li>
-				<b>{{ $keyword->keywordName }}</b> 
-				@if($keyword->classificationCode)
-					(@if ($keyword->schemeURI != null)<a href="{{ $keyword->schemeURI }}">@endif{{ \App\Models\Keyword::keywordScheme($keyword->keywordSchemeIndex)}}@if ($keyword->schemeURI != null)</a>@endif: 
-					@if ($keyword->valueURI != null)<a href="{{ $keyword->valueURI }}">@endif{{ $keyword->classificationCode }}@if ($keyword->valueURI != null)</a>@endif)
-				@endif
-			</li>
+			<li><x-keyword.list :keyword=$keyword /></li>
 			@empty
 				@cannot('update', $database)
 					<li>No keywords defined.</li>
@@ -127,7 +102,7 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.relatedidentifiers', $database->id) }}">Edit</x-button></small>
 				Relations:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.relatedidentifiers', $database->id) }}">Add relations</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('databases.relatedidentifiers', $database->id) }}">Add Relations</x-button></small>
 				</h3>
 			@endif
 		@else
@@ -136,22 +111,7 @@ Parameters:
 		<ul class="list-disc list-inside">
 			@forelse ($database->relatedidentifiers as $relatedidentifier)
 			<li>
-				@if(\App\Models\RelatedIdentifier::isInternalLink($relatedidentifier->name) == 1)
-					<b>... {{ strtolower(\App\Models\RelatedIdentifier::displayRelation($relatedidentifier->relationtype)) }}</b>
-					the Database 
-					<a href="{{ \App\Models\RelatedIdentifier::internalUrl($relatedidentifier->name) }}">
-						{{ \App\Models\RelatedIdentifier::internalName($relatedidentifier->name) }}</a>.
-				@elseif(\App\Models\RelatedIdentifier::isInternalLink($relatedidentifier->name) == 2)
-					<b>... {{ strtolower(\App\Models\RelatedIdentifier::displayRelation($relatedidentifier->relationtype)) }}</b>
-					the Tool 
-					<a href="{{ \App\Models\RelatedIdentifier::internalUrl($relatedidentifier->name) }}">
-						{{ \App\Models\RelatedIdentifier::internalName($relatedidentifier->name) }}</a>.
-				@else
-						<b>... {{ strtolower(\App\Models\Metadataschema::display($relatedidentifier->relationtype)) }}</b>
-						<a href="{{ \App\Models\RelatedIdentifier::externalUrl($relatedidentifier->relatedidentifiertype, $relatedidentifier->name) }}">
-						 {{ $relatedidentifier->name }}</a>
-						 ({{ \App\Models\Metadataschema::display($relatedidentifier->relatedidentifiertype) }}).
-				@endif
+				<x-relatedidentifier.list :relatedidentifier=$relatedidentifier />
 			</li> 
 			@empty
 				@cannot('update', $database)
@@ -175,19 +135,31 @@ Parameters:
 					<li><b>DOI (publication requested)</b>: {{ $database->doi }}
 				@elseif($database->radar_status==3)
 					<li><b>DOI (persistently published)</b>: <a href="https://doi.org/{{ $database->doi }}">{{ $database->doi }}</a>
+					@if ($database->publicationyear != null) 
+						<li><b>DOI Publication Year</b>: {{ $database->publicationyear }}</li>
+					@endif 
 				@endif
 			@else
 				<li><b>DOI</b>: not assigned yet
 			@endif
-			<li><b>Uploaded by:</b> {{ $user->name }}</li>
+			<li><b>Uploaded by:</b> {{ $user->name }}
+				<a href="{{ \App\Models\Radar::schemeURI(1).$user->orcid }}">
+				<img id="orcid" src="{{ asset('images/orcid_16x16.webp') }}"
+					alt="ORCID: {{ $user->orcid }}" 
+					title="{{ $user->orcid }}" 
+					style="display: inline; margin: 0 auto; width: 100%; height: auto; max-width: 1em; min-width: 1em;"></a>
+				<a href="mailto:{{ $user->email }}">
+				<img id="orcid" src="{{ asset('images/envelope.png') }}"
+					alt="Email address: {{ $user->email }}" 
+					title="{{ $user->email }}" 
+					style="display: inline; margin: 0 auto; width: 100%; height: auto; max-width: 1.5em; min-width: 1.5em;"></a>
+			</li>
 			
 			<li><b>Date (created):</b> {{ $database->created_at }} (GMT)</li>
 
 			<li><b>Date (updated):</b> {{ $database->updated_at }} (GMT)</li>
 
 			@if ($database->productionyear != null) <li><b>Production Year</b>: {{ $database->productionyear }}</li>@endif
-			
-			@if ($database->publicationyear != null) <li><b>Publication Year</b>: {{ $database->publicationyear }}</li>@endif 
 			
 			<li><b>Resource Type</b>: {{ \App\Models\Database::resourcetypeDisplay($database->resourcetype) }}
 				@if ($database->resource != null) ({{ $database->resource }})@endif 
@@ -221,8 +193,6 @@ Parameters:
 				<li><b>Technical Remarks</b>: {{ $database->descriptionremarks }}</li>
 			@endif 
 
-			@if ($database->language != null) <li><b>Language</b>: {{ $database->language }}</li>@endif 
-			
 			@if ($database->datasources != null) <li><b>Data Source</b>: {{ $database->datasources }}</li>@endif 
 			
 			@if ($database->software != null) <li><b>Software</b>: {{ $database->software }}</li>@endif 
@@ -252,7 +222,7 @@ Parameters:
 			</ul>
 		@endif
 		@can('create', \App\Models\Database::class)
-			<x-button method="GET" class="inline" action="{{ route('databases.comments', $database->id) }}">Add a comment</x-button>
+			<x-button method="GET" class="inline" action="{{ route('databases.comments', $database->id) }}">New Comment</x-button>
 		@endcan
 
 	<hr>

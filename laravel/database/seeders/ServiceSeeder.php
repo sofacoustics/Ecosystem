@@ -18,7 +18,7 @@ class ServiceSeeder extends Seeder
                     'name' => 'Octave: HRTF General',
                     'description' => 'Plot hrtf-related figures: time domain: ETC left/right; frequency domain (lin): magnitude spectrum left/right; frequency domain (log): magnitude spectrum left/right logarithmic; ITD; Geometry.',
                     'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
-                    'parameters' => 'HRIR3.m'
+                    'parameters' => 'HRTFGeneral.m'
                 )
             );
             Service::create(array(
@@ -36,10 +36,10 @@ class ServiceSeeder extends Seeder
                 )
             );
 			Service::create(array(
-                   'name' => 'Octave: SRIR Geometry',
-                   'description' => 'Plot SRIR Geometry.',
+                   'name' => 'Octave: SRIR General',
+                   'description' => 'Plot SRIR General.',
                     'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
-                   'parameters' => 'SRIRGeometry.m'
+                   'parameters' => 'SRIRGeneral.m'
                )
             );
 			Service::create(array(
@@ -59,15 +59,15 @@ class ServiceSeeder extends Seeder
 			Service::create(array(
                    'name' => 'Blender: Render PPM',
                    'description' => 'Render PPM if BezierPPM, show CSV file properties otherwise.',
-                   'exe' => 'python',
-                   'parameters' => 'CSVppm.py'
+                   'exe' => '/var/www/.local/bin/uv',
+                   'parameters' => 'run CSVppm.py --input'
                )
             );
 			Service::create(array(
                    'name' => 'Octave: AnnotatedReceiver',
                    'description' => 'Plot the progress of receivers.',
                    'exe' => 'octave-cli',
-                   'parameters' => 'SOFAAnnotatedReceiver.m'
+                   'parameters' => 'AnnotatedReceiver.m'
                )
             );
 			Service::create(array(

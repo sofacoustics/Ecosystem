@@ -39,14 +39,14 @@ class WidgetSeeder extends Seeder
 		
 		
 		Widget::create(array('name' => 'SOFA: BRIR General',
-            'description' => 'Plot ETC, and the geometry of the BRIR measurements.',
+            'description' => 'Plot ETC, and the geometry of BRIRs.',
             'service_id' => 3,
             'view' => 'brir-general',
         ));		
-		Widget::create(array('name' => 'SOFA: SRIR Geometry',
-            'description' => 'Plot the geometry of the SRIR measurements.',
+		Widget::create(array('name' => 'SOFA: SRIR General',
+            'description' => 'Plot the geometry, and aplitude spectra of the SRIRs.',
             'service_id' => 4,
-            'view' => 'sofa-srir-geometry',
+            'view' => 'srir-general',
         ));		
 		Widget::create(array('name' => 'SOFA: Directivities Polar',
             'description' => 'Plot the directivities as polar plots.',
@@ -74,7 +74,7 @@ class WidgetSeeder extends Seeder
 		Widget::create(array('name' => 'SOFA: AnnotatedReceiver',
             'description' => 'Plot the progress of receivers.',
             'service_id' => 8,
-            'view' => 'sofa-annotated-receiver',
+            'view' => 'annotated-receiver',
         ));		
 		Widget::create(array('name' => 'SOFA: Headphones General',
             'description' => 'Plot spectra of headphones.',
@@ -83,7 +83,7 @@ class WidgetSeeder extends Seeder
         ));		
 		Widget::create(array('name' => 'SOFA: BRIR ListenerView',
             'description' => 'Plot ETC, and the geometry of the BRIR measurements with ListenerView as parameter.',
-            'service_id' => 10,
+            'service_id' => 2,
             'view' => 'brir-listenerview',
         ));	
     }

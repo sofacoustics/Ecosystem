@@ -36,18 +36,16 @@
 		@if($nFilesInDir > 0)
 			<h3>2) Apply filter on your datafiles:<h3>
 			<small>Pattern for the datasets names:</small>
-				<input class="w-full" type="text" placeholder="Must include <ID>, e.g., name<ID>. Must not be empty." id="dsn_pattern"
+				<input class="w-full" type="text" placeholder="Must include <ID>, e.g., name <ID>. Must not be empty." id="dsn_pattern"
 					wire:model.blur="datasetnamefilter" />
 			@foreach ($database->datasetdefs as $index => $datasetdef)
 				<small>#{{ $loop->index+1}}: Pattern for the datafile names of <b>{{ $datasetdef->name }}</b>:</small>
 					<input class="w-full" type="text" placeholder="Must include <ID> and may include <NUM> or <ANY>, e.g. prefix<ID>_maytest<ANY>.ext. Can be empty to exclude a datasetfile."
 						id="fn_pattern{{ $datasetdef->id }}" wire:model.blur="datafilenamefilters.{{ $datasetdef->id }}" />
-					{{-- https://www.perplexity.ai/search/how-can-i-access-and-update-ha-xiLcN4hYTKajSuuB3IMR4A --}}
 			@endforeach 
-			<?php /*<small>Pattern for the datasets descriptions (optional):</small>
-				<input class="w-full" type="text" placeholder="Must include <ID>, e.g., name<ID>. Can be empty." id="description_pattern"
-					wire:model.blur="datasetdescriptionfilter" /> */
-			?>
+			<small>Pattern for the datasets descriptions (optional):</small>
+				<input class="w-full" type="text" placeholder="Must include <ID>, e.g., description <ID>. Can be empty." id="description_pattern"
+					wire:model.blur="descriptionfilter" />
 			<br>
 			<div>
 				<x-button wire:click="$js.doFilter($data)" :disabled="$nFilesInDir < 1 || $uploading">Apply filter</x-button>
@@ -328,14 +326,16 @@
 				dummy[i] = "<NONE>";
 				fn_cnt_array[i] = 0;
 			}
-				// load the pattern of the dataset names
+				// load the pattern of the dataset names and description
 			let dsn_pattern = document.getElementById("dsn_pattern").value; 
+			let descr_pattern = document.getElementById("description_pattern").value; 
 				// clear the table
 			tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
 			tableBody.innerHTML = "";
 
 			s=""; // string with skipped files
 			let dsn_array = []; // array with filtered dataset names
+			let descr_array = []; // array with filtered descriptions
 			let fn_array = []; // 2D array of filtered filenames (outer dim: datasets, inner dim: datafile defs)
 			let dsn_cnt = 0; skipped_cnt = 0; matched_cnt = 0; conflict_cnt = 0;
 			for (let i = 0; i < data.allFiles.length; i++)
@@ -362,11 +362,13 @@
 							let end_id = fn.substring(beg_id_array[j]).search(postfix_array[j])+beg_id_array[j]; // zahl ende: beginn von postfix gefunden in fn, beginnend mit beg_id, falls postfix im fn VOR <id> wäre
 							let id = fn.substring(beg_id_array[j],end_id); // <ID> gefunden
 							let name = dsn_pattern.replace("<ID>", id); // baue Name mit neuem ID zusammen
+							let descr = descr_pattern.replace("<ID>", id); // baue Description mit neuem ID zusammen
 								// Array
 							idx = dsn_array.indexOf(name); 
 							if (idx == -1)
 							{   // new dataset name
 								dsn_array[dsn_array.length] = name; // extend the datasetname array
+								descr_array[descr_array.length] = descr; // extend the datasetname array
 								dsn_cnt++;
 								idx = dsn_array.length-1;
 								fn_array[dsn_array.length-1] = []; // extend the fn array with dummies
@@ -435,6 +437,7 @@
 				cell.innerHTML = '<input type="checkbox" id="check' + (i+1) + '" wire:click="$js.updateSelected($data)">: #' + (i+1); // insert checkbox for a dataset
 				cell = newRow.insertCell(-1); 
 				cell.textContent = dsn_array[i]; // insert Name to the table
+				cell.title = descr_array[i]; // insert Description as cell title
 				for (let j=0; j<df_array.length; j++) // for each column
 				{
 					cell = newRow.insertCell(-1);
@@ -449,6 +452,7 @@
 
 				// save variables in Livewire for upload procedure
 			$wire.set('dsnFiltered', dsn_array); // save the filtered dataset names 
+			$wire.set('descrFiltered', descr_array); // save the filtered dataset names 
 			$wire.set('dfnFiltered', fn_array); // save the filtered filenames
 			$wire.set('dirMode', data.dirMode); // save the directory dirMode (0: flat, 1: nested)
 				// select all Datasets in the table
@@ -553,11 +557,13 @@
 		{ 
 			let fn_array = $wire.get('dfnFiltered');
 			let dsn_array = $wire.get('dsnFiltered');
+			let descr_array = $wire.get('descrFiltered');
 			let df_array = $wire.datasetdefIds;
 			let fn_cnt_array = new Array(df_array.length).fill(0);
 			let dsn_cnt = 0;
 			let fn_selected = []; // 2D array of selected filenames (outer dim: datasets, inner dim: datafile defs)
 			let dsn_selected = [];
+			let descr_selected = [];
 			for (let i=0; i<rows.length; i++)
 			{
 				fn = fn_array[i];
@@ -566,6 +572,7 @@
 					dsn_cnt++; // count the number of selected datasets
 					rows[i].cells[1].textContent = dsn_array[i]; // insert datasetname
 					dsn_selected[dsn_selected.length] = dsn_array[i];
+					descr_selected[descr_selected.length] = descr_array[i];
 						// insert selected datafilenames
 					fn_selected[fn_selected.length] = fn;
 					for (let col=0; col<fn.length; col++)
@@ -596,6 +603,7 @@
 			data.nFilesSelected= uniqueSet.size; // save the number of unique files to upload
 				// Update Livewire variables
 			$wire.set('pdatasetnames', dsn_selected); // save the selected dataset names 
+			$wire.set('pdatasetdescriptions', descr_selected); // save the selected descriptons
 			$wire.set('pdatafilenames', fn_selected); // save the selected filenames 
 			$wire.set('nFilesSelected', data.nFilesSelected); // number of unique files to upload
 		}

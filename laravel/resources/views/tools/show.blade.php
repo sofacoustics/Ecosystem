@@ -39,22 +39,15 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.creators', $tool->id) }}">Edit</x-button></small>
 					Creators:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.creators', $tool->id) }}">Add creators</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.creators', $tool->id) }}">Add Creators</x-button></small>
 				</h3>
 			@endif
 		@else
 			<h3>Creators:</h3>
 		@endcan
-
 		<ul class="list-disc list-inside">
 			@forelse ($tool->creators as $creator)
-			<li><b>Name</b>: {{ $creator->creatorName }}
-				@if ($creator->givenName != null) <b>Given Name</b>: {{ $creator->givenName }}@endif 
-				@if($creator->familyName != null) <b>Family Name</b>: {{ $creator->familyName }}@endif
-				@if ($creator->nameIdentifier != null) <b>{{ $creator->nameIdentifierScheme($creator->nameIdentifierSchemeIndex) }}</b>: {{ $creator->nameIdentifier }}@endif
-				@if ($creator->creatorAffiliation != null) <b>Affiliation</b>: {{ $creator->creatorAffiliation }}@endif
-				@if ($creator->affiliationIdentifier != null) <b>{{ $creator->affiliationIdentifierScheme }}</b>: {{ $creator->affiliationIdentifier }}@endif 
-			</li>
+			<li><x-creator.list :creator=$creator/></li>
 			@empty
 				@cannot('update', $tool)
 					<li>No creators defined.</li>
@@ -67,7 +60,7 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.publishers', $tool->id) }}">Edit</x-button></small>
 					Publishers:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.publishers', $tool->id) }}">Add publishers</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.publishers', $tool->id) }}">Add Publishers</x-button></small>
 				</h3>
 			@endif
 		@else
@@ -75,13 +68,7 @@ Parameters:
 		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($tool->publishers as $publisher)
-			<li><b>Name</b>: {{ $publisher->publisherName }}
-				@if ($publisher->nameIdentifier != null) <b>{{ $publisher->nameIdentifierScheme($publisher->nameIdentifierSchemeIndex) }}</b>: 
-					@if ($publisher->schemeURI != null) <a href="{{ $publisher->schemeURI }}"> @endif
-					{{ $publisher->nameIdentifier }}
-					@if ($publisher->schemeURI != null) </a> @endif
-				@endif
-			</li>
+			<li><x-publisher.list :publisher=$publisher/></li>
 			@empty
 				@cannot('update', $tool)
 					<li>No publishers defined.</li>
@@ -94,7 +81,7 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.rightsholders', $tool->id) }}">Edit</x-button></small>
 				Rightsholders:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.rightsholders', $tool->id) }}">Add rightholders</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.rightsholders', $tool->id) }}">Add Rightholders</x-button></small>
 				<h3>
 			@endif
 		@else
@@ -102,13 +89,7 @@ Parameters:
 		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($tool->rightsholders as $rightsholder)
-			<li><b>Name</b>: {{ $rightsholder->rightsholderName }}
-				@if ($rightsholder->nameIdentifier != null) <b>{{ $rightsholder->nameIdentifierScheme($rightsholder->nameIdentifierSchemeIndex) }}</b>: 
-					@if ($rightsholder->schemeURI != null) <a href="{{ $rightsholder->schemeURI }}"> @endif
-					{{ $rightsholder->nameIdentifier }}
-					@if ($rightsholder->schemeURI != null) </a> @endif
-				@endif
-			</li>
+			<li><x-rightsholder.list :rightsholder=$rightsholder /></li>
 			@empty
 				@cannot('update', $tool)
 					<li>No rightsholder defined.</li>
@@ -121,7 +102,7 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.keywords', $tool->id) }}">Edit</x-button></small>
 				Keywords:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.keywords', $tool->id) }}">Add keywords</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.keywords', $tool->id) }}">Add Keywords</x-button></small>
 				</h3>
 			@endif
 		@else
@@ -129,13 +110,7 @@ Parameters:
 		@endcan
 		<ul class="list-disc list-inside">
 			@forelse ($tool->keywords as $keyword)
-			<li>
-				<b>{{ $keyword->keywordName }}</b> 
-				@if($keyword->classificationCode)
-					(@if ($keyword->schemeURI != null)<a href="{{ $keyword->schemeURI }}">@endif{{ \App\Models\Keyword::keywordScheme($keyword->keywordSchemeIndex)}}@if ($keyword->schemeURI != null)</a>@endif: 
-					@if ($keyword->valueURI != null)<a href="{{ $keyword->valueURI }}">@endif{{ $keyword->classificationCode }}@if ($keyword->valueURI != null)</a>@endif)
-				@endif
-			</li>
+			<li><x-keyword.list :keyword=$keyword /></li>
 			@empty
 				@cannot('update', $tool)
 					<li>No keywords defined.</li>
@@ -148,7 +123,7 @@ Parameters:
 				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.relatedidentifiers', $tool->id) }}">Edit</x-button></small>
 				Relations:</h3>
 			@else
-				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.relatedidentifiers', $tool->id) }}">Add relations</x-button></small>
+				<h3><small><x-button method="GET" class="inline" action="{{ route('tools.relatedidentifiers', $tool->id) }}">Add Relations</x-button></small>
 				</h3>
 			@endif
 		@else
@@ -157,23 +132,8 @@ Parameters:
 		<ul class="list-disc list-inside">
 			@forelse ($tool->relatedidentifiers as $relatedidentifier)
 			<li>
-				@if(\App\Models\RelatedIdentifier::isInternalLink($relatedidentifier->name) == 1)
-					<b>... {{ strtolower(\App\Models\RelatedIdentifier::displayRelation($relatedidentifier->relationtype)) }}</b>
-					the Database 
-					<a href="{{ \App\Models\RelatedIdentifier::internalUrl($relatedidentifier->name) }}">
-						{{ \App\Models\RelatedIdentifier::internalName($relatedidentifier->name) }}</a>.
-				@elseif(\App\Models\RelatedIdentifier::isInternalLink($relatedidentifier->name) == 2)
-					<b>... {{ strtolower(\App\Models\RelatedIdentifier::displayRelation($relatedidentifier->relationtype)) }}</b>
-					the Tool 
-					<a href="{{ \App\Models\RelatedIdentifier::internalUrl($relatedidentifier->name) }}">
-						{{ \App\Models\RelatedIdentifier::internalName($relatedidentifier->name) }}</a>.
-				@else
-						<b>... {{ strtolower(\App\Models\Metadataschema::display($relatedidentifier->relationtype)) }}</b>
-						<a href="{{ \App\Models\RelatedIdentifier::externalUrl($relatedidentifier->relatedidentifiertype, $relatedidentifier->name) }}">
-						 {{ $relatedidentifier->name }}</a>
-						 ({{ \App\Models\Metadataschema::display($relatedidentifier->relatedidentifiertype) }}).
-				@endif
-			</li>
+				<x-relatedidentifier.list :relatedidentifier=$relatedidentifier />
+			</li> 
 			@empty
 				@cannot('update', $tool)
 					<li>No relations defined.</li>
@@ -195,6 +155,9 @@ Parameters:
 					<li><b>DOI (publication requested)</b>: {{ $tool->doi }}
 				@elseif($tool->radar_status==3)
 					<li><b>DOI (persistently published)</b>: <a href="https://doi.org/{{ $tool->doi }}">{{ $tool->doi }}</a>
+					@if ($tool->publicationyear != null) 
+						<li><b>Publication Year</b>: {{ $tool->publicationyear }}</li>
+					@endif 
 				@endif
 			@else
 				<li><b>DOI</b>: not assigned yet
@@ -207,8 +170,6 @@ Parameters:
 			<li><b>Date (updated):</b> {{ $tool->updated_at }} (GMT)</li>
 			
 			@if ($tool->productionyear != null) <li><b>Production Year</b>: {{ $tool->productionyear }}</li>@endif
-			
-			@if ($tool->publicationyear != null) <li><b>Publication Year</b>: {{ $tool->publicationyear }}</li>@endif 
 			
 			@if ($tool->resourcetype != null) <li><b>Resource Type</b>: {{ \App\Models\Tool::resourcetypeDisplay($tool->resourcetype) }}</b>
 				@if ($tool->resource != null) ({{ $tool->resource }})@endif 
@@ -261,7 +222,7 @@ Parameters:
 			</ul>
 		@endif
 		@can('create', \App\Models\Tool::class)
-			<x-button method="GET" class="inline" action="{{ route('tools.comments', $tool->id) }}">Add a comment</x-button>
+			<x-button method="GET" class="inline" action="{{ route('tools.comments', $tool->id) }}">New Comment</x-button>
 		@endcan
 
 <script>

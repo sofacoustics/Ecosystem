@@ -45,4 +45,42 @@ class PublisherController extends Controller
 		$publisher->delete();
 		return redirect()->back();
 	}
+	public function copyPublisher(Publisher $A, Publisher $B)
+	{
+		$B->publisherName = $A->publisherName;
+		$B->nameIdentifier = $A->nameIdentifier;
+		$B->nameIdentifierSchemeIndex = $A->nameIdentifierSchemeIndex;
+		$B->schemeURI = $A->schemeURI;
+		$B->created_at = $A->created_at;
+		$B->updated_at = $A->updated_at;
+		return $B;
+	}
+	
+	public function up($id)
+	{
+		$publisherA = Publisher::where('id', $id)->get()->first();
+		$publisherB = Publisher::where('publisherable_id',$publisherA->publisherable_id)->where('id','<', $id)->get()->last();
+		//dd([$publisherA->id, $publisherB->id]); 
+		$temp = new Publisher;
+		$temp = $this->copyPublisher($publisherA, $temp); 
+		$publisherA = $this->copyPublisher($publisherB, $publisherA);
+		$publisherB = $this->copyPublisher($temp, $publisherB);
+		$publisherA->save(); 
+		$publisherB->save();
+		return redirect()->back();
+	}
+
+	public function down($id)
+	{
+		$publisherA = Publisher::where('id', $id)->get()->first();
+		$publisherB = Publisher::where('publisherable_id',$publisherA->publisherable_id)->where('id','>', $id)->get()->first();
+		//dd([$publisherA->id, $publisherB->id]); 
+		$temp = new Publisher;
+		$temp = $this->copyPublisher($publisherA, $temp); 
+		$publisherA = $this->copyPublisher($publisherB, $publisherA);
+		$publisherB = $this->copyPublisher($temp, $publisherB);
+		$publisherA->save(); 
+		$publisherB->save();
+		return redirect()->back();
+	}
 }

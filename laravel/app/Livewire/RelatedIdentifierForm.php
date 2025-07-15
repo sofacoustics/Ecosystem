@@ -16,8 +16,7 @@ class RelatedIdentifierForm extends Component
 	public $name;
 	public $relatedidentifiertype;
 	public $relationtype;
-	public $activeTab;
-	public $prefix; // dealing with database or tool? 
+	public $option = "database";
 	public $databaserelation; // what is the relation to a database?
 	public $databaserelatedable; // selected database
 	public $databaserelatedable_ids; // options to select a database, just the IDs
@@ -54,7 +53,7 @@ class RelatedIdentifierForm extends Component
 			switch($isInternal)
 			{	
 				case 1: // our database/tool has been linked to a database
-					$this->activeTab = 'database'; 
+					$this->option = 'database'; 
 					$this->databaserelation = $relatedidentifier->relationtype;
 					$this->databaserelatedable = substr($relatedidentifier->name, strlen("ECOSYSTEM_DATABASE")+1);
 					$this->toolrelation = null;
@@ -64,7 +63,7 @@ class RelatedIdentifierForm extends Component
 					$this->relationtype = null;
 					break;
 				case 2: // our database/tool has been linked to a tool
-					$this->activeTab = 'tool'; 
+					$this->option = 'tool'; 
 					$this->databaserelation = null;
 					$this->databaserelatedable = null;
 					$this->toolrelation = $relatedidentifier->relationtype;
@@ -74,7 +73,7 @@ class RelatedIdentifierForm extends Component
 					$this->relationtype = null;
 					break;
 				default: // we have a general link
-					$this->activeTab = 'external'; 
+					$this->option = 'external'; 
 					$this->databaserelation = null;
 					$this->databaserelatedable = null;
 					$this->toolrelation = null;
@@ -90,7 +89,7 @@ class RelatedIdentifierForm extends Component
 			$this->relatedidentifierable_type = get_class($relatedidentifierable);
 			$this->relationtype = \App\Models\Metadataschema::where('name', 'relationType')->where('value', 'IS_DESCRIBED_BY')->first()->id; 
 			$this->relatedidentifiertype = (\App\Models\Metadataschema::where('name', 'relatedIdentifierType')->where('value', 'URL')->first()->id); 
-			$this->activeTab = 'database';
+			$this->option = 'database';
 			if($reltype=="TEXT")
 			{	// default for Documents
 				$this->databaserelation = \App\Models\Metadataschema::where('name', 'relationType')->where('value', 'DESCRIBES')->first()->id;
@@ -108,15 +107,6 @@ class RelatedIdentifierForm extends Component
 			}
 		}
 
-		if($this->relatedidentifierable_type === 'App\Models\Database')
-			$this->prefix = "Database";
-		else
-		{
-			if($reltype=="TEXT")
-				$this->prefix = "Document";
-			else
-				$this->prefix = "Tool";
-		}
 		$this->toolrelatedable_ids[] = "";
 		$this->toolrelatedable_names[] = "... a Tool or Document";
 		$tools = \App\Models\Tool::all();
@@ -135,11 +125,6 @@ class RelatedIdentifierForm extends Component
 				array_push($this->databaserelatedable_ids, $database->id);
 				array_push($this->databaserelatedable_names, $database->title." (".$database->productionyear.")");
 			}
-	}
-
-	public function selectTab($tab)
-	{
-		$this->activeTab = $tab;
 	}
 
 	public function save($method, $rules)

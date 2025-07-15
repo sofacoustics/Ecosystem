@@ -1,0 +1,77 @@
+#!/bin/bash
+#
+#   Build GLP2S including support for PNG embedding to mitigate "GL2PS warning: GL2PS must be compiled with PNG support in order to embed images in SVG streams" warning (which may be responsible for colorbars not being generate when run in a virtual display
+#
+if sudo -l &>/dev/null; then
+    echo "User has sudo privileges."
+else
+    echo "User does NOT have sudo privileges."
+    echo "Please run using 'sudo'"
+fi
+
+# Default values
+dependencies=""
+source=""
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --dependencies)
+            dependencies="yes"
+            shift
+            ;;
+        --source)
+            source="yes"
+            shift
+            ;;
+        --build)
+            build="yes"
+            shift
+            ;;
+        *)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
+
+
+# install dependencies
+if [ "$dependencies" == "yes" ] ; then
+    sudo apt update
+    sudo apt install build-essential cmake libgl1-mesa-dev libglu1-mesa-dev zlib1g-dev libpng-dev
+fi
+
+# get source
+version=1.4.2
+if [ "$source" == "yes" ] ; then
+    wget http://geuz.org/gl2ps/src/gl2ps-$version.tgz
+    tar xvf gl2ps-$version.tgz
+fi
+
+cd gl2ps-$version
+
+if [ "$build" == "yes" ] ; then
+    #cmake . -DENABLE_PNG=OFF # definitely turns PNG support off
+
+    cmake . -DENABLE_PNG=ON # appears to turn PNG support on (see nm /usr/local/lib/libgl2ps.so | grep -i png)
+
+    #cmake . -DENABLE_PNG=ON -DPNG_PNG_INCLUDE_DIR=/usr/include/libpng -DPNG_LIBRARY=/usr/lib/x86_64-linux-gnu/libpng.so
+
+#    cmake . \
+#       -DENABLE_PNG=ON \
+#       -DENABLE_ZLIB=ON \
+#       -DZLIB_LIBRARY=/usr/lib/x86_64-linux-gnu/libz.so \
+#       -DZLIB_INCLUDE_DIR=/usr/include \
+#       -DPNG_LIBRARY=/usr/lib/x86_64-linux-gnu/libpng.so \
+#       -DPNG_INCLUDE_DIR=/usr/include/libpng
+
+    # force PNG detection
+#    cmake . \
+#       -DPNG_FOUND=TRUE \
+#       -DPNG_LIBRARIES=/usr/lib/x86_64-linux-gnu/libpng.so \
+#       -DPNG_INCLUDE_DIRS=/usr/include
+
+    sudo make install
+fi
+
+

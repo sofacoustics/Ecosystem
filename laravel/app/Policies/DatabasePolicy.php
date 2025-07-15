@@ -58,13 +58,13 @@ class DatabasePolicy
 			if(auth()->user()->hasRole('admin'))
 				$access = true;
 			else
-				$access = ($user->id == $database->user_id); // allow only for owners 
+				$access = ($user->id == $database->user_id) && ($database->radar_status < 2); // allow only for owners and if not submitted for persistent publication yet
 		}
 		else
 			$access = false;
 		return $access
 				? Response::allow()
-				: Response::deny('You can not edit this database because you do not own it!');
+				: Response::deny('You can not edit this database because you do not own it or it is locked for persistent publication!');
 	}
 
 
@@ -99,6 +99,6 @@ class DatabasePolicy
 			$access = ($user->id == $database->user_id) && ($database->radar_status < 2); // allow only for owners and if DOI not assigned yet
 		return $access
 			? Response::allow()
-			: Response::deny('You may not delete this database, since you do not own it!');
+			: Response::deny('You can not delete this database because you do not own it or it is locked for persistent publication!');
 	}
 }

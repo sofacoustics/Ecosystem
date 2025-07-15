@@ -46,4 +46,46 @@ class CreatorController extends Controller
 		$creator->delete();
 		return redirect()->back();
 	}
+	
+	public function copyCreator(Creator $A, Creator $B)
+	{
+		$B->creatorName = $A->creatorName;
+		$B->givenName = $A->givenName;
+		$B->familyName = $A->familyName;
+		$B->nameIdentifier = $A->nameIdentifier;
+		$B->nameIdentifierSchemeIndex = $A->nameIdentifierSchemeIndex;
+		$B->creatorAffiliation = $A->creatorAffiliation;
+		$B->affiliationIdentifierScheme = $A->affiliationIdentifierScheme;
+		$B->affiliationIdentifier = $A->affiliationIdentifier;
+		$B->created_at = $A->created_at;
+		$B->updated_at = $A->updated_at;
+		return $B;
+	}
+	
+	public function up($id)
+	{
+		$creatorA = Creator::where('id', $id)->get()->first();
+		$creatorB = Creator::where('creatorable_id',$creatorA->creatorable_id)->where('id','<', $id)->get()->last();
+		$temp = new Creator;
+		$temp = $this->copyCreator($creatorA, $temp); 
+		$creatorA = $this->copyCreator($creatorB, $creatorA);
+		$creatorB = $this->copyCreator($temp, $creatorB);
+		$creatorA->save(); 
+		$creatorB->save();
+		return redirect()->back();
+	}
+
+	public function down($id)
+	{
+		$creatorA = Creator::where('id', $id)->get()->first();
+		$creatorB = Creator::where('creatorable_id',$creatorA->creatorable_id)->where('id','>', $id)->get()->first();
+		$temp = new Creator;
+		$temp = $this->copyCreator($creatorA, $temp); 
+		$creatorA = $this->copyCreator($creatorB, $creatorA);
+		$creatorB = $this->copyCreator($temp, $creatorB);
+		$creatorA->save(); 
+		$creatorB->save();
+		return redirect()->back();
+	}
+
 }

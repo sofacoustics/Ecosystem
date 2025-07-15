@@ -20,74 +20,127 @@
 				</p>
 
 		<form wire:submit.prevent="save">
-			<div class="mb-4">
-				<label for="creatorName" class="{{ $labelClass }}">Name: (*)</label>
-				<input wire:model="creatorName" type="text" 
-									placeholder="Name of the person or institution."
-									id="creatorName" class="{{ $inputClass }}" required />
-				@error('creatorName')
-					<span class="text-red-500">{{ $message }}</span>
-				@enderror
+		
+		<fieldset>
+			<div class="py-4">
+				&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+				<input class="p-2" type="radio" id="person" name="type" value="person" wire:model.live="option"/>
+				<label for="person">&nbsp; Person and affiliation</label>
+				&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+				<input class="p-2" type="radio" id="institution" name="type" value="institution" wire:model.live="option"/>
+				<label for="institution">&nbsp; Institution</label>
 			</div>
 
-			<div class="mb-4">
-				<label for="givenName" class="{{ $labelClass }}">Given Name:</label>
-				<input wire:model="givenName" type="text" 
-									placeholder="Optional given (first) name of the person. Empty if institution."
-									id="givenName" class="{{ $inputClass }}" />
-				@error('givenName')
-					<span class="text-red-500">{{ $message }}</span>
-				@enderror
-			</div>
+			<table class="w-full">
 
-			<div class="mb-4">
-				<label for="familyName" class="{{ $labelClass }}">Family Name:</label>
-				<input wire:model="familyName" type="text" 
-									placeholder="Optional family (last) name of the person. Empty if institution."
-									id="familyName" class="{{ $inputClass }}" />
-				@error('familyName')
-					<span class="text-red-500">{{ $message }}</span>
-				@enderror
-			</div>
-			<div class="block">
-				<label class="{{ $labelClass }}" for="nameIdentifierSchemeIndex">Name Identifier Scheme:</label>
-				<select class="{{ $selectClass }}" id="nameIdentifierSchemeIndex" wire:model="nameIdentifierSchemeIndex">
-					<option value="">Select an identifier scheme</option>
-					<option value="0">{{ \App\Models\Creator::nameIdentifierScheme(0) }}</option>
-					<option value="1">{{ \App\Models\Creator::nameIdentifierScheme(1) }}</option>
-					<option value="2">{{ \App\Models\Creator::nameIdentifierScheme(2) }}</option>
-				</select>
-				@error('nameIdentifierSchemeIndex')
-					<span class="text-red-500">{{ $message }}</span>
-				@enderror
-			</div>
+				@if($option==="person")
 
-			<div class="mb-4">
-				<label for="nameIdentifier" class="{{ $labelClass }}">Name Identifier:</label>
-				<input wire:model="nameIdentifier" type="text" 
-									placeholder="ROR identifier (if institution), ORCID (if person), free text (if other)."
-									id="nameIdentifier" class="{{ $inputClass }}" />
-				@error('nameIdentifier')
-					<span class="text-red-500">{{ $message }}</span>
-				@enderror
-			</div>
-
-			<div class="mb-4">
-				<label for="creatorAffiliation" class="{{ $labelClass }}">Creator Affiliation:</label>
-				<input wire:model="creatorAffiliation" type="text" 
-										placeholder="Optional affiliation of the person. Empty if institution."
-										id="creatorAffiliation"
-					class="{{ $inputClass }}" />
-				@error('creatorAffiliation')
-					<span class="text-red-500">{{ $message }}</span>
-				@enderror
-			</div>
-
-			<div class="mt-4">
-				<button type="submit" class="{{ $buttonClass }}">
-					{{ $creator ? 'Update Creator' : 'Create Creator' }}
-				</button>
-			</div>
-
-		</form>
+					<tr>
+						<td class="px-4"><label for="familyName" class="{{ $labelClass }}">Family Name:</label>
+						<td class="px-4"><label for="givenName" class="{{ $labelClass }}">Given Name:</label>
+					</tr>
+					<tr>
+						<td class="px-4"><div class="mb-4">
+							<input wire:model="familyName" type="text" 
+												placeholder="Family (last) name of the person. Required."
+												id="familyName" class="{{ $inputClass }}" required/>
+							@error('familyName')
+								<span class="text-red-500">{{ $message }}</span>
+							@enderror
+						</div></td>
+						<td class="px-4"><div class="mb-4">
+							<input wire:model="givenName" type="text" 
+												placeholder="Optional given (first) name of the person."
+												id="givenName" class="{{ $inputClass }}" />
+							@error('givenName')
+								<span class="text-red-500">{{ $message }}</span>
+							@enderror
+						</div></td>
+					</tr>
+					<tr>
+						<td class="px-4"><label for="nameIdentifier" class="{{ $labelClass }}">ORCID:</label></td>
+					</tr>
+					<tr>
+						<td class="px-4"><div class="mb-4">
+							<input wire:model="nameIdentifier" type="text" 
+											placeholder="ORCID of the creator (without https://orcid.org/)"
+											id="nameIdentifier" class="{{ $inputClass }}" />
+						</div></td>
+						<td class="px-4"><div class="mb-4">
+							<x-livewire-button class="{{$buttonClass}}" wire:click="fillinmydata()">Fill in my data</x-livewire-button>
+						</div></td>
+					</tr>
+					@error('nameIdentifier')
+						<tr><span class="text-red-500">{{ $message }}</span></tr>
+					@enderror
+					<tr>
+						<td class="px-4"><label for="creatorAffiliation" class="{{ $labelClass }}">Affiliation:</label></td>
+					</tr>
+					<tr>
+						<td class="px-4"><div class="mb-4">
+							<input wire:model="creatorAffiliation" type="text" 
+													placeholder="Optional affiliation of the creator."
+													id="creatorAffiliation"
+								class="{{ $inputClass }}" />
+							@error('creatorAffiliation')
+								<span class="text-red-500">{{ $message }}</span>
+							@enderror
+						</div></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="px-4"><label for="affiliationIdentifier" class="{{ $labelClass }}">ROR:</label></td>
+					</tr>
+					<tr>
+						<td class="px-4"><div class="mb-4">
+							<input wire:model="affiliationIdentifier" type="text" 
+												placeholder="ROR of the affiliation (without https://ror.org/)."
+												id="affiliationIdentifier" class="{{ $inputClass }}" />
+							@error('affiliationIdentifier')
+								<span class="text-red-500">{{ $message }}</span>
+							@enderror
+						</div></td>
+						<td></td>
+					</tr>
+				@else
+					<tr>
+						<td class="px-4"><label for="creatorAffiliation" class="{{ $labelClass }}">Institution:</label></td>
+					</tr>
+					<tr>
+						<td class="px-4"><div class="mb-4">
+							<input wire:model="creatorAffiliation" type="text" 
+													placeholder="Name of the institution."
+													id="creatorAffiliation"
+								class="{{ $inputClass }}" />
+							@error('creatorAffiliation')
+								<span class="text-red-500">{{ $message }}</span>
+							@enderror
+						</div></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="px-4"><label for="affiliationIdentifier" class="{{ $labelClass }}">ROR:</label></td>
+					</tr>
+					<tr>
+						<td class="px-4"><div class="mb-4">
+							<input wire:model="affiliationIdentifier" type="text" 
+												placeholder="ROR of the institution (without https://ror.org/)."
+												id="affiliationIdentifier" class="{{ $inputClass }}" />
+							@error('affiliationIdentifier')
+								<span class="text-red-500">{{ $message }}</span>
+							@enderror
+						</div></td>
+						<td></td>
+					</tr>
+				@endif
+		</table>
+	</fieldset>
+	
+	<div class="mt-4">
+		<button type="submit" class="{{ $buttonClass }}">
+			{{ $creator ? 'Update Creator' : 'Create Creator' }}
+		</button>
+	</div>
+	
+	</form>
 </div>

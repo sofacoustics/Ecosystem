@@ -39,7 +39,7 @@ class DatafileUpload extends Component
 
 	public function mount()
 	{		//jw:note doesn't appear to work. $this->authorize('create', $this->dataset);
-		\Log::info("DatafileUpload::mount()");
+		//\Log::info("DatafileUpload::mount()");
 	}
 
 	#[On('livewire-upload-cancel')]

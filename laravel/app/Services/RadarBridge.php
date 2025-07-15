@@ -132,6 +132,33 @@ class RadarBridge
 		return "ERROR retrieving the key $key from the response: $lastErrorMsg";
 	}
 
+	protected function getNestedJsonValue(string $keyPath, response $response): ?string
+	{
+		// Decode the JSON string as an associative array
+		$data = json_decode($response->content(), true);
+
+		// Check for JSON decoding errors
+		if (json_last_error() !== JSON_ERROR_NONE) {
+			return null; // Invalid JSON
+		}
+
+		// Split the key path by dots
+		$keys = explode('.', $keyPath);
+		$current = $data;
+
+		// Traverse the nested keys
+		foreach ($keys as $key) {
+			if (is_array($current) && array_key_exists($key, $current)) {
+				$current = $current[$key];
+			} else {
+				return null; // Key path not found
+			}
+		}
+
+		// Return the final value
+		return $current;
+	}
+
 	////////////////////////////////////////////////////////////////////////////////
 	// Private
 	////////////////////////////////////////////////////////////////////////////////
