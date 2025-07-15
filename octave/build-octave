@@ -2,23 +2,24 @@
 #
 #   Download and build octave
 #
-#       ./build-octave --dependencies --source --build --build-gl2ps --configure
+#       sudo ./build-octave --dependencies --source --build --build-gl2ps --configure
 #
 #   Activate this octave as system octave
 #
-#       ./build-octave --activate
+#       sudo ./build-octave --activate
 #
 #   Documentation: https://wiki.octave.org/Building
 #
 #   Generate octaverc file with
 #
-#   	./build-octave --configure
+#   	sudo ./build-octave --configure
 #
 if sudo -l &>/dev/null; then
     echo "User has sudo privileges."
 else
     echo "User does NOT have sudo privileges."
     echo "Please run using 'sudo'"
+    exit
 fi
 
 while [[ $# -gt 0 ]]; do
@@ -64,7 +65,7 @@ echo "version: $version"
 if [ "$dependencies" == "yes" ] ; then
 	# Ubuntu 24.04 LTS
 	apt-get update
-	apt install gcc g++ autoconf automake bison dvipng epstool fig2dev flex gfortran gnuplot-x11 gperf gzip icoutils libarpack2-dev libopenblas-dev libcurl4-gnutls-dev libfftw3-dev libfltk1.3-dev libfontconfig1-dev libfreetype-dev libgl1-mesa-dev libgl2ps-dev libglpk-dev libgraphicsmagick++1-dev libhdf5-dev liblapack-dev libosmesa6-dev libpcre2-dev libqhull-dev libqscintilla2-qt5-dev libqrupdate-dev libreadline-dev librsvg2-bin libsndfile1-dev libsuitesparse-dev libsundials-dev libtool libxft-dev make openjdk-11-jdk perl portaudio19-dev pstoedit qtbase5-dev qttools5-dev qttools5-dev-tools rapidjson-dev rsync tar texinfo texlive-latex-extra zlib1g-dev
+	apt install gcc g++ autoconf automake bison dvipng epstool fig2dev flex gfortran gnuplot-x11 gperf gzip icoutils libarpack2-dev libopenblas-dev libcurl4-gnutls-dev libfftw3-dev libfltk1.3-dev libfontconfig1-dev libfreetype-dev libgl1-mesa-dev libgl2ps-dev libglpk-dev libgraphicsmagick++1-dev libhdf5-dev liblapack-dev libosmesa6-dev libpcre2-dev libqhull-dev libqscintilla2-qt5-dev libqrupdate-dev libreadline-dev librsvg2-bin libsndfile1-dev libsuitesparse-dev libsundials-dev libtool libxft-dev make openjdk-11-jdk perl portaudio19-dev pstoedit qtbase5-dev qttools5-dev qttools5-dev-tools rapidjson-dev rsync tar texinfo texlive-latex-extra zlib1g-dev -y
 fi
 
 
