@@ -155,6 +155,9 @@ Parameters:
 					<li><b>DOI (publication requested)</b>: {{ $tool->doi }}
 				@elseif($tool->radar_status==3)
 					<li><b>DOI (persistently published)</b>: <a href="https://doi.org/{{ $tool->doi }}">{{ $tool->doi }}</a>
+					@if ($tool->publicationyear != null) 
+						<li><b>Publication Year</b>: {{ $tool->publicationyear }}</li>
+					@endif 
 				@endif
 			@else
 				<li><b>DOI</b>: not assigned yet
@@ -167,8 +170,6 @@ Parameters:
 			<li><b>Date (updated):</b> {{ $tool->updated_at }} (GMT)</li>
 			
 			@if ($tool->productionyear != null) <li><b>Production Year</b>: {{ $tool->productionyear }}</li>@endif
-			
-			@if ($tool->publicationyear != null) <li><b>Publication Year</b>: {{ $tool->publicationyear }}</li>@endif 
 			
 			@if ($tool->resourcetype != null) <li><b>Resource Type</b>: {{ \App\Models\Tool::resourcetypeDisplay($tool->resourcetype) }}</b>
 				@if ($tool->resource != null) ({{ $tool->resource }})@endif 
