@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http; // guzzle
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str; // isJson
 
 use App\Http\Resources\RadarDatabaseResource;
+use App\Mail\DatabasePersistentPublicationApproved;
 
 use App\Models\Database;
 use App\Models\Datafile;
