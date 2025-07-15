@@ -150,6 +150,7 @@ class DatafileListener extends Component
 			case 'livewire.datafiles.brir-listenerview':
 				$fullPath = $this->datafile->absolutepath();
 				$files = glob($fullPath . '_1_*.png');
+				//dd([$fullPath . '_1_*.png', $files]);
 				$postfixes=[];
 				$Zoommax = 0;
 				if(!empty($files))
@@ -257,7 +258,7 @@ class DatafileListener extends Component
 					foreach ($lines as $line) 
 					{
 						if (trim($line) !== '') 
-							$csvRows[] = str_getcsv($line, ';');
+							$csvRows[] = str_getcsv($line, "\t");
 					}
 				}
 		return $csvRows;

@@ -40,7 +40,7 @@
 					<td><x-img class="p-2" :asset="$datafile->asset('',1).'_2'.$postfixes[$counter-1]" /></td>
 			</tbody>
 		@else
-			<tbody><tr><td>No geometries found</td></tr></tbody>
+			<tbody><tr><td>No plots found</td></tr></tbody>
 		@endif
 	</table>
 	

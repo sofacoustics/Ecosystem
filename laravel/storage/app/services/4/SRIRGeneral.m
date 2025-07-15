@@ -1116,7 +1116,7 @@ end
 header = {'SOFA Conventions', 'R', 'E', 'M', 'N', 'S'}; % Define header
 dataDim = {[Obj.GLOBAL_SOFAConventions ' ' Obj.GLOBAL_SOFAConventionsVersion], dimR, dimE, dimM, dimN, dimS}; % Define data
 output_filename = [SOFAfile, '_dim.csv']; % Construct output filename
-delimiter = ';'; % Define delimiter
+delimiter = char(9); % Define tabulator as delimiter
 % if isoctave; fputs(log_fid, ["Attempting to write CSV: " output_filename "\n"]); end
 csv_fid = fopen(output_filename, 'w'); % Open file for writing
 if csv_fid < 0
@@ -1157,7 +1157,7 @@ end
 %% Write properties data to CSV using Octave's file I/O
 header = {'Name', 'Value'}; % Define header
 output_filename = [SOFAfile, '_prop.csv']; % Construct output filename
-% delimiter = ';'; % Define delimiter
+% delimiter = char(9); % Define tabulator as delimiter
 % if isoctave; fputs(log_fid, ["Attempting to write CSV: " output_filename "\n"]); end
 csv_fid = fopen(output_filename, 'w'); % Open file for writing
 if csv_fid < 0

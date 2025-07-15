@@ -1,6 +1,6 @@
 <x-app-layout>
 	<x-slot name="header">
-	<x-database.header :dataset="$dataset" tabTitle="Dataset | {{ $dataset->name }}"/>
+		<x-database.header :dataset="$dataset" tabTitle="Dataset | {{ $dataset->name }}"/>
 	</x-slot>
 	<h2>
 		Dataset name: {{ $dataset->name }} @role('admin')
@@ -16,6 +16,9 @@
 		@can('delete', $datafile)
 			<x-button method="DELETE" class="inline" action="{{ route('datafiles.destroy', [$datafile]) }}">Delete</x-button>
 		@endcan
+		@hasrole('admin')
+			<x-button method="POST" class="inline" action="{{ route('datafiles.touch', [$datafile]) }}">Rerun service</x-button>
+		@endhasrole
 		<div class="ml-2" wire:key="{{ $datafile->id }}">
 			<x-property name="Datafile Type">
 				{{ $datafile->datasetdef->datafiletype->name }}
@@ -29,9 +32,6 @@
 			<x-property name="Created at">
 				<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->created_at }} (GMT)</a> 
 			</x-property>			
-			@hasrole('admin')
-				<x-button method="POST" action="{{ route('datafiles.touch', [$datafile]) }}">Rerun service</x-button>
-			@endhasrole
 			<livewire:DatafileListener :datafile="$datafile" :key="$datafile->id" />
 		</div>
 		

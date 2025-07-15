@@ -35,11 +35,11 @@
 							@endforeach
 						</select>
 					</td>
-					<td><x-img class="p-2" :asset="$datafile->asset('',1).'_yz'.$postfixes[$counter-1]" /></td>
 					<td><x-img class="p-2" :asset="$datafile->asset('',1).'_xz'.$postfixes[$counter-1]" /></td>
+					<td><x-img class="p-2" :asset="$datafile->asset('',1).'_yz'.$postfixes[$counter-1]" /></td>
 				</tr>
-					<td><x-img class="p-2" :asset="$datafile->asset('',1).'_iso'.$postfixes[$counter-1]" /></td>
 					<td><x-img class="p-2" :asset="$datafile->asset('',1).'_xy'.$postfixes[$counter-1]" /></td>
+					<td><x-img class="p-2" :asset="$datafile->asset('',1).'_iso'.$postfixes[$counter-1]" /></td>
 				</tr>
 			</tbody>
 		@else

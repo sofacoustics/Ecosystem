@@ -10,12 +10,14 @@
 	<x-property name="Datafile Name">
 		<a href="{{  asset($datafile->url()) }}">{{ $datafile->name }}</a>
 	</x-property>
+	<x-button class="inline" action="{{  asset($datafile->url()) }}">Download</x-button>
 	@can('delete', $datafile)
 		<x-button method="DELETE" class="inline" action="{{ route('datafiles.destroy', [$datafile]) }}">Delete</x-button>
 	@endcan
 	@hasrole('admin')
 		<x-button method="POST" class="inline" action="{{ route('datafiles.touch', [$datafile]) }}">Rerun service</x-button>
 	@endhasrole
+
 	<x-property name="Widget Name">
 		{{ $datafile->datasetdef->widget->name }}
 	</x-property>
@@ -27,7 +29,5 @@
 	@endif
 
 	@livewire(DatafileListener::class, ['datafile' => $datafile])
-
-	<x-button action="{{  asset($datafile->url()) }}">Download</x-button>
 	
 </x-app-layout>
