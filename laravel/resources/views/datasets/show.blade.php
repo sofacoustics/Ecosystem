@@ -34,7 +34,8 @@
 			@endhasrole
 			<livewire:DatafileListener :datafile="$datafile" :key="$datafile->id" />
 		</div>
-		<hr>
+		
+		<br><br><hr>
 	@endforeach
 
 	@if (count($dataset->datafiles) < count($dataset->database->datasetdefs))

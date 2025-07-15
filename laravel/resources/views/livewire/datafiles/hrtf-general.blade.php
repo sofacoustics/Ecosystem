@@ -14,7 +14,9 @@
 		@endif
 	</div>
 		
-	<br><hr><br>
+	<p></p>
+	<hr>
+	<p></p>
 		
 	<table class="min-w-full border border-gray-300 rounded">
 		<thead>

@@ -14,7 +14,9 @@
 		@endif
 	</div>
 		
-	<br><hr><br>
+	<p></p>
+	<hr>
+	<p></p>
 		
 	<div class="flex flex-row">
 		<a href="{{ $datafile->asset('_1.png') }}" target="_blank">
