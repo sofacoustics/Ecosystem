@@ -9,3 +9,4 @@ laravel-jetstream
 /octave/temp
 /laravel/database/migrations/2025_07_03_095604_update_column_in_users_table.php
 /laravel/storage/app/services/5/*.asv
+tools
