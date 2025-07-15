@@ -135,6 +135,9 @@ Parameters:
 					<li><b>DOI (publication requested)</b>: {{ $database->doi }}
 				@elseif($database->radar_status==3)
 					<li><b>DOI (persistently published)</b>: <a href="https://doi.org/{{ $database->doi }}">{{ $database->doi }}</a>
+					@if ($database->publicationyear != null) 
+						<li><b>DOI Publication Year</b>: {{ $database->publicationyear }}</li>
+					@endif 
 				@endif
 			@else
 				<li><b>DOI</b>: not assigned yet
@@ -157,8 +160,6 @@ Parameters:
 			<li><b>Date (updated):</b> {{ $database->updated_at }} (GMT)</li>
 
 			@if ($database->productionyear != null) <li><b>Production Year</b>: {{ $database->productionyear }}</li>@endif
-			
-			@if ($database->publicationyear != null) <li><b>Publication Year</b>: {{ $database->publicationyear }}</li>@endif 
 			
 			<li><b>Resource Type</b>: {{ \App\Models\Database::resourcetypeDisplay($database->resourcetype) }}
 				@if ($database->resource != null) ({{ $database->resource }})@endif 
@@ -192,8 +193,6 @@ Parameters:
 				<li><b>Technical Remarks</b>: {{ $database->descriptionremarks }}</li>
 			@endif 
 
-			@if ($database->language != null) <li><b>Language</b>: {{ $database->language }}</li>@endif 
-			
 			@if ($database->datasources != null) <li><b>Data Source</b>: {{ $database->datasources }}</li>@endif 
 			
 			@if ($database->software != null) <li><b>Software</b>: {{ $database->software }}</li>@endif 

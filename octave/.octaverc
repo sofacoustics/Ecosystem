@@ -1,3 +1,0 @@
-disp('Loading .octaverc');
-disp('Adding ./SOFAtoolbox to path');
-addpath('./SOFAtoolbox');

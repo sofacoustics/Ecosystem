@@ -1,0 +1,36 @@
+% This 'octaverc' is part of the isf-sonicom-laravel-admin repository
+% and is copied to ${octave-home}/share/octave/site/m/startup/octaverc
+% overwriting the default version (which appears to be Windows specific
+
+disp('Loading /usr/local/share/octave/site/m/startup/octaverc')
+
+addpath('/home/sonicom/lib/SOFAtoolbox/SOFAtoolbox');
+
+function ensure_package(pkgname)
+  installed = pkg('list');
+  found = false;
+  for k = 1:numel(installed)
+    if strcmp(installed{k}.name, pkgname)
+      found = true;
+      break;
+    end
+  end
+  if ~found
+    disp(['Installing ' pkgname])
+    pkg('install', '-forge', pkgname);
+  end
+  pkg('load', pkgname);
+end
+
+ensure_package('netcdf');
+ensure_package('control');
+ensure_package('signal');
+
+disp("Loading netcdf")
+pkg load netcdf 
+disp("Loading control")
+pkg load control 
+disp("Loading signal")
+pkg load signal
+
+disp(['graphics_toolkit: ' graphics_toolkit()])
