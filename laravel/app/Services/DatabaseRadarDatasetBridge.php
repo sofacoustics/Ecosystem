@@ -67,6 +67,9 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		$response = $this->post($endpoint);
 		if($this->status == 200)
 		{
+			$this->database->radar_status = 3;
+			$this->database->publicationyear= $this->getNestedJsonValue('descriptiveMetadata.publicationYear', $response);
+			$this->database->save();
 			$this->message = "RADAR Dataset successfully published";
 			return true;
 		}
@@ -290,8 +293,8 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	public function update() : bool
 	{
 		$this->reset();
-			// get Database in RADAR formatted array
-			// eager load relationships so they appear in serializeJson()
+		// get Database in RADAR formatted array
+		// eager load relationships so they appear in serializeJson()
 		$this->database->load(
 			'creators',
 			'publishers',
@@ -336,8 +339,8 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		$this->reset();
 		if($this->database->radar_id != null)
 			return true; // we already have a RADAR dataset
-			// get Database in RADAR formatted array
-			// eager load relationships so they appear in serializeJson()
+		// get Database in RADAR formatted array
+		// eager load relationships so they appear in serializeJson()
 		$this->database->load(
 			'creators',
 			'publishers',
@@ -346,7 +349,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 			'relatedidentifiers',
 			'subjectareas',
 		);
-			// get database as JSON
+		// get database as JSON
 		$resource = new RadarDatabaseResource($this->database);
 		$arrayBody = $resource->toArray(request()); // alternative would be json_decode($resource->toJson(), true);
 		
