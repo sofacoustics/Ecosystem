@@ -5,6 +5,7 @@
 % #Author: Michael Mihocic: conventions restriction removed (03.06.2025)
 % #Author: Michael Mihocic: file renamed; attempting to create new figures, still work in progress... (27.06.2025)
 % #Author: Michael Mihocic: figure creation finished, Octave also supported; SOFA properties stored to csv files (09.07.2025)
+% #Author: Michael Mihocic: directivity creation based on R as parameter; first M is plotted; some bugs fixed (15.07.2025)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -118,8 +119,11 @@ if isoctave;  fputs(fid, [ "just printed " SOFAfile "_geometry.png\n"]); end
 %% POLAR PLOTS
 
 % Use TF data if available
-receiver = 1;  % Left ear
-%freqs = [2000, 4000];  % Frequencies to plot (Hz)
+% receiver = 1;  % Left ear
+% all receivers but only first source, first measurement, first emitter
+% Dimension = MRN
+
+
 freqs = [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];  % Frequencies to plot (Hz)
 
 % Check if TF data exists
@@ -127,28 +131,33 @@ if isfield(Obj.Data, 'Real') && isfield(Obj.Data, 'Imag')
 
     % get MxN dimension; squeeze had the problem when M=1
     % TF = double(squeeze(Obj.Data.Real(:, receiver, :) + 1i * Obj.Data.Imag(:, receiver, :)));
-    C = Obj.Data.Real(:, receiver, :) + 1i * Obj.Data.Imag(:, receiver, :);
-    TF = reshape(C, size(Obj.Data.Real,1), size(Obj.Data.Real,3));
+    C = Obj.Data.Real(1, :, :) + 1i * Obj.Data.Imag(1, :, :);
+    TF = reshape(C, size(Obj.Data.Real,2), size(Obj.Data.Real,3));
 
     freq = double(Obj.N);  % Frequency axis from file
 
     % @Piotr: I think the problem is that the source position is Obj.SourcePosition
 
-    pos = Obj.ReceiverPosition(receiver,:);
+    pos = Obj.ReceiverPosition(:,:);
     % pos = Obj.SourcePosition; ' always 0
-    azi = mod(pos(:,1), 360);  % Azimuth in degrees (wrapped to 0–360)
+    
+    mask = abs(pos(:,2)) <= 10; % get indices of azi 0 +/-10 deg
+    pos_filtered = pos(mask, :);
+    TF_filtered = TF(mask, :);
+
+    azi = mod(pos_filtered(:,1), 360);  % Azimuth in degrees (wrapped to 0–360)
     theta = deg2rad(azi);      % Convert to radians for polarplot
+    [theta_sorted, idx] = sort(theta);
 
     for f = freqs
         [~, idxF] = min(abs(freq - f));
-        mag = 20 * log10(abs(TF(:, idxF)));
+        mag = 20 * log10(abs(TF_filtered(:, idxF)));
 
         figure;
         if isoctave
-            polar(repmat(theta, size(mag)), mag); % Piotr: empty figures are created...
+            polar(theta_sorted, (mag(idx)-min(mag))); % sorted data
         else
-            % polarplot(theta, mag, 'LineWidth', 30); % Piotr: empty figures are created...
-            polarplot(repmat(theta, size(mag)), mag); % Piotr: empty figures are created...
+            polarplot(theta_sorted, (mag(idx)-min(mag)));  % sorted data
         end
 
         fTitle = freq(idxF);
