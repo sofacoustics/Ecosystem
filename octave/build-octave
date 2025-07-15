@@ -1,0 +1,124 @@
+#!/bin/bash
+#
+#   Download and build octave
+#
+#       ./build-octave --dependencies --source --build --build-gl2ps --configure
+#
+#   Activate this octave as system octave
+#
+#       ./build-octave --activate
+#
+#   Documentation: https://wiki.octave.org/Building
+#
+#   Generate octaverc file with
+#
+#   	./build-octave --configure
+#
+if sudo -l &>/dev/null; then
+    echo "User has sudo privileges."
+else
+    echo "User does NOT have sudo privileges."
+    echo "Please run using 'sudo'"
+fi
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --dependencies)
+            dependencies="yes"
+            shift
+            ;;
+        --source)
+            source="yes"
+            shift
+            ;;
+        --build)
+            build="yes"
+            shift
+            ;;
+        --build-gl2ps)
+            buildgl2ps="yes"
+            shift
+            ;;
+        --configure)
+            configure="yes"
+            shift
+            ;;
+        --activate)
+            activate="yes"
+            shift
+            ;;
+    esac
+done
+
+version=10.2.0 # the octave version
+SECONDS=0 # used to time how long it took
+
+echo "dependencies: $dependencies"
+echo "source: $source"
+echo "build: $build"
+echo "buildgl2ps: $buildgls2ps"
+echo "configure: $configure"
+echo "activate: $activate"
+echo "version: $version"
+
+if [ "$dependencies" == "yes" ] ; then
+	# Ubuntu 24.04 LTS
+	apt-get update
+	apt install gcc g++ autoconf automake bison dvipng epstool fig2dev flex gfortran gnuplot-x11 gperf gzip icoutils libarpack2-dev libopenblas-dev libcurl4-gnutls-dev libfftw3-dev libfltk1.3-dev libfontconfig1-dev libfreetype-dev libgl1-mesa-dev libgl2ps-dev libglpk-dev libgraphicsmagick++1-dev libhdf5-dev liblapack-dev libosmesa6-dev libpcre2-dev libqhull-dev libqscintilla2-qt5-dev libqrupdate-dev libreadline-dev librsvg2-bin libsndfile1-dev libsuitesparse-dev libsundials-dev libtool libxft-dev make openjdk-11-jdk perl portaudio19-dev pstoedit qtbase5-dev qttools5-dev qttools5-dev-tools rapidjson-dev rsync tar texinfo texlive-latex-extra zlib1g-dev
+fi
+
+
+if [ "$source" == "yes" ] ; then
+	# get release
+	wget https://ftpmirror.gnu.org/octave/octave-$version.tar.gz
+	tar -xzf octave-$version.tar.gz
+fi
+
+if [ "$build" == "yes" ] ; then
+
+	if [ "$buildgl2ps" == "yes" ] ; then
+		# build GL2PS with PNG support first
+		# to get rid of following warning:
+		# GL2PS warning: GL2PS must be compiled with PNG support in order to embed images in SVG streams
+		./build-gl2ps --dependencies --source --build
+	fi
+
+	# build octave
+	cd octave-$version
+	mkdir -p .build   && \
+	cd    .build   
+
+	# ensure compiler and linker use our GL2PS with PNG support
+	export CPPFLAGS="-I/usr/local/include $CPPFLAGS"
+    # the 'rpath' should ensure that the binary looks in the right place automatically rather than having to specify it in, e.g., /etc/ld.so.conf.d/gl2ps.conf
+	export LDFLAGS="-L/usr/local/lib -Wl,-rpath,/usr/local/lib $LDFLAGS" 
+	export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+
+	./../configure --prefix=/usr/local/octave-$version  && \
+	make -j2                                            && \
+	make check                                          && \
+	make install
+fi
+
+if [ "$configure" == "yes" ] ; then
+	# add our octaverc SOFA configuration to folder for this version of octave
+	echo "Copying ./octaverc to /usr/local/octave-$version/share/octave/site/m/startup/octaverc"
+	cp ./octaverc /usr/local/octave-$version/share/octave/site/m/startup/octaverc
+
+	# run it once, so it installs the stuff in octaverc 
+	echo "Running octave-cli once so it installs what it needs from octaverc"
+	/usr/local/octave-$version/bin/octave-cli
+fi
+
+if [ "$activate" == "yes" ] ; then
+    # remove 'apt' version of octave (otherwise can't use 'update-alternatives')
+	apt remove octave -y
+	# set this octave as the system octave
+	echo "Adding this verison of octave to update-alternative"
+	priority=200
+	update-alternatives --install /usr/bin/octave octave /usr/local/octave-$version/bin/octave $priority
+	update-alternatives --install /usr/bin/octave-cli octave-cli /usr/local/octave-$version/bin/octave-cli $priority
+	update-alternatives --install /usr/bin/octave-config octave-config /usr/local/octave-$version/bin/octave-config $priority
+fi
+
+echo "$0 finished (in $SECONDS seconds)"
