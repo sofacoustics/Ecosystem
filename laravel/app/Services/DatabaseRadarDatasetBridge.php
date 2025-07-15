@@ -70,6 +70,12 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 			$this->database->radar_status = 3;
 			$this->database->publicationyear= $this->getNestedJsonValue('descriptiveMetadata.publicationYear', $response);
 			$this->database->save();
+			// send user and admin an email
+			$adminEmails = config('mail.to.admins');
+			$userEmail = $this->database->user->email;
+			$recipients = $userEmail . ',' . $adminEmails;
+			Mail::to(explode(',',$recipients))->queue(new DatabasePersistentPublicationApproved($this->database));
+			app('log')->info("DatabasePersistentPublicationApproved email for database " . $this->database->title . " (" . $this->database->id . ") sent to $recipients");
 			$this->message = "RADAR Dataset successfully published";
 			return true;
 		}
