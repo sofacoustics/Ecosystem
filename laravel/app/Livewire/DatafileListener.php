@@ -146,6 +146,29 @@ class DatafileListener extends Component
 				$viewData['csvRowsProp'] = $this->readCSV($sofaAsset, '.sofa_prop.csv');
 				break;
 
+				// brir-listenerview
+			case 'livewire.datafiles.brir-listenerview':
+				$fullPath = $this->datafile->absolutepath();
+				$files = glob($fullPath . '_1_*.png');
+				$postfixes=[];
+				$Zoommax = 0;
+				if(!empty($files))
+				{
+					preg_match('/_1_\d+\.png/', $files[0], $match);
+					sscanf($match[0], "_1_%d.png", $Zoommax);
+					for ($i=0; $i<$Mmax; $i++)
+						array_push($postfixes,'_'.($i+1).'.png');
+				}
+				$viewData['postfixes'] = $postfixes;
+				if($this->counter<1) $this->counter=1;
+				$this->counter_min = 1;
+				$this->counter_max = $Zoommax;
+					// SOFA properties
+				$sofaAsset = $this->datafile->asset();
+				$viewData['csvRows'] = $this->readCSV($sofaAsset, '.sofa_dim.csv');
+				$viewData['csvRowsProp'] = $this->readCSV($sofaAsset, '.sofa_prop.csv');
+				break;
+			
 				// SOFA PROPERTIES and other SOFA-related viewers
 			case 'livewire.datafiles.sofa-properties':
 			case 'livewire.datafiles.brir-general':

@@ -48,7 +48,7 @@
 		<tbody>
 			<tr>
 				<td class="text-center align-middle">
-					<x-img :asset="$datafile->asset('_7.png')"/>
+					<x-img :asset="$datafile->asset('_3.png')"/>
 				</td>
 			</tr>
 		</tbody>
