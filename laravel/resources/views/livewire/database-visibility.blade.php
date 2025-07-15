@@ -116,8 +116,9 @@
 				<p>Once the curator approves your database, it will be published at the Datathek and the DOI will be valid.</p>
 			@endif
 		@elseif($radar_status==2)
-			<p>The database has been submitted to be persistently published.</p>
-			<p>The curator has been notified. Please check later...</p>
+			<p>The database has been submitted for persistent publication.<br>
+			The curator has been notified.<br>
+			You will receive an email when publication has been approved.</p>
 		@elseif($radar_status==3)
 			<p>The database has been persistently published under the following link: <a href="https://doi.org/{{$doi}}">https://doi.org/{{$doi}}</a>.
 			</p>
