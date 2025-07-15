@@ -65,7 +65,7 @@ if isoctave; fputs(fid, ["Successfully saved SOFA details to csv files\n"]); end
 if isoctave; fputs(fid, [ "About to plot\n"]); end
 
 %% Plot MagSpectrum
-% close all;
+close all;
 figure('Name',SOFAfile);
 mySOFAplotHRTF(Obj,'ETCHorizontalLV', 1);
 print ('-dpng', "-r600", [SOFAfile '_1_1.png']);
@@ -89,7 +89,7 @@ print ('-dpng', "-r600", [SOFAfile '_1_5.png']);
 if isoctave;  fputs(fid, [ "just printed " SOFAfile "_1_5.png\n"]); end
 
 
-% close all;
+close all;
 figure('Name',SOFAfile);
 mySOFAplotHRTF(Obj,'ETCHorizontalLV', 2);
 % mySOFAplotHRTF(Obj,'MagMedian','nonormalization');
@@ -113,6 +113,7 @@ print ('-dpng', "-r600", [SOFAfile '_2_5.png']);
 if isoctave;  fputs(fid, [ "just printed " SOFAfile "_2_5.png\n"]); end
 
 %% Plot Geometry
+close all;
 mySOFAplotGeometry(Obj);
 if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
 % set(gcf, 'Name', 'SOFAfile')
