@@ -122,7 +122,9 @@ class Service implements ShouldQueue
 
 		$pid = $process->getPid();
 
-		app('log')->info("Process $pid has started:", ['data' => $args]);
+        $jobid = $this->job?->getJobId();
+
+		app('log')->info("Job $jobid Process $pid has started:", ['data' => $args]);
 		try {
 			// Periodically check for timeout while the process is running
 			while ($process->isRunning()) {
@@ -205,7 +207,8 @@ class Service implements ShouldQueue
 			$serviceLog->stderr  = $errorOutput;
 			Storage::disk('sonicom-data')->put($datafileerrorfile, $errorOutput);
 		}
-		$serviceLog->save();
+        $serviceLog->save();
+        $log .= "  service timeout value: " . $this->timeout . " process timeout value: " . $this->service->timeout . "\n";
 		if($process->isSuccessful())
 			$log .= "  process finished successfully after $duration seconds (exitCode: " . $exitCode . ")\n";
 		else
