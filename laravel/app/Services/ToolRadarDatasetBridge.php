@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http; // guzzle
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str; // isJson
 
 use App\Http\Resources\RadarToolResource;
+use App\Mail\ToolPersistentPublicationApproved;
 
 use App\Models\Tool;
 
@@ -68,12 +70,21 @@ class ToolRadarDatasetBridge extends RadarBridge
 		$response = $this->post($endpoint);
 		if($this->status == 200)
 		{
+			$this->tool->radar_status = 3;
+			$this->tool->publicationyear = $this->getNestedJsonValue('descriptiveMetadata.publicationYear', $response);
+			$this->tool->save();
+			// send user and admin an email
+			$adminEmails = config('mail.to.admins');
+			$userEmail = $this->tool->user->email;
+			$recipients = $userEmail . ',' . $adminEmails;
+			Mail::to(explode(',',$recipients))->queue(new ToolPersistentPublicationApproved($this->tool));
+			app('log')->info("DatabasePersistentPublicationApproved email for tool " . $this->tool->title . " (" . $this->tool->id . ") sent to $recipients");
 			$this->message = "Dataset successfully published";
 			return true;
 		}
 		else
 		{
-			$this->message = "Publishing of the RADAR dataset failed";
+			$this->message = "Publishing the RADAR dataset failed";
 			$this->details = $response->content();
 			return false;
 		}
@@ -337,8 +348,8 @@ class ToolRadarDatasetBridge extends RadarBridge
 		$this->reset();
 		if($this->tool->radar_id != null)
 			return true; // we already have a RADAR dataset
-			// get Tool in RADAR formatted array
-			// eager load relationships so they appear in serializeJson()
+		// get Tool in RADAR formatted array
+		// eager load relationships so they appear in serializeJson()
 		$this->tool->load(
 			'creators',
 			'publishers',
@@ -347,7 +358,7 @@ class ToolRadarDatasetBridge extends RadarBridge
 			'relatedidentifiers',
 			'subjectareas',
 		);
-			// get tool as JSON
+		// get tool as JSON
 		$resource = new RadarToolResource($this->tool);
 		$arrayBody = $resource->toArray(request()); // alternative would be json_decode($resource->toJson(), true);
 		
