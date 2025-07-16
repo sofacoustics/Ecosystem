@@ -5,7 +5,8 @@
 	<li><b>Internal Status:</b> {{ $radar_status }}</li>
 	<li><b>DOI:</b> {{ $doi }}</li>
 	<li><b>Size:</b> {{ $size }}</li>
-	
+	<li><b>Last retrieved:</b> {{ $last_retrieved }}</li>
+
 	<div class="expandable-box" wire:click="toggleExpand">
 		@if ($isExpanded)
 			<div class="box-content expanded">
@@ -27,6 +28,7 @@
 		<x-livewire-button wire:click="createDataset" loading="Creating...">Create RADAR Dataset</x-livewire-button>
 	@endif
 
+	<x-livewire-button wire:click="refreshStatus" loading="Refreshing...">Refresh Status</x-livewire-button>
 	<x-livewire-button wire:click="startReview" loading="Starting...">Start Review</x-livewire-button>
 	<x-livewire-button wire:click="endReview" loading="Ending...">End Review</x-livewire-button>
 
@@ -34,14 +36,16 @@
 		<x-livewire-button wire:click="uploadToRadar" loading="Uploading...">Upload to RADAR</x-livewire-button>
 	@endif
 
-	<x-livewire-button wire:click="approvePersistentPublication" 
-		wire:confirm="This will set the status to 'Persisently published'. Nothing will happen at the Datathek!">
-		Approve Persistent Publication
-	</x-livewire-button>
-	<x-livewire-button wire:click="rejectPersistentPublication"
-		wire:confirm="This will end the review at the Datathek and set the status to 'DOI Assigned'">
-		Reject Persistent Publication
-	</x-livewire-button>
+	@if($radar_status == 2)
+		<x-livewire-button wire:click="approvePersistentPublication"
+			wire:confirm="This will actually 'publish' the database persistently.">
+			Approve Persistent Publication
+		</x-livewire-button>
+		<x-livewire-button wire:click="rejectPersistentPublication"
+			wire:confirm="This will end the review at the Datathek and set the status to 'DOI Assigned'">
+			Reject Persistent Publication
+		</x-livewire-button>
+	@endif
 	<x-livewire-button style='delete' wire:click="resetDOI"
 		wire:confirm="This will remove the DOI from the Ecosystem and all links to the Datathek. Nothing will happen at the Datathek!">
 		Reset DOI
@@ -54,5 +58,5 @@
 	@if($error)
 		<x-alert>{{ $error }}</x-alert>
 	@endif
-	
+
 </div>

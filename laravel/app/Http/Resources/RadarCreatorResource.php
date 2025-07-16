@@ -24,8 +24,8 @@ class RadarCreatorResource extends JsonResource
 				'creatorAffiliation' => [
 					'value' => $this->creatorAffiliation,
 					'schemeURI' => $this->creatorAffiliationSchemeURI,
-					'affiliationIdentifierScheme' => $this->affiliationIdentifierScheme,
-					'affiliationIdentifier' => $this->affiliationIdentifier,
+					'affiliationIdentifierScheme' => Radar::nameIdentifierSchemeValue($this->affiliationIdentifierScheme),
+					'affiliationIdentifier' => 'https://ror.org/'.$this->affiliationIdentifier,
 				]
 			];
 		}
