@@ -31,7 +31,7 @@ class Service implements ShouldQueue
 {
 	use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-	public $timeout = 60; // This 'timeout' appears to be independent of the Process timeout and needs to be high enough
+
 
 	private ServiceModel $service;
 
@@ -43,7 +43,8 @@ class Service implements ShouldQueue
 		public Datafile $datafile
 	) {
 		$this->service = $this->widget->service;
-		$this->timeout = $this->service->timeout + 10; // maybe process timeout needs to be longer than job timeout so try/catch work
+		$this->timeout = $this->service->timeout + 10; // This 'timeout' appears to be independent of the Process timeout and needs to be high enough
+		$this->queue = 'services';
 	}
 
 	/**
@@ -75,8 +76,6 @@ class Service implements ShouldQueue
 		//$command = 'exec setsid ' . $this->service->exe . ' ' . $this->service->parameters . ' "' . $this->datafile->absolutepath() . '"';
 
 		$start = microtime(true);
-
-		$timeout = 120; // seconds
 
 		/*
 		$process = Process::timeout($timeout)
