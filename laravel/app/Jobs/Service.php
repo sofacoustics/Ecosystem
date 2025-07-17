@@ -31,7 +31,7 @@ class Service implements ShouldQueue
 {
 	use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-
+	public $timeout = 60; // default Job timeout
 
 	private ServiceModel $service;
 
