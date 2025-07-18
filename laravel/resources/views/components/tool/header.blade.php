@@ -48,7 +48,10 @@
 		<x-button method="GET" action="{{ route('tools.doi', [$tool]) }}" class="inline">Manage DOI</x-button>
 	@endcan
 	@can('delete', $tool)
-		<x-button method="DELETE" action="{{ route('tools.destroy', [$tool->id]) }}" class="inline">Delete Tool</x-button>
+		<x-button method="DELETE" action="{{ route('tools.destroy', [$tool->id]) }}" class="inline"
+			confirm="Are you sure to delete the Tool?">
+			Delete Tool
+		</x-button>
 	@endcan
 	
 	@hasrole('admin')
