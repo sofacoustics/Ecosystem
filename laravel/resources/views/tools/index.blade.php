@@ -26,10 +26,16 @@
 		<input type="text" id="textJSON" value="{{ url()->current() . '?type=json' }}" class="hidden">
 	</p>
 	
-	<p>Clients for the Tool list: 
-		<a href="{{ asset('clients/matlab/toolList.m') }}" download>Matlab</a> 
-		<a href="{{ asset('clients/octave/toolList.m') }}" download>Octave</a> 
-		<a href="{{ asset('clients/python/toolList.py') }}" download>Python</a> 
+	<p>List all Tools (code for remote clients):&nbsp; 
+		<a href="{{ asset('clients/matlab/toolList.m') }}" download><img 
+			src="{{ asset('images/Matlab_Logo.png') }}" alt="Matlab" title="List all Tools in Matlab" style="height: 2em; display: inline-block;"
+		/></a>&nbsp; &nbsp;
+		<a href="{{ asset('clients/octave/toolList.m') }}" download><img 
+			src="{{ asset('images/Gnu-octave-logo.svg') }}" alt="Octave" title="List all Tools in Octave" style="height: 2em; display: inline-block;"
+		/></a>&nbsp; &nbsp;
+		<a href="{{ asset('clients/python/toolList.py') }}" download><img 
+			src="{{ asset('images/python-logo-only.png') }}" alt="Python" title="List all Tools in Python" style="height: 2em; display: inline-block;"
+		/></a>
 	</p>
 	
 	<script>

@@ -26,15 +26,21 @@
 
 	<br>
 	<p>
-		Database list in JSON format: <a href="{{ url()->current() . '?type=json' }}">{{ url()->current() . '?type=json' }}</a> 
+		List of all Databases (in JSON format): <a href="{{ url()->current() . '?type=json' }}">{{ url()->current() . '?type=json' }}</a> 
 		<img id="copyJSON" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 2em; display: inline-block;">
 		<input type="text" id="textJSON" value="{{ url()->current() . '?type=json' }}" class="hidden">
 	</p>
 	
-	<p>Clients for the Database list: 
-		<a href="{{ asset('clients/matlab/databaseList.m') }}" download>Matlab</a> 
-		<a href="{{ asset('clients/octave/databaseList.m') }}" download>Octave</a> 
-		<a href="{{ asset('clients/python/databaseList.py') }}" download>Python</a> 
+	<p>List all Databases (code for remote clients):&nbsp; 
+		<a href="{{ asset('clients/matlab/databaseList.m') }}" download><img 
+			src="{{ asset('images/Matlab_Logo.png') }}" alt="Matlab" title="List all Databases in Matlab" style="height: 2em; display: inline-block;"
+		/></a>&nbsp; &nbsp;
+		<a href="{{ asset('clients/octave/databaseList.m') }}" download><img 
+			src="{{ asset('images/Gnu-octave-logo.svg') }}" alt="Octave" title="List all Databases in Octave" style="height: 2em; display: inline-block;"
+		/></a>&nbsp; &nbsp;
+		<a href="{{ asset('clients/python/databaseList.py') }}" download><img 
+			src="{{ asset('images/python-logo-only.png') }}" alt="Python" title="List all Databases in Python" style="height: 2em; display: inline-block;"
+		/></a>
 	</p>
 	
 	<script>
