@@ -109,7 +109,7 @@ class RelatedIdentifierForm extends Component
 
 		$this->toolrelatedable_ids[] = "";
 		$this->toolrelatedable_names[] = "... a Tool or Document";
-		$tools = \App\Models\Tool::all();
+		$tools = \App\Models\Tool::orderBy('title')->get();
 		foreach($tools as $tool)
 		{
 			array_push($this->toolrelatedable_ids, $tool->id);
@@ -118,7 +118,7 @@ class RelatedIdentifierForm extends Component
 
 		$this->databaserelatedable_ids[] = "";
 		$this->databaserelatedable_names[] = "... a Database";
-		$databases = \App\Models\Database::all();
+		$databases = \App\Models\Database::orderBy('title')->get();
 		foreach($databases as $database)
 			if($database->visible)
 			{
