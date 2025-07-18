@@ -10,7 +10,7 @@
 	<x-property name="Datafile Name">
 		<a href="{{  asset($datafile->url()) }}">{{ $datafile->name }}</a>
 	</x-property>
-	<x-button class="inline" action="{{  asset($datafile->url()) }}">Download</x-button>
+	<x-button class="inline" action="{{ asset($datafile->url()) }}">Download</x-button>
 	@can('delete', $datafile)
 		<x-button method="DELETE" class="inline" action="{{ route('datafiles.destroy', [$datafile]) }}">Delete</x-button>
 	@endcan
