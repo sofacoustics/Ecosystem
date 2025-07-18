@@ -20,14 +20,28 @@ class RadarCreatorResource extends JsonResource
 		$creatorAffiliation = ['creatorAffiliation' => null];
 		if($this->creatorAffiliation != "")
 		{
-			$creatorAffiliation = [
-				'creatorAffiliation' => [
-					'value' => $this->creatorAffiliation,
-					'schemeURI' => $this->creatorAffiliationSchemeURI,
-					'affiliationIdentifierScheme' => Radar::nameIdentifierSchemeValue($this->affiliationIdentifierScheme),
-					'affiliationIdentifier' => 'https://ror.org/'.$this->affiliationIdentifier,
-				]
-			];
+			if($this->affiliationIdentifierScheme == 2) // ROR
+			{
+				$creatorAffiliation = [
+					'creatorAffiliation' => [
+						'value' => $this->creatorAffiliation,
+						'schemeURI' => $this->creatorAffiliationSchemeURI,
+						'affiliationIdentifierScheme' => Radar::nameIdentifierSchemeValue($this->affiliationIdentifierScheme),
+						'affiliationIdentifier' => 'https://ror.org/'.$this->affiliationIdentifier,
+					]
+				];
+			}
+			else
+			{
+				$creatorAffiliation = [
+					'creatorAffiliation' => [
+						'value' => $this->creatorAffiliation,
+						'schemeURI' => $this->creatorAffiliationSchemeURI,
+						'affiliationIdentifierScheme' => Radar::nameIdentifierSchemeValue($this->affiliationIdentifierScheme),
+						'affiliationIdentifier' => $this->affiliationIdentifier,
+					]
+				];
+			}
 		}
 		// prepare nameIdentifier
 		$nameIdentifier = [ 'nameIdentifier' => [] ];
@@ -35,15 +49,30 @@ class RadarCreatorResource extends JsonResource
 		{
 			if($this->nameIdentifierSchemeIndex)
 			{
-				$nameIdentifier = [
-					'nameIdentifier' => [
-						[
-							'value' => $this->nameIdentifier,
-							'schemeURI' => Radar::schemeURI($this->nameIdentifierSchemeIndex),
-							'nameIdentifierScheme' => Radar::nameIdentifierSchemeValue($this->nameIdentifierSchemeIndex),
-						],
-					]
-				];
+				if($this->nameIdentifierSchemeIndex == 2) // ROR
+				{
+					$nameIdentifier = [
+						'nameIdentifier' => [
+							[
+								'value' => 'https://ror.org/'.$this->nameIdentifier,
+								'schemeURI' => Radar::schemeURI($this->nameIdentifierSchemeIndex),
+								'nameIdentifierScheme' => Radar::nameIdentifierSchemeValue($this->nameIdentifierSchemeIndex),
+							],
+						]
+					];
+				}
+				else
+				{
+					$nameIdentifier = [
+						'nameIdentifier' => [
+							[
+								'value' => $this->nameIdentifier,
+								'schemeURI' => Radar::schemeURI($this->nameIdentifierSchemeIndex),
+								'nameIdentifierScheme' => Radar::nameIdentifierSchemeValue($this->nameIdentifierSchemeIndex),
+							],
+						]
+					];
+				}
 			}
 			else
 			{
