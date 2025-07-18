@@ -27,10 +27,10 @@
 				<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a>
 			</x-property>
 			<x-property name="Updated at">
-				<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->updated_at }} (GMT)</a> 
+				{{ $datafile->updated_at }} (GMT)
 			</x-property>
 			<x-property name="Created at">
-				<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->created_at }} (GMT)</a> 
+				{{ $datafile->created_at }} (GMT)
 			</x-property>			
 			<livewire:DatafileListener :datafile="$datafile" :key="$datafile->id" />
 		</div>
