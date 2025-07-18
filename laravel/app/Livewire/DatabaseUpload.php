@@ -77,7 +77,9 @@ class DatabaseUpload extends Component
 		$this->datasetnamefilter = $database->bulk_upload_dataset_name_filter;
 		$this->descriptionfilter = $database->bulk_upload_description_filter;
 		foreach($this->database->datasetdefs as $datasetdef)
+		{
 			$this->datafilenamefilters[$datasetdef->id] = $datasetdef->bulk_upload_filename_filter;
+		}
 
 		$this->overwriteExisting = session()->get('sonicomEcosystemBulkUploadOverwrite') == 1 ? true : false;
 		$this->calculateExisting();
@@ -165,7 +167,7 @@ class DatabaseUpload extends Component
 	public function updatedDirectory()
 	{
 		dd('updatedDirectory');
-	if ($this->directory) {
+		if ($this->directory) {
 			foreach ($this->directory as $file)
 			{
 				$this->files[] = $file;
@@ -204,16 +206,15 @@ class DatabaseUpload extends Component
 		// https://dev.to/zaxwebs/accessing-updated-index-in-livewire-48oc
 	public function updatedDatafilenamefilters($value, $key)
 	{
-		$value = $this->$value; 
 		$datasetdef = Datasetdef::find($key);
 		$datasetdef->bulk_upload_filename_filter = "$value";
 		$datasetdef->save();
 		$this->datafilenamefilters[$key] = "$value";
 	}
 
-    // 
-    // General 'updated' function
-    //
+		// 
+		// General 'updated' function
+		//
 	public function updated($field, $value)
 	{
 		$property = strtok($field, '.');
