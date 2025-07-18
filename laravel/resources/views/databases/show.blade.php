@@ -120,87 +120,88 @@ Parameters:
 			@endforelse
 		</ul>
 
-
-		<h3>
-			@can('update', $database)
-				<small><x-button method="GET" class="inline" action="{{ route('databases.edit', $database->id) }}">Edit</x-button></small>
-			@endcan
-			Other:
-		</h3>
-		<ul class="list-disc list-inside">
-			@if ($database->doi != null) 
-				@if($database->radar_status==1)
-					<li><b>DOI (assigned)</b>: {{ $database->doi }}
-				@elseif($database->radar_status==2)
-					<li><b>DOI (publication requested)</b>: {{ $database->doi }}
-				@elseif($database->radar_status==3)
-					<li><b>DOI (persistently published)</b>: <a href="https://doi.org/{{ $database->doi }}">{{ $database->doi }}</a>
-					@if ($database->publicationyear != null) 
-						<li><b>DOI Publication Year</b>: {{ $database->publicationyear }}</li>
-					@endif 
+		<div class="max-w-prose">
+			<h3>
+				@can('update', $database)
+					<small><x-button method="GET" class="inline" action="{{ route('databases.edit', $database->id) }}">Edit</x-button></small>
+				@endcan
+				Other:
+			</h3>
+			<ul class="list-disc list-inside">
+				@if ($database->doi != null) 
+					@if($database->radar_status==1)
+						<li><b>DOI (assigned)</b>: {{ $database->doi }}
+					@elseif($database->radar_status==2)
+						<li><b>DOI (publication requested)</b>: {{ $database->doi }}
+					@elseif($database->radar_status==3)
+						<li><b>DOI (persistently published)</b>: <a href="https://doi.org/{{ $database->doi }}">{{ $database->doi }}</a>
+						@if ($database->publicationyear != null) 
+							<li><b>DOI Publication Year</b>: {{ $database->publicationyear }}</li>
+						@endif 
+					@endif
+				@else
+					<li><b>DOI</b>: not assigned yet
 				@endif
-			@else
-				<li><b>DOI</b>: not assigned yet
-			@endif
-			<li><b>Uploaded by:</b> {{ $user->name }}
-				<a href="{{ \App\Models\Radar::schemeURI(1).$user->orcid }}">
-				<img id="orcid" src="{{ asset('images/orcid_16x16.webp') }}"
-					alt="ORCID: {{ $user->orcid }}" 
-					title="{{ $user->orcid }}" 
-					style="display: inline; margin: 0 auto; width: 100%; height: auto; max-width: 1em; min-width: 1em;"></a>
-				<a href="mailto:{{ $user->email }}">
-				<img id="orcid" src="{{ asset('images/envelope.png') }}"
-					alt="Email address: {{ $user->email }}" 
-					title="{{ $user->email }}" 
-					style="display: inline; margin: 0 auto; width: 100%; height: auto; max-width: 1.5em; min-width: 1.5em;"></a>
-			</li>
-			
-			<li><b>Date (created):</b> {{ $database->created_at }} (GMT)</li>
-
-			<li><b>Date (updated):</b> {{ $database->updated_at }} (GMT)</li>
-
-			@if ($database->productionyear != null) <li><b>Production Year</b>: {{ $database->productionyear }}</li>@endif
-			
-			<li><b>Resource Type</b>: {{ \App\Models\Database::resourcetypeDisplay($database->resourcetype) }}
-				@if ($database->resource != null) ({{ $database->resource }})@endif 
-			</li>
-
-			@if ($database->controlledrights != null) 
-				<li><b>Rights:</b> {{ \App\Models\Metadataschema::display($database->controlledrights) }}
-					@if ($database->additionalrights != null) ({{ $database->additionalrights }})@endif 
+				<li><b>Uploaded by:</b> {{ $user->name }}
+					<a href="{{ \App\Models\Radar::schemeURI(1).$user->orcid }}">
+					<img id="orcid" src="{{ asset('images/orcid_16x16.webp') }}"
+						alt="ORCID: {{ $user->orcid }}" 
+						title="{{ $user->orcid }}" 
+						style="display: inline; margin: 0 auto; width: 100%; height: auto; max-width: 1em; min-width: 1em;"></a>
+					<a href="mailto:{{ $user->email }}">
+					<img id="orcid" src="{{ asset('images/envelope.png') }}"
+						alt="Email address: {{ $user->email }}" 
+						title="{{ $user->email }}" 
+						style="display: inline; margin: 0 auto; width: 100%; height: auto; max-width: 1.5em; min-width: 1.5em;"></a>
 				</li>
-			@endif 
+				
+				<li><b>Date (created):</b> {{ $database->created_at }} (GMT)</li>
 
-			<li><b>Subject Areas</b>:
-				@foreach ($database->subjectareas as $index => $subjectarea)@if($index>0),@endif
-					{{ \App\Models\Database::subjectareaDisplay($subjectarea->controlledSubjectAreaIndex) }}@if ($subjectarea->additionalSubjectArea != null) {{ $subjectarea->additionalSubjectArea }}@endif
-@endforeach <!-- do not change this line -->
-			</li>
+				<li><b>Date (updated):</b> {{ $database->updated_at }} (GMT)</li>
 
-			@if ($database->descriptiongeneral != null)
-				<li><b>General Description</b>: {{ $database->descriptiongeneral }}</li>
-			@endif 
-			
-			@if ($database->descriptionabstract != null)
-				<li><b>Abstract</b>: {{ $database->descriptionabstract }}</li>
-			@endif 
-			
-			@if ($database->descriptionmethods != null)
-				<li><b>Methods</b>: {{ $database->descriptionmethods }}</li>
-			@endif 
-			
-			@if ($database->descriptionremarks != null)
-				<li><b>Technical Remarks</b>: {{ $database->descriptionremarks }}</li>
-			@endif 
+				@if ($database->productionyear != null) <li><b>Production Year</b>: {{ $database->productionyear }}</li>@endif
+				
+				<li><b>Resource Type</b>: {{ \App\Models\Database::resourcetypeDisplay($database->resourcetype) }}
+					@if ($database->resource != null) ({{ $database->resource }})@endif 
+				</li>
 
-			@if ($database->datasources != null) <li><b>Data Source</b>: {{ $database->datasources }}</li>@endif 
-			
-			@if ($database->software != null) <li><b>Software</b>: {{ $database->software }}</li>@endif 
-			
-			@if ($database->processing != null) <li><b>Processing</b>: {{ $database->processing }}</li>@endif 
-			
-			@if ($database->relatedinformation != null) <li><b>Related Information</b>: {{ $database->relatedinformation }}</li>@endif 
-		</ul>
+				@if ($database->controlledrights != null) 
+					<li><b>Rights:</b> {{ \App\Models\Metadataschema::display($database->controlledrights) }}
+						@if ($database->additionalrights != null) ({{ $database->additionalrights }})@endif 
+					</li>
+				@endif 
+
+				<li><b>Subject Areas</b>:
+					@foreach ($database->subjectareas as $index => $subjectarea)@if($index>0),@endif
+						{{ \App\Models\Database::subjectareaDisplay($subjectarea->controlledSubjectAreaIndex) }}@if ($subjectarea->additionalSubjectArea != null) {{ $subjectarea->additionalSubjectArea }}@endif
+	@endforeach <!-- do not change this line -->
+				</li>
+
+				@if ($database->descriptiongeneral != null)
+					<li><b>General Description</b>: {{ $database->descriptiongeneral }}</li>
+				@endif 
+				
+				@if ($database->descriptionabstract != null)
+					<li><b>Abstract</b>: {{ $database->descriptionabstract }}</li>
+				@endif 
+				
+				@if ($database->descriptionmethods != null)
+					<li><b>Methods</b>: {{ $database->descriptionmethods }}</li>
+				@endif 
+				
+				@if ($database->descriptionremarks != null)
+					<li><b>Technical Remarks</b>: {{ $database->descriptionremarks }}</li>
+				@endif 
+
+				@if ($database->datasources != null) <li><b>Data Source</b>: {{ $database->datasources }}</li>@endif 
+				
+				@if ($database->software != null) <li><b>Software</b>: {{ $database->software }}</li>@endif 
+				
+				@if ($database->processing != null) <li><b>Processing</b>: {{ $database->processing }}</li>@endif 
+				
+				@if ($database->relatedinformation != null) <li><b>Related Information</b>: {{ $database->relatedinformation }}</li>@endif 
+			</ul>
+		</div>
 
 	<hr>
 	

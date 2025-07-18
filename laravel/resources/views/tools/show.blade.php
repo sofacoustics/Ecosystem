@@ -141,66 +141,68 @@ Parameters:
 			@endforelse
 		</ul>
 
-		<h3>
-			@can('update', $tool)
-				<small><x-button method="GET" class="inline" action="{{ route('tools.edit', $tool->id) }}">Edit</x-button></small>
-			@endcan
-			Other:
-		</h3>
-		<ul class="list-disc list-inside">
-			@if ($tool->doi != null) 
-				@if($tool->radar_status==1)
-					<li><b>DOI (assigned)</b>: {{ $tool->doi }}
-				@elseif($tool->radar_status==2)
-					<li><b>DOI (publication requested)</b>: {{ $tool->doi }}
-				@elseif($tool->radar_status==3)
-					<li><b>DOI (persistently published)</b>: <a href="https://doi.org/{{ $tool->doi }}">{{ $tool->doi }}</a>
-					@if ($tool->publicationyear != null) 
-						<li><b>Publication Year</b>: {{ $tool->publicationyear }}</li>
-					@endif 
+		<div class="max-w-prose">
+			<h3>
+				@can('update', $tool)
+					<small><x-button method="GET" class="inline" action="{{ route('tools.edit', $tool->id) }}">Edit</x-button></small>
+				@endcan
+				Other:
+			</h3>
+			<ul class="list-disc list-inside">
+				@if ($tool->doi != null) 
+					@if($tool->radar_status==1)
+						<li><b>DOI (assigned)</b>: {{ $tool->doi }}
+					@elseif($tool->radar_status==2)
+						<li><b>DOI (publication requested)</b>: {{ $tool->doi }}
+					@elseif($tool->radar_status==3)
+						<li><b>DOI (persistently published)</b>: <a href="https://doi.org/{{ $tool->doi }}">{{ $tool->doi }}</a>
+						@if ($tool->publicationyear != null) 
+							<li><b>Publication Year</b>: {{ $tool->publicationyear }}</li>
+						@endif 
+					@endif
+				@else
+					<li><b>DOI</b>: not assigned yet
 				@endif
-			@else
-				<li><b>DOI</b>: not assigned yet
-			@endif
-			
-			<li><b>Uploaded by:</b> {{ $user->name }}</li>
-			
-			<li><b>Date (created):</b> {{ $tool->created_at }} (GMT)</li>
-			
-			<li><b>Date (updated):</b> {{ $tool->updated_at }} (GMT)</li>
-			
-			@if ($tool->productionyear != null) <li><b>Production Year</b>: {{ $tool->productionyear }}</li>@endif
-			
-			@if ($tool->resourcetype != null) <li><b>Resource Type</b>: {{ \App\Models\Tool::resourcetypeDisplay($tool->resourcetype) }}</b>
-				@if ($tool->resource != null) ({{ $tool->resource }})@endif 
-			</li>@endif  
-			
-			@if ($tool->controlledrights != null) <li><b>Rights:</b> {{ \App\Models\Metadataschema::display($tool->controlledrights) }}
-				@if ($tool->additionalrights != null) ({{ $tool->additionalrights }})</li>@endif 
-			</li>@endif 
-			
-			<li><b>Subject Areas</b>:
-				@foreach ($tool->subjectareas as $index => $subjectarea)@if($index>0),@endif
-					{{ \App\Models\Tool::subjectareaDisplay($subjectarea->controlledSubjectAreaIndex) }}@if ($subjectarea->additionalSubjectArea != null) {{ $subjectarea->additionalSubjectArea }}@endif
-@endforeach <!-- do not change this line --> 
-			</li>
+				
+				<li><b>Uploaded by:</b> {{ $user->name }}</li>
+				
+				<li><b>Date (created):</b> {{ $tool->created_at }} (GMT)</li>
+				
+				<li><b>Date (updated):</b> {{ $tool->updated_at }} (GMT)</li>
+				
+				@if ($tool->productionyear != null) <li><b>Production Year</b>: {{ $tool->productionyear }}</li>@endif
+				
+				@if ($tool->resourcetype != null) <li><b>Resource Type</b>: {{ \App\Models\Tool::resourcetypeDisplay($tool->resourcetype) }}</b>
+					@if ($tool->resource != null) ({{ $tool->resource }})@endif 
+				</li>@endif  
+				
+				@if ($tool->controlledrights != null) <li><b>Rights:</b> {{ \App\Models\Metadataschema::display($tool->controlledrights) }}
+					@if ($tool->additionalrights != null) ({{ $tool->additionalrights }})</li>@endif 
+				</li>@endif 
+				
+				<li><b>Subject Areas</b>:
+					@foreach ($tool->subjectareas as $index => $subjectarea)@if($index>0),@endif
+						{{ \App\Models\Tool::subjectareaDisplay($subjectarea->controlledSubjectAreaIndex) }}@if ($subjectarea->additionalSubjectArea != null) {{ $subjectarea->additionalSubjectArea }}@endif
+	@endforeach <!-- do not change this line --> 
+				</li>
 
-			@if ($tool->descriptiongeneral != null)
-				<li><b>General Description</b>: {{ $tool->descriptiongeneral }}</li>
-			@endif 
-			
-			@if ($tool->descriptionabstract != null)
-				<li><b>Abstract</b>: {{ $tool->descriptionabstract }}</li>
-			@endif 
-			
-			@if ($tool->descriptionmethods != null)
-				<li><b>Methods</b>: {{ $tool->descriptionmethods }}</li>
-			@endif 
-			
-			@if ($tool->descriptionremarks != null)
-				<li><b>Technical Remarks</b>: {{ $tool->descriptionremarks }}</li>
-			@endif 
-		</ul>
+				@if ($tool->descriptiongeneral != null)
+					<li><b>General Description</b>: {{ $tool->descriptiongeneral }}</li>
+				@endif 
+				
+				@if ($tool->descriptionabstract != null)
+					<li><b>Abstract</b>: {{ $tool->descriptionabstract }}</li>
+				@endif 
+				
+				@if ($tool->descriptionmethods != null)
+					<li><b>Methods</b>: {{ $tool->descriptionmethods }}</li>
+				@endif 
+				
+				@if ($tool->descriptionremarks != null)
+					<li><b>Technical Remarks</b>: {{ $tool->descriptionremarks }}</li>
+				@endif 
+			</ul>
+		</div>
 
 	<hr>
 	
