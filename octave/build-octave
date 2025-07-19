@@ -117,9 +117,9 @@ if [ "$activate" == "yes" ] ; then
 	# set this octave as the system octave
 	echo "Adding this verison of octave to update-alternative"
 	priority=200
-	update-alternatives --install /usr/bin/octave octave /usr/local/octave-$version/bin/octave $priority
-	update-alternatives --install /usr/bin/octave-cli octave-cli /usr/local/octave-$version/bin/octave-cli $priority
-	update-alternatives --install /usr/bin/octave-config octave-config /usr/local/octave-$version/bin/octave-config $priority
+	update-alternatives --install /usr/local/bin/octave octave /usr/local/octave-$version/bin/octave $priority
+	update-alternatives --install /usr/local/bin/octave-cli octave-cli /usr/local/octave-$version/bin/octave-cli $priority
+	update-alternatives --install /usr/local/bin/octave-config octave-config /usr/local/octave-$version/bin/octave-config $priority
 fi
 
 echo "$0 finished (in $SECONDS seconds)"

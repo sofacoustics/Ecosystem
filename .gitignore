@@ -10,3 +10,5 @@ laravel-jetstream
 /laravel/database/migrations/2025_07_03_095604_update_column_in_users_table.php
 /laravel/storage/app/services/5/*.asv
 tools
+octave-10.2.0
+gl2ps-1.4.2
