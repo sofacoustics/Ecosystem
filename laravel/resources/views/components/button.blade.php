@@ -63,7 +63,7 @@
 	}
 
 @endphp
-<div 
+<div
 	x-data="{ loading: false }"
 	class="inline">
 	@if ($attributes->has('action'))
@@ -81,7 +81,6 @@
 		@if ($loadingText) x-text="loading ? '{{ $loadingText }}' : '{{ $slot }}'" @endif
 		{{-- If we're not a form, then give user immediate feedback that it's been pressed
 		@if (!$attributes->has('action')) x-on:click="loading = true" @endif--}}
-		:disabled="loading"
 		class="{{ $classColors }} {{ $buttonStyle }}"
 		@if($confirm) onclick="return confirm('{{ $confirm }}')" @endif
 		>
