@@ -400,6 +400,7 @@ class DatabaseUpload extends Component
 		$this->refresh();
 		$this->debug(1, "save(): finished", 0);
 		$this->dispatch('saved-to-database');
+		$this->dispatch('status-message', 'Files successfully saved to database');
 	}
 
 	public function render()
@@ -518,7 +519,7 @@ class DatabaseUpload extends Component
 		return $sanitized;
 	}
 
-	private function setStatus($status) 
+	private function setStatus($status)
 	{
 		$this->status = "$status";
 		$this->console("Status (Livewire): $status");
