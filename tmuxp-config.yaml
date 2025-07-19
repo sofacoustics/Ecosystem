@@ -1,12 +1,16 @@
 # https://github.com/tmux-python/tmuxp/issues/739
 # https://tmuxp.git-pull.com/
+#
+# Set SONICOM_GIT_ROOT to the path to the isf-sonicom-laravel repository
+#
+#
 session_name: sonicom
-start_directory: .
+start_directory: "${SONICOM_GIT_ROOT}"
 windows:
   - window_name: logs 
     layout: even-vertical
     suppress_history: false
-    start_directory: laravel/storage/logs
+    start_directory: "laravel/storage/logs"
     panes:
       - "tail -F laravel.log"
       - "tail -F reverb.log"
@@ -38,13 +42,13 @@ windows:
         - tmux select-pane -T public -t storage.0
         - cd laravel/storage/app/public
   - window_name: artisan 
+    start_directory: "laravel"
     layout: even-vertical
     suppress_history: false
     panes:
       - shell_command:
         - tmux set -w pane-border-status bottom
         - tmux select-pane -T artisan -t artisan.0
-        - cd laravel
   - window_name: octave 
     layout: even-vertical
     panes:
@@ -56,4 +60,9 @@ windows:
     panes:
       - shell_command:
         - tmux select-pane -T vi -t vi.0
-
+  - window_name: queue
+    layout: even-vertical
+    start_directory: "laravel"
+    panes:
+      - shell_command:
+        - ./artisan queue:monitor default
