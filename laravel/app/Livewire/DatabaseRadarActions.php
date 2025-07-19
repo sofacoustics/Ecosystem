@@ -22,6 +22,7 @@ class DatabaseRadarActions extends Component
 	public $pending = false;
 	public $review = false;
 	public $radar_status = null; // this will be set to the value of the database field 'radar_status'.
+	public $last_retrieved = null;
 
 	// true if we haven't uploaded yet
 	public $canUpload = false;
@@ -232,11 +233,7 @@ class DatabaseRadarActions extends Component
 		return view('livewire.database-radar-actions');
 	}
 
-	////////////////////////////////////////////////////////////////////////////////
-	// Private
-	////////////////////////////////////////////////////////////////////////////////
-
-	private function refreshStatus()
+	public function refreshStatus()
     {
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if($radar->read())
@@ -248,6 +245,7 @@ class DatabaseRadarActions extends Component
 			$this->radar_content = $radar->radar_content;
 			$this->canUpload = true;
 			$this->setState($radar?->radar_dataset?->state ?? '');
+			$this->last_retrieved = now();
 		}
 		else
 		{
