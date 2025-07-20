@@ -14,7 +14,8 @@
 		status: '',
 		directory: '',
 		dirMode: 0,
-		nFilesSelected: 0
+		nFilesSelected: 0,
+		canUpload: @entangle('canUpload')
 		}" id='alpineComponent'>
 	
 	<form wire:submit="save">
@@ -117,7 +118,15 @@
 				</label><br>
 
 				<div>
-					<x-button wire:loading:attr="disabled" wire:click="$js.doUpload($data)" :disabled="!$canUpload">Start upload</x-button>
+					<button 
+						x-data="{loading: false}"
+						x-bind:disabled="loading || !canUpload" 
+						@click="loading=true; $js.doUpload($data)"
+						class="{{ $buttonStyle }}"
+						x-bind:class="loading || !canUpload? '{{ $buttonColorDisabled }}' : '{{ $buttonColorEnabled }}'"
+						>
+						Start upload
+					</button>
 				</div>
 				<p> Status:  <span x-text="status"></span></p>
 				<p id="nUploaded" wire:ignore></p>
