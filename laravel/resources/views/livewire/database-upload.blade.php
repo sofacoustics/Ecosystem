@@ -632,6 +632,7 @@
 						{
 								data.uploading = false; // finished
 								setStatus("Upload process finished. You may save the files to the database!");
+								$wire.dispatch('status-message', { message: 'Uploading has finished' });
 						}
 						processQueue(); // Process next in queue
 				},
