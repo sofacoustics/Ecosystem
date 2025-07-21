@@ -51,7 +51,7 @@
 			<div>
 				<x-button wire:click="$js.doFilter($data)" :disabled="$nFilesInDir < 1 || $uploading">Apply filter</x-button>
 			</div>
-			
+
 				<p>Analysis results:</p>
 				<small><p id="analysis-summary" wire:ignore><br></p></small>
 				<br>
@@ -120,10 +120,10 @@
 				<div>
 					<button 
 						x-data="{loading: false}"
-						x-bind:disabled="loading || !canUpload" 
-						@click="loading=true; $js.doUpload($data)"
+						x-bind:disabled="uploading || !canUpload"
+						@click="uploading=true; $js.doUpload($data)"
 						class="{{ $buttonStyle }}"
-						x-bind:class="loading || !canUpload? '{{ $buttonColorDisabled }}' : '{{ $buttonColorEnabled }}'"
+						x-bind:class="uploading || !canUpload? '{{ $buttonColorDisabled }}' : '{{ $buttonColorEnabled }}'"
 						>
 						Start upload
 					</button>
