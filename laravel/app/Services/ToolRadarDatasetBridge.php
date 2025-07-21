@@ -78,8 +78,8 @@ class ToolRadarDatasetBridge extends RadarBridge
 			$userEmail = $this->tool->user->email;
 			$recipients = $userEmail . ',' . $adminEmails;
 			Mail::to(explode(',',$recipients))->queue(new ToolPersistentPublicationApproved($this->tool));
-			app('log')->info("DatabasePersistentPublicationApproved email for tool " . $this->tool->title . " (" . $this->tool->id . ") sent to $recipients");
-			$this->message = "Dataset successfully published";
+			app('log')->info("ToolPersistentPublicationApproved email for tool " . $this->tool->title . " (" . $this->tool->id . ") sent to $recipients");
+			$this->message = "Tool successfully published";
 			return true;
 		}
 		else
