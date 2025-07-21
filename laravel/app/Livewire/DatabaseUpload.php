@@ -401,6 +401,7 @@ class DatabaseUpload extends Component
 		$this->debug(1, "save(): finished", 0);
 		$this->dispatch('saved-to-database');
 		$this->dispatch('status-message', 'Files successfully saved to database');
+		$this->redirect('/databases/' . $this->database->id . '/showdatasets');
 	}
 
 	public function render()
