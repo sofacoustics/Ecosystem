@@ -6,7 +6,7 @@
 		@role('admin')
 			<p><b>Accessible Databases:</b> All databases.</p>
 		@else
-			<p><b>Accesible Databases:</b> Visible databases or uploaded by you.</p>
+			<p><b>Accessible Databases:</b> Visible databases or uploaded by you.</p>
 		@endrole
 		@can('create', \App\Models\Database::class)
 			<x-button method="GET" action="{{ route('databases.create') }}" class="inline">
