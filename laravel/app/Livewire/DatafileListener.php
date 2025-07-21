@@ -80,7 +80,7 @@ class DatafileListener extends Component
 		if(isset($datafile->datasetdef->widget->service?->latestLog))
 			$this->latestLog = $this->datafile->datasetdef->widget->service->latestLog;
 		\Log::info('DatafileListener: datafiletype name = ' . ($this->datafiletype->name ?? 'NULL'));
-		\Log::info('DatafileListener: widget view = ' . ($this->widget->view ?? 'NULL'));
+		\Log::info('DatafileListener: widget id = ' . $this->widget->id . ' widget view = ' . ($this->widget->view ?? 'NULL'));
 
 		// view depending on file type
 		$view = match($this->datafiletype->name)
@@ -94,7 +94,7 @@ class DatafileListener extends Component
 			$view = "livewire.datafiles." . $this->widget->view;
 
 		// view existing?
-		if (!View::exists($view)) 
+		if (!View::exists($view))
 		{
 			\Log::info('DatafileListener: View not found, fallback to generic');
 			$view = 'livewire.datafiles.generic';
@@ -157,7 +157,7 @@ class DatafileListener extends Component
 				{
 					preg_match('/_1_\d+\.png/', $files[0], $match);
 					sscanf($match[0], "_1_%d.png", $Zoommax);
-					for ($i=0; $i<$Mmax; $i++)
+					for ($i=0; $i<$Zoommax; $i++)
 						array_push($postfixes,'_'.($i+1).'.png');
 				}
 				$viewData['postfixes'] = $postfixes;
