@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,7 +19,7 @@ use App\Models\Metadataschema;
 class Database extends Model
 {
 	use HasFactory;
-	protected $fillable = ['title', 'additionaltitle', 'additionaltitletype', 'descriptiongeneral', 
+	protected $fillable = ['title', 'additionaltitle', 'additionaltitletype', 'descriptiongeneral',
 		'radardataset',
 		'productionyear', 'publicationyear', 'language', 'resourcetype', 'resource', 'datasources','software',
 		'processing', 'controlledrights', 'additionalrights', 
@@ -33,6 +34,16 @@ class Database extends Model
 
 	protected static function booted()
 	{
+		// using an anonymous global scope, we can modify all database queries here
+		// to only return entries which are visible or owned by the logged in user
+		// or return all entries, if user has admin role.
+		static::addGlobalScope('visible', function (Builder $builder) {
+			$user = auth()->user();
+			if(!$user)
+				$builder->where('visible', 1);
+			else if(!$user->hasRole('admin'))
+				$builder->where('visible', 1)->orWhere('user_id', auth()->user()?->id);
+		});
 	}
 
 	public function metadata()
