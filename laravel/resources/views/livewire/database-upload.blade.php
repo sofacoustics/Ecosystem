@@ -4,6 +4,7 @@
 		filteredFiles: [],
 		pendingFiles: [],
 		uploading: false,
+		saving: false,
 		nSelected: 0,
 		nUploaded: 0,
 		progress: 0,
@@ -15,9 +16,11 @@
 		directory: '',
 		dirMode: 0,
 		nFilesSelected: 0,
-		canUpload: @entangle('canUpload')
+		canUpload: @entangle('canUpload'),
+		nFilesToUpload: @entangle('nFilesToUpload'),
+		nFilesUploaded: @entangle('nFilesUploaded')
 		}" id='alpineComponent'>
-	
+
 	<form wire:submit="save">
 		<h3>1) Select a directory with all your datafiles:</h3>
 		<div>
@@ -118,8 +121,7 @@
 				</label><br>
 
 				<div>
-					<button 
-						x-data="{loading: false}"
+					<button
 						x-bind:disabled="uploading || !canUpload"
 						@click="uploading=true; $js.doUpload($data)"
 						class="{{ $buttonStyle }}"
@@ -149,9 +151,17 @@
 				</div>
 				<br>
 				<hr>
-				
+
 				<h3>5) Save the uploaded datafiles to the database:</h3>
-				<x-button :disabled="$nFilesToUpload > $nFilesUploaded || $nFilesToUpload === 0" type="submit">Save files to database</x-button>
+				<button
+					x-bind:disabled="saving || nFilesToUpload > nFilesUploaded || nFilesToUpload == 0"
+					@click="saving = true"
+					wire:click="save"
+					class="{{ $buttonStyle }}"
+					x-bind:class="saving || nFilesToUpload > nFilesUploaded || nFilesToUpload == 0? '{{ $buttonColorDisabled }}' : '{{ $buttonColorEnabled }}'"
+					>
+					Save files to database
+				</button>
 
 				<p><small>(Livewire) Status: {{ $status }}</small></p>
 				<p><small>(Alpine) Directory: <span x-text="directory"></span></small></p>
@@ -209,7 +219,7 @@
 		@this.set('progress', event.detail.progress);
 	});
 
-		// On saved to database: Update the "data" structure 
+		// On saved to database: Update the "data" structure
 	window.addEventListener('saved-to-database', event => {
 		console.log('EVENT: saved-to-database (window)');
 		let data = Alpine.$data(document.getElementById('alpineComponent'));
@@ -436,7 +446,7 @@
 			headers[df_array.length+3].textContent = dsn_cnt; // insert count of Names
 			for (let j=0; j<df_array.length; j++) // for each column
 				headers[df_array.length+4+j].textContent = fn_cnt_array[j]; // insert the count of fns
-			
+
 				// Table - Filenames
 			tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
 			for (let i=0; i<dsn_array.length; i++)
@@ -461,7 +471,7 @@
 
 				// save variables in Livewire for upload procedure
 			$wire.set('dsnFiltered', dsn_array); // save the filtered dataset names 
-			$wire.set('descrFiltered', descr_array); // save the filtered dataset names 
+			$wire.set('descrFiltered', descr_array); // save the filtered dataset names
 			$wire.set('dfnFiltered', fn_array); // save the filtered filenames
 			$wire.set('dirMode', data.dirMode); // save the directory dirMode (0: flat, 1: nested)
 				// select all Datasets in the table
@@ -633,7 +643,7 @@
 				() => { 
 						/* Success handler */
 					data.nUploaded++;
-						setStatus("File #" + index + " now successfully uploaded");
+						setStatus("File #" + index + " (" + file.name + ") now successfully uploaded");
 						data.progressText = data.nUploaded + "/" + $wire.nFilesToUpload + " files successfully uploaded";
 						maxParallelUploads++; // Free up a slot
 						// if this is the last upload, set 'uploading' to false
@@ -653,7 +663,7 @@
 				},
 				(progress) => {
 						/* Progress updates */
-						setStatus("Uploading file #" + index);
+						setStatus("Uploading file #" + index + " (" + file.name + ")");
 						data.progress = event.detail.progress;
 				},
 				() => {
