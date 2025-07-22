@@ -3,6 +3,7 @@
 Session.vim
 laravel/storage/app/livewire-tmp/
 laravel/storage/app/services/*/*.log
+laravel/storage/app/tools/
 laravel/config/version.php
 laravel-jetstream
 octave/octave-10.2.0/
