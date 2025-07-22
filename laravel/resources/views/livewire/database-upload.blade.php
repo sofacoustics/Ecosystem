@@ -124,6 +124,7 @@
 					<button
 						x-bind:disabled="uploading || !canUpload"
 						@click="uploading=true; $js.doUpload($data)"
+						x-text="uploading? 'Uploading...' : 'Start upload'"
 						class="{{ $buttonStyle }}"
 						x-bind:class="uploading || !canUpload? '{{ $buttonColorDisabled }}' : '{{ $buttonColorEnabled }}'"
 						>
@@ -157,6 +158,7 @@
 					x-bind:disabled="saving || nFilesToUpload > nFilesUploaded || nFilesToUpload == 0"
 					@click="saving = true"
 					wire:click="save"
+					x-text="saving? 'Saving...' : 'Save files to database'"
 					class="{{ $buttonStyle }}"
 					x-bind:class="saving || nFilesToUpload > nFilesUploaded || nFilesToUpload == 0? '{{ $buttonColorDisabled }}' : '{{ $buttonColorEnabled }}'"
 					>
