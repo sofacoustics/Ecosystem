@@ -1,11 +1,9 @@
 *.swp
 .undodir
-laravel/storage/app/livewire-tmp
 Session.vim
+laravel/storage/app/livewire-tmp/
+laravel/storage/app/services/*/*.log
+laravel/config/version.php
 laravel-jetstream
-.undodir
-/laravel/storage/app/services/*/*.log
-/octave/temp
-tools
-octave-10.2.0
-gl2ps-1.4.2
+octave/octave-10.2.0/
+octave/gl2ps-1.4.2/
