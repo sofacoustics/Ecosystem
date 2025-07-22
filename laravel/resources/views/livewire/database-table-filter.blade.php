@@ -96,6 +96,7 @@
 		</thead>
 		<tbody class="bg-white divide-y divide-gray-200">
 			@foreach($databases as $database)
+				@can('view', $database)
 				<tr>
 					<td class="text-center">
 						@if($database->visible)
@@ -123,6 +124,7 @@
 					<td class="px-6 py-4 whitespace-nowrap text-center">{!! nl2br(e(\App\Livewire\DatabaseTableFilter::getKeywords($database->id))) !!}</td>
 					<td class="px-6 py-4 text-center">{{ $database->updated_at }}</td>
 				</tr>
+				@endcan
 			@endforeach
 			@if($databases->isEmpty())
 				<tr>
