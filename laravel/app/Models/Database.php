@@ -165,16 +165,16 @@ class Database extends Model
 	public function metadataValidate()
 	{
 		$msg = null;
-			// At least one creator required
+		// At least one creator required
 		if(count($this->creators)==0)
-			$msg = $msg. "- Creators missing: At least one creator required\n";
-			// At least one publisher required
+			$msg = $msg. "- <a href='" . route('databases.creators', $this->id) . "'>Creators</a> missing: At least one creator is required\n";
+		// At least one publisher required
 		if(count($this->publishers)==0)
-			$msg = $msg. "- Publishers missing: At least one publisher required\n";
-			// At least one rightsholder required
+			$msg = $msg. "- <a href='" . route('databases.publishers', $this->id) . "'>Publishers</a> missing: At least one publisher is required\n";
+		// At least one rightsholder required
 		if(count($this->rightsholders)==0)
-			$msg = $msg. "- Rightholders missing: At least one rightholder required\n";
-		
+			$msg = $msg. "- <a href='" . route('databases.rightsholders', $this->id) . "'>Rightsholders</a> missing: At least one rightsholder is required\n";
+
 		return $msg;
 	}
 }
