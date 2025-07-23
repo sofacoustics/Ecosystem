@@ -123,7 +123,7 @@ class Service implements ShouldQueue
 
         $jobid = $this->job?->getJobId();
 
-		app('log')->info("Job $jobid Process $pid has started:", ['data' => $args]);
+		app('log')->notice("Job $jobid Process $pid has started:", ['data' => $args]);
 		try {
 			// Periodically check for timeout while the process is running
 			while ($process->isRunning()) {
@@ -136,9 +136,9 @@ class Service implements ShouldQueue
 			}
 			$output = $process->getOutput();
 			$errorOutput = $process->getErrorOutput();
-			app('log')->info("Process $pid has finished");
+			app('log')->debug("Process $pid has finished");
 		} catch (ProcessTimedOutException $e) {
-			app('log')->info("Process $pid has reached it's timeout");
+			app('log')->warning("Process $pid has reached it's timeout");
 			// Kill child processes
 			foreach ($childPids as $childPid) {
 				if (is_numeric($childPid)) {
@@ -213,6 +213,9 @@ class Service implements ShouldQueue
 		else
 			$log .= "  process failed after $duration seconds (exitCode: " . $exitCode . ")\n";
 		DatafileProcessed::dispatch($this->datafile->id);
-		app('log')->info("Process $pid info:\n$log"); // log all in one go so it doesn't get interspersed with other log messages
+		if($exitCode!=0)
+			app('log')->warning("Process $pid info:\n$log"); // log all in one go so it doesn't get interspersed with other log messages
+		else
+			app('log')->notice("Process $pid info:\n$log"); // log all in one go so it doesn't get interspersed with other log messages
 	}
 }
