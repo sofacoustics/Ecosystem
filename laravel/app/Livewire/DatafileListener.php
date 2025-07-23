@@ -56,7 +56,7 @@ class DatafileListener extends Component
 		// it appears that just listening for an event will cause a re-render
 	public function datafileProcessed($payload)
 	{
-		\Log::info('DatafileListener('.$this->id.'): processed sonicom-ecosystem datafile-processed event(id='.$payload['id'].')');
+		\Log::debug('DatafileListener('.$this->id.'): processed sonicom-ecosystem datafile-processed event(id='.$payload['id'].')');
 	}
 
 	public function mount(Datafile $datafile)
@@ -79,8 +79,8 @@ class DatafileListener extends Component
 		// update in 'render' to get latest value
 		if(isset($datafile->datasetdef->widget->service?->latestLog))
 			$this->latestLog = $this->datafile->datasetdef->widget->service->latestLog;
-		\Log::info('DatafileListener: datafiletype name = ' . ($this->datafiletype->name ?? 'NULL'));
-		\Log::info('DatafileListener: widget id = ' . $this->widget->id . ' widget view = ' . ($this->widget->view ?? 'NULL'));
+		\Log::debug('DatafileListener: datafiletype name = ' . ($this->datafiletype->name ?? 'NULL'));
+		\Log::debug('DatafileListener: widget id = ' . $this->widget->id . ' widget view = ' . ($this->widget->view ?? 'NULL'));
 
 		// view depending on file type
 		$view = match($this->datafiletype->name)
@@ -109,7 +109,7 @@ class DatafileListener extends Component
 				// GENERIC DATAFILE PROPERTIES
 			case 'livewire.datafiles.properties':
 				$fullPath = $this->datafile->absolutepath();
-				$viewData['fullPath'] = $fullPath; 
+				$viewData['fullPath'] = $fullPath;
 				//if (Storage::exists($fullPath)) 
 					$fileSizeInBytes = filesize($fullPath);
 				//else
@@ -231,9 +231,9 @@ class DatafileListener extends Component
 				$csvPath = $dir . '/' . $csvFilenameEncoded;
 
 					// Logging
-				\Log::info('DatafileListener: sofaAsset = ' . $sofaAsset);
-				\Log::info('DatafileListener: sofaPath (no Query) = ' . $sofaPath);
-				\Log::info('DatafileListener: csvPath (encoded) = ' . $csvPath);
+				\Log::debug('DatafileListener: sofaAsset = ' . $sofaAsset);
+				\Log::debug('DatafileListener: sofaPath (no Query) = ' . $sofaPath);
+				\Log::debug('DatafileListener: csvPath (encoded) = ' . $csvPath);
 
 					// Get domain
 				$baseUrl = request()->getSchemeAndHttpHost(); // e.g., https://sonicom-dev.amtoolbox.org
