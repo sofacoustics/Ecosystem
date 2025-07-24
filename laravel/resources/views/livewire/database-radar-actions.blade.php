@@ -54,6 +54,9 @@
 		wire:confirm="This will delete the Database from the Datathek and remove the DOI in the Ecosystem!">
 		Delete from RADAR
 	</x-livewire-button>
+	<x-livewire-button wire:click="publishToRadar" loading="Publishing to RADAR via job">
+		Publish to RADAR via job
+	</x-livewire-button>
 	@if($error)
 		<x-alert>{{ $error }}</x-alert>
 	@endif

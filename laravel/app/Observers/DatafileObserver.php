@@ -2,12 +2,11 @@
 
 namespace App\Observers;
 
-use App\Jobs\HRTFCreateFigures;
-use App\Jobs\OctaveCli;
-use App\Jobs\OctavePipe;
+use App\Events\DatafileUploaded;
 use App\Jobs\Service;
 use App\Models\Datafile;
-use App\Events\DatafileUploaded;
+use App\Services\DatafileRadarFileBridge;
+
 use Illuminate\Support\Facades\Storage;
 
 class DatafileObserver
@@ -32,11 +31,32 @@ class DatafileObserver
     }
 
     /**
+     * Handle the Datafile "deleting" event.
+     */
+    public function deleting(Datafile $datafile): void
+	{
+		// delete physical file directory
+		$directory = $datafile->directory();
+		Storage::disk('sonicom-data')->deleteDirectory($directory);
+		// delete from RADAR
+		if($datafile->radar_id)
+		{
+			app('log')->info('DatafileObserver::deleted() - deleting RADAR file');
+			$radar = new DatafileRadarFileBridge($datafile);
+			if(!$radar->delete())
+			{
+				app('log')->warning('DatafileObserver::deleted() - failed to delete RADAR file');
+			}
+			//jw:note Can't use job here, since datafile won't exist when job starts
+		}
+    }
+
+    /**
      * Handle the Datafile "deleted" event.
      */
     public function deleted(Datafile $datafile): void
     {
-        //
+		//
     }
 
     /**

@@ -101,7 +101,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	 *
 	 * RADAR Docs:
 	 *
-	 *	Review	POST	/datasets/{id}/startreview		200, 401, 403, 404, 422, 500	 
+	 *	Review	POST	/datasets/{id}/startreview		200, 401, 403, 404, 422, 500
 	 *
 	 * Notes:
 	 *
@@ -110,6 +110,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	 */
 	public function startreview() : bool
 	{
+		$start = microtime(true);
 		$this->reset();
 		$endpoint = '/datasets/'.$this->database->radar_id.'/startreview';
 		$this->content = null; // save the content sent to RADAR
@@ -118,12 +119,25 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		if($this->status == 200)
 		{
 			$this->message = "Review process of the RADAR dataset successfully started";
+			app('log')->info('Database review process started', [
+				'feature' => 'database-radar-dataset',
+				'database_id' => $this->database->id,
+				'target_url' => config('services.radar.baseurl'),
+				'duration' => microtime(true) - $start
+			]);
 			return true;
 		}
 		else
 		{
 			$this->message = "Starting the RADAR dataset review process failed";
 			$this->details = $response->content();
+			app('log')->info('Failed to start database review process', [
+				'feature' => 'database-radar-dataset',
+				'database_id' => $this->database->id,
+				'target_url' => config('services.radar.baseurl'),
+				'details' => $this->details,
+				'duration' => microtime(true) - $start
+			]);
 			return false;
 		}
 	}
@@ -428,6 +442,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	 */
 	public function upload() : bool
 	{
+		$start = microtime(true);
 		if(!$this->create())
 		{
 			return false;
@@ -446,6 +461,12 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		}
 
 		$this->message = 'The database has been successfully uploaded to the RADAR backend!';
+		app('log')->info('Database uploaded to RADAR dataset', [
+			'feature' => 'database-radar-dataset',
+			'database_id' => $this->database->id,
+			'target_url' => config('services.radar.baseurl'),
+			'duration' => microtime(true) - $start
+		]);
 
 		return true;
 	}

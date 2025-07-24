@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Services\DatasetRadarFolderBridge;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,7 +21,10 @@ class Dataset extends Model
 	{
 		parent::boot();
 		static::deleting(function($model) {
-				$model->datafiles->each->delete();
+			$radar = new DatasetRadarFolderBridge($model);
+			if($model->radar_id)
+				$radar->delete();
+			$model->datafiles->each->delete();
 		});
 	}
 	/**

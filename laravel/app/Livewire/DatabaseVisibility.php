@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Jobs\DatabasePublishToRadar;
 use App\Mail\DOIAssigned;
 use App\Mail\PersistentPublicationRequested;
 use App\Models\Database;
@@ -146,7 +147,6 @@ class DatabaseVisibility extends Component
 			$this->warning = "Your database is not ready to publish. $message";
 			return;
 		}
-
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if($radar->update())
 		{
@@ -167,41 +167,11 @@ class DatabaseVisibility extends Component
 			$this->error = $radar->message.' RADAR Message: '.$radar->details.' *** Content created: *** '.json_encode($content_created);
 			return;
 		}
-		// upload database to the Datathek
-		if(!$radar->upload())
-		{
-			$this->error = $radar->message.' ('.$radar->details.')';
-			return;
-		}
-		else
-		{
-			$this->dispatch('status-message', $radar->message);
-			// Starting the 'review' process directly after uploading was failing.
-			// sleeping for 5 seconds appears to fix this. Not a pretty solution though!
-			// help when starting the review directly after uploading files, which otherwise fails!
-			sleep(5);
-		}
 
-		// after the upload, we can trigger the review
-		if(!$radar->startreview())
-		{
-			$this->error = $radar->message.' RADAR Review Message: '.$radar->details;
-			return;
-		}
-		else
-		{
-			$this->dispatch('status-message', $radar->message);
-		}
+		// upload and review start now in job
+		DatabasePublishToRadar::dispatch($this->database);
 
-		$this->database->radar_status=2;
-		$this->database->save();
-		$adminEmails = config('mail.to.admins');
-		Mail::to(explode(',',$adminEmails))->send(new PersistentPublicationRequested($this->database));
-		app('log')->info("Persistent publication requested for " . $this->database->title . " (" . $this->database->id . "). Sending PersistentPublicationRequested email to $adminEmails");
-		$this->radar_status = $this->database->radar_status;
-		$this->dispatch('status-message', 'The database has been successfully published!');
-		//$this->js('window.location.reload()'); 
-		return redirect()->route('databases.show', $this->database);
+		return redirect()->route('databases.show', $this->database)->with('success', 'Your database is being published and you will be informed when the task has finished');
 	}
 
 	public function render()

@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
+use App\Jobs\DatabasePublishToRadar;
 use App\Services\DatabaseRadarDatasetBridge;
 
 class DatabaseRadarActions extends Component
@@ -111,6 +112,13 @@ class DatabaseRadarActions extends Component
 		if(!$radar->upload())
 			$this->error = $radar->message.' ('.$radar->details.')';
 		$this->dispatch('status-message', $radar->message);
+	}
+
+	public function publishToRadar()
+	{
+		$this->reset('error');
+		$this->dispatch('status-message', 'Starting upload to RADAR via job.');
+		DatabasePublishToRadar::dispatch($this->database);
 	}
 
 	/*

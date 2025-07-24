@@ -67,6 +67,7 @@ class DatasetRadarFolderBridge extends RadarBridge
             $this->message = 'Failed to create a folder for this dataset since its database has no RADAR id!';
             return false;
 		}
+		$start = microtime(true);
 		$folderName = $this->dataset->name;
 		$arrayBody = [ 'folderName' => "$folderName" ];//json = '{ "folderName" : "'.$folderName.'" }';
 		$endpoint = '/datasets/'.$this->dataset->database->radar_id.'/folders';
@@ -76,6 +77,13 @@ class DatasetRadarFolderBridge extends RadarBridge
 			$this->dataset->radar_id = $this->getJsonValue('id', $response);
 			$this->dataset->radar_upload_url = $this->getJsonValue('uploadUrl', $response);
 			$this->dataset->save();
+			app('log')->info('Created dataset as RADAR folder', [
+				'feature' => 'database-radar-dataset',
+				'database_id' => $this->dataset->database->id,
+				'dataset_id' => $this->dataset->id,
+				'target_url' => config('services.radar.baseurl'),
+				'duration' => microtime(true) - $start
+			]);
 			$this->message = 'Successfully created the folder "'.$folderName.'"!';
 			return true;
 		}
@@ -83,6 +91,14 @@ class DatasetRadarFolderBridge extends RadarBridge
 		{
 			$this->message = 'Failed to created the folder "'.$folderName.'"!';
 			$this->details = $response->content();
+			app('log')->warning('Failed to create dataset RADAR folder', [
+				'feature' => 'database-radar-dataset',
+				'database_id' => $this->dataset->database->id,
+				'dataset_id' => $this->dataset->id,
+				'target_url' => config('services.radar.baseurl'),
+				'details' => $this->details,
+				'duration' => microtime(true) - $start
+			]);
 			return false;
 		}
 	}
@@ -103,6 +119,13 @@ class DatasetRadarFolderBridge extends RadarBridge
 		$response = $this->httpdelete($endpoint);
 		if($response->status() == 204)
 		{
+			$logDetails = array(
+				'feature' => 'database-radar-dataset',
+				'database_id' => $this->dataset->database->id,
+				'dataset_id' => $this->dataset->id,
+				'target_url' => config('services.radar.baseurl'),
+				'radar_id' => $this->dataset->radar_id
+			);
 			$this->message = 'Successfully deleted the folder '.$this->dataset->radar_id.' from the RADAR server';
 			$this->dataset->radar_id = null;
 			$this->dataset->radar_upload_url = null;
@@ -115,12 +138,21 @@ class DatasetRadarFolderBridge extends RadarBridge
 				$datafile->datasetdef_radar_upload_url = null;
 				$datafile->save();
 			}
+			app('log')->info('Deleted dataset from RADAR', $logDetails);
 			return true;
 		}
 		else
 		{
 			$this->message = 'Failed to delete the associated RADAR folder '.$this->dataset->radar_id;
 			$this->details = $response->content();
+			$logDetails = array(
+				'feature' => 'database-radar-dataset',
+				'database_id' => $this->dataset->database->id,
+				'dataset_id' => $this->dataset->id,
+				'target_url' => config('services.radar.baseurl'),
+				'radar_id' => $this->dataset->radar_id
+			);
+			app('log')->info('Failed to delete dataset folder from RADAR', $logDetails);
 			return false;
 		}
 
