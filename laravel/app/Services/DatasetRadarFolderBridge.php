@@ -183,6 +183,7 @@ class DatasetRadarFolderBridge extends RadarBridge
 				{
 					$this->message = $radarfile->message;
 					$this->details = $radarfile->details;
+					return false;
 				}
 			}
 			$this->message = 'The dataset \''.$this->dataset->name.'\' and its datafiles have been successfully uploaded to the RADAR server.';
