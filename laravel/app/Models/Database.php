@@ -166,4 +166,28 @@ class Database extends Model
 
 		return $msg;
 	}
+
+	/*
+	 * Check that database is in a state where it is ready to persistently publish
+	 */
+	public function isReadyToPublish(&$message)
+	{
+		foreach($this->datasets as $dataset)
+		{
+			// check dataset is ready to publish
+			$missing = $dataset->missing_datafiles();
+			if(count($missing))
+			{
+				$message .= "\nThe dataset ";
+				$message .= $dataset->link();
+				$message .= " is missing " . count($missing) . " datafile";
+				if(count($missing)>1)
+				   	$message .= 's';
+			   	$message .= "!";
+			}
+		}
+		if($message != '')
+			return false;
+		return true;
+	}
 }

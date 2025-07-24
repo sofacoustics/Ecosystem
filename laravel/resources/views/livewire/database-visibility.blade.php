@@ -4,11 +4,12 @@
 	<p><b>Status:</b> The database is <b>visible</b> to all Ecosystem visitors.</p>
 	@if($radar_status<2)
 		<p>By clicking the button below, the database can be hidden, i.e., it will be visible to you and the admins only.</p>
-		<button wire:click="hide" wire:confirm="Are you sure to hide your database?"
-			class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">
+		<x-livewire-button
+			wire:click="hide"
+			wire:confirm="Are you sure you want to hide your database?">
 			Hide
-		</button>
-		<p>Note that because the database has been published (i.e., visible) to others, 
+		</x-livewire-button>
+		<p>Note that because the database has been published (i.e., visible) to others,
 			your database might be spread across the internet even if you hide it.
 		</p>
 	@elseif($radar_status<3)
@@ -19,12 +20,13 @@
 @else
 	<p><b>Status:</b> The database is <b>hidden</b>, i.e., only visible to you and the admins.</p>
 	<p>By clicking the button below, the database can be published within the Ecosystem, i.e., visible to all Ecosystem visitors.</p>
-	<p>This operation is reversible: The database can be hidden again. 
+	<p>This operation is reversible: The database can be hidden again.
 	Still, by exposing the database within the Ecosystem, <b>it is a publication</b>.</p>
-	<button wire:click="expose" wire:confirm="Are you sure to expose your database to others, i.e., publish?"
-		class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">
+	<x-livewire-button
+		wire:click="expose" 
+		wire:confirm="Are you sure you want to expose your database to others, i.e., publish?">
 		Expose
-	</button>
+	</x-livewire-button>
 	<p>Note that this does not assign a DOI nor publishes the database persistently, see below.</p>
 @endif
 <p></p>
@@ -47,20 +49,12 @@
 			</ul>
 		<p>Once a DOI has been assigned, the DOI will be a permanent part of your database.</p>
 		<p><b>This operation is irreversible!</b></p>
-		<button 
-			wire:click="assignDOI" 
+		<x-livewire-button
+			wire:click="assignDOI"
 			wire:confirm="Are you sure to assign a DOI to your database? This operation cannot be reverted!"
-			wire:loading.attr="disabled"
-			wire:loading.class="opacity-50">
-			<span wire:loading.remove wire:target="assignDOI"
-				class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">
-				Assign DOI
-			</span>
-			<span wire:loading wire:target="assignDOI"
-				class="bg-gray-500 rounded px-4 py-2 font-bold text-white cursor-not-allowed">
-				Processing...
-			</span>
-		</button>
+			  loading="Assigning DOI...">
+			Assign DOI
+		</x-livewire-button>
 		<p>Note that this does not publish your database with that DOI yet:
 			The datafiles will <b>not</b> be transfered to the Datathek yet, and the link between the DOI and your data will be invalid yet.</p>
 		<p>Note also that even with DOI assigned, you will be able to hide your database within the Ecosystem.</p>
@@ -100,19 +94,12 @@
 					<li>The curator of the Datathek will be notified.
 				</ul>
 				<p><b>This operation is irreversible and triggers a human to act!</b></p>
-					<button wire:click="submitToPublish" 
-						wire:confirm="Are you sure to submit your database for a persistent publication? This operation cannot be reverted!"
-						wire:loading.attr="disabled"
-						wire:loading.class="opacity-50">
-						<span wire:loading.remove wire:target="submitToPublish"
-							class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">
-							Publish with DOI
-						</span>
-						<span wire:loading wire:target="submitToPublish" 
-							class="bg-gray-500 rounded px-4 py-2 font-bold text-white cursor-not-allowed">
-							Processing...
-						</span>
-					</button>
+				<x-livewire-button
+					wire:click="submitToPublish"
+					wire:confirm="Are you sure to submit your database for a persistent publication? This operation cannot be reverted!"
+					loading="Publishing with DOI...">
+					Publish with DOI
+				</x-livewire-button>
 				<p>Once the curator approves your database, it will be published at the Datathek and the DOI will be valid.</p>
 			@endif
 		@elseif($radar_status==2)
@@ -135,7 +122,7 @@
 	<x-alert title='Info!' color='blue'>{{ $status }}</x-alert>
 @endif
 @if($warning)
-	<x-alert title='Warning!'>{{ $warning }}</x-alert>
+	<x-alert title='Warning!'>{!! $warning !!}</x-alert>
 @endif
 @if($error)
 	<x-alert title='Error!'>{{ $error }}</x-alert>

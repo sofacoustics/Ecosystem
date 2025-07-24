@@ -10,10 +10,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Dataset extends Model
 {
 	use HasFactory;
-	
+
 	protected $fillable = [
 			'id', 'name', 'description', 'database_id'
-	];    
+	];
 
 	protected static function boot()
 	{
@@ -43,5 +43,13 @@ class Dataset extends Model
 		$existingDatasetdefs = $this->datafiles->pluck('datasetdef_id');
 		$missingDatasetdefs = Datasetdef::whereIn('id', $requiredDatasetdefs->diff($existingDatasetdefs))->get();
 		return $missingDatasetdefs;
+	}
+
+	/*
+	 * Return an HTML anchor element to this dataset
+	 */
+	public function link() : string
+	{
+		return '<a href="' . route('datasets.show', [ 'dataset' => $this ]) . '">' . $this->name . '</a>';
 	}
 }

@@ -140,6 +140,13 @@ class DatabaseVisibility extends Component
 		$this->error = "";
 		$this->warning = "";
 
+		// check that all datasets have the correct number of datafiles
+		if(!$this->database->isReadyToPublish($message))
+		{
+			$this->warning = "Your database is not ready to publish. $message";
+			return;
+		}
+
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if($radar->update())
 		{
