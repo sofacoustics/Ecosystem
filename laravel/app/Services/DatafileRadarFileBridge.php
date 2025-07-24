@@ -61,73 +61,80 @@ class DatafileRadarFileBridge extends RadarBridge
 		 */
 		$start = microtime(true);
 		$folderName = $this->datafile->datasetdef->name;
-		$arrayBody = [ 'folderName' => "$folderName" ];//json = '{ "folderName" : "'.$folderName.'" }';
-		$endpoint = '/folders/'.$this->datafile->dataset->radar_id.'/folders';
-		$response = $this->post($endpoint, $arrayBody);
-		if($response->status() == 201)
+		if($this->datafile->datasetdef_radar_id == null)
 		{
-			$this->datafile->datasetdef_radar_id = $this->getJsonValue('id', $response);
-			$this->datafile->datasetdef_radar_upload_url = $this->getJsonValue('uploadUrl', $response);
-			$this->datafile->save();
-			app('log')->info('Created RADAR folder for datafile', [
-				'feature' => 'database-radar-dataset',
-				'database_id' => $this->datafile->dataset->database->id,
-				'dataset_id' => $this->datafile->dataset->id,
-				'datafile_id' => $this->datafile->id,
-				'target_url' => config('services.radar.baseurl'),
-				'duration' => microtime(true) - $start
-			]);
-		}
-		else
-		{
-			$this->message = 'Failed to created the folder "'.$folderName.'"!';
-			$this->details = $response->content();
-			app('log')->warning('Failed to create RADAR folder for datafile', [
-				'feature' => 'database-radar-dataset',
-				'database_id' => $this->datafile->dataset->database->id,
-				'dataset_id' => $this->datafile->dataset->id,
-				'datafile_id' => $this->datafile->id,
-				'target_url' => config('services.radar.baseurl'),
-				'details' => $this->details,
-				'duration' => microtime(true) - $start
-			]);
-			return false;
+			$arrayBody = [ 'folderName' => "$folderName" ];//json = '{ "folderName" : "'.$folderName.'" }';
+			$endpoint = '/folders/'.$this->datafile->dataset->radar_id.'/folders';
+			$response = $this->post($endpoint, $arrayBody);
+			if($response->status() == 201)
+			{
+				$this->datafile->datasetdef_radar_id = $this->getJsonValue('id', $response);
+				$this->datafile->datasetdef_radar_upload_url = $this->getJsonValue('uploadUrl', $response);
+				$this->datafile->save();
+				app('log')->info('Created RADAR folder for datafile', [
+					'feature' => 'database-radar-dataset',
+					'database_id' => $this->datafile->dataset->database->id,
+					'dataset_id' => $this->datafile->dataset->id,
+					'datafile_id' => $this->datafile->id,
+					'target_url' => config('services.radar.baseurl'),
+					'duration' => microtime(true) - $start
+				]);
+			}
+			else
+			{
+				$this->message = 'Failed to created the folder "'.$folderName.'"!';
+				$this->details = $response->content();
+				app('log')->warning('Failed to create RADAR folder for datafile', [
+					'feature' => 'database-radar-dataset',
+					'database_id' => $this->datafile->dataset->database->id,
+					'dataset_id' => $this->datafile->dataset->id,
+					'datafile_id' => $this->datafile->id,
+					'target_url' => config('services.radar.baseurl'),
+					'details' => $this->details,
+					'status' => $response->status(),
+					'duration' => microtime(true) - $start
+				]);
+				return false;
+			}
 		}
 
 		// upload file using datasetdef_radar_upload
-		$start = microtime(true);
-		$response = $this->postFile($this->datafile->datasetdef_radar_upload_url, $this->datafile->absolutepath(), $this->datafile->name, $this->datafile->mimetype);
-		if($response->status() == 200)
+		if($this->datafile->radar_id == null)
 		{
-			$this->datafile->radar_id = $response->content();
-			$this->datafile->save();
-			$this->message = 'Successfully created the datafile '.$this->datafile->name.' and it\s datasetdef->name folder "'.$folderName.'"!';
-			app('log')->info('Uploaded datafile to RADAR', [
-				'feature' => 'database-radar-dataset',
-				'database_id' => $this->datafile->dataset->database->id,
-				'dataset_id' => $this->datafile->dataset->id,
-				'datafile_id' => $this->datafile->id,
-				'target_url' => config('services.radar.baseurl'),
-				'duration' => microtime(true) - $start
-			]);
-			return true;
+			$start = microtime(true);
+			$response = $this->postFile($this->datafile->datasetdef_radar_upload_url, $this->datafile->absolutepath(), $this->datafile->name, $this->datafile->mimetype);
+			if($response->status() == 200)
+			{
+				$this->datafile->radar_id = $response->content();
+				$this->datafile->save();
+				$this->message = 'Successfully created the datafile '.$this->datafile->name.' and it\s datasetdef->name folder "'.$folderName.'"!';
+				app('log')->info('Uploaded datafile to RADAR', [
+					'feature' => 'database-radar-dataset',
+					'database_id' => $this->datafile->dataset->database->id,
+					'dataset_id' => $this->datafile->dataset->id,
+					'datafile_id' => $this->datafile->id,
+					'target_url' => config('services.radar.baseurl'),
+					'duration' => microtime(true) - $start
+				]);
+			}
+			else
+			{
+				$this->message = 'Failed to upload the file '.$this->datafile->name.'!';
+				$this->details = $response->content();
+				app('log')->warning('Failed to upload datafile to RADAR', [
+					'feature' => 'database-radar-dataset',
+					'database_id' => $this->datafile->dataset->database->id,
+					'dataset_id' => $this->datafile->dataset->id,
+					'datafile_id' => $this->datafile->id,
+					'target_url' => config('services.radar.baseurl'),
+					'details' => $this->details,
+					'status' => $response->status(),
+					'duration' => microtime(true) - $start
+				]);
+				return false;
+			}
 		}
-		else
-		{
-			$this->message = 'Failed to upload the file '.$this->datafile->name.'!';
-			$this->details = $response->content();
-			app('log')->warning('Failed to upload datafile to RADAR', [
-				'feature' => 'database-radar-dataset',
-				'database_id' => $this->datafile->dataset->database->id,
-				'dataset_id' => $this->datafile->dataset->id,
-				'datafile_id' => $this->datafile->id,
-				'target_url' => config('services.radar.baseurl'),
-				'details' => $this->details,
-				'duration' => microtime(true) - $start
-			]);
-			return false;
-		}
-		return false;
+		return true;
 	}
 
 
