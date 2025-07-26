@@ -177,26 +177,27 @@ class Tool extends Model
 	public function metadataValidate()
 	{
 		$msg = null;
-			// At least one creator required
+		// At least one creator required
 		if(count($this->creators)==0)
-			$msg = $msg. "- Creators missing: At least one creator required\n";
+			$msg = $msg. "- <a href='" . route('tools.creators', $this->id) . "'>Creators</a> missing: At least one creator is required\n";
 		else
 		{
 			foreach($this->creators as $creator)
-			{		// If family name provided, given name is required and vice versa
+			{		
+				// If family name provided, given name is required and vice versa
 				if($creator->givenName && !$creator->familyName)
-					$msg = $msg . "- Creator " . $creator->creatorName . ": Family name required when given name provided\n"; 
+					$msg = $msg . "- <a href='" . route('creators.edit', $creator->id) . "'>Creator</a> " . $creator->creatorName . ": Family name required when given name provided\n";
 				if(!$creator->givenName && $creator->familyName)
-					$msg = $msg . "- Creator " . $creator->creatorName . ": Given name required when family name provided\n";
+					$msg = $msg . "- <a href='" . route('creators.edit', $creator->id) . "'>Creator</a> " . $creator->creatorName . ": Given name required when family name provided\n";
 			}
 		}
-			// At least one publisher required
+		// At least one publisher required
 		if(count($this->publishers)==0)
-			$msg = $msg. "- Publishers missing: At least one publisher required\n";
-			// At least one rightsholder required
+			$msg = $msg. "- <a href='" . route('tools.publishers', $this->id) . "'>Publishers</a> missing: At least one publisher is required\n";
+		// At least one rightsholder required
 		if(count($this->rightsholders)==0)
-			$msg = $msg. "- Rightholders missing: At least one rightholder required\n";
-		
+			$msg = $msg. "- <a href='" . route('tools.rightsholders', $this->id) . "'>Rightsholders</a> missing: At least one rightsholder is required\n";
+
 		return $msg;
 	}
 }
