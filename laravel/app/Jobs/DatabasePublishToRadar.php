@@ -97,7 +97,7 @@ class DatabasePublishToRadar implements ShouldQueue
 					'emails' => $adminEmails
 				]);
 				$this->radar_status = $this->database->radar_status;
-				app('log')->info('Database now published to RADAR', [
+				app('log')->info('Database now published to RADAR and awaiting approval', [
 					'feature' => 'database-radar-dataset',
 					'database_id' => $this->database->id,
 					'target_url' => config('services.radar.baseurl'),
