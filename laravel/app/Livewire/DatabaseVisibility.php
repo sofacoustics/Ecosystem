@@ -141,7 +141,7 @@ class DatabaseVisibility extends Component
 			'duration' => microtime(true) - $start
 		]);
 		$adminEmails = config('mail.to.admins');
-		Mail::to(explode(',',$adminEmails))->send(new DatabaseDOIAssigned($this->database));
+		Mail::to(explode(',',$adminEmails))->queue(new DatabaseDOIAssigned($this->database));
 		app('log')->info("Sending DatabaseDOIAssigned email to $adminEmails", [
 			'feature' => 'database-radar-dataset',
 			'database_id' => $this->database->id,

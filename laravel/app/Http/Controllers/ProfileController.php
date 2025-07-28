@@ -171,7 +171,7 @@ class ProfileController extends Controller
 
 					// send 'NewUser' email
 				$adminEmails = config('mail.to.admins'); 
-				Mail::to(explode(',',$adminEmails))->send(new NewUser($request->user()));
+				Mail::to(explode(',',$adminEmails))->queue(new NewUser($request->user()));
 				app('log')->info("New user " . $request->user()->name . " (". $request->user()->id . ") created. Sending NewUser email to $adminEmails"); 
 
 				return redirect()->route('profile.edit')->with('status', 'ORCID Link successful...');

@@ -124,7 +124,7 @@ class ToolDoi extends Component
 			'duration' => microtime(true) - $start
 		]);
 		$adminEmails = config('mail.to.admins');
-		Mail::to(explode(',',$adminEmails))->send(new ToolDOIAssigned($this->tool));
+		Mail::to(explode(',',$adminEmails))->queue(new ToolDOIAssigned($this->tool));
 		app('log')->info("Sending toolDOIAssigned email to $adminEmails", [
 			'feature' => 'tool-radar-dataset',
 			'tool_id' => $this->tool->id,
@@ -184,7 +184,7 @@ class ToolDoi extends Component
 		else
 		{
 			$adminEmails = config('mail.to.admins');
-			Mail::to(explode(',',$adminEmails))->send(new ToolPersistentPublicationRequested($this->tool));
+			Mail::to(explode(',',$adminEmails))->queue(new ToolPersistentPublicationRequested($this->tool));
 			app('log')->info('Persistent publication requested', [
 				'feature' => 'tool-radar-dataset',
 				'tool_id' => $this->tool->id,
