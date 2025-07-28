@@ -4,7 +4,11 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
+use App\Mail\ToolPersistentPublicationRejected;
 use App\Services\ToolRadarDatasetBridge;
+use App\Services\ToolfileRadarFileBridge;
+
+use Illuminate\Support\Facades\Mail;
 
 class ToolRadarActions extends Component
 {
@@ -12,6 +16,7 @@ class ToolRadarActions extends Component
 
 	// RADAR properties
 	public $id;
+	public $file_id; // the tool's file_radar_id
 	public $state;
 	public $doi;
 	public $size;
@@ -125,11 +130,6 @@ class ToolRadarActions extends Component
 		else
 			$this->error = $radar->details;
 
-		$this->tool->radar_id = null;
-		$this->tool->radar_upload_url = null;
-		$this->tool->doi = null;
-		$this->tool->radar_status = null;
-		$this->tool->save();
 
 		$this->dispatch('status-message', $radar->message);
 		$this->refreshStatus();
@@ -156,18 +156,36 @@ class ToolRadarActions extends Component
 	* Reject the persistent publication: End the review at Datathek and set the Status to "DOI assigned"
 	*/
 	public function rejectPersistentPublication()
-	{		// end the review
+	{
+		// end the review
+		$start = microtime(true);
 		$radar = new ToolRadarDatasetBridge($this->tool);
 		if(!$radar->endreview())
 		{
 			$this->error = 'End Review: '.$radar->message . ' ('.$radar->details .')';
+			return;
 		}
-			// set status to "DOI assigned"
+		else
+		{
+			app('log')->notice('Rejecting persistent publication', [
+				'feature' => 'tool-radar-dataset',
+				'tool_id' => $this->tool->id,
+				'user_id' => auth()->user()->id,
+				'target_url' => config('services.radar.baseurl'),
+				'duration' => microtime(true) - $start
+			]);
+			// send user and admin an email
+			$adminEmails = config('mail.to.admins');
+			$userEmail = $this->tool->user->email;
+			$recipients = $userEmail . ',' . $adminEmails;
+			Mail::to(explode(',',$recipients))->queue(new ToolPersistentPublicationRejected($this->tool));
+			app('log')->info("ToolPersistentPublicationRejected email for tool " . $this->tool->title . " (" . $this->tool->id . ") sent to $recipients");
+		}
+		// set status to "DOI assigned"
 		$this->tool->radar_status = 1;
 		$this->tool->save();
 
 		$this->refreshStatus();
-		$this->js('window.location.reload()'); 
 	}
 
 	/*
@@ -196,6 +214,7 @@ class ToolRadarActions extends Component
 		if($radar->read())
 		{
 			$this->id = $radar?->radar_dataset?->id ?? null;
+			$this->file_id = $this->tool->file_radar_id; //jw:todo get this from RADAR?
 			$this->state = $radar->radar_dataset->state;
 			$this->doi = $radar?->radar_dataset?->descriptiveMetadata?->identifier?->value ?? null;
 			$this->size = $radar?->radar_dataset?->technicalMetadata?->size ?? "unknown";

@@ -345,6 +345,7 @@ class ToolRadarDatasetBridge extends RadarBridge
 	 */
 	public function create() : bool
 	{
+		$start = microtime(true);
 		$this->reset();
 		if($this->tool->radar_id != null)
 			return true; // we already have a RADAR dataset
@@ -371,11 +372,25 @@ class ToolRadarDatasetBridge extends RadarBridge
 			$this->tool->radar_id = $this->getJsonValue('id', $response);
 			$this->tool->radar_upload_url = $this->getJsonValue('uploadUrl', $response);
 			$this->tool->save();
+			app('log')->info('Created RADAR dataset for tool', [
+				'feature' => 'tool-radar-dataset',
+				'tool_id' => $this->tool->id,
+				'radar_id' => $this->tool->radar_id,
+				'target_url' => config('services.radar.baseurl'),
+				'duration' => microtime(true) - $start
+			]);
 			return true; // success
 		}
 		$content = json_decode($response->content());
 		$this->message = "Failed to create the RADAR dataset!";
 		$this->details = $content?->exception ?? 'Unknown error!' . '(Code: ' . $response->status() .')';
+		app('log')->warning('Failed to create RADAR dataset for tool', [
+			'feature' => 'tool-radar-dataset',
+			'tool_id' => $this->tool->id,
+			'target_url' => config('services.radar.baseurl'),
+			'status' => $resonse->status(),
+			'duration' => microtime(true) - $start
+		]);
 		return false;
 	}
 
@@ -430,6 +445,7 @@ class ToolRadarDatasetBridge extends RadarBridge
 	 */
 	public function upload() : bool
 	{
+		$start = microtime(true);
 		if(!$this->create())
 		{
 			return false;
@@ -437,13 +453,16 @@ class ToolRadarDatasetBridge extends RadarBridge
 
 		if($this->tool->filename) // if tool file available
 		{
-			$radar = new ToolfileRadarFileBridge($this->tool);
-			if(!$radar->upload())
+			if(!$this->tool->file_radar_id)
 			{
-				// failed to upload the tool file
-				$this->message = $radar->message;
-				$this->details = $radar->details;
-				return false;
+				$radar = new ToolfileRadarFileBridge($this->tool);
+				if(!$radar->upload())
+				{
+					// failed to upload the tool file
+					$this->message = $radar->message;
+					$this->details = $radar->details;
+					return false;
+				}
 			}
 		}
 		else
@@ -453,6 +472,12 @@ class ToolRadarDatasetBridge extends RadarBridge
 		}
 
 		$this->message = 'The tool has been successfully uploaded to the Datathek!';
+		app('log')->info('Tool uploaded to RADAR dataset', [
+			'feature' => 'tool-radar-dataset',
+			'tool_id' => $this->tool->id,
+			'target_url' => config('services.radar.baseurl'),
+			'duration' => microtime(true) - $start
+		]);
 		return true;
 	}
 
@@ -471,15 +496,39 @@ class ToolRadarDatasetBridge extends RadarBridge
 	 */
 	public function delete()
 	{
+		// tool file deleted automatically by RADAR since tool is parent
+		$start = microtime(true);
 		$endpoint = '/datasets/'.$this->tool->radar_id;
 		$response = $this->httpdelete($endpoint);
 		if($response->status() == 204)
 		{
+			app('log')->info('Deleted tool from RADAR', [
+				'feature' => 'tool-radar-dataset',
+				'tool_id' => $this->tool->id,
+				'radar_id' => $this->tool->radar_id,
+				'target_url' => config('services.radar.baseurl'),
+				'duration' => microtime(true) - $start
+			]);
+			$this->tool->radar_id = null;
+			$this->tool->radar_upload_url = null;
+			$this->tool->file_radar_id = null;
+			$this->tool->doi = null;
+			$this->tool->radar_status = null;
+			$this->tool->save();
 			$this->message = 'The RADAR dataset has been deleted and DOI assignment removed';
 			return true;
 		}
 		$this->message = 'Failed to delete the RADAR dataset';
 		$this->details = $response->content();
+		app('log')->warning('Failed to delete RADAR dataset for tool', [
+			'feature' => 'tool-radar-dataset',
+			'tool_id' => $this->tool->id,
+			'radar_id' => $this->tool->radar_id,
+			'target_url' => config('services.radar.baseurl'),
+			'status' => $resonse->status(),
+			'details' => $this->details,
+			'duration' => microtime(true) - $start
+		]);
 		return false;
 	}
 

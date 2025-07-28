@@ -2,17 +2,16 @@
 
 namespace App\Mail;
 
-use App\Models\User;
+use App\Models\Tool;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class NewUser extends Mailable
+class ToolPersistentPublicationRequested extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -20,17 +19,18 @@ class NewUser extends Mailable
      * Create a new message instance.
      */
 	public function __construct(
-		public User $user
-	) {}
+		public Tool $tool
+	)
+    {}
 
     /**
      * Get the message envelope.
      */
     public function envelope(): Envelope
     {
-		return new Envelope(
-            subject: 'SONICOM Ecosystem: New Ecosystem user created and verified',
-		);
+        return new Envelope(
+            subject: 'SONICOM Ecosystem: Persistent publication requested for the tool "' . $this->tool->title . '" (' . $this->tool->id . ')',
+        );
     }
 
     /**
@@ -39,7 +39,7 @@ class NewUser extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.newuser',
+            view: 'mail.tool-persistent-publication-requested',
         );
     }
 

@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Observers\ToolObserver;
+use App\Services\ToolfileRadarFileBridge;
+
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Models\Metadataschema;
 
+#[ObservedBy([ToolObserver::class])]
 class Tool extends Model
 {
 	use HasFactory;
@@ -89,7 +94,47 @@ class Tool extends Model
 	public function removefile()
 	{
 		if ($this->filename)
-			Storage::disk('sonicom-data')->deleteDirectory($this->directory()); 
+		{
+			if(Storage::disk('sonicom-data')->exists($this->directory()))
+			{
+				if(!Storage::disk('sonicom-data')->deleteDirectory($this->directory()))
+				{
+					app('log')->warning('Failed to delete tool file from disk', [
+						'feature' => 'tool',
+						'tool_id' => $this->id,
+						'filename' => $this->filename,
+						'directory' => $this->directory()
+					]);
+					return false;
+				}
+				else
+				{
+					app('log')->info('Deleted tool file from disk', [
+						'feature' => 'tool',
+						'tool_id' => $this->id,
+						'filename' => $this->filename,
+						'directory' => $this->directory()
+					]);
+				}
+			}
+		}
+		if($this->file_radar_id)
+		{
+			$start = microtime(true);
+			$radar = new ToolfileRadarFileBridge($this);
+			if(!$radar->delete())
+			{
+				app('log')->warning('Failed to delete tool file from RADAR', [
+					'feature' => 'tool-radar-dataset',
+					'tool_id' => $this->id,
+					'radar_id' => $this->radar_id,
+					'file_radar_id' => $this->file_radar_id,
+					'target_url' => config('services.radar.baseurl'),
+					'duration' => microtime(true) - $start
+				]);
+				return false;
+			}
+		}
 		$this->filename = null;
 		$this->save();
 	}
@@ -173,7 +218,7 @@ class Tool extends Model
 	{
 		return \App\Models\Metadataschema::list('resourceType');
 	}
-	
+
 	public function metadataValidate()
 	{
 		$msg = null;

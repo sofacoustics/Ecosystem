@@ -5,7 +5,11 @@ namespace App\Livewire;
 use App\Models\Tool;
 
 use App\Http\Resources\ToolResource;
+use App\Mail\ToolDOIAssigned;
+use App\Mail\ToolPersistentPublicationRequested;
 use App\Services\ToolRadarDatasetBridge;
+
+use Illuminate\Support\Facades\Mail;
 
 use Livewire\Component;
 
@@ -40,6 +44,7 @@ class ToolDoi extends Component
 
 	public function assignDOI()
 	{
+		$start = microtime(true);
 		$this->dispatch('status-message', 'Starting DOI assignment');
 		$this->error = "";
 		$this->warning = "";
@@ -70,7 +75,7 @@ class ToolDoi extends Component
 			$this->radar_status = $this->tool->radar_status;
 			return;
 		}
-		
+
 		if($radar->read())
 		{
 			$state = $radar?->radar_dataset?->state ?? 'INVALID RADAR STATE';
@@ -90,7 +95,7 @@ class ToolDoi extends Component
 			$this->radar_status = $this->tool->radar_status;
 			return;
 		}
-			// retrieve doi
+		// retrieve doi
 		if($radar->getDOI())
 		{
 			$this->doi = $radar->doi; 
@@ -99,14 +104,34 @@ class ToolDoi extends Component
 		else
 		{
 			$this->error = $radar->message.' RADAR Message: '.$radar->details;
+			return;
 		}
 			// stop review process
 		if(!$radar->endreview())
+		{
 			$this->error = $radar->details;
+			return;
+		}
 		
 		$this->tool->radar_status = 1;
 		$this->tool->doi = $this->doi;
 		$this->tool->save();
+		app('log')->info('DOI assigned to tool', [
+			'feature' => 'tool-radar-dataset',
+			'tool_id' => $this->tool->id,
+			'user_id' => auth()->user()->id,
+			'target_url' => config('services.radar.baseurl'),
+			'duration' => microtime(true) - $start
+		]);
+		$adminEmails = config('mail.to.admins');
+		Mail::to(explode(',',$adminEmails))->send(new ToolDOIAssigned($this->tool));
+		app('log')->info("Sending toolDOIAssigned email to $adminEmails", [
+			'feature' => 'tool-radar-dataset',
+			'tool_id' => $this->tool->id,
+			'user_id' => auth()->user()->id,
+			'target_url' => config('services.radar.baseurl'),
+			'duration' => microtime(true) - $start
+		]);
 		$this->radar_status = $this->tool->radar_status;
 	}
 
@@ -158,6 +183,14 @@ class ToolDoi extends Component
 		}
 		else
 		{
+			$adminEmails = config('mail.to.admins');
+			Mail::to(explode(',',$adminEmails))->send(new ToolPersistentPublicationRequested($this->tool));
+			app('log')->info('Persistent publication requested', [
+				'feature' => 'tool-radar-dataset',
+				'tool_id' => $this->tool->id,
+				'target_url' => config('services.radar.baseurl'),
+				'emails' => $adminEmails
+			]);
 			$this->dispatch('status-message', $radar->message);
 		}
 

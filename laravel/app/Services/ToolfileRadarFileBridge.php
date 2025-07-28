@@ -46,24 +46,41 @@ class ToolfileRadarFileBridge extends RadarBridge
 	 */
 	public function upload() : bool
 	{
-
+		$start = microtime(true);
 		// upload file using datasetdef_radar_upload
 		$response = $this->postFile($this->tool->radar_upload_url, $this->tool->absolutepath(), $this->tool->filename);
 		if($response->status() == 200)
 		{
+			// save RADAR id
+			$this->tool->file_radar_id = $response->content();
+			$this->tool->save();
 			$this->message = 'Successfully created the tool file '.$this->tool->filename.'!';
+			app('log')->info('Tool file upload to RADAR', [
+				'feature' => 'tool-radar-dataset',
+				'tool_id' => $this->tool->id,
+				'target_url' => config('services.radar.baseurl'),
+				'details' => $this->details,
+				'radar_id' => $this->tool->file_radar_id,
+				'status' => $response->status(),
+				'duration' => microtime(true) - $start
+			]);
 			return true;
 		}
 		else
 		{
 			$this->message = 'Failed to upload the file '.$this->tool->filename.'!';
 			$this->details = $response->content();
+			app('log')->warning('Failed to upload tool file to RADAR', [
+				'feature' => 'tool-radar-dataset',
+				'tool_id' => $this->tool->id,
+				'target_url' => config('services.radar.baseurl'),
+				'details' => $this->details,
+				'status' => $response->status(),
+				'duration' => microtime(true) - $start
+			]);
 			return false;
 		}
-		return false;
 	}
-
-
 
 	/*
 	 * Delete a file from RADAR
@@ -82,17 +99,37 @@ class ToolfileRadarFileBridge extends RadarBridge
 	 */
 	public function delete($endpoint = '')
 	{
-		$endpoint = '/folders/'.$this->tool->radar_id;
+		$start = microtime(true);
+		$endpoint = '/folders/'.$this->tool->file_radar_id;
 		$response = $this->httpdelete($endpoint);
 		if($response->status() == 204)
 		{
+			// save RADAR id
+			$this->tool->file_radar_id = null;
+			$this->tool->save();
 			$this->message = 'Successfully deleted the file '.$this->tool->radar_id.'!';
+			app('log')->info('Deleted tool file from RADAR', [
+				'feature' => 'tool-radar-dataset',
+				'tool_id' => $this->tool->id,
+				'target_url' => config('services.radar.baseurl'),
+				'duration' => microtime(true) - $start
+			]);
 			return true;
 		}
 		else
 		{
 			$this->message = 'Failed to delete the associated RADAR file '.$this->tool->radar_id.'!';
 			$this->details = $response->content();
+			app('log')->warning('Failed to delete tool file from RADAR', [
+				'feature' => 'tool-radar-dataset',
+				'tool_id' => $this->tool->id,
+				'radar_id' => $this->tool->radar_id,
+				'file_radar_id' => $this->tool->file_radar_id,
+				'status' => $response->status(),
+				'details' => $this->details,
+				'target_url' => config('services.radar.baseurl'),
+				'duration' => microtime(true) - $start
+			]);
 			return false;
 		}
 	}

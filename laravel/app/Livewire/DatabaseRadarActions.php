@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 
 use App\Jobs\DatabasePublishToRadar;
+use App\Mail\DatabasePersistentPublicationRejected;
 use App\Services\DatabaseRadarDatasetBridge;
 
 class DatabaseRadarActions extends Component
@@ -150,10 +151,6 @@ class DatabaseRadarActions extends Component
 		else
 			$this->error = $radar->details;
 
-		$this->database->radar_id = null;
-		$this->database->doi = null;
-		$this->database->radar_status = null;
-		$this->database->save();
 		// set dataset and datafile radar_ids back to null
 		foreach($this->database->datasets as $dataset) // iterate through all Dataset of the Database
 		{
@@ -200,6 +197,23 @@ class DatabaseRadarActions extends Component
 		if(!$radar->endreview())
 		{
 			$this->error = 'End Review: '.$radar->message . ' ('.$radar->details .')';
+			return;
+		}
+		else
+		{
+			app('log')->notice('Rejecting persistent publication', [
+				'feature' => 'database-radar-dataset',
+				'database_id' => $this->database->id,
+				'user_id' => auth()->user()->id,
+				'target_url' => config('services.radar.baseurl'),
+				'duration' => microtime(true) - $start
+			]);
+			// send user and admin an email
+			$adminEmails = config('mail.to.admins');
+			$userEmail = $this->database->user->email;
+			$recipients = $userEmail . ',' . $adminEmails;
+			Mail::to(explode(',',$recipients))->queue(new DatabasePersistentPublicationRejected($this->database));
+			app('log')->info("DatabasePersistentPublicationRejected email for database " . $this->database->title . " (" . $this->database->id . ") sent to $recipients");
 		}
 		// set status to "DOI assigned"
 		$this->database->radar_status = 1;

@@ -358,6 +358,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	 */
 	public function create() : bool
 	{
+		$start = microtime(true);
 		$this->reset();
 		if($this->database->radar_id != null)
 			return true; // we already have a RADAR dataset
@@ -383,11 +384,26 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		{
 			$this->database->radar_id = $this->getJsonValue('id', $response);
 			$this->database->save();
+			app('log')->info('Created RADAR dataset for database', [
+				'feature' => 'database-radar-dataset',
+				'database_id' => $this->database->id,
+				'radar_id' => $this->database->radar_id,
+				'target_url' => config('services.radar.baseurl'),
+				'duration' => microtime(true) - $start
+			]);
 			return true; // success
 		}
 		$content = json_decode($response->content());
 		$this->message = "Failed to create the RADAR dataset!";
 		$this->details = $content?->exception ?? 'Unknown error!' . '(Code: ' . $response->status() .')';
+		app('log')->warning('Failed to create RADAR dataset for database', [
+			'feature' => 'database-radar-dataset',
+			'database_id' => $this->database->id,
+			'target_url' => config('services.radar.baseurl'),
+			'status' => $response->status(),
+			'details' => $this->details,
+			'duration' => microtime(true) - $start
+		]);
 		return false;
 	}
 
@@ -486,15 +502,36 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	 */
 	public function delete()
 	{
+		$start = microtime(true);
 		$endpoint = '/datasets/'.$this->database->radar_id;
 		$response = $this->httpdelete($endpoint);
 		if($response->status() == 204)
 		{
+			app('log')->info('Database has been deleted from RADAR', [
+				'feature' => 'database-radar-dataset',
+				'database_id' => $this->database->id,
+				'radar_id' => $this->database->radar_id,
+				'target_url' => config('services.radar.baseurl'),
+				'duration' => microtime(true) - $start
+			]);
+			$this->database->radar_id = null;
+			$this->database->doi = null;
+			$this->database->radar_status = null;
+			$this->database->save();
 			$this->message = 'The RADAR dataset has been deleted';
 			return true;
 		}
 		$this->message = 'Failed to delete the RADAR dataset';
 		$this->details = $response->content();
+		app('log')->warning('Failed to delete database from RADAR', [
+			'feature' => 'database-radar-dataset',
+			'database_id' => $this->database->id,
+			'radar_id' => $this->database->radar_id,
+			'status' => $response->status(),
+			'details' => $this->details,
+			'target_url' => config('services.radar.baseurl'),
+			'duration' => microtime(true) - $start
+		]);
 		return false;
 	}
 }

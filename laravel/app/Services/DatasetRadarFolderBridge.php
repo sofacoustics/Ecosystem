@@ -168,6 +168,7 @@ class DatasetRadarFolderBridge extends RadarBridge
 	 */
 	public function upload()
 	{
+		$start = microtime(true);
 		// create folder for this dataset
 		if($this->create())
 		{
@@ -183,6 +184,15 @@ class DatasetRadarFolderBridge extends RadarBridge
 				{
 					$this->message = $radarfile->message;
 					$this->details = $radarfile->details;
+					app('log')->warning('Failed to upload the dataset to RADAR', [
+						'feature' => 'database-radar-dataset',
+						'database_id' => $datafile->dataset->database->id,
+						'dataset_id' => $datafile->dataset->id,
+						'target_url' => config('services.radar.baseurl'),
+						'details' => $this->details,
+						'status' => $radarfile->status,
+						'duration' => microtime(true) - $start
+					]);
 					return false;
 				}
 			}

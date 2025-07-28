@@ -2,17 +2,16 @@
 
 namespace App\Mail;
 
-use App\Models\User;
+use App\Models\Tool;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class NewUser extends Mailable
+class ToolDOIAssigned extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -20,7 +19,7 @@ class NewUser extends Mailable
      * Create a new message instance.
      */
 	public function __construct(
-		public User $user
+		public Tool $tool
 	) {}
 
     /**
@@ -28,9 +27,9 @@ class NewUser extends Mailable
      */
     public function envelope(): Envelope
     {
-		return new Envelope(
-            subject: 'SONICOM Ecosystem: New Ecosystem user created and verified',
-		);
+        return new Envelope(
+            subject: 'SONICOM Ecosystem: DOI assigned to the tool ' . $this->tool->name . ' (id: ' . $this->tool->id . ')',
+        );
     }
 
     /**
@@ -39,7 +38,7 @@ class NewUser extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.newuser',
+            view: 'mail.tool-doi-assigned',
         );
     }
 

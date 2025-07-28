@@ -3,8 +3,7 @@
 namespace App\Livewire;
 
 use App\Jobs\DatabasePublishToRadar;
-use App\Mail\DOIAssigned;
-use App\Mail\PersistentPublicationRequested;
+use App\Mail\DatabaseDOIAssigned;
 use App\Models\Database;
 
 use App\Http\Resources\DatabaseResource;
@@ -66,6 +65,7 @@ class DatabaseVisibility extends Component
 
 	public function assignDOI()
 	{
+		$start = microtime(true);
 		$this->dispatch('status-message', 'Starting DOI assignment');
 		$this->error = "";
 		$this->warning = "";
@@ -121,17 +121,34 @@ class DatabaseVisibility extends Component
 		else
 		{
 			$this->error = $radar->message.' RADAR Message: '.$radar->details;
+			return;
 		}
 		// stop review process
 		if(!$radar->endreview())
+		{
 			$this->error = $radar->details;
-		
+			return;
+		}
+
 		$this->database->radar_status = 1;
 		$this->database->doi = $this->doi;
 		$this->database->save();
-		$adminEmails = config('mail.to.admins'); 
-		Mail::to(explode(',',$adminEmails))->send(new DOIAssigned($this->database));
-		app('log')->info("DOI assigned for database " . $this->database->title . " (" . $this->database->id . "). Sending DOIAssigned email to $adminEmails");
+		app('log')->info('DOI assigned to database', [
+			'feature' => 'database-radar-dataset',
+			'database_id' => $this->database->id,
+			'user_id' => auth()->user()->id,
+			'target_url' => config('services.radar.baseurl'),
+			'duration' => microtime(true) - $start
+		]);
+		$adminEmails = config('mail.to.admins');
+		Mail::to(explode(',',$adminEmails))->send(new DatabaseDOIAssigned($this->database));
+		app('log')->info("Sending DatabaseDOIAssigned email to $adminEmails", [
+			'feature' => 'database-radar-dataset',
+			'database_id' => $this->database->id,
+			'user_id' => auth()->user()->id,
+			'target_url' => config('services.radar.baseurl'),
+			'duration' => microtime(true) - $start
+		]);
 		$this->radar_status = $this->database->radar_status;
 	}
 

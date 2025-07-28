@@ -11,7 +11,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class DOIAssigned extends Mailable
+class DatabasePersistentPublicationRequested extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -20,7 +20,8 @@ class DOIAssigned extends Mailable
      */
 	public function __construct(
 		public Database $database
-	) {}
+	)
+    {}
 
     /**
      * Get the message envelope.
@@ -28,7 +29,7 @@ class DOIAssigned extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'DOI assigned to the database ' . $this->database->name . ' (id: ' . $this->database->id . ')',
+            subject: 'SONICOM Ecosystem: Persistent publication requested for the database "' . $this->database->title . '" (' . $this->database->id . ')',
         );
     }
 
@@ -38,7 +39,7 @@ class DOIAssigned extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.doiassigned',
+            view: 'mail.database-persistent-publication-requested',
         );
     }
 

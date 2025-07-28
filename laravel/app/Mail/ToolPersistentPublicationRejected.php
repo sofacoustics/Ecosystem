@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\Database;
+use App\Models\Tool;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -11,7 +11,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class PersistentPublicationRequested extends Mailable
+class ToolPersistentPublicationRejected extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -19,9 +19,8 @@ class PersistentPublicationRequested extends Mailable
      * Create a new message instance.
      */
 	public function __construct(
-		public Database $database
-	)
-    {}
+		public Tool $tool
+	) {}
 
     /**
      * Get the message envelope.
@@ -29,7 +28,7 @@ class PersistentPublicationRequested extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Persistent publication requested for the database "' . $this->database->title . '" (' . $this->database->id . ')',
+            subject: 'SONICOM Ecosystem: Persistent publication of the tool "' . $this->tool->title . '" (' . $this->tool->id . ') has been rejected',
         );
     }
 
@@ -39,7 +38,7 @@ class PersistentPublicationRequested extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.persistent-publication-requested',
+            view: 'mail.tool-persistent-publication-rejected',
         );
     }
 

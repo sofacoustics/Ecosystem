@@ -28,7 +28,7 @@ class ToolPersistentPublicationApproved extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Persistent publication of the tool "' . $this->tool->title . '" (' . $this->tool->id . ') has been approved',
+            subject: 'SONICOM Ecosystem: Persistent publication of the tool "' . $this->tool->title . '" (' . $this->tool->id . ') has been approved',
         );
     }
 

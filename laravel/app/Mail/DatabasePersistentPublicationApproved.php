@@ -28,7 +28,7 @@ class DatabasePersistentPublicationApproved extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Persistent publication of the database "' . $this->database->title . '" (' . $this->database->id . ') has been approved',
+            subject: 'SONICOM Ecosystem: Persistent publication of the database "' . $this->database->title . '" (' . $this->database->id . ') has been approved',
         );
     }
 

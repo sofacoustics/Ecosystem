@@ -2,17 +2,16 @@
 
 namespace App\Mail;
 
-use App\Models\User;
+use App\Models\Database;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class NewUser extends Mailable
+class DatabasePersistentPublicationRejected extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -20,7 +19,7 @@ class NewUser extends Mailable
      * Create a new message instance.
      */
 	public function __construct(
-		public User $user
+		public Database $database
 	) {}
 
     /**
@@ -28,9 +27,9 @@ class NewUser extends Mailable
      */
     public function envelope(): Envelope
     {
-		return new Envelope(
-            subject: 'SONICOM Ecosystem: New Ecosystem user created and verified',
-		);
+        return new Envelope(
+            subject: 'SONICOM Ecosystem: Persistent publication of the database "' . $this->database->title . '" (' . $this->database->id . ') has been rejected',
+        );
     }
 
     /**
@@ -39,7 +38,7 @@ class NewUser extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.newuser',
+            view: 'mail.database-persistent-publication-rejected',
         );
     }
 

@@ -1,6 +1,6 @@
 <div>
 
-	<li><b>ID:</b> {{ $id }}</li>
+	<li><b>ID:</b> {{ $id }} (File ID: {{ $file_id }})</li>
 	<li><b>State:</b> {{ $state }}</li>
 	<li><b>Internal Status:</b> {{ $radar_status }}</li>
 	<li><b>DOI:</b> {{ $doi }}</li>
@@ -38,7 +38,7 @@
 
 	@if($radar_status == 2)
 		<x-livewire-button wire:click="approvePersistentPublication"
-			wire:confirm="This will actually 'publish' the database persistently.">
+			wire:confirm="This will actually 'publish' the tool persistently.">
 			Approve Persistent Publication
 		</x-livewire-button>
 		<x-livewire-button wire:click="rejectPersistentPublication"

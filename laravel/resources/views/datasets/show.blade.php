@@ -24,8 +24,13 @@
 				{{ $datafile->datasetdef->datafiletype->name }}
 			</x-property>
 			<x-property name="Datafile Name">
-				<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a>
+				<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a>@hasrole('admin') (ID: {{ $datafile->id }})@endhasrole
 			</x-property>
+			@hasrole('admin')
+				@if($datafile->radar_id)
+					<x-property name="RADAR id">{{ $datafile->radar_id}}</x-property>
+				@endif
+			@endhasrole
 			<x-property name="Updated at">
 				{{ $datafile->updated_at }} (GMT)
 			</x-property>
@@ -34,7 +39,7 @@
 			</x-property>			
 			<livewire:DatafileListener :datafile="$datafile" :key="$datafile->id" />
 		</div>
-		
+
 		<br><br><hr>
 	@endforeach
 
