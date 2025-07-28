@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 
 use App\Models\Datasetdef;
 use App\Models\Datafiletype;
+use App\Models\Widget;
 
 class DatasetdefForm extends Component
 {
@@ -35,6 +36,7 @@ class DatasetdefForm extends Component
 	public function mount($database, $datasetdef = null)
 	{
 		$this->database = $database;
+		$this->datafiletypes = \App\Models\Datafiletype::all();
 		if($datasetdef)
 		{
 			$this->datasetdef = $datasetdef;
@@ -42,21 +44,31 @@ class DatasetdefForm extends Component
 			$this->description = $datasetdef->description;
 			$this->database_id = $datasetdef->database_id;
 			$this->datafiletype_id = $datasetdef->datafiletype_id;
+			$this->widgets = \App\Models\Datafiletype::find($this->datafiletype_id)->activewidgets()->get(); 
 			$this->widget_id = $datasetdef->widget_id;
 		}
 		else
 		{
 			$this->database_id = $this->database->id;
 			$this->datafiletype_id = 1; // HRTF
-			$this->widget_id = 2; // HRTF General
+			$this->widgets = \App\Models\Datafiletype::find($this->datafiletype_id)->activewidgets()->get();
+			$this->widget_id = Widget::where('view', 'hrtf-general')->first()->id;
 		}
 		if($this->widget_id == null)
 			$this->widget_id = 1; // default widget
-
-		$this->datafiletypes = \App\Models\Datafiletype::all();
-		$this->widgets = \App\Models\Widget::orderBy('name', 'asc')->get(); 
 	}
 
+	public function updated($propertyName)
+	{
+		if($propertyName === 'datafiletype_id')
+		{
+			$this->widgets = \App\Models\Datafiletype::find($this->datafiletype_id)->activewidgets()->get();
+			$this->widget_id = \App\Models\Datafiletype::find($this->datafiletype_id)->default_widget;
+			if($this->widget_id == null)
+				$this->widget_id = 1; // default widget
+		}
+	}
+	
 	public function save()
 	{
 		$regex = 'not_regex:/[<>:&\"\\\|\?\*\/]/i';  // must not contain <>:&"\|?*/

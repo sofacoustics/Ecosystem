@@ -59,9 +59,12 @@
 			@else
 				<select class="{{ $selectClass }}" id="widget" wire:model.live="widget_id">
 			@endif
-				<option value="" disabled>Select a widget</option>
 				@foreach ($widgets as $widget)
-					<option value="{{ $widget->id }}">{{ $widget->name }} </option>
+					@if($widget->id == $widget_id)
+						<option value="{{ $widget->id }}" wire:key="{{ $widget->id }}" selected>{{ $widget->name }}</option>
+					@else
+						<option value="{{ $widget->id }}" wire:key="{{ $widget->id }}" >{{ $widget->name }}</option>
+					@endif
 				@endforeach
 			</select>
 			@if($datafiletype_id)
