@@ -66,7 +66,7 @@ class CommentForm extends Component
 		$adminEmails = config('mail.to.admins');
 		$userEmail = $this->comment->user->email;
 		$recipients = "$adminEmails,$userEmail";
-		Mail::to(explode(',',$recipients))->send(new NewComment($this->comment));
+		Mail::to(explode(',',$recipients))->queue(new NewComment($this->comment));
 		app('log')->info("New comment created. Sending NewComment email to $recipients");
 
 		session()->flash('message', $isNew ? 'comment created successfully.' : 'comment updated successfully.');

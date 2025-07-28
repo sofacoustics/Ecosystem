@@ -89,7 +89,7 @@ class DatabasePublishToRadar implements ShouldQueue
 				$this->database->radar_status=2;
 				$this->database->save();
 				$adminEmails = config('mail.to.admins');
-				Mail::to(explode(',',$adminEmails))->send(new DatabasePersistentPublicationRequested($this->database));
+				Mail::to(explode(',',$adminEmails))->queue(new DatabasePersistentPublicationRequested($this->database));
 				app('log')->info('Persistent publication requested', [
 					'feature' => 'database-radar-dataset',
 					'database_id' => $this->database->id,
@@ -97,7 +97,7 @@ class DatabasePublishToRadar implements ShouldQueue
 					'emails' => $adminEmails
 				]);
 				$this->radar_status = $this->database->radar_status;
-				app('log')->info('Database now published to RADAR', [
+				app('log')->info('Database now published to RADAR and awaiting approval', [
 					'feature' => 'database-radar-dataset',
 					'database_id' => $this->database->id,
 					'target_url' => config('services.radar.baseurl'),
