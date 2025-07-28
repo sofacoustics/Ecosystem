@@ -37,7 +37,7 @@ class DatabaseForm extends Component
 	protected $rules = [
 		'title' => 'required',
 		'productionyear' => ['required',  // must be provided
-												 'regex:/^(\d{4}(?:-\d{4})?|unknown)$/i' ], // YYYY or YYYY-YYYY or "unknown"
+												 'regex:/^(\d{4}(?:-\d{4})?|\d{4}-|unknown)$/i' ], // YYYY or YYYY- or YYYY-YYYY or "unknown"
 		'controlledrights' => 'required',
 		'descriptiongeneral' => 'max:500',
 		'descriptionabstract' => 'max:500',
