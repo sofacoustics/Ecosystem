@@ -112,6 +112,8 @@ class RelatedIdentifierForm extends Component
 		$tools = \App\Models\Tool::orderBy('title')->get();
 		foreach($tools as $tool)
 		{
+			if($this->relatedidentifierable_type === 'App\Models\Tool' & $tool->id === $this->relatedidentifierable_id) 
+				continue; // skip itself
 			array_push($this->toolrelatedable_ids, $tool->id);
 			array_push($this->toolrelatedable_names, $tool->title." (".$tool->productionyear.")");
 		}
@@ -121,7 +123,9 @@ class RelatedIdentifierForm extends Component
 		$databases = \App\Models\Database::orderBy('title')->get();
 		foreach($databases as $database)
 			if($database->visible)
-			{
+			{	// only visible databases
+				if($this->relatedidentifierable_type === 'App\Models\Database' & $database->id === $this->relatedidentifierable_id) 
+					continue; // skip itself
 				array_push($this->databaserelatedable_ids, $database->id);
 				array_push($this->databaserelatedable_names, $database->title." (".$database->productionyear.")");
 			}
