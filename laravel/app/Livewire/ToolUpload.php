@@ -66,22 +66,35 @@ class ToolUpload extends Component
 
 	public function save()
 	{
-		if(!$this->file)
+		if($this->tool->radar_status > 1)
 		{
-			\Log::info("ToolUpload::save() - $this->file is empty, so returning early!");
+			app('log')->error("ToolUpload::save() - attempting to save a new file when persistent publication has already been requested!");
+			if($this->tool->radar_status == 2)
+				$message = "Uploading a new file is not permitted since persistent publication for this tool has been requested!";
+			else if($this->tool->radar_status == 3)
+				$message = "Uploading a new file is not permitted since this tool has been persistently published!";
+			else
+				$message = "Uploading a new file is not permitted since the radar_status is greater than 1!";
+			$this->error = $message;
+			$this->addError('file', $message); // error messages weren't appearing without this, when using try/catch!
 			return;
 		}
-		\Log::info("ToolUpload::save()");
+		if(!$this->file)
+		{
+			app('log')->debug("ToolUpload::save() - $this->file is empty, so returning early!");
+			return;
+		}
+		app('log')->debug("ToolUpload::save()");
 
 		$this->authorize('update', $this->tool); // check if tool can be modified
 		$this->tool->removefile(); // if there was already a file --> remove the old one
 		$this->tool->filename = $this->file->getClientOriginalName();
-    $this->tool->save(); // save the tool filename
+		$this->tool->save(); // save the tool filename
 		$filename = $this->file->getClientOriginalName();
 		$directory = $this->tool->directory();
 		$this->dispatch('showFlashMessage', ['type' => 'success', 'message' => 'storeAs']);
 		$this->file->storeAs("$directory", "$filename", 'sonicom-data');
-			// clean up
+		// clean up
 		$this->file->delete();
 		$this->redirect(route('tools.show', $this->tool));
 	}
