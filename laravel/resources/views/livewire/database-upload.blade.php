@@ -117,13 +117,13 @@
 
 				<h3>4) Upload the datafiles:</h3>
 				<label>Overwrite existing files?
-						<input type="checkbox" wire:model.live="overwriteExisting">
+					<input type="checkbox" wire:model.live="overwriteExisting">
 				</label><br>
 
 				<div>
 					<button
 						x-bind:disabled="uploading || !canUpload"
-						@click="uploading=true; $js.doUpload($data)"
+						@click="$js.doUpload($data)"
 						x-text="uploading? 'Uploading...' : 'Start upload'"
 						class="{{ $buttonStyle }}"
 						x-bind:class="uploading || !canUpload? '{{ $buttonColorDisabled }}' : '{{ $buttonColorEnabled }}'"
@@ -493,6 +493,7 @@
 
 		// Process the upload
 	$js('doUpload', (data) => {
+		alert("This will start the upload and this might take a long time. To cancel the upload, refresh or close the page. Do not leave this page while uploading.");
 		let fn_array = $wire.get('pdatafilenames');
 		data = _createPendingFiles(data, fn_array); // create the list with PendingFiles
 		resetUpload();
