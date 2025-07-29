@@ -30,4 +30,13 @@ class Widget extends Model
 		// - Foreign key on pivot for Datafiletype: 'datafiletype_id'
 		// - Foreign key on pivot for Widget: 'widget_id'
 	}
+	
+		// Returns 0 if the widget is not active (for the given datafiletype)
+		// and >0 else
+	public function is_active(Datafiletype $datafiletype)
+	{
+		$active = $datafiletype->activewidgets;
+		$myactive = $active->where('id',$this->id);
+		return count($myactive);
+	}
 }

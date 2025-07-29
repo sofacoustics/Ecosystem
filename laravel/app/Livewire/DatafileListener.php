@@ -82,18 +82,13 @@ class DatafileListener extends Component
 		\Log::debug('DatafileListener: datafiletype name = ' . ($this->datafiletype->name ?? 'NULL'));
 		\Log::debug('DatafileListener: widget id = ' . $this->widget->id . ' widget view = ' . ($this->widget->view ?? 'NULL'));
 
-		// view depending on file type
-		$view = match($this->datafiletype->name)
-		{
-			'sofa-properties' => 'livewire.datafiles.sofa-properties',
-			default => 'livewire.datafiles.generic'
-		};
-
-		// widget view?
-		if ($this?->widget?->view) 
+			// is the widget active?
+		if($this->widget->is_active($this->datafiletype))
 			$view = "livewire.datafiles." . $this->widget->view;
+		else 
+			$view = 'livewire.datafiles.generic';
 
-		// view existing?
+		// is the view existing?
 		if (!View::exists($view))
 		{
 			\Log::info('DatafileListener: View not found, fallback to generic');
@@ -106,7 +101,7 @@ class DatafileListener extends Component
 
 		switch($view)
 		{
-				// GENERIC DATAFILE PROPERTIES
+				// DATAFILE PROPERTIES
 			case 'livewire.datafiles.properties':
 				$fullPath = $this->datafile->absolutepath();
 				$viewData['fullPath'] = $fullPath;
