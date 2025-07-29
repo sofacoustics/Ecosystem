@@ -76,6 +76,7 @@ class DatafileRadarFileBridge extends RadarBridge
 					'database_id' => $this->datafile->dataset->database->id,
 					'dataset_id' => $this->datafile->dataset->id,
 					'datafile_id' => $this->datafile->id,
+					'datasetdef_radar_id' => $this->datafile->datasetdef_radar_id,
 					'target_url' => config('services.radar.baseurl'),
 					'duration' => microtime(true) - $start
 				]);
@@ -113,6 +114,7 @@ class DatafileRadarFileBridge extends RadarBridge
 					'database_id' => $this->datafile->dataset->database->id,
 					'dataset_id' => $this->datafile->dataset->id,
 					'datafile_id' => $this->datafile->id,
+					'radar_id' => $this->datafile->radar_id,
 					'target_url' => config('services.radar.baseurl'),
 					'duration' => microtime(true) - $start
 				]);
