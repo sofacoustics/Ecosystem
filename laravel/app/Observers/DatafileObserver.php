@@ -17,7 +17,7 @@ class DatafileObserver
     public function created(Datafile $datafile): void
     {
         //
-        app('log')->info("DatafileObserver::created");
+        app('log')->debug("DatafileObserver::created");
         $this->dispatchService($datafile);
     }
 
@@ -26,7 +26,7 @@ class DatafileObserver
      */
     public function updated(Datafile $datafile): void
     {
-        app('log')->info('DatafileObserver::updated()');
+        app('log')->debug('DatafileObserver::updated()');
         $this->dispatchService($datafile);
     }
 
@@ -73,22 +73,32 @@ class DatafileObserver
     public function forceDeleted(Datafile $datafile): void
     {
         //
-    }
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	// private
+	////////////////////////////////////////////////////////////////////////////////
 
     private function dispatchService(Datafile $datafile)
     {
         $widget = $datafile->datasetdef->widget;
         if($widget)
         {
-            app('log')->info("dispatchService (widget: $widget->id, datafile: $datafile->id)");
+            app('log')->debug("dispatchService (widget: $widget->id, datafile: $datafile->id)");
             $service = $widget->service;
             if($service)
             {
-                //jw:note If you want to debug a job, you *must* use the 'sync' queue, not the 'database' queue
+				//jw:note If you want to debug a job using vscode, you *must* use the 'sync' queue, not the 'database' queue
                 Service::dispatch($widget, $datafile);
             }
         }
-        else
-            app('log')->info("dispatchService - NO WIDGET defined");
+		else
+		{
+			app('log')->warning("dispatchService - NO WIDGET defined", [
+				'feature' => 'widgets',
+				'datafile_id' => $datafile->id,
+				'datasetdef_id' => $datafile->datasetdef->id
+			]);
+		}
     }
 }
