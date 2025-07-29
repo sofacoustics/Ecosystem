@@ -39,16 +39,16 @@
 		
 		@if($nFilesInDir > 0)
 			<h3>2) Apply filter on your datafiles:<h3>
-			<small>Pattern for the datasets names:</small>
-				<input class="w-full" type="text" placeholder="Must include <ID>, e.g., name <ID>. Must not be empty." id="dsn_pattern"
+			<small>Pattern for the datasets names: (use &lt;ID&gt; to encode an identifier changing with each dataset)</small>
+				<input class="w-full" type="text" placeholder="Can include <ID>, e.g., name <ID>. Must not be empty." id="dsn_pattern" required
 					wire:model.blur="datasetnamefilter" />
 			@foreach ($database->datasetdefs as $index => $datasetdef)
 				<small>#{{ $loop->index+1}}: Pattern for the datafile names of <b>{{ $datasetdef->name }}</b>:</small>
-					<input class="w-full" type="text" placeholder="Must include <ID> and may include <NUM> or <ANY>, e.g. prefix<ID>_maytest<ANY>.ext. Can be empty to exclude a datasetfile."
+					<input class="w-full" type="text" placeholder="Can include <ID>, <NUM> or <ANY>, e.g. prefix<ID>_maytest<ANY>.ext. Can be empty to exclude a datasetfile."
 						id="fn_pattern{{ $datasetdef->id }}" wire:model.blur="datafilenamefilters.{{ $datasetdef->id }}" />
 			@endforeach 
 			<small>Pattern for the datasets descriptions (optional):</small>
-				<input class="w-full" type="text" placeholder="Must include <ID>, e.g., description <ID>. Can be empty." id="description_pattern"
+				<input class="w-full" type="text" placeholder="Can include <ID>, e.g., description <ID>. Can be empty." id="description_pattern"
 					wire:model.blur="descriptionfilter" />
 			<br>
 			<div>
@@ -299,13 +299,23 @@
 		// Apply the filter and prepare a table with filenames for the upload
 	$js('doFilter', (data) => {
 		if (data) {
+			
+							// load the pattern of the dataset names and description
+			let dsn_pattern = document.getElementById("dsn_pattern").value.trim(); 
+			let descr_pattern = document.getElementById("description_pattern").value.trim(); 
+			
+			if(dsn_pattern.length==0)
+			{
+				window.alert("Dataset name must not be empty");
+				return;
+			}
 			resetUpload();
 			data.dirMode = 0;
 			let df_array = $wire.datasetdefIds; // get the dataset definition (=array with dataset filetypes)
 			let fn_filter_array = [], postfix_array = [], beg_id_array = [], dummy = [], fn_cnt_array = [];
 			for (let i=0; i<df_array.length; i++)
 			{
-				let fn_pattern = document.getElementById("fn_pattern"+df_array[i]).value;
+				let fn_pattern = document.getElementById("fn_pattern"+df_array[i]).value.trim();
 				if (fn_pattern == "")
 				{		// empty pattern --> ignore
 					fn_filter_array[i]="";
@@ -347,9 +357,6 @@
 				dummy[i] = "<NONE>";
 				fn_cnt_array[i] = 0;
 			}
-				// load the pattern of the dataset names and description
-			let dsn_pattern = document.getElementById("dsn_pattern").value; 
-			let descr_pattern = document.getElementById("description_pattern").value; 
 				// clear the table
 			tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
 			tableBody.innerHTML = "";
