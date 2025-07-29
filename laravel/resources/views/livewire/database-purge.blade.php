@@ -25,7 +25,10 @@
 				<li>There are no datasets associated with this database</li>
 			@endforelse
 		</ul>
-		<x-livewire-button wire:click="purgeDatabase" loading="Purging...">This will purge the database, i.e., delete ALL datasets!</x-livewire-button>
+		<x-livewire-button wire:click="purgeDatabase" loading="Purging..." 
+			wire:confirm="Are you sure to purge the database, i.e., delete ALL datasets?">
+			Purge the Database
+		</x-livewire-button>
 	@else
 		<p>Nothing to purge, there are no datasets associated with this database.</p>
 	@endif

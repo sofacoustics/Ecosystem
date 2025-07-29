@@ -18,8 +18,8 @@
 --}}
 
 @props([
-    'loading' => null, // Optional: loading text, e.g., "Saving..."
-    'type' => 'submit', // Default to submit, can be overridden
+	'loading' => null, // Optional: loading text, e.g., "Saving..."
+	'type' => 'submit', // Default to submit, can be overridden
 	'style' => 'submit', // Default 'submit'. Possible values: submit, delete
 ])
 
