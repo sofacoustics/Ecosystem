@@ -362,7 +362,7 @@ class ToolRadarDatasetBridge extends RadarBridge
 		// get tool as JSON
 		$resource = new RadarToolResource($this->tool);
 		$arrayBody = $resource->toArray(request()); // alternative would be json_decode($resource->toJson(), true);
-		
+
 		$endpoint = "/workspaces/$this->workspace/datasets/";
 		$this->content = $arrayBody;
 		$this->endpoint = $endpoint;
@@ -388,7 +388,7 @@ class ToolRadarDatasetBridge extends RadarBridge
 			'feature' => 'tool-radar-dataset',
 			'tool_id' => $this->tool->id,
 			'target_url' => config('services.radar.baseurl'),
-			'status' => $resonse->status(),
+			'status' => $response->status(),
 			'duration' => microtime(true) - $start
 		]);
 		return false;
@@ -525,7 +525,7 @@ class ToolRadarDatasetBridge extends RadarBridge
 			'tool_id' => $this->tool->id,
 			'radar_id' => $this->tool->radar_id,
 			'target_url' => config('services.radar.baseurl'),
-			'status' => $resonse->status(),
+			'status' => $response->status(),
 			'details' => $this->details,
 			'duration' => microtime(true) - $start
 		]);

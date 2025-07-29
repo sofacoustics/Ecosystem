@@ -46,6 +46,14 @@ class RadarToolResource extends JsonResource
 			$ar = $tool->additionalrights;
 		}
 		
+			// Expand YYYY- to YYYY-currentyear
+		$py = $tool->productionyear;
+		if(strlen($py) == 5) // YYYY-
+			if(date("Y") != substr($py,0,4)) 
+				$py = $py.date("Y"); // YYYY is not currentyear --> append the current year
+			else
+				$py = substr($py,0,4); // YYYY is the current year, remove the dash
+
 		$descriptiveMetadata = 
 		[
 			'title' => $tool->title . " (Tool #" . $tool->id . ")",
@@ -56,7 +64,7 @@ class RadarToolResource extends JsonResource
 				'value' => $tool->doi,
 				'identifierType' => 'DOI',
 			],
-			'productionYear' => $tool->productionyear,
+			'productionYear' => $py,
 			'publicationYear' => $tool->publicationyear,
 			'publishers' => [
 				'publisher' => RadarPublisherResource::collection($this->whenLoaded('publishers')),

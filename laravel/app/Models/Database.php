@@ -156,14 +156,19 @@ class Database extends Model
 		$msg = null;
 		// At least one creator required
 		if(count($this->creators)==0)
-			$msg = $msg. "- <a href='" . route('databases.creators', $this->id) . "'>Creators</a> missing: At least one creator is required\n";
+			$msg = $msg. "- Creators missing: At least one creator is required. <a href='" . route('databases.creators', $this->id) . "'>Fix it</a>\n";
 		// At least one publisher required
 		if(count($this->publishers)==0)
-			$msg = $msg. "- <a href='" . route('databases.publishers', $this->id) . "'>Publishers</a> missing: At least one publisher is required\n";
+			$msg = $msg. "- Publishers missing: At least one publisher is required. <a href='" . route('databases.publishers', $this->id) . "'>Fix it</a>\n";
 		// At least one rightsholder required
 		if(count($this->rightsholders)==0)
-			$msg = $msg. "- <a href='" . route('databases.rightsholders', $this->id) . "'>Rightsholders</a> missing: At least one rightsholder is required\n";
-
+			$msg = $msg. "- Rightsholders missing: At least one rightsholder is required. <a href='" . route('databases.rightsholders', $this->id) . "'>Fix it</a>\n";
+		// Production year chronologically valid
+		$py = $this->productionyear;
+		if(strlen($py)==9) // AAAA-BBBB
+			if(substr($py,0,4) >= substr($py,5,4)) // AAAA >= BBBB
+				$msg = $msg. "- Production year '". $py . " invalid: the second year must be later that the first year. <a href='" . route('databases.edit', $this->id) . "'>Fix it</a>\n";
+		
 		return $msg;
 	}
 

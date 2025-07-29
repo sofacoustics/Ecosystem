@@ -43,7 +43,7 @@ class ToolDoi extends Component
 	}
 
 	public function assignDOI()
-	{
+	{	
 		$start = microtime(true);
 		$this->dispatch('status-message', 'Starting DOI assignment');
 		$this->error = "";
@@ -52,7 +52,7 @@ class ToolDoi extends Component
 		$radar = new ToolRadarDatasetBridge($this->tool);
 			// create RADAR dataset
 		if(!$this->tool->radar_id)
-		{
+		{ 
 			if($radar->create())
 			{
 				$this->dispatch('radar-status-changed', 'RADAR Dataset created'); // let other livewire components know the radar status has changed
@@ -66,8 +66,7 @@ class ToolDoi extends Component
 				$this->radar_status = $this->tool->radar_status;
 				return;
 			}
-		}
-			// validate metadata
+		}	// validate metadata
 		else if(!$radar->metadataValidate())
 		{
 			$this->dispatch('radar-status-changed', 'Validation failed');
