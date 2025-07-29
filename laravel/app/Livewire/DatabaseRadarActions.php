@@ -192,6 +192,7 @@ class DatabaseRadarActions extends Component
 	*/
 	public function rejectPersistentPublication()
 	{
+		$start = microtime(true);
 		$this->reset('error');
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if(!$radar->endreview())
