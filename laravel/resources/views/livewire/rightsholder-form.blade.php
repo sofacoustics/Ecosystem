@@ -24,7 +24,7 @@
 			<input wire:model="rightsholderName" type="text" 
 								placeholder="Name of the person or institution."
 								id="rightsholderName" class="{{ $inputClass }}" required />
-			<x-livewire-button wire:click="fillinmydata()">Fill in my data</x-livewire-button>
+			<x-livewire-button type="button" wire:click="fillinmydata()">Fill in my data</x-livewire-button>
 			@error('rightsholderName')
 				<span class="text-red-500">{{ $message }}</span>
 			@enderror

@@ -27,7 +27,7 @@
 			<input wire:model="publisherName" type="text" 
 								placeholder="Name of the person or institution."
 								id="publisherName" class="{{ $inputClass }}" required />
-			<x-livewire-button wire:click="fillinmydata()">Fill in my data</x-livewire-button>
+			<x-livewire-button type="button" wire:click="fillinmydata()">Fill in my data</x-livewire-button>
 			@error('publisherName')
 				<span class="text-red-500">{{ $message }}</span>
 			@enderror

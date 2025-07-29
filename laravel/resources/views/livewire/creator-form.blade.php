@@ -67,7 +67,7 @@
 											id="nameIdentifier" class="{{ $inputClass }}" />
 						</div></td>
 						<td class="px-4"><div class="mb-4">
-							<x-livewire-button class="{{$buttonClass}}" wire:click="fillinmydata()">Fill in my data</x-livewire-button>
+							<x-livewire-button type="button" wire:click="fillinmydata">Fill in my data</x-livewire-button>
 						</div></td>
 					</tr>
 					@error('nameIdentifier')
@@ -137,9 +137,9 @@
 	</fieldset>
 	
 	<div class="mt-4">
-		<button type="submit" class="{{ $buttonClass }}">
+		<x-button type="submit">
 			{{ $creator ? 'Update Creator' : 'Create Creator' }}
-		</button>
+		</x-button>
 	</div>
 	
 	</form>
