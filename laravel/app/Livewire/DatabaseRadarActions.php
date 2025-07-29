@@ -8,6 +8,8 @@ use App\Jobs\DatabasePublishToRadar;
 use App\Mail\DatabasePersistentPublicationRejected;
 use App\Services\DatabaseRadarDatasetBridge;
 
+use Illuminate\Support\Facades\Mail;
+
 class DatabaseRadarActions extends Component
 {
 	public $database;
