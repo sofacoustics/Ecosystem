@@ -43,7 +43,7 @@
 
 	@if($database->doi)
 		<x-property name="DOI">
-			@if($database->radar_status==3)
+			@if($database->radar_status==4)
 				<a href="https://doi.org/{{ $database->doi }}">{{ $database->doi }}</a>
 			@else
 				{{ $database->doi }}

@@ -28,7 +28,7 @@ class DatabaseVisibility extends Component
 	public $status; // set messages to be viewed in view
 	public $warning;
 	public $error; // set error messages to be viewed in view
-	public $radar_status; // null or 0: nothing happened with RADAR yet; 1: DOI assigned; 2: Requested publication, curator notified; 3: Database persistently published.
+	public $radar_status; // null or 0: nothing happened with RADAR yet; 1: DOI assigned; 2: Requested publication (started) 3: Requested publication (finished), curator notified; 4: Database persistently published.
 
 	protected $rules = [
 	];

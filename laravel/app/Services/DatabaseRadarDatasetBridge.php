@@ -72,7 +72,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		$response = $this->post($endpoint);
 		if($this->status == 200)
 		{
-			$this->database->radar_status = 3;
+			$this->database->radar_status = 4;
 			$this->database->publicationyear= $this->getNestedJsonValue('descriptiveMetadata.publicationYear', $response);
 			$this->database->save();
 			// start job to poll for publication date
@@ -182,8 +182,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 			]);
 			$this->message = 'The RADAR dataset review process has been ended';
 
-
-			if($this->database->radar_status == 2)
+			if($this->database->radar_status == 3)
 			{
 				// send user and admin an email
 				$adminEmails = config('mail.to.admins');
@@ -191,10 +190,11 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 				$recipients = $userEmail . ',' . $adminEmails;
 				Mail::to(explode(',',$recipients))->queue(new DatabasePersistentPublicationRejected($this->database));
 				app('log')->info("DatabasePersistentPublicationRejected email for database " . $this->database->title . " (" . $this->database->id . ") sent to $recipients");
-				// set status to "DOI assigned"
-				$this->database->radar_status = 1;
-				$this->database->save();
 			}
+			// set status to "DOI assigned"
+			$this->database->radar_status = 1;
+			$this->database->save();
+
 			return true;
 		}
 		else

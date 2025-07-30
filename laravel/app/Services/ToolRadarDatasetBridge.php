@@ -70,7 +70,7 @@ class ToolRadarDatasetBridge extends RadarBridge
 		$response = $this->post($endpoint);
 		if($this->status == 200)
 		{
-			$this->tool->radar_status = 3;
+			$this->tool->radar_status = 4;
 			$this->tool->publicationyear = $this->getNestedJsonValue('descriptiveMetadata.publicationYear', $response);
 			$this->tool->save();
 			// send user and admin an email
@@ -102,7 +102,7 @@ class ToolRadarDatasetBridge extends RadarBridge
 	 *
 	 * RADAR Docs:
 	 *
-	 *	Review	POST	/datasets/{id}/startreview		200, 401, 403, 404, 422, 500	 
+	 *	Review	POST	/datasets/{id}/startreview		200, 401, 403, 404, 422, 500
 	 *
 	 * Notes:
 	 *

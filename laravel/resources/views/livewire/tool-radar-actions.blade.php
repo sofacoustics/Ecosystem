@@ -24,7 +24,7 @@
 		<x-alert title='Error!'>{{ $error }}</x-alert>
 	@endif
 
-	@if($radar_status == 2)
+	@if($radar_status == 3)
 		<x-livewire-button wire:click="approvePersistentPublication"
 			wire:confirm="This will actually 'publish' the tool persistently.">
 			Approve Persistent Publication

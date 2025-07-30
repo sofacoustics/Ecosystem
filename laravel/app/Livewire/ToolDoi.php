@@ -20,7 +20,8 @@ class ToolDoi extends Component
 	public $status; // set messages to be viewed in view
 	public $warning;
 	public $error; // set error messages to be viewed in view
-	public $radar_status; // null or 0: nothing happened with RADAR yet; 1: DOI assigned; 2: Requested publication, curator notified; 3: Persistently published.
+	public $radar_status; // null or 0: nothing happened with RADAR yet; 1: DOI assigned; 2: Requested publication (started) 3: Requested publication (finished), curator notified; 4: Database persistently published.
+
 
 	protected $rules = [
 	];
@@ -193,7 +194,7 @@ class ToolDoi extends Component
 			$this->dispatch('status-message', $radar->message);
 		}
 
-		$this->tool->radar_status=2;
+		$this->tool->radar_status=3; // note that until we use a job to upload the tool, we skip '2'.
 		$this->tool->save();
 		$this->radar_status = $this->tool->radar_status;
 		$this->dispatch('status-message', 'Tool has been successfully submitted for persistent publication!');
