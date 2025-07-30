@@ -163,10 +163,9 @@ class DatabaseVisibility extends Component
 		// sanity check: does RADAR ddataset exist?
 
 		// check that all datasets have the correct number of datafiles
-		if(!$this->database->isReadyToPublish($message))
+		if(!$this->database->checkForIncompleteDatasets($message))
 		{
-			$this->warning = "Your database is not ready to publish. $message";
-			return;
+			$this->warning = "Your dataset contains datasets with missing datafiles. $message";
 		}
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		$radar->verifyOrRemove(); // check if RADAR dataset exists or clearn up
