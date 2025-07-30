@@ -335,7 +335,9 @@
 					fn_filter = fn_filter.replace(/\)/g, "\\)");
 					fn_filter = fn_filter.replace(/<NUM>/g, "[0-9]+"); 
 					fn_filter = fn_filter.replace(/<ANY>/g, ".+"); 
+					fn_filter = "^" + fn_filter; // ensure that pattern starts from beginning of the file name only
 					fn_filter = RegExp(fn_filter.replace(/<ID>/g, ".+"));
+					console.log(fn_filter);
 					fn_filter_array[i]=fn_filter;
 					if (data.dirMode == 0 && fn_pattern.indexOf("/") >= 0) data.dirMode=1;
 					let end_filter = fn_pattern.indexOf("ID>")+3; // find the end of the ID
