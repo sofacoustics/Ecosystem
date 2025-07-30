@@ -88,7 +88,7 @@ class DatabaseVisibility extends Component
 			}
 		}
 		// validate metadata
-		else if(!$radar->metadataValidate())
+		if(!$radar->metadataValidate())
 		{
 			$this->dispatch('radar-status-changed', 'Validation failed');
 			$this->error = $radar->message.' RADAR Message: '.$radar->details;
@@ -117,7 +117,7 @@ class DatabaseVisibility extends Component
 		// retrieve doi
 		if($radar->getDOI())
 		{
-			$this->doi = $radar->doi; 
+			$this->doi = $radar->doi;
 			$this->dispatch('status-message', $radar->message);
 		}
 		else
