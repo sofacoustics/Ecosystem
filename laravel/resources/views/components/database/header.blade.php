@@ -27,6 +27,42 @@
 	@section('tabTitle', " | " . $tabTitle)
 @endif
 
+<style>
+	.container {
+		display: flex; /* Make this the flex container for the columns */
+		flex-grow: 1; /* Allow container to fill available vertical space */
+		flex-wrap: wrap; /* Allows columns to wrap on smaller screens */
+	}
+
+	.column {
+		flex: 1; /* Each column takes equal available space */
+		min-width: 300px; /* Optional: Minimum width before wrapping */
+		padding: 20px;
+		box-sizing: border-box; /* Include padding in element's total width/height */
+		display: flex; /* Optional: If content inside needs flex layout */
+		flex-direction: column; /* Optional: If content inside needs flex layout */
+	}
+
+	.column.left {
+	}
+
+	.column.right {
+		text-align: right;
+	}
+
+	/* Responsive Adjustments */
+	@media (max-width: 768px) {
+		.container {
+			flex-direction: column; /* Stack columns vertically on small screens */
+		}
+		.column {
+			flex: none; /* Remove flex-grow on small screens */
+			width: 100%; /* Take full width */
+		}
+	}
+</style>
+
+
 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Database:
 	<a href="{{ route('databases.show', $database->id) }}">{{ $database->title }}</a>
 	@if($database->productionyear!="unknown")
@@ -48,9 +84,14 @@
 			@else
 				{{ $database->doi }}
 			@endif
-			<img id="copyDOI" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 1.5em; display: inline-block;"><input type="text" id="textDOI" value="{{ $database->doi }}" class="hidden">
+			<img id="copyDOI" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy DOI to Clipboard" style="height: 1.5em; display: inline-block;"><input type="text" id="textDOI" value="{{ $database->doi }}" class="hidden">
 		</x-property>
 	@endif
+
+	<x-property name="Cite as" title="{{ $database->citationtooltip() }}">
+		{!! $database->citation() !!}
+		<img id="copyCitation" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy Citation to Clipboard" style="height: 1.5em; display: inline-block;"><input type="text" id="textCitation" value="{{ strip_tags($database->citation()) }}" class="hidden">
+	</x-property>
 </p>
 
 <p>
@@ -91,11 +132,6 @@
 	@endhasrole
 </p>
 
-<p>
-	<small><b>Ecosystem ID:</b> {{ $database->id }}</small>
-</p>
-
-
 <script>
 	document.getElementById('copyDOI')?.addEventListener('click', function() {
 			// Get the text from the input field
@@ -109,4 +145,18 @@
 				alert('Failed to copy text. Please copy manually.'); // Inform the user
 		});
 	});
+	
+	document.getElementById('copyCitation')?.addEventListener('click', function() {
+			// Get the text from the input field
+		var textToCopy = document.getElementById('textCitation').value;
+
+		// Use the Clipboard API to copy the text
+		navigator.clipboard.writeText(textToCopy).then(function() {
+				alert(textToCopy + '\ncopied to the clipboard...');
+		}).catch(function(err) {
+				console.error('Failed to copy text: ', err);
+				alert('Failed to copy text. Please copy manually.'); // Inform the user
+		});
+	});
+	
 </script>

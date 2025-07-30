@@ -220,4 +220,50 @@ class Database extends Model
 		$this->radar_status = null;
 		$this->save();
 	}
+	
+	public function citation() : String
+	{
+		$str = '';
+		if(count($this->creators)==0)
+			$str = 'Anonymous'; 
+		else
+			foreach($this->creators as $index => $creator)
+			{
+				if($creator->familyName)
+				{		// Person
+					if($creator->givenName)
+						$seq = $creator->familyName . ', ' . $creator->givenName[0] . '.';
+					else
+						$seq = $creator->familyName; 
+				}
+				else
+				{		// Institution
+					$seq = $creator->creatorName; 
+				}
+				if($index == 0)
+					$str = $seq;
+				elseif($index == count($this->creators)-1)
+					$str = $str. ', and ' . $seq; 
+				else
+					$str = $str. ', ' . $seq; 
+			}
+		if($this->publicationyear != 'unknown' & $this->publicationyear != null)
+			$py = $this->publicationyear; // publication year available and not unknown -> use it!
+		else
+			$py = date("Y",strtotime($this->updated_at)); // publication year unknown --> the last update of the database is used
+			
+			
+		$str = $str . ' (<b>' . $py . '</b>). ';
+		$str = $str . '"' . $this->title . '", <i>The SONICOM Ecosystem: Database #' . $this->id . '</i>.'; 
+		$str = $str . ' URL: ' . route('databases.show', $this->id) . '.'; 
+		return $str;
+	}
+	
+	public function citationtooltip() : String
+	{
+		if($this->publicationyear != 'unknown' & $this->publicationyear != null)
+			return 'Date is the publication date in the Datathek.';
+		else
+			return 'The Datathek publication year is not available, thus, the date is the year of the last database update.'; // publication year unknown --> the last update of the database is used
+	}
 }

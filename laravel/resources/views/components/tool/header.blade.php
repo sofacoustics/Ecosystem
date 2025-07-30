@@ -34,6 +34,11 @@
 			<img id="copyDOI" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 1.5em; display: inline-block;"><input type="text" id="textDOI" value="{{ $tool->doi }}" class="hidden">
 		</x-property>
 	@endif
+
+	<x-property name="Cite as" title="{{ $tool->citationtooltip() }}">
+		{!! $tool->citation() !!}
+		<img id="copyCitation" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy Citation to Clipboard" style="height: 1.5em; display: inline-block;"><input type="text" id="textCitation" value="{{ strip_tags($tool->citation()) }}" class="hidden">
+	</x-property>
 </p>
 
 <p>
@@ -76,4 +81,18 @@
 				alert('Failed to copy text. Please copy manually.'); // Inform the user
 		});
 	});
+
+	document.getElementById('copyCitation')?.addEventListener('click', function() {
+			// Get the text from the input field
+		var textToCopy = document.getElementById('textCitation').value;
+
+		// Use the Clipboard API to copy the text
+		navigator.clipboard.writeText(textToCopy).then(function() {
+				alert(textToCopy + '\ncopied to the clipboard...');
+		}).catch(function(err) {
+				console.error('Failed to copy text: ', err);
+				alert('Failed to copy text. Please copy manually.'); // Inform the user
+		});
+	});
+	
 </script>
