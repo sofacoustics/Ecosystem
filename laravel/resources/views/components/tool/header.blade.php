@@ -26,7 +26,7 @@
 
 	@if($tool->doi)
 		<x-property name="DOI">
-			@if($tool->radar_status==3)
+			@if($tool->radar_status==4)
 				<a href="https://doi.org/{{ $tool->doi }}">{{ $tool->doi }}</a>
 			@else
 				{{ $tool->doi }}

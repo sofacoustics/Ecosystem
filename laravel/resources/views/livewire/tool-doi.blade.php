@@ -88,9 +88,13 @@
 			@endif
 		@endif
 	@elseif($radar_status==2)
-		<p>The tool has been submitted to be persistently published.</p>
-		<p>The curator has been notified. Please check later...</p>
+		<p>The tool has been submitted to be persistently published.<br>
+		The publishing job is currently uploading the data. This may take a while.</p>
+		<p>The curator has been notified. You will be informed per email.</p>
 	@elseif($radar_status==3)
+		<p>The tool has been submitted to be persistently published.</p>
+		<p>The curator has been notified. You will be informed per email.</p>
+	@elseif($radar_status==4)
 		<p>The tool has been persistently published under the following link: <a href="https://doi.org/{{$doi}}">https://doi.org/{{$doi}}</a>.
 		</p>
 		<p>Well done!</p>

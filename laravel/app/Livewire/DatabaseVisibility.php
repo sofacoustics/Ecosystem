@@ -28,7 +28,7 @@ class DatabaseVisibility extends Component
 	public $status; // set messages to be viewed in view
 	public $warning;
 	public $error; // set error messages to be viewed in view
-	public $radar_status; // null or 0: nothing happened with RADAR yet; 1: DOI assigned; 2: Requested publication, curator notified; 3: Database persistently published.
+	public $radar_status; // null or 0: nothing happened with RADAR yet; 1: DOI assigned; 2: Requested publication (started) 3: Requested publication (finished), curator notified; 4: Database persistently published.
 
 	protected $rules = [
 	];
@@ -163,10 +163,9 @@ class DatabaseVisibility extends Component
 		// sanity check: does RADAR ddataset exist?
 
 		// check that all datasets have the correct number of datafiles
-		if(!$this->database->isReadyToPublish($message))
+		if(!$this->database->checkForIncompleteDatasets($message))
 		{
-			$this->warning = "Your database is not ready to publish. $message";
-			return;
+			$this->warning = "Your dataset contains datasets with missing datafiles. $message";
 		}
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		$radar->verifyOrRemove(); // check if RADAR dataset exists or clearn up

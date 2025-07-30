@@ -133,7 +133,7 @@ Parameters:
 						<li><b>DOI (assigned)</b>: {{ $database->doi }}
 					@elseif($database->radar_status==2)
 						<li><b>DOI (publication requested)</b>: {{ $database->doi }}
-					@elseif($database->radar_status==3)
+					@elseif($database->radar_status==4)
 						<li><b>DOI (persistently published)</b>: <a href="https://doi.org/{{ $database->doi }}">{{ $database->doi }}</a>
 						@if ($database->publicationyear != null) 
 							<li><b>DOI Publication Year</b>: {{ $database->publicationyear }}</li>

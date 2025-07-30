@@ -68,7 +68,7 @@ class ToolUpload extends Component
 			app('log')->error("ToolUpload::save() - attempting to save a new file when persistent publication has already been requested!", ['feature' => 'livewire-tool-upload', 'tool_id' => $this->tool->id]);
 			if($this->tool->radar_status == 2)
 				$message = "Uploading a new file is not permitted since persistent publication for this tool has been requested!";
-			else if($this->tool->radar_status == 3)
+			else if($this->tool->radar_status == 4)
 				$message = "Uploading a new file is not permitted since this tool has been persistently published!";
 			else
 				$message = "Uploading a new file is not permitted since the radar_status is greater than 1!";

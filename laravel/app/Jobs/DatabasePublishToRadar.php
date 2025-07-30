@@ -69,6 +69,10 @@ class DatabasePublishToRadar implements ShouldQueue
 			'job_id' => $this->job->getJobId(),
 			'attempt' => $this->attempts()
 		]);
+		
+		$this->database->radar_status = 2; // started publishing. Will set to '3' when finished.
+		$this->database->save();
+
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if(!$radar->upload())
 		{
@@ -127,7 +131,7 @@ class DatabasePublishToRadar implements ShouldQueue
 			}
 			else
 			{
-				$this->database->radar_status=2;
+				$this->database->radar_status=3; // publishing finished. Wait for approval
 				$this->database->save();
 				$adminEmails = config('mail.to.admins');
 				// inform admins that they should review the request

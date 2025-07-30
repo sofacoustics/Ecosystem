@@ -154,7 +154,7 @@ Parameters:
 						<li><b>DOI (assigned)</b>: {{ $tool->doi }}
 					@elseif($tool->radar_status==2)
 						<li><b>DOI (publication requested)</b>: {{ $tool->doi }}
-					@elseif($tool->radar_status==3)
+					@elseif($tool->radar_status==4)
 						<li><b>DOI (persistently published)</b>: <a href="https://doi.org/{{ $tool->doi }}">{{ $tool->doi }}</a>
 						@if ($tool->publicationyear != null) 
 							<li><b>Publication Year</b>: {{ $tool->publicationyear }}</li>

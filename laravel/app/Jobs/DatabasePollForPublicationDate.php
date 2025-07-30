@@ -42,7 +42,7 @@ class DatabasePollForPublicationDate implements ShouldQueue
 		]);
 
 
-		if($this->database->radar_id && $this->database->radar_status == 3)
+		if($this->database->radar_id && $this->database->radar_status == 4)
 		{
 			$radar = new DatabaseRadarDatasetBridge($this->database);
 			if($radar->read())
@@ -96,7 +96,7 @@ class DatabasePollForPublicationDate implements ShouldQueue
 		}
 		else
 		{
-			app('log')->debug('Won\'t retrieve publication date if radar_id is null or radar_status != 3', [
+			app('log')->debug('Won\'t retrieve publication date if radar_id is null or radar_status != 4', [
 				'feature' => 'database-radar-dataset',
 				'database_id' => $this->database->id,
 				'radar_id' => $this->database->radar_id,

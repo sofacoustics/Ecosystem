@@ -168,14 +168,14 @@ class Database extends Model
 		if(strlen($py)==9) // AAAA-BBBB
 			if(substr($py,0,4) >= substr($py,5,4)) // AAAA >= BBBB
 				$msg = $msg. "- Production year '". $py . " invalid: the second year must be later that the first year. <a href='" . route('databases.edit', $this->id) . "'>Fix it</a>\n";
-		
+
 		return $msg;
 	}
 
 	/*
-	 * Check that database is in a state where it is ready to persistently publish
+	 * Check if there are incomplete datasets
 	 */
-	public function isReadyToPublish(&$message)
+	public function checkForIncompleteDatasets(&$message)
 	{
 		foreach($this->datasets as $dataset)
 		{

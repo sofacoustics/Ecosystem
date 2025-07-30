@@ -37,7 +37,7 @@ fi
 # Check for changes in view files
 if git diff --name-only HEAD@{1} HEAD | grep -qE '^resources/views/.*\.php'; then
 	echo "View changes detected. Recaching views..."
-	php artisan route:cache
+	php artisan view:cache
 else
 	echo "No view changes detected. Skipping view cache."
 fi

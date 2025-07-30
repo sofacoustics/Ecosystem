@@ -13,7 +13,7 @@
 			<p>Note that because the database has been published (i.e., visible) to others,
 				your database might be spread across the internet even if you hide it.
 			</p>
-		@elseif($radar_status<3)
+		@elseif($radar_status<4)
 			<p>The database cannot be hidden again because it has been submitted for a persistent publication.</p>
 		@else
 			<p>The database cannot be hidden again because it has been persistently published.</p>
@@ -109,9 +109,13 @@
 				@endif
 			@elseif($radar_status==2)
 				<p>The database has been submitted for persistent publication.<br>
-				The curator has been notified.<br>
+				The publication job is running and may take a while whilst uploading.<br>
 				You will receive an email when publication has been approved.</p>
 			@elseif($radar_status==3)
+				<p>The database has been submitted for persistent publication.<br>
+				The curator has been notified.<br>
+				You will receive an email when publication has been approved.</p>
+			@elseif($radar_status==4)
 				<p>The database has been persistently published under the following link: <a href="https://doi.org/{{$doi}}">https://doi.org/{{$doi}}</a>.
 				</p>
 				<p>Well done!</p>
