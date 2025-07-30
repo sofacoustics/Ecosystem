@@ -7,11 +7,6 @@ use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
-//jw:note Add events and listeners here https://laravel.com/docs/10.x/events#registering-events-and-listeners
-//jw:note and then run php artisan event:generate
-use App\Events\DatafileUploaded;
-use App\Listeners\SendDatafileNotification;
-
 class EventServiceProvider extends ServiceProvider
 {
     /**
@@ -22,9 +17,6 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
-        ],
-        DatafileUploaded::class => [
-            SendDatafileNotification::class,
         ],
     ];
 
@@ -41,6 +33,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function shouldDiscoverEvents(): bool
     {
-        return false;
+        return true;
     }
 }

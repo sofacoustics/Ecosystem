@@ -71,7 +71,7 @@ class DatabaseVisibility extends Component
 		$this->warning = "";
 
 		$radar = new DatabaseRadarDatasetBridge($this->database);
-			// create RADAR dataset
+		// create RADAR dataset
 		if(!$this->database->radar_id)
 		{
 			if($radar->create())
@@ -92,6 +92,8 @@ class DatabaseVisibility extends Component
 		{
 			$this->dispatch('radar-status-changed', 'Validation failed');
 			$this->error = $radar->message.' RADAR Message: '.$radar->details;
+			// delete RADAR dataset if it has been created
+			$radar->delete();
 			return;
 		}
 		if($radar->read())
@@ -158,6 +160,8 @@ class DatabaseVisibility extends Component
 		$this->error = "";
 		$this->warning = "";
 
+		// sanity check: does RADAR ddataset exist?
+
 		// check that all datasets have the correct number of datafiles
 		if(!$this->database->isReadyToPublish($message))
 		{
@@ -165,6 +169,7 @@ class DatabaseVisibility extends Component
 			return;
 		}
 		$radar = new DatabaseRadarDatasetBridge($this->database);
+		$radar->verifyOrRemove(); // check if RADAR dataset exists or clearn up
 		if($radar->update())
 		{
 			$this->dispatch('radar-status-changed', 'Dataset updated'); // let other livewire components know the radar status has changed
@@ -188,7 +193,7 @@ class DatabaseVisibility extends Component
 		// upload and review start now in job
 		DatabasePublishToRadar::dispatch($this->database);
 
-		return redirect()->route('databases.show', $this->database)->with('success', 'Your database is being published and you will be informed when the task has finished');
+		return redirect()->route('databases.show', $this->database)->with('success', 'Your database is being published and you will be informed per email when the task has finished');
 	}
 
 	public function render()

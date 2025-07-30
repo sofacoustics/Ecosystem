@@ -38,7 +38,7 @@ return [
             'driver' => 'database',
             'table' => 'jobs',
             'queue' => 'default',
-            'retry_after' => 90,
+            'retry_after' => 90, //jw:note This is the amount of time between retries. According to my tests the $backoff setting is ignored :-(
             'after_commit' => false,
         ],
 

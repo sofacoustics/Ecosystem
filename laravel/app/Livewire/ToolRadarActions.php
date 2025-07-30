@@ -200,12 +200,24 @@ class ToolRadarActions extends Component
 		$this->tool->save();
 
 		$this->refreshStatus();
-		$this->js('window.location.reload()'); 
 	}
 
 	public function render()
 	{
 		return view('livewire.tool-radar-actions');
+	}
+
+	public function validateMetadata()
+	{
+		$this->error = null;
+		$radar = new ToolRadarDatasetBridge($this->tool);
+		if(!$radar->metadataValidate())
+		{
+			$this->error = "Failed to validate: $radar->details";
+			return false;
+		}
+		else
+			$this->dispatch('status-message', 'RADAR metadata validation successful!');
 	}
 
 	public function refreshStatus()

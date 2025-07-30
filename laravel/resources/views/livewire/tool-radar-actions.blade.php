@@ -23,18 +23,6 @@
 	@if("$error" != '')
 		<x-alert title='Error!'>{{ $error }}</x-alert>
 	@endif
-		
-	@if($id == null)
-		<x-livewire-button wire:click="createDataset" loading="Creating...">Create RADAR Dataset</x-livewire-button>
-	@endif
-
-	<x-livewire-button wire:click="refreshStatus" loading="Refreshing...">Refresh Status</x-livewire-button>
-	<x-livewire-button wire:click="startReview" loading="Starting...">Start Review</x-livewire-button>
-	<x-livewire-button wire:click="endReview" loading="Ending...">End Review</x-livewire-button>
-
-	@if($canUpload)
-		<x-livewire-button wire:click="uploadToRadar" loading="Uploading...">Upload to RADAR</x-livewire-button>
-	@endif
 
 	@if($radar_status == 2)
 		<x-livewire-button wire:click="approvePersistentPublication"
@@ -46,6 +34,20 @@
 			Reject Persistent Publication
 		</x-livewire-button>
 	@endif
+	<hr>
+	@if($id == null)
+		<x-livewire-button wire:click="createDataset" loading="Creating...">Create RADAR Dataset</x-livewire-button>
+	@endif
+
+	<x-livewire-button wire:click="refreshStatus" loading="Refreshing...">Refresh Status</x-livewire-button>
+	<x-livewire-button wire:click="validateMetadata" loading="Validating...">Validate Metadata</x-livewire-button>
+	<x-livewire-button wire:click="startReview" loading="Starting...">Start Review</x-livewire-button>
+	<x-livewire-button wire:click="endReview" loading="Ending...">End Review</x-livewire-button>
+
+	@if($canUpload)
+		<x-livewire-button wire:click="uploadToRadar" loading="Uploading...">Upload to RADAR</x-livewire-button>
+	@endif
+
 	<x-livewire-button style='delete' wire:click="resetDOI"
 		wire:confirm="This will remove the DOI from the Ecosystem and all links to the Datathek. Nothing will happen at the Datathek!">
 		Reset DOI

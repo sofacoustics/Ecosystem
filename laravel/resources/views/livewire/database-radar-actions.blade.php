@@ -23,7 +23,20 @@
 	@if("$error" != '')
 		<x-alert title='Error!'>{{ $error }}</x-alert>
 	@endif
-		
+
+	@if($radar_status == 2)
+		<x-livewire-button wire:click="approvePersistentPublication"
+			wire:confirm="This will persistently publish the RADAR dataset! This can not be undone!">
+			Approve Persistent Publication
+		</x-livewire-button>
+		<x-livewire-button wire:click="rejectPersistentPublication"
+			wire:confirm="This will end the review at the Datathek and set the status to 'DOI Assigned'">
+			Reject Persistent Publication
+		</x-livewire-button>
+	@endif
+
+	<hr>
+	<p>For testing purposes</p>
 	@if($id == null)
 		<x-livewire-button wire:click="createDataset" loading="Creating...">Create RADAR Dataset</x-livewire-button>
 	@endif
@@ -36,16 +49,6 @@
 		<x-livewire-button wire:click="uploadToRadar" loading="Uploading...">Upload to RADAR</x-livewire-button>
 	@endif
 
-	@if($radar_status == 2)
-		<x-livewire-button wire:click="approvePersistentPublication"
-			wire:confirm="This will persistently publish the RADAR dataset! This can not be undone!">
-			Approve Persistent Publication
-		</x-livewire-button>
-		<x-livewire-button wire:click="rejectPersistentPublication"
-			wire:confirm="This will end the review at the Datathek and set the status to 'DOI Assigned'">
-			Reject Persistent Publication
-		</x-livewire-button>
-	@endif
 	<x-livewire-button style='delete' wire:click="resetDOI"
 		wire:confirm="This will remove the DOI from the Ecosystem and all links to the Datathek. Nothing will happen at the Datathek!">
 		Reset DOI

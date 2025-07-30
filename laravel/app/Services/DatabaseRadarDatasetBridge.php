@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str; // isJson
 
 use App\Http\Resources\RadarDatabaseResource;
+use App\Jobs\DatabasePollForPublicationDate;
 use App\Mail\DatabasePersistentPublicationApproved;
+use App\Mail\DatabasePersistentPublicationRejected;
 
 use App\Models\Database;
 use App\Models\Datafile;
@@ -42,6 +44,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	function __construct($database)
 	{
 		$this->database = $database;
+
 		parent::__construct();
 	}
 
@@ -72,6 +75,8 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 			$this->database->radar_status = 3;
 			$this->database->publicationyear= $this->getNestedJsonValue('descriptiveMetadata.publicationYear', $response);
 			$this->database->save();
+			// start job to poll for publication date
+			DatabasePollForPublicationDate::dispatch($this->database);
 			// send user and admin an email
 			$adminEmails = config('mail.to.admins');
 			$userEmail = $this->database->user->email;
@@ -119,9 +124,10 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		if($this->status == 200)
 		{
 			$this->message = "Review process of the RADAR dataset successfully started";
-			app('log')->info('Database review process started', [
+			app('log')->debug('Database review process started', [
 				'feature' => 'database-radar-dataset',
 				'database_id' => $this->database->id,
+				'radar_id' => $this->database->radar_id,
 				'target_url' => config('services.radar.baseurl'),
 				'duration' => microtime(true) - $start
 			]);
@@ -131,9 +137,10 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		{
 			$this->message = "Starting the RADAR dataset review process failed";
 			$this->details = $response->content();
-			app('log')->info('Failed to start database review process', [
+			app('log')->error('Failed to start database review process', [
 				'feature' => 'database-radar-dataset',
 				'database_id' => $this->database->id,
+				'radar_id' => $this->database->radar_id,
 				'target_url' => config('services.radar.baseurl'),
 				'details' => $this->details,
 				'duration' => microtime(true) - $start
@@ -158,6 +165,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	 */
 	public function endreview() : bool
 	{
+		$start = microtime(true);
 		$this->reset();
 		$endpoint = '/datasets/'.$this->database->radar_id.'/endreview';
 		$this->content = null; // save the content sent to RADAR
@@ -165,11 +173,39 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		$response = $this->post($endpoint);
 		if($response->status() == 200)
 		{
+			app('log')->debug('Database review process ended', [
+				'feature' => 'database-radar-dataset',
+				'database_id' => $this->database->id,
+				'radar_id' => $this->database->radar_id,
+				'target_url' => config('services.radar.baseurl'),
+				'duration' => microtime(true) - $start
+			]);
 			$this->message = 'The RADAR dataset review process has been ended';
+
+
+			if($this->database->radar_status == 2)
+			{
+				// send user and admin an email
+				$adminEmails = config('mail.to.admins');
+				$userEmail = $this->database->user->email;
+				$recipients = $userEmail . ',' . $adminEmails;
+				Mail::to(explode(',',$recipients))->queue(new DatabasePersistentPublicationRejected($this->database));
+				app('log')->info("DatabasePersistentPublicationRejected email for database " . $this->database->title . " (" . $this->database->id . ") sent to $recipients");
+				// set status to "DOI assigned"
+				$this->database->radar_status = 1;
+				$this->database->save();
+			}
 			return true;
 		}
 		else
 		{
+			app('log')->error('Failed to end database review process', [
+				'feature' => 'database-radar-dataset',
+				'database_id' => $this->database->id,
+				'radar_id' => $this->database->radar_id,
+				'target_url' => config('services.radar.baseurl'),
+				'duration' => microtime(true) - $start
+			]);
 			$this->message = 'Ending the RADAR dataset review process failed';
 			$this->details = $response->content();
 			return false;
@@ -314,6 +350,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 	 */
 	public function update() : bool
 	{
+		$start = microtime(true);
 		$this->reset();
 		// get Database in RADAR formatted array
 		// eager load relationships so they appear in serializeJson()
@@ -334,12 +371,26 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		if($response->status() == 200)
 		{
 			$this->message = 'Successfully updated RADAR metadata for this database';
+			app('log')->debug('Updated the RADAR metadata for this database', [
+				'feature' => 'database-radar-dataset',
+				'database_id' => $this->database->id,
+				'radar_id' => $this->database->radar_id,
+				'target_url' => config('services.radar.baseurl'),
+				'duration' => microtime(true) - $start
+			]);
 			return true;
 		}
 		else
 		{
 			$this->message = 'Failed to update the RADAR metadata for this database';
 			$this->details = $response->content();
+			app('log')->error('Failed to update the RADAR metadata for this database', [
+				'feature' => 'database-radar-dataset',
+				'database_id' => $this->database->id,
+				'radar_id' => $this->database->radar_id,
+				'target_url' => config('services.radar.baseurl'),
+				'duration' => microtime(true) - $start
+			]);
 			return false;
 		}
 	}
@@ -514,10 +565,9 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 				'target_url' => config('services.radar.baseurl'),
 				'duration' => microtime(true) - $start
 			]);
-			$this->database->radar_id = null;
-			$this->database->doi = null;
-			$this->database->radar_status = null;
-			$this->database->save();
+
+			$this->database->resetRADAR(); // set all RADAR IDs and releated fields to null;
+
 			$this->message = 'The RADAR dataset has been deleted';
 			return true;
 		}
@@ -533,5 +583,33 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 			'duration' => microtime(true) - $start
 		]);
 		return false;
+	}
+
+	// check if RADAR dataset exists or clearn up
+	public function verifyOrRemove() : void
+	{
+		$start = microtime(true);
+		if($this->database->radar_id != null)
+		{
+			if($this->database->radar_status < 2)
+			{
+				if(!$this->read())
+				{
+					if($this->status == 404)
+					{
+						app('log')->notice('Removing all RADAR IDs for this database since it can\'t be found!', [
+							'feature' => 'database-radar-dataset',
+							'database_id' => $this->database->id,
+							'radar_id' => $this->database->radar_id,
+							'status' => $this->status,
+							'details' => $this->details,
+							'target_url' => config('services.radar.baseurl'),
+							'duration' => microtime(true) - $start
+						]);
+						$this->database->resetRADAR();
+					}
+				}
+			}
+		}
 	}
 }

@@ -195,4 +195,29 @@ class Database extends Model
 			return false;
 		return true;
 	}
+
+	/*
+	 * Reset all RADAR IDs and releated fields
+	 */
+	public function resetRADAR()
+	{
+		// set dataset and datafile radar_ids back to null
+		foreach($this->datasets as $dataset) // iterate through all Dataset of the Database
+		{
+			foreach($dataset->datafiles as $datafile)
+			{
+				$datafile->radar_id = null;
+				$datafile->datasetdef_radar_id = null;
+				$datafile->datasetdef_radar_upload_url = null;
+				$datafile->save();
+			}
+			$dataset->radar_id = null;
+			$dataset->radar_upload_url = null;
+			$dataset->save();
+		}
+		$this->radar_id = null;
+		$this->doi = null;
+		$this->radar_status = null;
+		$this->save();
+	}
 }

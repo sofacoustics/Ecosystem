@@ -4,8 +4,9 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
+use App\Events\DatabasePersistentPublicationApproved;
+use App\Events\DatabasePersistentPublicationRejected;
 use App\Jobs\DatabasePublishToRadar;
-use App\Mail\DatabasePersistentPublicationRejected;
 use App\Services\DatabaseRadarDatasetBridge;
 
 use Illuminate\Support\Facades\Mail;
@@ -130,6 +131,12 @@ class DatabaseRadarActions extends Component
 	public function deleteFromRadar()
 	{
 		$this->reset('error');
+		if(!auth()->user()->hasRole('admin'))
+		{
+			$this->error = "Your user is not allowed to use this function";
+			return;
+		}
+
 		$this->dispatch('status-message', 'Starting to delete the RADAR dataset');
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 
@@ -153,21 +160,6 @@ class DatabaseRadarActions extends Component
 		else
 			$this->error = $radar->details;
 
-		// set dataset and datafile radar_ids back to null
-		foreach($this->database->datasets as $dataset) // iterate through all Dataset of the Database
-		{
-			$dataset->radar_id = null;
-			$dataset->radar_upload_url = null;
-			$dataset->save();
-			foreach($dataset->datafiles as $datafile)
-			{
-				$datafile->radar_id = null;
-				$datafile->datasetdef_radar_id = null;
-				$datafile->datasetdef_radar_upload_url = null;
-				$datafile->save();
-			}
-		}
-
 		$this->dispatch('status-message', $radar->message);
 		$this->refreshStatus();
 	}
@@ -179,10 +171,23 @@ class DatabaseRadarActions extends Component
 	*/
 	public function approvePersistentPublication()
 	{
+		$start = microtime(true);
 		$this->reset('error');
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if($radar->publish())
+		{
+			app('log')->info('Database persistent publication approved', [
+				'feature' => 'database-radar-dataset',
+				'database_id' => $this->database->id,
+				'radar_id' => $this->database->radar_id,
+				'user_id' => auth()->user()->id,
+				'target_url' => config('services.radar.baseurl'),
+				'duration' => microtime(true) - $start
+
+			]);
+			DatabasePersistentPublicationApproved::dispatch($this->database->id);
 			$this->dispatch('radar-status-changed', 'Database published'); // let other livewire components know the radar status has changed
+		}
 		else
 			$this->error = $radar->details; // output error message
 		$this->dispatch('status-message', $radar->message);
@@ -207,20 +212,13 @@ class DatabaseRadarActions extends Component
 			app('log')->notice('Rejecting persistent publication', [
 				'feature' => 'database-radar-dataset',
 				'database_id' => $this->database->id,
+				'radar_id' => $this->database->radar_id,
 				'user_id' => auth()->user()->id,
 				'target_url' => config('services.radar.baseurl'),
 				'duration' => microtime(true) - $start
 			]);
-			// send user and admin an email
-			$adminEmails = config('mail.to.admins');
-			$userEmail = $this->database->user->email;
-			$recipients = $userEmail . ',' . $adminEmails;
-			Mail::to(explode(',',$recipients))->queue(new DatabasePersistentPublicationRejected($this->database));
-			app('log')->info("DatabasePersistentPublicationRejected email for database " . $this->database->title . " (" . $this->database->id . ") sent to $recipients");
+			DatabasePersistentPublicationRejected::dispatch($this->database->id);
 		}
-		// set status to "DOI assigned"
-		$this->database->radar_status = 1;
-		$this->database->save();
 
 		$this->refreshStatus();
 	}
@@ -231,25 +229,7 @@ class DatabaseRadarActions extends Component
 	public function resetDOI()
 	{	
 		$this->reset('error');
-		$this->database->radar_id = null;
-		$this->database->doi = null;
-		$this->database->radar_status = null;
-		$this->database->save();
-			// set dataset and datafile radar_ids back to null
-		foreach($this->database->datasets as $dataset) // iterate through all Dataset of the Database
-		{
-			$dataset->radar_id = null;
-			$dataset->radar_upload_url = null;
-			$dataset->save();
-			foreach($dataset->datafiles as $datafile)
-			{
-				$datafile->radar_id = null;
-				$datafile->datasetdef_radar_id = null;
-				$datafile->datasetdef_radar_upload_url = null;
-				$datafile->save();
-			}
-		}
-
+		$this->database->resetRADAR();
 		$this->refreshStatus();
 	}
 
