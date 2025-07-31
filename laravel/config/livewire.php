@@ -66,7 +66,7 @@ return [
     'temporary_file_upload' => [
         'disk' => null,        // Example: 'local', 's3'              | Default: 'default'
         //'rules' => null,       // Example: ['file', 'mimes:png,jpg']  | Default: ['required', 'file', 'max:12288'] (12MB)
-        'rules' => ['required','file','max:1048576'], // 1 GiB
+		'rules' => ['required','file','max:3145728'], // 3 GiB
         'directory' => null,   // Example: 'tmp'                      | Default: 'livewire-tmp'
         'middleware' => 'throttle:600,1',  // Example: 'throttle:5,1'             | Default: 'throttle:60,1' //jw:note Fix 429 Too many request error
         'preview_mimes' => [   // Supported file types for temporary pre-signed file URLs...
