@@ -189,6 +189,9 @@ class DatabaseVisibility extends Component
 			return;
 		}
 
+		$this->database->radar_status = 2; // started publishing. Will set to '3' when finished.
+		$this->database->save();
+
 		// upload and review start now in job
 		DatabasePublishToRadar::dispatch($this->database);
 

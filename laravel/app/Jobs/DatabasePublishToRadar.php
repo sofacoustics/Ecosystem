@@ -71,9 +71,6 @@ class DatabasePublishToRadar implements ShouldQueue
 			'attempt' => $this->attempts()
 		]);
 		
-		$this->database->radar_status = 2; // started publishing. Will set to '3' when finished.
-		$this->database->save();
-
 		$userEmail = $this->database->user->email;
 		Mail::to($userEmail)->queue(new DatabasePersistentPublicationRequestedStarted($this->database));
 		app('log')->info('User informed of persistent publication request starting per email', [
