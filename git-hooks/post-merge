@@ -41,8 +41,17 @@ if git diff --name-only HEAD@{1} HEAD | grep -qE '^resources/views/.*\.php'; the
 else
 	echo "No view changes detected. Skipping view cache."
 fi
+# Check if event files changed in the merge
+if git diff --name-only HEAD@{1} HEAD | grep -qE '^app/Events/.*\.php'; then
+  echo "Event files changed. Caching events..."
+  php artisan event:cache
+else
+  echo "No event file changes detected. Skipping event cache."
+fi
+
 echo "Running ./artisan storage:unlink && ./artisan storage:link"
 ./artisan storage:unlink && ./artisan storage:link
+
 echo "Running 'npm install and npm run build'"
 npm install && npm run build
 
