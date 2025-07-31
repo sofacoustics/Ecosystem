@@ -42,4 +42,7 @@ echo "Running ./artisan storage:unlink && ./artisan storage:link"
 echo "Running 'npm install and npm run build'"
 npm install && npm run build
 
+echo "Restarting all queues with 'sudo supervisorctl restart all'"
+sudo supervisorctl restart all
+
 cd ..
