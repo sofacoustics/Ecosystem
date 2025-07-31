@@ -28,7 +28,7 @@ class ToolPersistentPublicationRejected extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'SONICOM Ecosystem: Persistent publication of the tool "' . $this->tool->title . '" (' . $this->tool->id . ') has been rejected',
+            subject: config('app.name') . ': Persistent publication of the tool "' . $this->tool->title . '" (' . $this->tool->id . ') has been rejected',
         );
     }
 

@@ -138,7 +138,7 @@ class DatabasePublishToRadar implements ShouldQueue
 				Mail::raw("Dear Ecosystem Admins!\n\nThe persistent publication of the database " . $this->database->id . " has been requested. Please review it and accept or approve.\n\n	" . route('databases.show', $this->database->id), function ($message) {
 					$adminEmails = config('mail.to.admins');
 					$message->to(explode(',',$adminEmails))
-						->subject('SONICOM Ecosystem Admin: Persistent publication requested');
+						->subject(config('app.name') . ' Admin: Persistent publication requested');
 				});
 				app('log')->info('Persistent publication requested', [
 					'feature' => 'database-radar-dataset',

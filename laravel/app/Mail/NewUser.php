@@ -29,7 +29,7 @@ class NewUser extends Mailable
     public function envelope(): Envelope
     {
 		return new Envelope(
-            subject: 'SONICOM Ecosystem: New Ecosystem user created and verified',
+            subject: config('app.name') . ': New Ecosystem user created and verified',
 		);
     }
 

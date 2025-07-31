@@ -30,11 +30,11 @@ class NewComment extends Mailable
     {
         if($this->comment->commentable_type == "App\Models\Database")
             return new Envelope(
-                subject: 'SONICOM Ecosystem: New Comment on database '. $this->comment->commentable->title,
+                subject: config('app.name') . ': New Comment on database '. $this->comment->commentable->title,
             );
         else
             return new Envelope(
-                subject: 'SONICOM Ecosystem: New Comment on tool ' . $this->comment->commentable->title,
+                subject: config('app.name') . ': New Comment on tool ' . $this->comment->commentable->title,
             );
     }
 

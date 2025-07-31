@@ -28,7 +28,7 @@ class DatabasePersistentPublicationRejected extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'SONICOM Ecosystem: Persistent publication of the database "' . $this->database->title . '" (' . $this->database->id . ') has been rejected',
+            subject: config('app.name') . ': Persistent publication of the database "' . $this->database->title . '" (' . $this->database->id . ') has been rejected',
         );
     }
 

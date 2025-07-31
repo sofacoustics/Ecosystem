@@ -28,7 +28,7 @@ class ToolDOIAssigned extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'SONICOM Ecosystem: DOI assigned to the tool ' . $this->tool->name . ' (id: ' . $this->tool->id . ')',
+            subject: config('app.name') . ': DOI assigned to the tool ' . $this->tool->name . ' (id: ' . $this->tool->id . ')',
         );
     }
 

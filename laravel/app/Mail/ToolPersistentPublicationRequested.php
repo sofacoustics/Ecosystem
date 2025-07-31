@@ -29,7 +29,7 @@ class ToolPersistentPublicationRequested extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'SONICOM Ecosystem: Persistent publication requested for the tool "' . $this->tool->title . '" (' . $this->tool->id . ')',
+            subject: config('app.name') . ': Persistent publication requested for the tool "' . $this->tool->title . '" (' . $this->tool->id . ')',
         );
     }
 

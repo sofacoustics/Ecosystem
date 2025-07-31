@@ -28,7 +28,7 @@ class DatabaseDOIAssigned extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'SONICOM Ecosystem: DOI assigned to the database ' . $this->database->name . ' (id: ' . $this->database->id . ')',
+            subject: config('app.name') . ': DOI assigned to the database ' . $this->database->name . ' (id: ' . $this->database->id . ')',
         );
     }
 
