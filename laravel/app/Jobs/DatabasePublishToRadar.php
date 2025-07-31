@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Events\DatabasePublishedAwaitingApproval;
 use App\Events\DatabasePublishingFailed;
 use App\Mail\DatabasePersistentPublicationRequested;
+use App\Mail\DatabasePersistentPublicationRequestedStarted;
 use App\Models\Database;
 use App\Services\DatabaseRadarDatasetBridge;
 
@@ -72,6 +73,17 @@ class DatabasePublishToRadar implements ShouldQueue
 		
 		$this->database->radar_status = 2; // started publishing. Will set to '3' when finished.
 		$this->database->save();
+
+		$userEmail = $this->database->user->email;
+		Mail::to($userEmail)->queue(new DatabasePersistentPublicationRequestedStarted($this->database));
+		app('log')->info('User informed of persistent publication request starting per email', [
+			'feature' => 'database-radar-dataset',
+			'database_id' => $this->database->id,
+			'target_url' => config('services.radar.baseurl'),
+			'email' => $userEmail,
+			'job_id' => $this->job->getJobId(),
+			'duration' => microtime(true) - $start
+		]);
 
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if(!$radar->upload())

@@ -11,7 +11,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class DatabasePersistentPublicationRequested extends Mailable
+class DatabasePersistentPublicationRequestedStarted extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -28,7 +28,7 @@ class DatabasePersistentPublicationRequested extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: config('app.name') . ': Persistent publication requested for the database "' . $this->database->title . '" (' . $this->database->id . ')',
+            subject: config('app.name') . ': Persistent publication requested for the database "' . $this->database->title . '" (' . $this->database->id . '). Uploading.',
         );
     }
 
@@ -38,7 +38,7 @@ class DatabasePersistentPublicationRequested extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.database-persistent-publication-requested',
+            view: 'mail.database-persistent-publication-requested-started',
         );
     }
 
