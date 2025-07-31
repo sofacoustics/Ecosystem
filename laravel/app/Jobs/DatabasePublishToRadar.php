@@ -20,9 +20,9 @@ class DatabasePublishToRadar implements ShouldQueue
 	use Queueable;
 	use InteractsWithQueue; // for release() function
 
-	public $tries = 5; // The number of times the queued listener may be attempted.
+	public $tries = 10; // The number of times the queued listener may be attempted.
 	//public $backoff = 10; // The number of seconds to wait before retrying the queued listener. jw:note This appears to be ignored!
-	public $maxExceptions = 3; // The maximum number of unhandled exceptions to allow before failing.
+	public $maxExceptions = 9; // The maximum number of unhandled exceptions to allow before failing.
 
 
 	public function backoff() : int
