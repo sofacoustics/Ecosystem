@@ -49,7 +49,7 @@ class DatabasePolicy
 	}
 
 	/**
-	 * Determine whether the user can update the model. Admin role overwrites.
+	 * Determine whether the user owns the model. Admin role overwrites.
 	 */
 	public function own(User $user, Database $database): Response
 	{ 
@@ -58,13 +58,13 @@ class DatabasePolicy
 			if(auth()->user()->hasRole('admin'))
 				$access = true;
 			else
-				$access = ($user->id == $database->user_id) && ($database->radar_status < 2); // allow only for owners and if not submitted for persistent publication yet
+				$access = ($user->id == $database->user_id); // allow only for owners and if not submitted for persistent publication yet
 		}
 		else
 			$access = false;
 		return $access
 				? Response::allow()
-				: Response::deny('You can not edit this database because you do not own it or it is locked for persistent publication!');
+				: Response::deny('You do not own this database!');
 	}
 
 
@@ -72,7 +72,7 @@ class DatabasePolicy
 	 * Determine whether the user can update the model. Admin role overwrites.
 	 */
 	public function update(?User $user, Database $database): Response
-	{ 
+	{
 		if(isset($user->id))
 		{
 			if(auth()->user()->hasRole('admin'))
