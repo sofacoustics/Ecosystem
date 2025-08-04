@@ -127,7 +127,7 @@
 						x-text="uploading? 'Uploading...' : 'Start upload'"
 						class="{{ $buttonStyle }}"
 						x-bind:class="uploading || !canUpload? '{{ $buttonColorDisabled }}' : '{{ $buttonColorEnabled }}'"
-						>
+					>
 						Start upload
 					</button>
 				</div>
@@ -495,7 +495,8 @@
 
 		// Process the upload
 	$js('doUpload', (data) => {
-		alert("This will start the upload and this might take a long time. To cancel the upload, refresh or close the page. Do not leave this page while uploading.");
+		response=confirm("This will start the upload and this might take a long time. Do not leave this page while uploading.\n\nTo cancel the upload, refresh or close the page. ");
+		if(response==false) return;
 		let fn_array = $wire.get('pdatafilenames');
 		data = _createPendingFiles(data, fn_array); // create the list with PendingFiles
 		resetUpload();
