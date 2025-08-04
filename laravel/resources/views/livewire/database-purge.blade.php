@@ -3,7 +3,7 @@
 <h3>Purge the database?</h3>
 	@if (count($database->datasets))
 		<p>Database {{ $database->title }} currently contains {{ $datasetsCount }} datasets:</p>
-		<ul class="list-disc list-outside p-3">
+		<ul class="list-disc list-outside px-5">
 			@forelse($database->datasets as $dataset)
 				<li>
 					@php

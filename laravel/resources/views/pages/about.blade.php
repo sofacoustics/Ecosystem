@@ -23,7 +23,7 @@
 	<p class="max-w-prose">
 		The SONICOM Ecosystem is developed and maintained at the <a href="https://www.oeaw.ac.at/en/ari/">Acoustics Research Institute</a> of the <a href="https://www.oeaw.ac.at/en/">Austrian Academy of Sciences</a>:
 	</p>
-	<ul class="list-disc list-outside p-3">
+	<ul class="list-disc list-outside px-5">
 		<li><b><a href="https://www.oeaw.ac.at/en/ari/our-team/majdak-piotr">Piotr Majdak</a>:</b> Project lead, Development, Programming
 		<li><b><a href="https://www.oeaw.ac.at/en/ari/our-team/stuefer-jonathan">Jonnathan Stuefer</a>:</b> Main programming, IT management
 		<li><b><a href="https://www.oeaw.ac.at/en/ari/our-team/mihocic-michael">Michael Mihocic</a>:</b> Widgets, Testing, Data management
@@ -35,7 +35,7 @@
 	<br><hr><br>
 	
 	<h3>Terminology:</h3>
-	<ul class="list-disc list-outside p-3 max-w-prose">
+	<ul class="list-disc list-outside px-5 max-w-prose">
 		<li><b>Database</b>: A collection of data in a specific collation of formats, e.g., a collection of HRTF and image data, where each database record contains one HRTF and one image of the ear.
 		<li><b>Dataset</b>: One record in the database, e.g., one HRTF and one image for each of the subjects. One record may contain multiple datafiles of various datatypes. The exact composition of each 'dataset' in a database is given by the dataset definition.
 		<li><b>Dataset definition</b>: A definition the datafiles representing each dataset, e.g., a dataset may contain two different HRTFs and four different images per record. Each of the defined datafiles can be represented by a separate widget.
@@ -45,7 +45,7 @@
 	<br><hr><br>
 	
 	<h3>Resources and Support:</h3>
-	<ul class="list-disc list-outside p-3 max-w-prose">
+	<ul class="list-disc list-outside px-5 max-w-prose">
 		<li><b><a href="https://github.com/sofacoustics/Ecosystem/wiki">Wiki</a>:</b> We use Github Wiki pages to provide documentation. 
 		<li><b><a href="https://github.com/sofacoustics/Ecosystem/issues">Issues</a>:</b> Check the Github Issue pages in case of troubles. If your problem has not been reported yet, please issue a new ticket <a href="https://github.com/sofacoustics/Ecosystem/issues/new">here</a>.
 		<li><b><a href="https://github.com/sofacoustics/Ecosystem">Code</a>:</b> The Ecosystem is open source: We use the <a href="https://github.com/sofacoustics/Ecosystem/tree/live">live</a> branch for the system tested and available to the users, and the <a href="https://github.com/sofacoustics/Ecosystem/tree/dev">dev</a> branch for improvements before going live. Check our source code or fork it for your own projects. 
@@ -53,7 +53,7 @@
 	<br><hr><br>
 	
 	<h3>Attributions:</h3>
-	<ul class="list-disc list-outside p-3 max-w-prose">
+	<ul class="list-disc list-outside px-5 max-w-prose">
 		<li>
 			<img src="{{ asset('images/envelope.png') }}" style="display: inline; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em;">
 			by <a href="https://thenounproject.com/creator/iconisland/" target="_blank">Icon Island</a> licensed under CC BY 3.0.
@@ -98,7 +98,7 @@
 	<br><hr><br>
 	
 	<h3>System Information:</h3>
-	<ul class="list-disc list-outside p-3 max-w-prose">
+	<ul class="list-disc list-outside px-5 max-w-prose">
 		<li>Version: {{ config('version.string') }}
 	</ul>
 	<br><hr><br>
