@@ -57,7 +57,7 @@ Note that this does NOT assign a DOI nor publishes the database persistently.">
 				wire:confirm="Are you sure to assign a DOI to your database?
 
 Note: Once the DOI will be assigned, it will be a permanent part of your database. This operation is irreversible!"
-					loading="Assigning DOI...">
+				loading="Assigning DOI...">
 				Assign DOI
 			</x-livewire-button>
 		</div>
