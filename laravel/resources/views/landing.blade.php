@@ -7,7 +7,7 @@
 	</x-slot>
 	
 	<h3 id="latestTool"><b>Latest Tool:</b> <a href="{{ route('tools.show', $tool->id) }}">{{ $tool->title }} ({{ $tool->productionyear }})</a></h3>
-	<ul class="list-disc list-inside inline-block">
+	<ul class="list-disc list-outside p-3 inline-block">
 		<li><b>Subtitle:</b> {{ $tool->additionaltitle }}
 		<li><b>Modified at:</b> {{ $tool->updated_at }} (GMT)
 		<li><a href="{{ route('tools.show', $tool->id) }}">More details...</a>
@@ -16,7 +16,7 @@
 	<hr>
 
 	<h3 id="latestDatabase"><b>Most recent Database:</b> <a href="{{ route('databases.show', $database->id) }}">{{ $database->title }} ({{ $database->productionyear }})</a></h3>
-	<ul class="list-disc list-inside inline-block">
+	<ul class="list-disc list-outside p-3 inline-block">
 		<li><b>Subtitle:</b> {{ $database->additionaltitle }}
 		<li><b>Modified at:</b> {{ $database->updated_at }} (GMT)
 		<li><a href="{{ route('databases.show', $database->id) }}">More details...</a>
@@ -26,7 +26,7 @@
 
     @if($datafile)
 			<h3 id="latestDatafile"><b>Latest Datafile:</b> <a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a></h3>
-			<ul class="list-disc list-inside inline-block">
+			<ul class="list-disc list-outside p-3 inline-block">
 					<li><b>Database:</b> <a href="{{ route('databases.show', $datafile->dataset->database->id) }}">{{ $datafile->dataset->database->title }}</a>
 					<li><b>Dataset:</b> <a href="{{ route('datasets.show', $datafile->dataset->id) }}">{{ $datafile->dataset->name }}</a>
 					<li><b>Datafile Type:</b> {{ $datafile->datasetdef->name }} ({{ $datafile->datasetdef->datafiletype->name }})

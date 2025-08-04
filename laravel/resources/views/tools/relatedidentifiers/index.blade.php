@@ -5,7 +5,7 @@
 	<h3>Relations</h3>
 	<p>List of relations with the tool:</p>
 	
-	<ul class="list-disc list-inside">
+	<ul class="list-disc list-outside p-3">
 		@forelse($relatedidentifierable->relatedidentifiers as $relatedidentifier)
 			<li>
 				@can('update', $relatedidentifierable)

@@ -1,4 +1,4 @@
-<ul class="list-disc list-inside">
+<ul class="list-disc list-outside p-3">
 	@forelse($subjectareaable->subjectareas as $subjectarea)
 			<li>
 				@can('update', $subjectareaable)

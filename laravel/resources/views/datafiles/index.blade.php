@@ -15,7 +15,7 @@
     @endif
 
     <p>The following datafiles are available</p>
-    <ul class="list-disc list-inside">
+    <ul class="list-disc list-outside p-3">
     @foreach ($allDatafiles as $datafile)
         <li><x-datafile.list :datafile=$datafile /></li>
     @endforeach

@@ -47,7 +47,7 @@
 		<p>According to the dataset definition, the following
 			{{ count($dataset->database->datasetdefs) - count($dataset->datafiles) }} files are missing:</p>
 
-		<ul class="list-disc list-inside">
+		<ul class="list-disc list-outside p-3">
 			@foreach ($dataset->missing_datafiles() as $missing)
 				<li>
 					<x-datasetdef.list :datasetdef="$missing" />

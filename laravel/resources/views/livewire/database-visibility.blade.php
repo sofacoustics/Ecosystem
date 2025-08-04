@@ -45,7 +45,7 @@
 			<p><b>Metadata Status:</b> Valid</p>
 			<p>By clicking the button below, a DOI can be assigned to your database.</p>
 			<p>To this end, the following steps will happen:
-				<ul class="list-disc list-inside">
+				<ul class="list-disc list-outside p-3">
 					<li>Your database will be registered at the ÖAW Datathek as a new "Datathek dataset".
 					<li>Your metadata will be sent to the Datathek. This is a quick process.
 					<li>A DOI for your database will be requested and assigned to your database within the Ecosystem.
@@ -65,7 +65,7 @@
 	@endif
 @else
 	<b>Status:</b>
-	<ul class="list-disc list-inside">
+	<ul class="list-disc list-outside p-3">
 		<li>DOI: Assigned (<b>{{ $doi }}</b>).
 		<li class="max-w-prose">DOI link: https://doi.org/{{$doi}}. When persistently published, the database will be available under this link.
 		@if($database->metadataValidate())
@@ -92,7 +92,7 @@
 				@else
 					<p>By clicking the button below, your database can be submitted to be persistently published with the DOI.</p>
 					<p>To this end, the following steps will be taken:</p>
-					<ul class="list-disc list-inside">
+					<ul class="list-disc list-outside p-3">
 						<li>The database will be locked. <b>No edits will be allowed!</b>
 						<li>The metadata at the Datathek will be updated.
 						<li>The datafiles will be sent to the Datathek. Depending on the size of your datafiles, this might take a while.

@@ -92,14 +92,14 @@
 					//var_dump($database->radardataset->creators->creator[0]);
 					//    var_dump($database->radardataset['publishers']);
 				@endphp
-				<ul class="list-disc list-inside">
+				<ul class="list-disc list-outside p-3">
 					{{--
 				<li>RADAR Dataset: {{ $database->radardataset }}</li>
 				<li>RADAR Dataset Resource: {{ $database->radardataset->radardatasetresourcetype }}</li>
 				<li>RADAR Dataset Rights Holders: {{ $database->radardataset->radardatasetrightsholders }}</li>
 				<li>RADAR Dataset Subject Area: {{ $database->radardataset->radardatasetsubjectarea }}</li>
 				<li>RADAR Dataset Subject Areas:
-					<ul class="list-disc list-inside">
+					<ul class="list-disc list-outside p-3">
 					@foreach ($database->radardataset->radardatasetsubjectareas as $radardatasetsubjectarea)
 						<li>{{ $radardatasetsubjectarea  }}</li>
 					@endforeach

@@ -9,7 +9,7 @@
 		<p><b>Metadata Status:</b> Valid</p>
 		<p>By clicking the button below, a DOI can be assigned to your tool.</p>
 		<p>To this end, the following steps will happen:
-			<ul class="list-disc list-inside">
+			<ul class="list-disc list-outside p-3">
 				<li>Your tool will be registered at the ÖAW Datathek as a new "dataset".
 				<li>The tool metadata will be sent to the Datathek. This is a quick process.
 				<li>A DOI for your tool will be requested and assigned to your tool within the Ecosystem.
@@ -36,7 +36,7 @@
 	@endif
 @else
 	<b>Status:</b>
-	<ul class="list-disc list-inside">
+	<ul class="list-disc list-outside p-3">
 		<li>DOI: Assigned (<b>{{ $doi }}</b>).
 		<li>DOI link: https://doi.org/{{$doi}}. When persistently published, the tool will be available under this link.
 		@if($tool->metadataValidate())
@@ -64,7 +64,7 @@
 			@else
 				<p>By clicking the button below, your tool can be submitted to be persistently published with the DOI.</p>
 				<p>To this end, the following steps will be taken:</p>
-				<ul class="list-disc list-inside">
+				<ul class="list-disc list-outside p-3">
 					<li>The tool will be locked. <b>No edits will be allowed!</b>
 					<li>The metadata at the Datathek will be updated.
 					<li>The datafiles will be sent to the Datathek. Depending on the size of your datafiles, this might take a while.

@@ -45,7 +45,7 @@ Parameters:
 		@else
 			<h3>Creators:</h3>
 		@endcan
-		<ul class="list-disc list-inside">
+		<ul class="list-disc list-outside p-3">
 			@forelse ($tool->creators as $creator)
 			<li><x-creator.list :creator=$creator/></li>
 			@empty
@@ -66,7 +66,7 @@ Parameters:
 		@else
 			<h3>Publishers:</h3>
 		@endcan
-		<ul class="list-disc list-inside">
+		<ul class="list-disc list-outside p-3">
 			@forelse ($tool->publishers as $publisher)
 			<li><x-publisher.list :publisher=$publisher/></li>
 			@empty
@@ -87,7 +87,7 @@ Parameters:
 		@else
 			<h3>Rightsholders:</h3>			
 		@endcan
-		<ul class="list-disc list-inside">
+		<ul class="list-disc list-outside p-3">
 			@forelse ($tool->rightsholders as $rightsholder)
 			<li><x-rightsholder.list :rightsholder=$rightsholder /></li>
 			@empty
@@ -108,7 +108,7 @@ Parameters:
 		@else
 			<h3>Keywords:</h3>
 		@endcan
-		<ul class="list-disc list-inside">
+		<ul class="list-disc list-outside p-3">
 			@forelse ($tool->keywords as $keyword)
 			<li><x-keyword.list :keyword=$keyword /></li>
 			@empty
@@ -129,7 +129,7 @@ Parameters:
 		@else
 			<h3>Relations:</h3>
 		@endcan
-		<ul class="list-disc list-inside">
+		<ul class="list-disc list-outside p-3">
 			@forelse ($tool->relatedidentifiers as $relatedidentifier)
 			<li>
 				<x-relatedidentifier.list :relatedidentifier=$relatedidentifier />
@@ -148,7 +148,7 @@ Parameters:
 				@endcan
 				Other:
 			</h3>
-			<ul class="list-disc list-inside">
+			<ul class="list-disc list-outside p-3">
 				@if ($tool->doi != null) 
 					@if($tool->radar_status==1)
 						<li><b>DOI (assigned)</b>: {{ $tool->doi }}
@@ -211,7 +211,7 @@ Parameters:
 			<p>No comments found.</p>
 		@else
 			<b>{{ count($tool->comments) }}</b> comments found:
-			<ul class="list-disc list-inside">
+			<ul class="list-disc list-outside p-3">
 			@foreach($tool->comments as $comment)
 				<li>
 					@can('update',$comment)
