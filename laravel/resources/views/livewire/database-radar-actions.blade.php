@@ -1,25 +1,31 @@
 <div>
 
-	<li><b>ID:</b> {{ $id }}</li>
-	<li><b>State:</b> {{ $state }}</li>
-	<li><b>Internal Status:</b> {{ $radar_status }}</li>
-	<li><b>DOI:</b> {{ $doi }}</li>
-	<li><b>Size:</b> {{ $size }}</li>
-	<li><b>Last retrieved:</b> {{ $last_retrieved }}</li>
+	<x-property name="ID">{{ $id }}</x-property>
+	<x-property name="State">{{ $state }}</x-property>
+	<x-property name="DOI">{{ $doi }}</x-property>
+	<x-property name="Size">{{ $size }}</x-property>
+	<x-property name="Last retrieved">{{ $last_retrieved }}</x-property>
+	<x-property name="Internal Status (tooltip available)" 
+		title="
+0: No RADAR information
+1: DOI assigned
+2: Publishing and copying to RADAR triggered
+3: Copying done and waiting for approval
+4: Approved and persistently published"
+	>{{ $radar_status }}</x-property>
 
 	<div class="expandable-box" wire:click="toggleExpand">
 		@if ($isExpanded)
 			<div class="box-content expanded">
-				<li><b>RADAR Response:</b> <pre><code>{{ $radar_content }}</code></pre></li>
+				<b>RADAR Response:</b> <pre><code>{{ $radar_content }}</code></pre>
 			</div>
 		@else
 			<div class="box-content collapsed-preview">
-				<li><b>RADAR Response:</b> Click to see the response...</li>
+				<b>RADAR Response:</b> Click to see the response...
 			</div>
 		@endif
 	</div>
 	
-
 	@if("$error" != '')
 		<x-alert title='Error!'>{{ $error }}</x-alert>
 	@endif
