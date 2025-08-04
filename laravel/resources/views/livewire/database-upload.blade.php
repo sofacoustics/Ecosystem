@@ -81,32 +81,59 @@
 						<!-- Rows will be added here -->
 					</tbody>
 				</table>
-				<div class="extendable-text-container"><small>
-					<p class="short-text" id="skipped" wire:ignore></p>
-					<p class="long-text" id="skipped-list" wire:ignore></p></small>
 				
+				<div class="read-more-container">
+					<input type="checkbox" id="read-more-toggle" wire:ignore class="read-more-checkbox">
+					<label for="read-more-toggle" class="read-more-label" wire:ignore>
+							<span class="read-more-text" id="skipped" wire:ignore></span>
+							<span class="read-less-text" wire:ignore>Close the list...</span>
+					</label>
+					<div class="read-more-content">
+							<p class="hidden-content" id="skipped-list" wire:ignore></p>
+					</div>
+
 					<style>
-						.extendable-text-container {
-							position: relative; /* Needed for absolute positioning if you want */
-							width: 100%; /* Adjust as needed */
-							border: 1px solid #ccc;
-							padding: 2px;
+						
+						.read-more-checkbox { /* Hide the actual checkbox input from view, but keep it accessible for screen readers */
+								position: absolute;
+								opacity: 0;
+								pointer-events: none; /* Prevents it from receiving mouse events */
 						}
-
-						.short-text {
-							cursor: pointer; /* Indicate it's interactive */
+						.hidden-content { /* Initially hide the 'hidden-content' part */
+								display: none;
 						}
-
-						.long-text {
-							max-height: 0;
-							overflow: hidden;
-							transition: max-height 0.3s ease-in-out; /* Smooth transition */
-							margin-top: 5px; /* Add some space when expanded */
+						.read-less-text { /* Hide the 'Read less' text initially */
+								display: none;
 						}
-
-						.extendable-text-container:hover .long-text {
-							max-height: 100%; /* Adjust to accommodate your longer text */
+						.read-more-label { /* Style the button-like label */
+							//display: block;
+							cursor: pointer;
+							//color: #007bff;
+							//margin-top: 10px;
+							font-weight: bold;
 						}
+						/* Logic for when the checkbox is checked */
+						.read-more-checkbox:checked ~ .read-more-content .hidden-content { /* When the checkbox is checked, display the hidden content */
+								display: block;
+						}
+						.read-more-checkbox:checked ~ .read-more-label .read-more-text { /* When the checkbox is checked, hide the 'Read more' text */
+								display: none;
+						}
+						.read-more-checkbox:checked ~ .read-more-label .read-less-text { /* When the checkbox is checked, display the 'Read less' text */
+								display: inline;
+						}
+						.read-more-content { /* Optional: Add a transition for a smoother effect */
+								max-height: 100px; /* A placeholder max-height for a transition effect */
+								overflow: hidden;
+								transition: max-height 0.3s ease-in-out;
+						}
+						.read-more-checkbox:checked ~ .read-more-content {
+								max-height: 1000px; /* A very large max-height to ensure all content is visible */
+						}
+						.read-more-checkbox:focus + .read-more-label { /* For better accessibility, style the label when the checkbox is focused */
+								outline: 2px solid #007bff;
+								outline-offset: 2px;
+						}					
 					</style>
 				</div>
 
@@ -185,7 +212,7 @@
 		// Trigger the actual directory picker when clicked on the fake but nicely looking button
 	document.querySelector('#actual-directory-picker').addEventListener('click', e =>
 	document.querySelector('#directory-picker').click());
-		
+
 		// Process the actual directory picker
 	document.getElementById("directory-picker").addEventListener(
 		"change",
@@ -433,12 +460,12 @@
 				// Display skipped filenames
 			if(s!="") 
 			{
-				document.getElementById("skipped").innerHTML = "Hover to see the list of skipped/conflicting files...";
+				document.getElementById("skipped").innerHTML = "Click here to see the list of skipped/conflicting files...";
 				document.getElementById("skipped-list").innerHTML = s;
 			}
 			else
 			{
-				document.getElementById("skipped").innerHTML = "No skipped files...";
+				document.getElementById("skipped").innerHTML = "";
 				document.getElementById("skipped-list").innerHTML = "";
 			}
 				// Display analysis summary
