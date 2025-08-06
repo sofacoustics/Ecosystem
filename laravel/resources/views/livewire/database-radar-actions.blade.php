@@ -48,6 +48,7 @@
 	@endif
 
 	<x-livewire-button wire:click="refreshStatus" loading="Refreshing...">Refresh Status</x-livewire-button>
+	<x-livewire-button wire:click="validateMetadata" loading="Validating...">Validate Metadata at RADAR</x-livewire-button>
 	<x-livewire-button wire:click="startReview" loading="Starting...">Start Review</x-livewire-button>
 	<x-livewire-button wire:click="endReview" loading="Ending...">End Review</x-livewire-button>
 
@@ -60,7 +61,7 @@
 		Reset DOI
 	</x-livewire-button>
 	<x-livewire-button style='delete' wire:click="deleteFromRadar" loading="Deleting..."
-		wire:confirm="This will delete the Database from the Datathek and remove the DOI in the Ecosystem!">
+		wire:confirm="This will delete the RADAR Dataset from the Datathek and remove the DOI in the Ecosystem!">
 		Delete from RADAR
 	</x-livewire-button>
 	<x-livewire-button wire:click="publishToRadar" loading="Publishing to RADAR via job">

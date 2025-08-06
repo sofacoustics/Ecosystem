@@ -238,6 +238,19 @@ class DatabaseRadarActions extends Component
 		return view('livewire.database-radar-actions');
 	}
 
+	public function validateMetadata()
+	{
+		$this->error = null;
+		$radar = new DatabaseRadarDatasetBridge($this->database);
+		if(!$radar->metadataValidate())
+		{
+			$this->error = "Failed to validate: $radar->details";
+			return false;
+		}
+		else
+			$this->dispatch('status-message', 'RADAR metadata validation successful!');
+	}
+
 	public function refreshStatus()
     {
 		$radar = new DatabaseRadarDatasetBridge($this->database);

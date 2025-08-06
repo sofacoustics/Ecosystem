@@ -64,10 +64,6 @@
 	@endhasrole
 </p>
 
-<p>
-	<small><b>Ecosystem ID:</b> {{ $tool->id }}</small>
-</p>
-
 <script>
 	document.getElementById('copyDOI')?.addEventListener('click', function() {
 			// Get the text from the input field
