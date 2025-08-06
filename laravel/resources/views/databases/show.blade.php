@@ -178,22 +178,22 @@ Parameters:
 				</li>
 
 				@if ($database->descriptiongeneral != null)
-					<li><b>General Description</b>: {{ $database->descriptiongeneral }}</li>
+					<li><b>General Description</b>: {!! nl2br(e($database->descriptiongeneral)) !!}</li>
 				@endif 
 				
 				@if ($database->descriptionabstract != null)
-					<li><b>Abstract</b>: {{ $database->descriptionabstract }}</li>
+					<li><b>Abstract</b>: {!! nl2br(e($database->descriptionabstract)) !!}</li>
 				@endif 
 				
 				@if ($database->descriptionmethods != null)
-					<li class=""><b>Methods</b>: {{ $database->descriptionmethods }}</li>
+					<li class=""><b>Methods</b>: {!! nl2br(e($database->descriptionmethods)) !!}</li>
 				@endif
 				
 				@if ($database->descriptionremarks != null)
-					<li><b>Technical Remarks</b>: {{ $database->descriptionremarks }}</li>
+					<li><b>Technical Remarks</b>: {!! nl2br(e($database->descriptionremarks)) !!}</li>
 				@endif 
 
-				@if ($database->datasources != null) <li><b>Data Source</b>: {{ $database->datasources }}</li>@endif 
+				@if ($database->datasources != null) <li><b>Data Source</b>: {!! nl2br(e($database->datasources)) !!}</li>@endif 
 				
 				@if ($database->software != null) <li><b>Software</b>: {{ $database->software }}</li>@endif 
 				

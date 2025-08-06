@@ -187,19 +187,19 @@ Parameters:
 				</li>
 
 				@if ($tool->descriptiongeneral != null)
-					<li><b>General Description</b>: {{ $tool->descriptiongeneral }}</li>
+					<li><b>General Description</b>: {!! nl2br(e($tool->descriptiongeneral)) !!}</li>
 				@endif 
 				
 				@if ($tool->descriptionabstract != null)
-					<li><b>Abstract</b>: {{ $tool->descriptionabstract }}</li>
+					<li><b>Abstract</b>: {!! nl2br(e($tool->descriptionabstract)) !!}</li>
 				@endif 
 				
 				@if ($tool->descriptionmethods != null)
-					<li><b>Methods</b>: {{ $tool->descriptionmethods }}</li>
+					<li><b>Methods</b>: {!! nl2br(e($tool->descriptionmethods)) !!}</li>
 				@endif 
 				
 				@if ($tool->descriptionremarks != null)
-					<li><b>Technical Remarks</b>: {{ $tool->descriptionremarks }}</li>
+					<li><b>Technical Remarks</b>: {!! nl2br(e($tool->descriptionremarks)) !!}</li>
 				@endif 
 			</ul>
 		</div>
