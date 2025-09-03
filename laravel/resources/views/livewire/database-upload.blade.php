@@ -306,6 +306,7 @@
 		////////////////////////////////////////////////////////////////////////////////
 		
 	let uploadQueue = []; // Upload queue, will be filled by ??? and processed by processQueue()
+	let uploadStart = 0;  // The time the upload started. Used for duration calculation
 
 		////////////////////////////////////////////////////////////////////////////////
 		//	Livewire functions
@@ -326,7 +327,7 @@
 		// Apply the filter and prepare a table with filenames for the upload
 	$js('doFilter', (data) => {
 		if (data) {
-			
+
 							// load the pattern of the dataset names and description
 			let dsn_pattern = document.getElementById("dsn_pattern").value.trim(); 
 			let descr_pattern = document.getElementById("description_pattern").value.trim(); 
@@ -361,7 +362,7 @@
 					fn_filter = fn_filter.replace(/\(/g, "\\(");
 					fn_filter = fn_filter.replace(/\)/g, "\\)");
 					fn_filter = fn_filter.replace(/<NUM>/g, "[0-9]+"); 
-					fn_filter = fn_filter.replace(/<ANY>/g, ".+"); 
+					fn_filter = fn_filter.replace(/<ANY>/g, ".+");
 					fn_filter = "^" + fn_filter; // ensure that pattern starts from beginning of the file name only
 					fn_filter = RegExp(fn_filter.replace(/<ID>/g, ".+"));
 					console.log(fn_filter);
@@ -504,7 +505,7 @@
 					}
 				}
 			}
-			table = document.getElementById('results'); 
+			table = document.getElementById('results');
 			table.style.visibility = "visible"; // show the table
 
 				// save variables in Livewire for upload procedure
@@ -522,6 +523,7 @@
 
 		// Process the upload
 	$js('doUpload', (data) => {
+	    uploadStart = performance.now();
 		response=confirm("This will start the upload and this might take a long time. Do not leave this page while uploading.\n\nTo cancel the upload, refresh or close the page. ");
 		if(response==false) return;
 		let fn_array = $wire.get('pdatafilenames');
@@ -672,11 +674,14 @@
 	let maxParallelUploads = 2; // Maximum concurrent uploads
 
 	function processQueue() {
+
 		//console.log('processQueue():start');
 		while (uploadQueue.length > 0 && maxParallelUploads > 0) {
 			const { index, file } = uploadQueue.shift();
 			maxParallelUploads--;
 			let data = Alpine.$data(document.getElementById('alpineComponent'));
+			const elapsed = (performance.now() - uploadStart) / 1000;
+			let elapsedString = " (Duration: " + elapsed.toFixed(0) + " s)";
 
 			@this.upload( 'uploads.' + index,
 				file,
@@ -684,7 +689,7 @@
 						/* Success handler */
 					data.nUploaded++;
 						setStatus("File #" + index + " (" + file.name + ") now successfully uploaded");
-						data.progressText = data.nUploaded + "/" + $wire.nFilesToUpload + " files successfully uploaded";
+						data.progressText = data.nUploaded + "/" + $wire.nFilesToUpload + " files successfully uploaded." + elapsedString;
 						maxParallelUploads++; // Free up a slot
 						// if this is the last upload, set 'uploading' to false
 						if(data.nUploaded == $wire.nFilesToUpload)
