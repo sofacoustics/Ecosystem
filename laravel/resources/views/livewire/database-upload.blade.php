@@ -680,8 +680,16 @@
 			const { index, file } = uploadQueue.shift();
 			maxParallelUploads--;
 			let data = Alpine.$data(document.getElementById('alpineComponent'));
-			const elapsed = (performance.now() - uploadStart) / 1000;
-			let elapsedString = " (Duration: " + elapsed.toFixed(0) + " s)";
+			let seconds = Math.floor((performance.now() - uploadStart) / 1000);
+			let baseSeconds = seconds;
+			let elapsedString = " (Duration: " + seconds.toFixed(0) + " s)" + " (test: " + baseSeconds + ")";
+			const threshold = 60; // a minute
+			if(seconds >= threshold)
+			{
+				let minutes = Math.floor(seconds / threshold);
+				seconds = seconds % threshold;
+				elapsedString = " (Duration: " + minutes.toFixed(0) + " m " + seconds.toFixed(0) + " s)" + " (test: " + baseSeconds + ")";
+			}
 
 			@this.upload( 'uploads.' + index,
 				file,
