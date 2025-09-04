@@ -682,13 +682,13 @@
 			let data = Alpine.$data(document.getElementById('alpineComponent'));
 			let seconds = Math.floor((performance.now() - uploadStart) / 1000);
 			let baseSeconds = seconds;
-			let elapsedString = " (Duration: " + seconds.toFixed(0) + " s)" + " (test: " + baseSeconds + ")";
+			let elapsedString = " (Duration: " + seconds.toFixed(0) + " s)";
 			const threshold = 60; // a minute
 			if(seconds >= threshold)
 			{
 				let minutes = Math.floor(seconds / threshold);
 				seconds = seconds % threshold;
-				elapsedString = " (Duration: " + minutes.toFixed(0) + " m " + seconds.toFixed(0) + " s)" + " (test: " + baseSeconds + ")";
+				elapsedString = " (Duration: " + minutes.toFixed(0) + " m " + seconds.toFixed(0) + " s)";
 			}
 
 			@this.upload( 'uploads.' + index,
