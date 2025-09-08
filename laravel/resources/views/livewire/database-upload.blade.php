@@ -777,20 +777,13 @@
 			const { index, file } = uploadQueue.shift();
 			maxParallelUploads--;
 			let data = Alpine.$data(document.getElementById('alpineComponent'));
-			let seconds = Math.floor((performance.now() - uploadStart) / 1000);
-			let baseSeconds = seconds;
-			let elapsedString = " (Duration: " + seconds.toFixed(0) + " s)";
-			const threshold = 60; // a minute
-			if(seconds >= threshold)
-			{
-				let minutes = Math.floor(seconds / threshold);
-				seconds = seconds % threshold;
-				elapsedString = " (Duration: " + minutes.toFixed(0) + " m " + seconds.toFixed(0) + " s)";
-			}
+			let totalSeconds = Math.floor((performance.now() - uploadStart) / 1000);
+			const hours = Math.floor(totalSeconds / 3600);
+			const minutes = Math.floor((totalSeconds % 3600) / 60);
+			const seconds = totalSeconds % 60;
+			let elapsedString = " (Duration: " + String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0') + ")";
 
 			// set metadata
-			//console.log('pendingFilesMetadata');
-			//console.table(data.pendingFilesMetadata);
 			console.log('Uploading ' + file.name + ' for dataset ' + data.pendingFilesMetadata[index].datasetName + ' datasetdef ' + data.pendingFilesMetadata[index].datasetdefId);
 			@this.set('uploadsMetadata.'+index+'.datasetName', data.pendingFilesMetadata[index].datasetName );
 			@this.set('uploadsMetadata.'+index+'.datasetdefId', data.pendingFilesMetadata[index].datasetdefId);
