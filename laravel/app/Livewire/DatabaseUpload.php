@@ -33,7 +33,9 @@ class DatabaseUpload extends Component
 
 	public $directory;
 
-	public array $uploads;  // files uploaded to livewire-tmp
+	public array $uploads;			// files uploaded to livewire-tmp
+	public array $uploadsMetadata;  // additional metadata for '$uploads': 'datasetName', 'datasetDesc', 'datasetdefId', 'fileName'
+	public array $existingMetadata; // a list of existing datafiles including their dataset names and datasetdefIds.
 
 	public array $pending;  // a list of names of the files which are filtered and neither exist, nor have been uploaded (pending upload)
 	public array $existing; // a list of names of the datafiles which already exists
@@ -50,7 +52,7 @@ class DatabaseUpload extends Component
 	public array $pdatasetnames= []; // array with selected (=subset of dsnFiltered) dataset names
 	public array $pdatasetdescriptions= []; // array with selected (=subset of descrFiltered) descriptions
 	public array $pdatafilenames= []; // a 2D array with selected (=a subset of dfnFiltered) datafilenames, dim 1: index of pdatasetnames, dim 2: index of datasetdefIds
-	
+
 	public $progress;
 	public $uploading;
 
@@ -114,7 +116,7 @@ class DatabaseUpload extends Component
 
 	public function resetUploads()
 	{
-		$this->setStatus("Resetting uploads");
+		$this->setStatus("resetUploads()");
 		// clean up uploads
 		foreach($this->filtered as $id => $file)
 		{
@@ -130,13 +132,17 @@ class DatabaseUpload extends Component
 				$this->console("resetUploads(): deleting file ($key) $originalName from livewire-tmp");
 				$file->delete();
 				unset($this->uploads[$key]);
+				unset($this->uploadsMetadata[$key]); //jw:todo Does the whole array need anulling?
 			}
 			else
 			{
 				//$this->console("resetUpload(): skipping $originalName");
 			}
 		}
-			// compact array so uploading new files can be appended to end using an offset of the array count.
+		if(count($this->uploads))
+			dd($this->uploads); // we shouldn't get here!
+		//jw:todo Do we need to reset the keys??? See line below
+		// compact array so uploading new files can be appended to end using an offset of the array count.
 		$this->uploads = array_values($this->uploads);
 		$uploadList = "";
 		ksort($this->uploads);
@@ -231,14 +237,11 @@ class DatabaseUpload extends Component
 				break;
 			case 'uploads':
 				// $field = e.g. "uploads.0"
-				// $value = e.g. [
-				//   "fileName" => "D8_48K_24bit_256tap_FIR_SOFA.sofa"
-				//   "fileSize" => 11656471
-				//   "progress" => 0
-				// ]
-				// Only update uploads if the fileRef value has been set, since the others are set first.
+				// $value = Livewire file object
 				$this->calculateUploaded();
 				$this->calculatePending();
+				break;
+			case 'uploadsMetadata':
 				break;
 			case 'filtered':
 				dd("$property updated");
@@ -266,12 +269,12 @@ class DatabaseUpload extends Component
 		$this->setStatus("Saving: there are " . count($this->uploads)." uploads to save");
 		if(count($this->uploads))
 		{
-				// Create the datasets and their datafiles
+			// Create the datasets and their datafiles
 			$this->debug(1, "There are ".count($this->pdatasetnames)." datasets to save");
 			foreach($this->pdatasetnames as $datasetnameKey => $datasetname)
 			{
 				$this->debug(1, "Dataset $datasetnameKey: $datasetname", 1);
-					// Create dataset if it doesn't exist1
+				// Create dataset if it doesn't exist1
 				if(!Dataset::where('name', "$datasetname")->where('database_id', $this->database->id)->exists())
 				{
 					$this->debug(1, "Creating dataset");
@@ -391,7 +394,7 @@ class DatabaseUpload extends Component
 				} // foreach dataset def
 			} // foreach dataset
 		} // if upload>0
-		
+
 		$this->setStatus("Saving now complete");
 		$this->saved = []; // reset saved
 		$this->uploaded = []; // reset uploaded
@@ -402,6 +405,104 @@ class DatabaseUpload extends Component
 		$this->dispatch('saved-to-database');
 		$this->dispatch('status-message', 'Files successfully saved to database');
 		$this->redirect('/databases/' . $this->database->id . '/showdatasets');
+	}
+
+	/*
+	 * Save a single datafile referenced by the 'uploaded' index
+	 */
+	public function saveDatafile($index)
+	{
+		//dd($this->uploadsMetadata);
+		$file = $this->uploads[$index];
+		$datasetName = $this->uploadsMetadata[$index]['datasetName'];
+		$datasetDesc = array_key_exists('datasetDesc', $this->uploadsMetadata[$index]) ? $this->uploadsMetadata[$index]['datasetDesc'] : '';
+		$datasetdefId = $this->uploadsMetadata[$index]['datasetdefId'];
+		$fileName = $this->uploadsMetadata[$index]['fileName'];
+		$this->debug(2, "Processing upload $index");
+		$originalName = $file->getClientOriginalName();
+		if("$originalName" == "")
+			$this->error('trying to create a datafile with an empty name');
+		//dd("$fileName == $originalName");
+		// get name of dataset for this datafile
+		//dd($this->pdatasetnames);
+		//dd("name: $originalName dataset: $datasetName desc: $datasetDesc datasetdefId: $datasetdefId fileName: $fileName");
+		//dd($originalName);
+		//dd($this->pdatafilenames);
+		//
+
+		// create dataset
+		if(!Dataset::where('name', "$datasetName")->where('database_id', $this->database->id)->exists())
+		{
+			$this->debug(1, "Creating dataset");
+			$this->setStatus("Creating dataset");
+				// create the dataset
+			$dataset = new Dataset();
+			$dataset->name = $datasetName;
+			$dataset->description = $datasetDesc;
+			$dataset->database_id = $this->database->id;
+			$dataset->save();
+		}
+		else
+		{
+			$this->debug(1, "Using existing dataset");
+			$this->setStatus("Using existing ");
+			$dataset = Dataset::where('name', "$datasetName")->where('database_id', $this->database->id)->first();
+		}
+
+		//
+		// create datafile
+		//
+
+		// check if datafile already exists
+		$datafile = Datafile::where('datasetdef_id', $datasetdefId)
+			->where('dataset_id', "$dataset->id")
+			->first();
+		if($datafile)
+			$this->debug(1, "A datafile for the datasetdef $datasetdefId already exists in the database (id: $datafile->id)");
+		if($datafile && !$this->overwriteExisting)
+		{
+			$this->debug(1, "Since this overwriting existing datafiles is disabled, we will ignore this upload.");
+		}
+		else
+		{
+			// create new Datafile or overwrite
+			$existing = false;
+			if(!$datafile)
+			{
+				// create a new datafile
+				$this->debug(1, "Creating a new datafile for $originalName");
+				$datafile = new Datafile();
+				// set mandatory fields
+				$datafile->dataset_id = $dataset->id;
+				$datafile->datasetdef_id = $datasetdefId;
+			}
+			else
+			{	
+				// overwrite existing datafile
+				$existing = true;
+				$this->debug(1, "Overwrite existing datafile $datafile->id");
+			}
+
+			$datafile->name = "$originalName";
+			$datafile->mimetype = $file->getMimeType();
+			$datafile->save(); // save so datafile has ID (necessary for saving file)
+
+			if($existing)
+			{
+				$this->debug(1, "Touching datafile to set 'updated_at'");
+				$datafile->touch(); // touch the file to reset 'updated_at' and trigger DatafileObserver
+			}
+			$directory = $datafile->directory();
+			$this->dispatch('saving-file', name: $datafile->name); // dispatch a browser event
+			$this->dispatch('showFlashMessage', ['type' => 'success', 'message' => 'storeAs']);
+				// Save the file to disk (=move from temporary location)
+			$file->storeAs("$directory", "$datafile->name", 'sonicom-data');
+			//jw:todo add to 'saved' and remove from '$uploads'
+			$this->saved[] = $originalName;
+		}
+		// delete from livewire-tmp, but don't remove from uploads, since otherwise all hell
+		// will break loose with the index!
+		$file->delete();
 	}
 
 	public function render()
@@ -487,8 +588,9 @@ class DatabaseUpload extends Component
 	private function calculateUploaded()
 	{
 		$this->uploaded = [];
-		foreach($this->uploads as $key => $upload)
+		foreach($this->uploads as $key => $upload) {
 			$this->uploaded[] = $upload->getClientOriginalName();
+		}
 
 		$this->nFilesUploaded = count($this->uploaded);
 		$this->debug(1, "calculateUploaded()");

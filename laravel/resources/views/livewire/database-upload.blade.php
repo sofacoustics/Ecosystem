@@ -3,6 +3,7 @@
 		allFiles: [],
 		filteredFiles: [],
 		pendingFiles: [],
+		pendingFilesMetadata: [],
 		uploading: false,
 		saving: false,
 		nSelected: 0,
@@ -26,8 +27,8 @@
 		<div>
 			<x-button id="actual-directory-picker" x-bind:disabled="uploading" wire:ignore>Select a Directory</x-button>
 			<input id="directory-picker" type="file" webkitdirectory directory style="display:none"
-				x-bind:disabled="uploading"
-				x-on:change="allFiles = Array.from($event.target.files);">
+																	  x-bind:disabled="uploading">
+{{--				x-on:change="allFiles = Array.from($event.target.files);"> --}}
 		</div>
 		@if($nFilesInDir > 0)
 			<p><b>Files found:</b> {{ $nFilesInDir }}</p>
@@ -180,6 +181,7 @@
 				<br>
 				<hr>
 
+				{{--
 				<h3>5) Save the uploaded datafiles to the database:</h3>
 				<button
 					x-bind:disabled="saving || nFilesToUpload > nFilesUploaded || nFilesToUpload == 0"
@@ -191,12 +193,14 @@
 					>
 					Save files to database
 				</button>
-
-				<p><small>(Livewire) Status: {{ $status }}</small></p>
-				<p><small>(Alpine) Directory: <span x-text="directory"></span></small></p>
-				<p><small>(Alpine) Mode: <span x-text="dirMode"></span></small></p>
-				<p><small>(Livewire) Mode: {{ $dirMode }}</small></p>
-				<p><small>(Livewire) File to upload: {{ $nFilesToUpload }}</small></p>
+				--}}
+				@hasrole('admin')
+					<p><small>(Livewire) Status: {{ $status }}</small></p>
+					<p><small>(Alpine) Directory: <span x-text="directory"></span></small></p>
+					<p><small>(Alpine) Mode: <span x-text="dirMode"></span></small></p>
+					<p><small>(Livewire) Mode: {{ $dirMode }}</small></p>
+					<p><small>(Livewire) File to upload: {{ $nFilesToUpload }}</small></p>
+				@endhasrole
 			@endif
 		@endif
 	</form>
@@ -219,7 +223,22 @@
 		(e) => {
 			//console.log('EVENT: directory-picker: files: ', Array.from(e.target.files));
 			resetUpload();
-			const files = event.target.files;
+			//const files = event.target.files;
+
+			let files = Array.from(event.target.files);
+			// sort alphabetically
+			files.sort((a, b) => a.webkitRelativePath.localeCompare(b.webkitRelativePath));
+			if(debugLevel>0)
+			{
+				console.log("alphabetical list of files");
+				files.forEach(file => {
+					console.log(file.webkitRelativePath);
+				});
+			}
+
+			let data = Alpine.$data(document.getElementById('alpineComponent'));
+			data.allFiles = files;
+
 			//console.log('EVENT: directory-picker: # of files', files.length);
 			if (files.length > 0) {
 					// Extract the first file's relative path and get the directory name
@@ -237,7 +256,7 @@
 			a = document.getElementById("analysis-summary");
 			if (a!=null) a.innerHTML = "";
 			a = tableBody = document.getElementById('results');
-			if (a!=null) a.getElementsByTagName('tbody')[0].innerHTML = ""; 
+			if (a!=null) a.getElementsByTagName('tbody')[0].innerHTML = "";
 		},
 		false,
 	);
@@ -301,12 +320,14 @@
 	});
 
 	
-		////////////////////////////////////////////////////////////////////////////////
-		//	Global variables
-		////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////
+	//	Global variables
+	////////////////////////////////////////////////////////////////////////////////
 		
 	let uploadQueue = []; // Upload queue, will be filled by ??? and processed by processQueue()
 	let uploadStart = 0;  // The time the upload started. Used for duration calculation
+
+	let debugLevel = 0; // set to 1 to turn debugging console messages on.
 
 		////////////////////////////////////////////////////////////////////////////////
 		//	Livewire functions
@@ -323,14 +344,13 @@
 	});
 
 	
-	
-		// Apply the filter and prepare a table with filenames for the upload
+
+	// Apply the filter and prepare a table with filenames for the upload
 	$js('doFilter', (data) => {
 		if (data) {
-
-							// load the pattern of the dataset names and description
-			let dsn_pattern = document.getElementById("dsn_pattern").value.trim(); 
-			let descr_pattern = document.getElementById("description_pattern").value.trim(); 
+			// load the pattern of the dataset names and description
+			let dsn_pattern = document.getElementById("dsn_pattern").value.trim();
+			let descr_pattern = document.getElementById("description_pattern").value.trim();
 			
 			if(dsn_pattern.length==0)
 			{
@@ -340,19 +360,24 @@
 			resetUpload();
 			data.dirMode = 0;
 			let df_array = $wire.datasetdefIds; // get the dataset definition (=array with dataset filetypes)
+			if(debugLevel)
+			{
+				console.log('df_array');
+				console.table(df_array);
+			}
 			let fn_filter_array = [], postfix_array = [], beg_id_array = [], dummy = [], fn_cnt_array = [];
 			for (let i=0; i<df_array.length; i++)
 			{
 				let fn_pattern = document.getElementById("fn_pattern"+df_array[i]).value.trim();
 				if (fn_pattern == "")
-				{		// empty pattern --> ignore
+				{	// empty pattern --> ignore
 					fn_filter_array[i]="";
 					postfix_array[i]="";
 					beg_id_array[i]=0;
 					// console.log([i, 'ignored']);
 				}
 				else
-				{		// nonempty pattern --> create filters
+				{	// nonempty pattern --> create filters
 					fn_pattern = fn_pattern.split('\\').join('/');
 					let fn_filter = fn_pattern.replace(/\[/g, "\\[");
 					fn_filter = fn_filter.replace(/\]/g, "\\]");
@@ -361,7 +386,7 @@
 					fn_filter = fn_filter.replace(/\$/g, "\\$"); 
 					fn_filter = fn_filter.replace(/\(/g, "\\(");
 					fn_filter = fn_filter.replace(/\)/g, "\\)");
-					fn_filter = fn_filter.replace(/<NUM>/g, "[0-9]+"); 
+					fn_filter = fn_filter.replace(/<NUM>/g, "[0-9]+");
 					fn_filter = fn_filter.replace(/<ANY>/g, ".+");
 					fn_filter = "^" + fn_filter; // ensure that pattern starts from beginning of the file name only
 					fn_filter = RegExp(fn_filter.replace(/<ID>/g, ".+"));
@@ -371,15 +396,15 @@
 					let end_filter = fn_pattern.indexOf("ID>")+3; // find the end of the ID
 					let postfix = fn_pattern.substring(end_filter); // hole den postfix, d.h., text nach <ID> raus
 					postfix = postfix.replace(/\[/g, "\\[");
-					postfix = postfix.replace(/\]/g, "\\]"); 
-					postfix = postfix.replace(/\^/g, "\\^"); 
+					postfix = postfix.replace(/\]/g, "\\]");
+					postfix = postfix.replace(/\^/g, "\\^");
 					postfix = postfix.replace(/\./g, "\\.");
 					postfix = postfix.replace(/\$/g, "\\$");
 					postfix = postfix.replace(/\(/g, "\\(");
 					postfix = postfix.replace(/\)/g, "\\)");
 					postfix = postfix.replace(/<NUM>/g, "[0-9]+");
 					postfix = RegExp(postfix.replace(/<ANY>/g, ".+"));
-					postfix_array[i]=postfix; 
+					postfix_array[i]=postfix;
 					let beg_id = fn_pattern.indexOf("<"); // zahl anfang: index von < in fn_pattern
 					beg_id_array[i]=beg_id;
 					// console.log([i, fn_pattern, fn_filter, postfix, beg_id, end_filter]);
@@ -422,7 +447,7 @@
 							let name = dsn_pattern.replace("<ID>", id); // baue Name mit neuem ID zusammen
 							let descr = descr_pattern.replace("<ID>", id); // baue Description mit neuem ID zusammen
 								// Array
-							idx = dsn_array.indexOf(name); 
+							idx = dsn_array.indexOf(name);
 							if (idx == -1)
 							{   // new dataset name
 								dsn_array[dsn_array.length] = name; // extend the datasetname array
@@ -457,9 +482,9 @@
 					skipped_cnt++;
 				}
 			} // for all fns
-			
+
 				// Display skipped filenames
-			if(s!="") 
+			if(s!="")
 			{
 				document.getElementById("skipped").innerHTML = "Click here to see the list of skipped/conflicting files...";
 				document.getElementById("skipped-list").innerHTML = s;
@@ -474,7 +499,7 @@
 			str = "" + 
 				"<b>Files matched:</b> " + String(matched_cnt) + " files (includes conflicting)<br>" +
 				"<b>Files conflicting:</b> " + String(conflict_cnt) + " files<br>" +
-				"<b>Files skipped:</b> " + String(skipped_cnt) + " files<br>" + 
+				"<b>Files skipped:</b> " + String(skipped_cnt) + " files<br>" +
 				"<b>Datasets matched</b>: " + String(dsn_cnt) + "<br>" + 
 				"<b>Datafiles with assigned files:</b> " + String(fn_cnt_array.reduce((a, b) => a + b)) + "<br>" + 
 				"<b>Datafiles empty:</b> " + String(dsn_cnt * df_array.length - fn_cnt_array.reduce((a, b) => a + b)) + "<br>";
@@ -487,13 +512,13 @@
 				headers[df_array.length+4+j].textContent = fn_cnt_array[j]; // insert the count of fns
 
 				// Table - Filenames
-			tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
+			tableBody = document.getElementById('results').getElementsByTagName('tbody')[0];
 			for (let i=0; i<dsn_array.length; i++)
 			{
 				newRow = tableBody.insertRow(-1);
 				cell = newRow.insertCell(-1); 
 				cell.innerHTML = '<input type="checkbox" id="check' + (i+1) + '" wire:click="$js.updateSelected($data)">: #' + (i+1); // insert checkbox for a dataset
-				cell = newRow.insertCell(-1); 
+				cell = newRow.insertCell(-1);
 				cell.textContent = dsn_array[i]; // insert Name to the table
 				cell.title = descr_array[i]; // insert Description as cell title
 				for (let j=0; j<df_array.length; j++) // for each column
@@ -508,27 +533,39 @@
 			table = document.getElementById('results');
 			table.style.visibility = "visible"; // show the table
 
-				// save variables in Livewire for upload procedure
-			$wire.set('dsnFiltered', dsn_array); // save the filtered dataset names 
-			$wire.set('descrFiltered', descr_array); // save the filtered dataset names
+			// save variables in Livewire for upload procedure
+			$wire.set('dsnFiltered', dsn_array); // save the filtered dataset names
+			$wire.set('descrFiltered', descr_array); // save the filtered dataset descriptions
 			$wire.set('dfnFiltered', fn_array); // save the filtered filenames
 			$wire.set('dirMode', data.dirMode); // save the directory dirMode (0: flat, 1: nested)
-				// select all Datasets in the table
+
+			//jw:tmp
+			if(debugLevel>0)
+			{
+				console.log("dsn_array / dsnFiltered (filtered dataset names)");
+				console.table(dsn_array);
+				console.log("fn_array / dfnFiltered (filtered filenames)");
+				console.table(fn_array);
+				console.log('descr_array / descrFiltered (filtered dataset descriptions)');
+				console.table(descr_array);
+				console.log('dirMode: ', data.dirMode);
+			}
+
+			// select all Datasets in the table
 			document.getElementById("checkAll").checked = true; // select all
 			data = _checkAll(data);
-		} 
+		}
 		else
 			console.log('doFilter() - data parameter *does not* exist!');
 	});
 
-		// Process the upload
+	// Process the upload
 	$js('doUpload', (data) => {
 	    uploadStart = performance.now();
 		response=confirm("This will start the upload and this might take a long time. Do not leave this page while uploading.\n\nTo cancel the upload, refresh or close the page. ");
 		if(response==false) return;
-		let fn_array = $wire.get('pdatafilenames');
-		data = _createPendingFiles(data, fn_array); // create the list with PendingFiles
 		resetUpload();
+		data = _createPendingFiles(data); // create the list with PendingFiles
 		data.error = false;
 		$wire.set('canUpload', false);
 		$wire.set('uploading', true); // set immediately. This is used within the Livewire component
@@ -539,60 +576,109 @@
 		let offset = uploads.length;
 		//console.log("doUpload() - existing upload count: ", offset);
 		// https://fly.io/laravel-bytes/multi-file-upload-livewire/
+		console.table(data.pendingFiles);
 		data.pendingFiles.forEach( (file, index) => { uploadQueue.push({ index, file }); } );
+		console.log("uploadQueue: ", uploadQueue);
+		console.table(uploadQueue);
 		console.log("uploadQueue.length: ", uploadQueue.length);
 		processQueue();
 		setStatus('Leaving doUpload...');
 	});
-	
+
 		// Cancel an upload (jw:note not used yet (no button), but works.)
 	$js('cancelUpload', (data) => {
 		console.log('User has cancelled the upload');
 		resetUpload();
 	});
-	
+
 
 		////////////////////////////////////////////////////////////////////////////////
 		//	Javascript functions
 		////////////////////////////////////////////////////////////////////////////////
 
-	function _createPendingFiles(data, fn_array)
+	function _createPendingFiles(data)
 	{
-		console.log("allFiles: ", data.allFiles);
+		let fn_array = $wire.get('pdatafilenames');
+		let dsn_array = $wire.get('pdatasetnames');
+		let descr_array = $wire.get('pdatasetdescriptions');
+		let df_array = $wire.datasetdefIds;
+		if(debugLevel>0)
+		{
+			console.log("fn_array / pdatafilenames");
+			console.table(fn_array);
+			console.log("dsn_array / pdatasetnames");
+			console.table(dsn_array);
+			console.log("descr_array / pdatasetdescriptions");
+			console.table(descr_array);
+			console.log("df_array / datasetdefIds (list of datasetdef ids for this database)");
+			console.table(df_array);
+		}
 
-			// create list with pending files: data.pendingFiles
+		// create list with dataset, datasetdefid and relative file path
+		// to facilitate saving one file to the correct dataset/datafile.
+		// This array's id should correspond to the pendingFiles array.
+		data.pendingFilesMetadata = [];
+		if(debugLevel>0)
+			console.log('looping through fn_array');
+		for(let i = 0; i < fn_array.length; i++) {
+			for(let j = 0; j < fn_array[i].length; j++) {
+				if(debugLevel>0)
+					console.log("dataset: ", dsn_array[i], "descr: ", descr_array[i], " datasetdefId: ", df_array[j], " relativefilepath: ", fn_array[i][j]);
+				data.pendingFilesMetadata.push({ datasetName: dsn_array[i], datasetDesc: descr_array[i], datasetdefId: df_array[j], relativePath: fn_array[i][j]});
+			}
+		}
+		if(debugLevel>0)
+		{
+			console.log('pendingFilesMetadata');
+			console.table(data.pendingFilesMetadata);
+		}
+		// sort by relativePath so this is the same order as the pendingFiles
+		data.pendingFilesMetadata.sort((a, b) => a.relativePath.localeCompare(b.relativePath));
+		if(debugLevel>0)
+		{
+			console.log('pendingFilesMetadata - sorted by relativefilepath');
+			console.table(data.pendingFilesMetadata);
+		}
+		// create list with pending files: data.pendingFiles
 		let filenamesToUpload = fn_array.flat(); // flat list of files to upload. This is a relative path from the directory chosen as input. E.g. P0002/3DSCAN/P0002_watertight.stl
+		console.log('filenamesToUpload');
+		console.table(filenamesToUpload);
 		data.nSelected = fn_array.flat().length; // since this is a multi-dimensional array, we need to flatten it first for length to count all elemets
 		if(data.dirMode == 0)
-		{			// flat: get filtered list of file objects
+		{
+			// flat: get filtered list of file objects
 			data.pendingFiles = data.allFiles.filter((file) => { // the data.allFiles 'name' is *just* the file name. There is a relative path, but it also contains the parent folder. E.g. AXD-small/P0002/3DSCAN/P0002_watertight.stl
-					return filenamesToUpload.includes(file.name);
+				return filenamesToUpload.includes(file.name);
 			});
 		}
 		else
-		{			// nested: prepend filenamesToUpload with directory for comparison with allFiles
-			console.log("nested: ", data.allFiles);
-			console.log('data.directory: ', data.directory);
+		{	// nested: prepend filenamesToUpload with directory for comparison with allFiles
+			if(debugLevel>0)
+			{
+				console.log("nested");
+				console.table(data.allFiles);
+				console.log('data.directory: ', data.directory);
+			}
 			let prefix = data.directory+'/';
 			dirPrefixed = filenamesToUpload.map(item => prefix + item);
 			data.pendingFiles = data.allFiles.filter((file) => {
-					return dirPrefixed.includes(file.webkitRelativePath);
+				return dirPrefixed.includes(file.webkitRelativePath);
 			});
-			console.log('data.pendingFiles: ', data.pendingFiles);
 		}
-			// update the actual number of files to upload, so Livewire knows how many files to expect.
+		// update the actual number of files to upload, so Livewire knows how many files to expect.
 		$wire.set('nFilesToUpload', data.pendingFiles.length);
-		
-		console.log("data.pendingFiles: " + data.pendingFiles);
+
+		console.log("data.pendingFiles")
+		console.table(data.pendingFiles);
 		console.log("nFilesToUpload: " + data.pendingFiles.length);
-		
+
 		return(data);
 	}
-	
+
 	function _checkAll(data)
 	{
 		var checkBox = document.getElementById("checkAll");
-		tableBody = document.getElementById('results').getElementsByTagName('tbody')[0]; 
+		tableBody = document.getElementById('results').getElementsByTagName('tbody')[0];
 		if (tableBody.rows.length > 0)
 		{
 			//console.log('Tablebody.rows', tableBody.rows);
@@ -615,7 +701,7 @@
 		tableBody = document.getElementById('results').getElementsByTagName('tbody')[0];
 		rows = tableBody.rows; 
 		if (rows != null)
-		{ 
+		{
 			let fn_array = $wire.get('dfnFiltered');
 			let dsn_array = $wire.get('dsnFiltered');
 			let descr_array = $wire.get('descrFiltered');
@@ -653,20 +739,31 @@
 					}
 				}
 			}
-				// Table - Summary header
+			// Table - Summary header
 			headers = document.getElementById('results').getElementsByTagName('th');
 			headers[df_array.length+3].textContent = dsn_selected.length; // insert count of Names
 			for (let j=0; j<df_array.length; j++) // for each column
 				headers[df_array.length+4+j].textContent = fn_cnt_array[j]; // insert the count of fns
-				// Update Alpine variables
+			// Update Alpine variables
 			let data = Alpine.$data(document.getElementById('alpineComponent'));
 			const uniqueSet = new Set(fn_selected.flat());
 			data.nFilesSelected= uniqueSet.size; // save the number of unique files to upload
-				// Update Livewire variables
-			$wire.set('pdatasetnames', dsn_selected); // save the selected dataset names 
+			// Update Livewire variables
+			$wire.set('pdatasetnames', dsn_selected); // save the selected dataset names
 			$wire.set('pdatasetdescriptions', descr_selected); // save the selected descriptons
-			$wire.set('pdatafilenames', fn_selected); // save the selected filenames 
+			$wire.set('pdatafilenames', fn_selected); // save the selected filenames
 			$wire.set('nFilesSelected', data.nFilesSelected); // number of unique files to upload
+
+			if(debugLevel>0)
+			{
+				console.log('dsn_selected / pdatasetnames');
+				console.table(dsn_selected);
+				console.log('descr_selected / pdatasetdescriptions');
+				console.table(descr_selected);
+				console.log('fn_selected / pdatafilenames');
+				console.table(fn_selected);
+				console.log('nFilesSelected: ' + data.nFilesSelected);
+			}
 		}
 		return data;
 	}
@@ -691,52 +788,68 @@
 				elapsedString = " (Duration: " + minutes.toFixed(0) + " m " + seconds.toFixed(0) + " s)";
 			}
 
+			// set metadata
+			//console.log('pendingFilesMetadata');
+			//console.table(data.pendingFilesMetadata);
+			console.log('Uploading ' + file.name + ' for dataset ' + data.pendingFilesMetadata[index].datasetName + ' datasetdef ' + data.pendingFilesMetadata[index].datasetdefId);
+			@this.set('uploadsMetadata.'+index+'.datasetName', data.pendingFilesMetadata[index].datasetName );
+			@this.set('uploadsMetadata.'+index+'.datasetdefId', data.pendingFilesMetadata[index].datasetdefId);
+			@this.set('uploadsMetadata.'+index+'.fileName', file.name);
+			// only set if it exists (otherwise setting it destroys the uploadsMetadat array!)
+			if(data.pendingFilesMetadata[index].datasetDesc != '')
+				@this.set('uploadsMetadata.'+index+'.datasetDesc', data.pendingFilesMetadata[index].datasetDesc);
+			// upload file
 			@this.upload( 'uploads.' + index,
 				file,
-				() => { 
-						/* Success handler */
+				() => {
+					/* Success handler */
 					data.nUploaded++;
-						setStatus("File #" + index + " (" + file.name + ") now successfully uploaded");
-						data.progressText = data.nUploaded + "/" + $wire.nFilesToUpload + " files successfully uploaded." + elapsedString;
-						maxParallelUploads++; // Free up a slot
-						// if this is the last upload, set 'uploading' to false
-						if(data.nUploaded == $wire.nFilesToUpload)
-						{
-								data.uploading = false; // finished
-								setStatus("Upload process finished. You may save the files to the database!");
-								$wire.dispatch('status-message', { message: 'Uploading has finished' });
-						}
-						processQueue(); // Process next in queue
+					setStatus("File #" + index + " (" + file.name + ") now successfully uploaded");
+					data.progressText = data.nUploaded + "/" + $wire.nFilesToUpload + " files successfully uploaded." + elapsedString;
+					//jw:tmp testing saving each datafile
+					console.log("Calling saveDatafile(" + index + ")");
+					$wire.saveDatafile(index);
+					maxParallelUploads++; // Free up a slot
+					// if this is the last upload, set 'uploading' to false
+					if(data.nUploaded == $wire.nFilesToUpload)
+					{
+						data.uploading = false; // finished
+						setStatus("All files have been successfully uploaded!");
+						$wire.dispatch('status-message', { message: 'Uploading has finished' });
+					}
+					processQueue(); // Process next in queue
 				},
 				(error) => {
-						/* Error handler */
-						setStatus("Error " + index + " (" + error + ")");
-						data.error = true;
-						resetUpload();
+					/* Error handler */
+					setStatus("Error " + index + " (" + error + ")");
+					data.error = true;
+					//jw:tmp maybe don't reset the upload, but carry on? 
+					//resetUpload();
 				},
 				(progress) => {
-						/* Progress updates */
-						setStatus("Uploading file #" + index + " (" + file.name + ")");
-						data.progress = event.detail.progress;
+					/* Progress updates */
+					setStatus("File #" + index + " (" + file.name + ") uploading");
+					data.progress = event.detail.progress;
 				},
 				() => {
-						/* cancelled handler */
-						setStatus("Cancelled at file #" + index);
+					/* cancelled handler */
+					setStatus("Cancelled at file #" + index);
 				}
 			);
 		}
 	}
 
-		// set both Livewire, Alpine and inner HTML status.
+	// set both Livewire, Alpine and inner HTML status.
 	function setStatus(string)
 	{
-			console.log("Status (alpine): ", string);
-			let data = Alpine.$data(document.getElementById('alpineComponent'));
-			data.status = string;
+		console.log("Status (alpine): ", string);
+		let data = Alpine.$data(document.getElementById('alpineComponent'));
+		data.status = string;
 	};
 
 	function resetUpload()
 	{
+		setStatus("resetUpload");
 		$wire.resetUploads();
 		let data = Alpine.$data(document.getElementById('alpineComponent'));
 		data.progress = 0;
