@@ -21,9 +21,11 @@ class Dataset extends Model
 	{
 		parent::boot();
 		static::deleting(function($model) {
-			$radar = new DatasetRadarFolderBridge($model);
 			if($model->radar_id)
+			{
+				$radar = new DatasetRadarFolderBridge($model);
 				$radar->delete();
+			}
 			$model->datafiles->each->delete();
 		});
 	}
