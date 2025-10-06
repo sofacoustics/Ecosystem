@@ -39,10 +39,10 @@ class DatabasePurge extends Component
 	public function purgeDatabase()
 	{
 		$title = $this->database->title;
-			// remove all datasets
+		// remove all datasets
 		foreach($this->datasets as $dataset)
 		{
-				$dataset->delete();
+			$dataset->delete();
 		}
 		$user = \App\Models\User::where('id', $this->database->user_id)->first();
 		return Redirect::route('databases.show',[ 'database' => $this->database, 'user' => $user ]);
