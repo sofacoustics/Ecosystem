@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 /*
@@ -63,14 +64,16 @@ class AppServiceProvider extends ServiceProvider
 
         //jw:note throw excption if attemptinng to fill and unfillable attribute (https://laravel.com/docs/11.x/eloquent#mass-assignment-json-columns) for local development (production should still ignore silently).
         Model::preventSilentlyDiscardingAttributes($this->app->isLocal());
-	/*
-	 * This *was* necessary to get livewire to upload files. However, it turns
-	 * out that simply setting the X-Forwarded-Proto header to https fixes *everything*!
-	# https://stackoverflow.com/questions/29912997/laravel-routes-behind-reverse-proxy
-        $proxy_scheme = getenv('PROXY_SCHEME');
-        if(!empty($proxy_scheme)) {
-            URL::forceScheme($proxy_scheme);
-	}
-	 */
+		//jw:note 2025-10
+		// For some reason, ubuntu-vm-2 (ecosystem.sonicom.eu) is not recognising this by
+		// forwarded headers alone!. Here we can force it to use https
+		$appUrl = config('app.url');
+		$scheme = parse_url($appUrl, PHP_URL_SCHEME);
+		if ($scheme === 'https') {
+	        URL::forceScheme('https');
+		}
+		//jw:note 2025-10
+		// This may also be necessary to be on the safe side. Leaving here as documenation
+		//URL::forceRootUrl(config('app.url'));
     }
 }
