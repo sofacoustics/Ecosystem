@@ -132,7 +132,7 @@ class DatabaseVisibility extends Component
 			return;
 		}
 
-		$this->database->radar_status = 1;
+		$this->database->radar_status = $this->radar_status = 1;
 		$this->database->doi = $this->doi;
 		$this->database->save();
 		app('log')->info('DOI assigned to database', [
@@ -151,7 +151,6 @@ class DatabaseVisibility extends Component
 			'target_url' => config('services.radar.baseurl'),
 			'duration' => microtime(true) - $start
 		]);
-		$this->radar_status = $this->database->radar_status;
 	}
 
 	public function submitToPublish()
@@ -189,7 +188,7 @@ class DatabaseVisibility extends Component
 			return;
 		}
 
-		$this->database->radar_status = 2; // started publishing. Will set to '3' when finished.
+		$this->database->radar_status = $this->radar_status = 2; // started publishing. Will set to '3' when publication upload has finished.
 		$this->database->save();
 
 		// upload and review start now in job
