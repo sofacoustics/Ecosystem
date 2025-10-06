@@ -20,6 +20,21 @@ use App\Http\Controllers\ToolController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Database\Eloquent\Model;
 
+//
+//jw:test route to display X-Forwarded headers
+//
+//use Illuminate\Http\Request;
+//Route::get('/test-proxy-headers', function (Request $request) {
+//	return response()->json([
+//	'X-Forwarded-For' => $request->header('X-Forwarded-For'),
+//	'X-Forwarded-Host' => $request->header('X-Forwarded-Host'),
+//	'X-Forwarded-Port' => $request->header('X-Forwarded-Port'),
+//	'X-Forwarded-Proto' => $request->header('X-Forwarded-Proto'),
+//	'All Received Headers' => $request->headers->all(),
+//	]);
+//});
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
