@@ -232,9 +232,34 @@ class Database extends Model
 				if($creator->familyName)
 				{		// Person
 					if($creator->givenName)
-						$seq = $creator->familyName . ', ' . $creator->givenName[0] . '.';
+					{
+						if (strpos($creator->givenName, '-') !== false) 
+						{
+							$doubleNameParts = explode('-', $creator->givenName);
+							$abbreviatedParts = [];
+							foreach ($doubleNameParts as $part) 
+							{
+								$initial = strtoupper(substr($part, 0, 1));
+								$abbreviatedParts[] = $initial . '.';
+							}
+							$seq = $creator->familyName . ', ' . implode('-', $abbreviatedParts);
+						}
+						elseif (strpos($creator->givenName, ' ') !== false) 
+						{
+							$doubleNameParts = explode(' ', $creator->givenName);
+							$abbreviatedParts = [];
+							foreach ($doubleNameParts as $part) 
+							{
+								$initial = strtoupper(substr($part, 0, 1));
+								$abbreviatedParts[] = $initial . '.';
+							}
+							$seq = $creator->familyName . ', ' . implode(' ', $abbreviatedParts);
+						}
+						else
+							$seq = $creator->familyName . ', ' . strtoupper($creator->givenName[0]) . '.';
+					}
 					else
-						$seq = $creator->familyName; 
+						$seq = $creator->familyName;
 				}
 				else
 				{		// Institution
