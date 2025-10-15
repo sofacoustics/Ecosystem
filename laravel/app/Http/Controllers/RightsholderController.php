@@ -60,7 +60,7 @@ class RightsholderController extends Controller
 	public function up($id)
 	{
 		$rightsholderA = Rightsholder::where('id', $id)->get()->first();
-		$rightsholderB = Rightsholder::where('rightsholderable_id',$rightsholderA->rightsholderable_id)->where('id','<', $id)->get()->last();
+		$rightsholderB = Rightsholder::where('rightsholderable_id',$rightsholderA->rightsholderable_id)->where('rightsholderable_type',$rightsholderA->rightsholderable_type)->where('id','<', $id)->get()->last();
 		$temp = new Rightsholder;
 		$temp = $this->copyRightsholder($rightsholderA, $temp); 
 		$rightsholderA = $this->copyRightsholder($rightsholderB, $rightsholderA);
@@ -73,7 +73,7 @@ class RightsholderController extends Controller
 	public function down($id)
 	{
 		$rightsholderA = Rightsholder::where('id', $id)->get()->first();
-		$rightsholderB = Rightsholder::where('rightsholderable_id',$rightsholderA->rightsholderable_id)->where('id','>', $id)->get()->first();
+		$rightsholderB = Rightsholder::where('rightsholderable_id',$rightsholderA->rightsholderable_id)->where('rightsholderable_type',$rightsholderA->rightsholderable_type)->where('id','>', $id)->get()->first();
 		$temp = new Rightsholder;
 		$temp = $this->copyRightsholder($rightsholderA, $temp); 
 		$rightsholderA = $this->copyRightsholder($rightsholderB, $rightsholderA);

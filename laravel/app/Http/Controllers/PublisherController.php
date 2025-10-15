@@ -59,8 +59,7 @@ class PublisherController extends Controller
 	public function up($id)
 	{
 		$publisherA = Publisher::where('id', $id)->get()->first();
-		$publisherB = Publisher::where('publisherable_id',$publisherA->publisherable_id)->where('id','<', $id)->get()->last();
-		//dd([$publisherA->id, $publisherB->id]); 
+		$publisherB = Publisher::where('publisherable_id',$publisherA->publisherable_id)->where('publisherable_type',$publisherA->publisherable_type)->where('id','<', $id)->get()->last();
 		$temp = new Publisher;
 		$temp = $this->copyPublisher($publisherA, $temp); 
 		$publisherA = $this->copyPublisher($publisherB, $publisherA);
@@ -73,7 +72,7 @@ class PublisherController extends Controller
 	public function down($id)
 	{
 		$publisherA = Publisher::where('id', $id)->get()->first();
-		$publisherB = Publisher::where('publisherable_id',$publisherA->publisherable_id)->where('id','>', $id)->get()->first();
+		$publisherB = Publisher::where('publisherable_id',$publisherA->publisherable_id)->where('publisherable_type',$publisherA->publisherable_type)->where('id','>', $id)->get()->first();
 		//dd([$publisherA->id, $publisherB->id]); 
 		$temp = new Publisher;
 		$temp = $this->copyPublisher($publisherA, $temp); 

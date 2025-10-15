@@ -65,7 +65,7 @@ class CreatorController extends Controller
 	public function up($id)
 	{
 		$creatorA = Creator::where('id', $id)->get()->first();
-		$creatorB = Creator::where('creatorable_id',$creatorA->creatorable_id)->where('id','<', $id)->get()->last();
+		$creatorB = Creator::where('creatorable_id',$creatorA->creatorable_id)->where('creatorable_type',$creatorA->creatorable_type)->where('id','<', $id)->get()->last();
 		$temp = new Creator;
 		$temp = $this->copyCreator($creatorA, $temp); 
 		$creatorA = $this->copyCreator($creatorB, $creatorA);
@@ -78,7 +78,7 @@ class CreatorController extends Controller
 	public function down($id)
 	{
 		$creatorA = Creator::where('id', $id)->get()->first();
-		$creatorB = Creator::where('creatorable_id',$creatorA->creatorable_id)->where('id','>', $id)->get()->first();
+		$creatorB = Creator::where('creatorable_id',$creatorA->creatorable_id)->where('creatorable_type',$creatorA->creatorable_type)->where('id','>', $id)->get()->first();
 		$temp = new Creator;
 		$temp = $this->copyCreator($creatorA, $temp); 
 		$creatorA = $this->copyCreator($creatorB, $creatorA);
