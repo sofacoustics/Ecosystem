@@ -54,13 +54,13 @@ class Service implements ShouldQueue
 	{
 		////////////////////////////////////////////////////////////////////////////////
 		//
-		//  Note:
+		//	Note:
 		//
-		//  When you modify a 'Job', you must restart the queue
+		//	When you modify a 'Job', you must restart the queue
 		//
-		//      ./artisan queue:restart
+		//		./artisan queue:restart
 		//
-		//  since otherwise your changes won't be used (old version cached).
+		//	since otherwise your changes won't be used (old version cached).
 		//
 		////////////////////////////////////////////////////////////////////////////////
 		$widget_id=$this->widget->id;
@@ -68,8 +68,8 @@ class Service implements ShouldQueue
 		$datafile_id = $this->datafile->id;
 		$directory=storage_path('app/services/' . $this->service->id);
 		$log = "  widget=$widget_id, service=$service_id, datafile=$datafile_id, directory=$directory\n";
-		#$command = 'bash -c "setsid bash -c \'' .  $this->service->exe . ' ' . $this->service->parameters . ' \"' . $this->datafile->absolutepath() . '\"' . '\'"';
-		#$command = 'bash -c "setsid bash -c \'' .  $this->service->exe . ' ' . $this->service->parameters . ' \"' . $this->datafile->absolutepath() . '\"' . '\'"';
+		#$command = 'bash -c "setsid bash -c \'' .	$this->service->exe . ' ' . $this->service->parameters . ' \"' . $this->datafile->absolutepath() . '\"' . '\'"';
+		#$command = 'bash -c "setsid bash -c \'' .	$this->service->exe . ' ' . $this->service->parameters . ' \"' . $this->datafile->absolutepath() . '\"' . '\'"';
 		//$command = 'bash -c "setsid bash -c \'sleep 20 && echo \"Child finished.\" >> /tmp/child_output.txt\'"';
 		$command = $this->service->exe . ' ' . $this->service->parameters . ' "' . $this->datafile->absolutepath() . '"';
 		$log .= ' command='.$command."\n";
@@ -121,9 +121,9 @@ class Service implements ShouldQueue
 
 		$pid = $process->getPid();
 
-        $jobid = $this->job?->getJobId();
+		$jobid = $this->job?->getJobId();
 
-		app('log')->notice("Job $jobid Process $pid has started:", ['data' => $args]);
+		app('log')->channel('services_stack')->notice("Job $jobid Process $pid has started:", ['data' => $args]);
 		try {
 			// Periodically check for timeout while the process is running
 			while ($process->isRunning()) {
@@ -136,9 +136,9 @@ class Service implements ShouldQueue
 			}
 			$output = $process->getOutput();
 			$errorOutput = $process->getErrorOutput();
-			app('log')->debug("Process $pid has finished");
+			app('log')->channel('services_stack')->debug("Process $pid has finished");
 		} catch (ProcessTimedOutException $e) {
-			app('log')->warning("Process $pid has reached it's timeout");
+			app('log')->channel('services_stack')->warning("Process $pid has reached it's timeout");
 			// Kill child processes
 			foreach ($childPids as $childPid) {
 				if (is_numeric($childPid)) {
@@ -174,13 +174,13 @@ class Service implements ShouldQueue
 			// write output to a service log file in the datafile directory
 		} catch (ProcessTimedOutException $e) {
 			// Handle timeout
-            //$process->signal(SIGKILL); // Force kill if needed
-            $process->stop();
+			//$process->signal(SIGKILL); // Force kill if needed
+			$process->stop();
 			$exitCode = -99; // timeout
 			$output = "";
- 			$errorOutput = "$timeout second timeout reached";
+			$errorOutput = "$timeout second timeout reached";
 			$log .= "  exception: $timeout second timeout reached!\n";
-        }
+		}
 */
 		$duration = microtime(true) - $start;
 		$this->datafile->last_service_error_code = $exitCode;
@@ -189,7 +189,7 @@ class Service implements ShouldQueue
 		$serviceLog = new ServiceLog();
 		$serviceLog->service_id = $this->service->id;
 		$serviceLog->datafile_id  = $this->datafile->id;
-		$serviceLog->exit_code  = $exitCode;
+		$serviceLog->exit_code	= $exitCode;
 		$serviceLog->exit_code_text = $exitCodeText;
 		$serviceLog->execution_time  = $duration;
 		$serviceLog->name  = $this->service->name;
@@ -206,16 +206,16 @@ class Service implements ShouldQueue
 			$serviceLog->stderr  = $errorOutput;
 			Storage::disk('sonicom-data')->put($datafileerrorfile, $errorOutput);
 		}
-        $serviceLog->save();
-        $log .= "  service timeout value: " . $this->timeout . " process timeout value: " . $this->service->timeout . "\n";
+		$serviceLog->save();
+		$log .= "  service timeout value: " . $this->timeout . " process timeout value: " . $this->service->timeout . "\n";
 		if($process->isSuccessful())
 			$log .= "  process finished successfully after $duration seconds (exitCode: " . $exitCode . ")\n";
 		else
 			$log .= "  process failed after $duration seconds (exitCode: " . $exitCode . ")\n";
 		DatafileProcessed::dispatch($this->datafile->id);
 		if($exitCode!=0)
-			app('log')->warning("Process $pid info:\n$log"); // log all in one go so it doesn't get interspersed with other log messages
+			app('log')->channel('services_stack')->warning("Process $pid info:\n$log"); // log all in one go so it doesn't get interspersed with other log messages
 		else
-			app('log')->notice("Process $pid info:\n$log"); // log all in one go so it doesn't get interspersed with other log messages
+			app('log')->channel('services_stack')->notice("Process $pid info:\n$log"); // log all in one go so it doesn't get interspersed with other log messages
 	}
 }
