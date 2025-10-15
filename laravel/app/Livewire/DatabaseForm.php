@@ -39,10 +39,10 @@ class DatabaseForm extends Component
 		'productionyear' => ['required',  // must be provided
 												 'regex:/^(\d{4}(?:-\d{4})?|\d{4}-|unknown)$/i' ], // YYYY or YYYY- or YYYY-YYYY or "unknown"
 		'controlledrights' => 'required',
-		'descriptiongeneral' => 'max:500',
-		'descriptionabstract' => 'max:500',
-		'descriptionmethods' => 'max:500',
-		'descriptionremarks' => 'max:500',
+		'descriptiongeneral' => 'max:5000',
+		'descriptionabstract' => 'max:5000',
+		'descriptionmethods' => 'max:5000',
+		'descriptionremarks' => 'max:5000',
 		'additionaltitle' => 'max:255',
 		'additionalrights' => 'max:255',
 	];
@@ -50,10 +50,10 @@ class DatabaseForm extends Component
 	protected $messages = [
 		'productionyear.required' => 'The production year cannot be empty.',
 		'productionyear.regex' => 'Production year must be either YYYY or YYYY-YYYY or the string "unknown".',
-		'descriptiongeneral.max' => 'The general description can be only up to 500 characters.',
-		'descriptionabstract.max' => 'The abstract can be only up to 500 characters.',
-		'descriptionmethods.max' => 'The methods can be only up to 500 characters.',
-		'descriptionremarks.max' => 'The technical remarks can be only up to 500 characters.',
+		'descriptiongeneral.max' => 'The general description can be only up to 5000 characters.',
+		'descriptionabstract.max' => 'The abstract can be only up to 5000 characters.',
+		'descriptionmethods.max' => 'The methods can be only up to 5000 characters.',
+		'descriptionremarks.max' => 'The technical remarks can be only up to 5000 characters.',
 		'additionaltitle.max' => 'The subtitle can be only up to 255 characters.',
 		'additionalrights.max' => 'The custom license name can be only up to 255 characters.',
 	];

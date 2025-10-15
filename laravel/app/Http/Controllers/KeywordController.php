@@ -61,7 +61,7 @@ class KeywordController extends Controller
 	public function up($id)
 	{
 		$keywordA = Keyword::where('id', $id)->get()->first();
-		$keywordB = Keyword::where('keywordable_id',$keywordA->keywordable_id)->where('id','<', $id)->get()->last();
+		$keywordB = Keyword::where('keywordable_id',$keywordA->keywordable_id)->where('keywordable_type',$keywordA->keywordable_type)->where('id','<', $id)->get()->last();
 		$temp = new Keyword;
 		$temp = $this->copyKeyword($keywordA, $temp); 
 		$keywordA = $this->copyKeyword($keywordB, $keywordA);
@@ -74,7 +74,7 @@ class KeywordController extends Controller
 	public function down($id)
 	{
 		$keywordA = Keyword::where('id', $id)->get()->first();
-		$keywordB = Keyword::where('keywordable_id',$keywordA->keywordable_id)->where('id','>', $id)->get()->first();
+		$keywordB = Keyword::where('keywordable_id',$keywordA->keywordable_id)->where('keywordable_type',$keywordA->keywordable_type)->where('id','>', $id)->get()->first();
 		$temp = new Keyword;
 		$temp = $this->copyKeyword($keywordA, $temp); 
 		$keywordA = $this->copyKeyword($keywordB, $keywordA);
