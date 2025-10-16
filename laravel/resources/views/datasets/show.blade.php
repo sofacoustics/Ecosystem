@@ -31,12 +31,7 @@
 					<x-property name="RADAR id">{{ $datafile->radar_id}}</x-property>
 				@endif
 			@endhasrole
-			<x-property name="Updated at">
-				{{ $datafile->updated_at }} (GMT)
-			</x-property>
-			<x-property name="Created at">
-				{{ $datafile->created_at }} (GMT)
-			</x-property>			
+	
 			<livewire:DatafileListener :datafile="$datafile" :key="$datafile->id" />
 		</div>
 

@@ -98,23 +98,21 @@ class DatafileListener extends Component
 		$viewData = []; // clear the array which will be passed to the blade
 		$viewData['csvRows']=[]; // assume no CSV file
 		$viewData['csvRowsProp']=[]; // assume no CSV property file
+		
+		$fullPath = $this->datafile->absolutepath();
+		$viewData['fullPath'] = $fullPath;
+		$fileSizeInBytes = filesize($fullPath);
+		$viewData['fileSizeInBytes'] = $fileSizeInBytes;
+		$viewData['fileSizeInKilobytes'] = round($fileSizeInBytes / 1024, 2);
+		$viewData['fileSizeInMegabytes'] = round($fileSizeInBytes / (1024*1024), 2);
+		$viewData['fileSizeInGigabytes'] = round($fileSizeInBytes / (1024*1024*1024), 2);
+		$viewData['created_at'] = $this->datafile->created_at;
+		$viewData['updated_at'] = $this->datafile->updated_at;
 
 		switch($view)
 		{
 				// DATAFILE PROPERTIES
 			case 'livewire.datafiles.properties':
-				$fullPath = $this->datafile->absolutepath();
-				$viewData['fullPath'] = $fullPath;
-				//if (Storage::exists($fullPath)) 
-					$fileSizeInBytes = filesize($fullPath);
-				//else
-				//	$fileSizeInBytes = -1;
-				$viewData['fileSizeInBytes'] = $fileSizeInBytes;
-				$viewData['fileSizeInKilobytes'] = round($fileSizeInBytes / 1024, 2);
-				$viewData['fileSizeInMegabytes'] = round($fileSizeInBytes / (1024*1024), 2);
-				$viewData['fileSizeInGigabytes'] = round($fileSizeInBytes / (1024*1024*1024), 2);
-				$viewData['created_at'] = $this->datafile->created_at;
-				$viewData['updated_at'] = $this->datafile->updated_at;
 				$viewData['radar_id'] = $this->datafile->radar_id;
 				$viewData['datasetdef_radar_id'] = $this->datafile->datasetdef_radar_id;
 				$viewData['datasetdef_radar_upload_url'] = $this->datafile->datasetdef_radar_upload_url;
@@ -122,7 +120,6 @@ class DatafileListener extends Component
 
 				// SRIR GENERAL
 			case 'livewire.datafiles.srir-general':
-				$fullPath = $this->datafile->absolutepath();
 				$files = glob($fullPath . '_iso_1_Mmax=*.png');
 				$postfixes=[];
 				$Mmax = 0;
@@ -143,7 +140,6 @@ class DatafileListener extends Component
 
 				// brir-listenerview
 			case 'livewire.datafiles.brir-listenerview':
-				$fullPath = $this->datafile->absolutepath();
 				$files = glob($fullPath . '_1_*.png');
 				//dd([$fullPath . '_1_*.png', $files]);
 				$postfixes=[];
@@ -178,7 +174,6 @@ class DatafileListener extends Component
 		
 				// DIRECTIVITY GENERAL
 			case 'livewire.datafiles.directivity-general':
-				$fullPath = $this->datafile->absolutepath();
 				$files = glob($fullPath . '_amphorizontal_*.png');
 				$postfixes=[];
 				$freqs = [];
