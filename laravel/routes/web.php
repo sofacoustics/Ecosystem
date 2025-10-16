@@ -145,6 +145,7 @@ Route::get('/tools/{tool}/rightsholders', [RightsholderController::class, 'index
 Route::get('/tools/{tool}/keywords', [KeywordController::class, 'index'])->name('tools.keywords');
 Route::get('/tools/{tool}/relatedidentifiers', [RelatedIdentifierController::class, 'index'])->name('tools.relatedidentifiers');
 Route::get('/tools/{tool}/datathek', [ToolController::class, 'datathek'])->name('tools.datathek')->middleware('admin'); // display Datathek status and actions for admin testing
+Route::get('/tools/{tool}/duplicate', [ToolController::class, 'duplicate'])->name('tools.duplicate');
 
 /// SERVICEs
 Route::resource('services', ServiceController::class);

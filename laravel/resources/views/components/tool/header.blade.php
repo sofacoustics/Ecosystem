@@ -58,6 +58,13 @@
 			Delete Tool
 		</x-button>
 	@endcan
+
+	@can('create', \App\Models\Tool::class)
+		<x-button method="GET" action="{{ route('tools.duplicate', [$tool]) }}" class="inline"
+			confirm="This will duplicate this tool with a copy of all metadata. The file will not be copied! Are you sure to continue?">
+			Duplicate Tool
+		</x-button>
+	@endcan
 	
 	@hasrole('admin')
 		<x-button method="GET" action="{{ route('tools.datathek', [$tool->id]) }}" class="inline">Datathek</x-button>

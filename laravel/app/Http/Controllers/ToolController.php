@@ -7,6 +7,13 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use App\Models\Tool;
 use App\Models\Database;
+use App\Models\Creator;
+use App\Models\Publisher;
+use App\Models\Rightsholder;
+use App\Models\Keyword;
+use App\Models\RelatedIdentifier;
+use App\Models\SubjectArea;
+
 use Illuminate\Http\Request;
 use App\Http\Resources\Json\JsonResource;
 
@@ -136,4 +143,113 @@ class ToolController extends Controller
 		]);
 	}
 
+	public function duplicate(Tool $tool)
+	{
+		$new = new Tool();
+		$new->user_id = auth()->id();
+		$new->title = $tool->title." (duplicate)";
+		$new->additionaltitle = $tool->additionaltitle;
+		$new->additionaltitletype = (\App\Models\Metadataschema::where('name', 'additionalTitleType')->where('value', 'Subtitle')->first()->id);  // fix to Subtitle
+		$new->descriptiongeneral = $tool->descriptiongeneral;
+		$new->descriptionabstract = $tool->descriptionabstract;
+		$new->descriptionmethods = $tool->descriptionmethods;
+		$new->descriptionremarks = $tool->descriptionremarks;
+		$new->productionyear = strtolower($tool->productionyear);
+		$new->publicationyear = $tool->publicationyear;
+		$new->language = $tool->language;
+		$new->resourcetype = $tool->resourcetype; 
+		$new->resource = $tool->resource; 
+		$new->datasources = $tool->datasources;
+		$new->software = $tool->software;
+		$new->processing = $tool->processing;
+		$new->relatedinformation = $tool->relatedinformation;
+		$new->controlledrights = $tool->controlledrights;
+		$new->additionalrights = $tool->additionalrights;
+		$new->save();	
+		
+			// duplicate creators
+		foreach($tool->creators as $creator)
+		{
+			$cr = new Creator();
+			$cr->creatorable_id = $new->id;
+			$cr->creatorable_type = $creator->creatorable_type;
+			$cr->creatorName = $creator->creatorName;
+			$cr->givenName = $creator->givenName;
+			$cr->familyName = $creator->familyName;
+			$cr->nameIdentifier = $creator->nameIdentifier;
+			$cr->creatorAffiliation = $creator->creatorAffiliation;
+			$cr->nameIdentifierSchemeIndex = $creator->nameIdentifierSchemeIndex; 
+			$cr->affiliationIdentifier = $creator->affiliationIdentifier;
+			$cr->affiliationIdentifierScheme = $creator->affiliationIdentifierScheme; 
+			$cr->save();
+		}
+			// duplicate publishers
+		foreach($tool->publishers as $publisher)
+		{
+			$pub = new Publisher(); 
+			$pub->publisherable_id = $new->id;
+			$pub->publisherable_type = $publisher->publisherable_type; 
+			$pub->publisherName = $publisher->publisherName; 
+			$pub->nameIdentifier = $publisher->nameIdentifier; 
+			$pub->nameIdentifierSchemeIndex = $publisher->nameIdentifierSchemeIndex;
+			$pub->save();
+		}
+			// duplicate rightholders
+		foreach($tool->rightsholders as $rightsholder)
+		{
+			$rh = new Rightsholder(); 
+			$rh->rightsholderable_id = $new->id;
+			$rh->rightsholderable_type = $rightsholder->rightsholderable_type;
+			$rh->rightsholderName = $rightsholder->rightsholderName;
+			$rh->nameIdentifier = $rightsholder->nameIdentifier;
+			$rh->nameIdentifierSchemeIndex = $rightsholder->nameIdentifierSchemeIndex;
+			$rh->schemeURI = $rightsholder->schemeURI;
+			$rh->save();
+		}		
+			// duplicate keywords
+		foreach($tool->keywords as $keyword)
+		{
+			$kw = new Keyword(); 
+			$kw->keywordable_id = $new->id;
+			$kw->keywordable_type = $keyword->keywordable_type;
+			$kw->keywordName = $keyword->keywordName;
+			$kw->keywordSchemeIndex = $keyword->keywordSchemeIndex;
+			$kw->schemeURI = $keyword->schemeURI;
+			$kw->valueURI = $keyword->valueURI;
+			$kw->classificationCode = $keyword->classificationCode;
+			$kw->save();
+		}		
+			// duplicate relations
+		foreach($tool->relatedidentifiers as $relatedidentifier)
+		{
+			$ri = new Relatedidentifier(); 
+			$ri->relatedidentifierable_id = $new->id;
+			$ri->relatedidentifierable_type = $relatedidentifier->relatedidentifierable_type;
+			$ri->relationtype = $relatedidentifier->relationtype;
+			$ri->relatedidentifiertype = $relatedidentifier->relatedidentifiertype; 
+			$ri->name = $relatedidentifier->name;
+			$ri->save();
+		}
+				// add a new relation to the old tool
+		$ri = new RelatedIdentifier();
+		$ri->relatedidentifierable_id = $new->id;
+		$ri->relatedidentifierable_type = get_class($new);
+		$ri->relationtype = \App\Models\Metadataschema::where('name', 'relationType')->where('value', 'IS_NEW_VERSION_OF')->first()->id;
+		$ri->relatedidentifiertype = (\App\Models\Metadataschema::where('name', 'relatedIdentifierType')->where('value', 'URL')->first()->id); 
+		$ri->name = "ECOSYSTEM_TOOL_".$tool->id; // prefix and id of the old tool
+		$ri->save();
+			// duplicate subject areas
+		foreach($tool->subjectareas as $subjectarea)
+		{
+			$sa = new SubjectArea(); 
+			$sa->subjectareaable_id = $new->id; 
+			$sa->subjectareaable_type = $subjectarea->subjectareaable_type; 
+			$sa->controlledSubjectAreaIndex = $subjectarea->controlledSubjectAreaIndex;
+			$sa->additionalSubjectArea = $subjectarea->additionalSubjectArea; 
+			$sa->save();
+		}
+
+		return redirect()->route('tools.show', ['tool' => $new])->with('success', 'Tool duplicated successfully');
+	}
+	
 }

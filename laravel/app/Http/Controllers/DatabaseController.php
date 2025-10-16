@@ -204,7 +204,7 @@ class DatabaseController extends Controller
 		
 		$new = new Database();
 		$new->user_id = auth()->id();
-		$new->title = "New version of ".$database->title;
+		$new->title = $database->title." (duplicate)";
 		$new->additionaltitle = $database->additionaltitle;
 		$new->additionaltitletype = (\App\Models\Metadataschema::where('name', 'additionalTitleType')->where('value', 'Subtitle')->first()->id);  // fix to Subtitle
 		$new->descriptiongeneral = $database->descriptiongeneral;
