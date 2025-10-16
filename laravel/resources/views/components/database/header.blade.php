@@ -127,6 +127,13 @@
 		@endcan
 	@endcan
 	
+	@can('create', \App\Models\Database::class)
+		<x-button method="GET" action="{{ route('databases.duplicate', [$database]) }}" class="inline"
+			confirm="This will duplicate this database with a copy of all metadata and definition. Datasets will not be copied! Are you sure to continue?">
+			Duplicate Database
+		</x-button>
+	@endcan
+	
 	@hasrole('admin')
 		<x-button method="GET" action="{{ route('databases.datathek', [$database->id]) }}" class="inline">Datathek</x-button>
 	@endhasrole

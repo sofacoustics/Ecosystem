@@ -10,6 +10,12 @@ use App\Models\Datafile;
 use App\Models\Datasetdef;
 use App\Models\Radardataset;
 use App\Models\Radardatasetresourcetype;
+use App\Models\Creator;
+use App\Models\Publisher;
+use App\Models\Rightsholder;
+use App\Models\Keyword;
+use App\Models\RelatedIdentifier;
+use App\Models\SubjectArea;
 
 use App\Http\Requests\StoreDatabaseRequest;
 use App\Http\Requests\UpdateDatabaseRequest;
@@ -193,6 +199,116 @@ class DatabaseController extends Controller
 		return view('databases.purge', ['database' => $database]);
 	}
 
+	public function duplicate(Database $database)
+	{
+		
+		$new = new Database();
+		$new->user_id = auth()->id();
+		$new->title = "New version of ".$database->title;
+		$new->additionaltitle = $database->additionaltitle;
+		$new->additionaltitletype = (\App\Models\Metadataschema::where('name', 'additionalTitleType')->where('value', 'Subtitle')->first()->id);  // fix to Subtitle
+		$new->descriptiongeneral = $database->descriptiongeneral;
+		$new->descriptionabstract = $database->descriptionabstract;
+		$new->descriptionmethods = $database->descriptionmethods;
+		$new->descriptionremarks = $database->descriptionremarks;
+		$new->productionyear = strtolower($database->productionyear);
+		$new->publicationyear = $database->publicationyear;
+		$new->language = $database->language;
+		$new->resourcetype = null; 
+		$new->resource = "SONICOM Ecosystem"; 
+		$new->datasources = $database->datasources;
+		$new->software = $database->software;
+		$new->processing = $database->processing;
+		$new->relatedinformation = $database->relatedinformation;
+		$new->controlledrights = $database->controlledrights;
+		$new->additionalrights = $database->additionalrights;
+		$new->save();	
+		
+			// duplicate creators
+		foreach($database->creators as $creator)
+		{
+			$cr = new Creator();
+			$cr->creatorable_id = $new->id;
+			$cr->creatorable_type = $creator->creatorable_type;
+			$cr->creatorName = $creator->creatorName;
+			$cr->givenName = $creator->givenName;
+			$cr->familyName = $creator->familyName;
+			$cr->nameIdentifier = $creator->nameIdentifier;
+			$cr->creatorAffiliation = $creator->creatorAffiliation;
+			$cr->nameIdentifierSchemeIndex = $creator->nameIdentifierSchemeIndex; // ORCID	
+			$cr->affiliationIdentifier = $creator->affiliationIdentifier;
+			$cr->affiliationIdentifierScheme = $creator->affiliationIdentifierScheme; // ROR
+			$cr->save();
+		}
+			// duplicate publishers
+		foreach($database->publishers as $publisher)
+		{
+			$pub = new Publisher(); 
+			$pub->publisherable_id = $new->id;
+			$pub->publisherable_type = $publisher->publisherable_type; 
+			$pub->publisherName = $publisher->publisherName; 
+			$pub->nameIdentifier = $publisher->nameIdentifier; 
+			$pub->nameIdentifierSchemeIndex = $publisher->nameIdentifierSchemeIndex;
+			$pub->save();
+		}
+			// duplicate rightholders
+		foreach($database->rightsholders as $rightsholder)
+		{
+			$rh = new Rightsholder(); 
+			$rh->rightsholderable_id = $new->id;
+			$rh->rightsholderable_type = $rightsholder->rightsholderable_type;
+			$rh->rightsholderName = $rightsholder->rightsholderName;
+			$rh->nameIdentifier = $rightsholder->nameIdentifier;
+			$rh->nameIdentifierSchemeIndex = $rightsholder->nameIdentifierSchemeIndex;
+			$rh->schemeURI = $rightsholder->schemeURI;
+			$rh->save();
+		}		
+			// duplicate keywords
+		foreach($database->keywords as $keyword)
+		{
+			$kw = new Keyword(); 
+			$kw->keywordable_id = $new->id;
+			$kw->keywordable_type = $keyword->keywordable_type;
+			$kw->keywordName = $keyword->keywordName;
+			$kw->keywordSchemeIndex = $keyword->keywordSchemeIndex;
+			$kw->schemeURI = $keyword->schemeURI;
+			$kw->valueURI = $keyword->valueURI;
+			$kw->classificationCode = $keyword->classificationCode;
+			$kw->save();
+		}		
+			// duplicate relations
+		foreach($database->relatedidentifiers as $relatedidentifier)
+		{
+			$ri = new Relatedidentifier(); 
+			$ri->relatedidentifierable_id = $new->id;
+			$ri->relatedidentifierable_type = $relatedidentifier->relatedidentifierable_type;
+			$ri->relationtype = $relatedidentifier->relationtype;
+			$ri->relatedidentifiertype = $relatedidentifier->relatedidentifiertype; 
+			$ri->name = $relatedidentifier->name;
+			$ri->save();
+		}
+				// add a new relation to the old database
+		$ri = new RelatedIdentifier();
+		$ri->relatedidentifierable_id = $new->id;
+		$ri->relatedidentifierable_type = get_class($new);
+		$ri->relationtype = \App\Models\Metadataschema::where('name', 'relationType')->where('value', 'IS_NEW_VERSION_OF')->first()->id;
+		$ri->relatedidentifiertype = (\App\Models\Metadataschema::where('name', 'relatedIdentifierType')->where('value', 'URL')->first()->id); 
+		$ri->name = "ECOSYSTEM_DATABASE_".$database->id; // prefix and id of the old database
+		$ri->save();
+			// duplicate subject areas
+		foreach($database->subjectareas as $subjectarea)
+		{
+			$sa = new SubjectArea(); 
+			$sa->subjectareaable_id = $new->id; 
+			$sa->subjectareaable_type = $subjectarea->subjectareaable_type; 
+			$sa->controlledSubjectAreaIndex = $subjectarea->controlledSubjectAreaIndex;
+			$sa->additionalSubjectArea = $subjectarea->additionalSubjectArea; 
+			$sa->save();
+		}
+
+		return redirect()->route('databases.show', ['database' => $new])->with('success', 'Database duplicated successfully');
+	}
+	
 	public function download(Request $request, Database $database) 
 	{
 		$type = $request->input('type');  
