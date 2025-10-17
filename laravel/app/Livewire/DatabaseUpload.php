@@ -35,9 +35,8 @@ class DatabaseUpload extends Component
 
 	public array $uploads;			// files uploaded to livewire-tmp
 	public array $uploadsMetadata;  // additional metadata for '$uploads': 'datasetName', 'datasetDesc', 'datasetdefId', 'fileName'
-	public array $existingMetadata; // a list of existing datafiles including their dataset names and datasetdefIds.
+	public array $existingFilesMetadata; // a list of existing datafiles including their dataset names and datasetdefIds.
 
-	public array $pending;  // a list of names of the files which are filtered and neither exist, nor have been uploaded (pending upload)
 	public array $existing; // a list of names of the datafiles which already exists
 	public array $saved;    // a list of names of the files which have been saved to the database;
 	public array $filtered; // a list of names of the files which fit the filter criteria
@@ -56,14 +55,14 @@ class DatabaseUpload extends Component
 	public $progress;
 	public $uploading;
 
-	public $nFilesInDir = -1; // -1: directory not selected yet, 0: no files in the directory, >0: files found
 	public $nFilesFiltered = 0;
-	public $nFilesToUpload = 0;
-	public $nFilesUploaded = 0;
+	public $nFilesExisting = 0; // The number of datafiles which already exist in the database (jw:todo not sure if this works with pending files resulting from filtering)
+	public $nFilesToUpload = 0; // The number of files to upload. This is set in the javascript function 'doUpload'
+	//public $nFilesUploaded = 0;
 	public $nDatasetsSelected = 0; // Number of selected datasets (=subset of filtered datasets)
 	public $nFilesSelected = 0; // Number of selected datafiles if uploaded
 
-	public bool $canUpload = false; // set to true, if there are filtered files we can upload
+	public bool $canUpload = false; // set to true, if there are filtered files we can upload jw:todo maybe use nFilesToUpload instead!
 
 	private $debugLevel = 0;
 	private $debugIndent = 0;
@@ -114,9 +113,32 @@ class DatabaseUpload extends Component
 		dd($file);
 	}
 
+	/*
+	 *	Remove all files from disk
+	 *	Empty array
+	 *	Recalculate existing
+	 */
 	public function resetUploads()
 	{
 		$this->setStatus("resetUploads()");
+		foreach($this->uploads as $key => $upload)
+		{
+			$file = $upload; //$upload['fileRef'];
+			$this->console("resetUploads(): deleting file (" . $this->uploadsMetadata[$key]['fileName'] . ") from livewire-tmp");
+			$file->delete();
+			unset($this->uploads[$key]);
+			unset($this->uploadsMetadata[$key]); //jw:todo Does the whole array need anulling?
+		}
+		$this->uploading = false;
+		$this->nFilesToUpload = 0;
+		$this->calculateExisting();
+
+		return;
+
+		// OLD CODE
+
+		/*
+
 		// clean up uploads
 		foreach($this->filtered as $id => $file)
 		{
@@ -152,7 +174,10 @@ class DatabaseUpload extends Component
 			$uploadList .= "$key ($originalName), ";
 		}
 		$this->uploading = false;
+		$this->nFilesToUpload = 0;
 		$this->calculateUploaded();
+		$this->calculateExisting();
+		 */
 	}
 
 		// PM: No idea what is this for
@@ -187,7 +212,6 @@ class DatabaseUpload extends Component
 	public function updatedOverwriteExisting($param)
 	{
 		session()->put('sonicomEcosystemBulkUploadOverwrite', "$param");
-		$this->calculatePending();
 	}
 
 	public function updatedPdatasetnames($value, $key)
@@ -238,8 +262,7 @@ class DatabaseUpload extends Component
 			case 'uploads':
 				// $field = e.g. "uploads.0"
 				// $value = Livewire file object
-				$this->calculateUploaded();
-				$this->calculatePending();
+				//$this->calculateUploaded();
 				break;
 			case 'uploadsMetadata':
 				break;
@@ -247,7 +270,6 @@ class DatabaseUpload extends Component
 				dd("$property updated");
 				$this->console('filtered['.$key.'] updated');
 				sort($this->filtered);
-				$this->calculatePending();
 				$this->saved = [];
 				break;
 			case 'nFilesToUpload':
@@ -264,6 +286,7 @@ class DatabaseUpload extends Component
 		//dd("updating $property");
 	}
 
+	/*
 	public function save()
 	{
 		$this->setStatus("Saving: there are " . count($this->uploads)." uploads to save");
@@ -370,7 +393,7 @@ class DatabaseUpload extends Component
 								$datafile->mimetype = $file->getMimeType();
 								$datafile->save(); // save so datafile has ID (necessary for saving file)
 								
-								if($existing) 
+								if($existing)
 								{
 									$this->debug(1, "Touching datafile to set 'updated_at'");
 									$datafile->touch(); // touch the file to reset 'updated_at' and trigger DatafileObserver
@@ -406,13 +429,13 @@ class DatabaseUpload extends Component
 		$this->dispatch('status-message', 'Files successfully saved to database');
 		$this->redirect('/databases/' . $this->database->id . '/showdatasets');
 	}
+	 */
 
 	/*
 	 * Save a single datafile referenced by the 'uploaded' index
 	 */
 	public function saveDatafile($index)
 	{
-		//dd($this->uploadsMetadata);
 		$file = $this->uploads[$index];
 		$datasetName = $this->uploadsMetadata[$index]['datasetName'];
 		$datasetDesc = array_key_exists('datasetDesc', $this->uploadsMetadata[$index]) ? $this->uploadsMetadata[$index]['datasetDesc'] : '';
@@ -422,20 +445,12 @@ class DatabaseUpload extends Component
 		$originalName = $file->getClientOriginalName();
 		if("$originalName" == "")
 			$this->error('trying to create a datafile with an empty name');
-		//dd("$fileName == $originalName");
-		// get name of dataset for this datafile
-		//dd($this->pdatasetnames);
-		//dd("name: $originalName dataset: $datasetName desc: $datasetDesc datasetdefId: $datasetdefId fileName: $fileName");
-		//dd($originalName);
-		//dd($this->pdatafilenames);
-		//
-
 		// create dataset
 		if(!Dataset::where('name', "$datasetName")->where('database_id', $this->database->id)->exists())
 		{
 			$this->debug(1, "Creating dataset");
 			$this->setStatus("Creating dataset");
-				// create the dataset
+			// create the dataset
 			$dataset = new Dataset();
 			$dataset->name = $datasetName;
 			$dataset->description = $datasetDesc;
@@ -515,7 +530,7 @@ class DatabaseUpload extends Component
 	{
 		$title = $this->database->title;
 		$this->console("Deleting all datasets in the database $title");
-			// remove all datasets
+		// remove all datasets
 		foreach($this->datasets as $dataset)
 		{
 			$this->console("Deleting $dataset->name");
@@ -555,36 +570,39 @@ class DatabaseUpload extends Component
 	}
 
 	/*
-	 * calculate the $this->pending property, based on the $this->uploads, $this->existing and $this->filtered properties.
-	 */
-	private function calculatePending()
-	{
-		$this->pending = array_diff($this->filtered, $this->uploaded);
-		if(!$this->overwriteExisting)
-				$this->pending = array_diff($this->pending, $this->existing);
-		sort($this->pending);
-	}
-
-	/*
 	 * Update array with list of existing datafiles with original file names
 	 *
 	 * jw:todo jw:note If the filter has changed, then the file name of an existing file may differ from a potential upload for this datafile!
 	 */
-	private function calculateExisting()
+	public function calculateExisting() : int
 	{
 		$this->existing = [];
-		$this->database->load('datasets');
+		$this->database = $this->database->fresh(['datasetdefs', 'datasets.datafiles']);
+		//$this->database->load('datasets');
+		$this->existingFilesMetadata = [];
 		foreach($this->database->datasets as $dataset)
 		{
-			foreach($dataset->datafiles as $datafile)
+			foreach($dataset->datafiles as $datafile) 
+			{
 				$this->existing[] = $datafile->name;
+				// save metadata of existing datafiles so we can compare with pendingUploads and know
+				// which ones we actually have to upload!
+				// additional metadata for '$uploads': 'datasetName', 'datasetDesc', 'datasetdefId', 'fileName'
+				$index = count($this->existingFilesMetadata);
+				$this->existingFilesMetadata[$index]['datasetName'] = $dataset->name;
+				$this->existingFilesMetadata[$index]['datasetDesc'] = $dataset->description;
+				$this->existingFilesMetadata[$index]['datasetdefId'] = $datafile->datasetdef->id;
+			}
 		}
 		sort($this->existing);
+		$this->nFilesExisting = count($this->existingFilesMetadata);
+		return $this->nFilesExisting;
 	}
 
 	/*
 	 * Update array with list of uploaded original file names
 	 */
+	/*
 	private function calculateUploaded()
 	{
 		$this->uploaded = [];
@@ -601,6 +619,7 @@ class DatabaseUpload extends Component
 		}
 		sort($this->uploaded);
 	}
+	 */
 
 	private function calculateDatasetCount()
 	{
