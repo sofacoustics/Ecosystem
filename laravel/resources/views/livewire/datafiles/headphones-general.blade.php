@@ -1,6 +1,6 @@
 <div>
 	<x-servicelog :log="$latestLog"></x-servicelog>
-	<p>Size: {{ $fileSizeInBytes }} bytes 
+	<p><b>Size</b>: {{ $fileSizeInBytes }} bytes 
 		@if($fileSizeInKilobytes > 0)
 		= {{ $fileSizeInKilobytes }} kbytes 
 			@if($fileSizeInMegabytes > 0)
@@ -10,9 +10,10 @@
 				@endif
 			@endif
 		@endif
-	</p>
-	<p>Date created: {{ $created_at }}</p>
-	<p>Date updated: {{ $updated_at }}</p>
+		.
+		<b>Date created</b>: {{ $created_at }}.
+	  <b>Date updated</b>: {{ $updated_at }}.
+	</p>	
 	<b>SOFA Properties:</b>
 	<x-sofa-dimensions :csvRows="$csvRows"/>
 	
