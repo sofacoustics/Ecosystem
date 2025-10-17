@@ -24,6 +24,7 @@
 
 	<form wire:submit="save">
 		<h3>1) Select a directory with all your datafiles:</h3>
+		<p>Maximal size per file: 2 GB</p>		
 		<div>
 			<x-button id="actual-directory-picker" x-bind:disabled="uploading" wire:ignore>Select a Directory</x-button>
 			<input id="directory-picker" type="file" webkitdirectory directory style="display:none"
