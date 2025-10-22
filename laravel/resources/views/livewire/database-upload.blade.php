@@ -233,7 +233,7 @@
 	document.getElementById("directory-picker").addEventListener(
 		"change",
 		(e) => {
-			//console.log('EVENT: directory-picker: files: ', Array.from(e.target.files));
+			//debugConsole('EVENT: directory-picker: files: ', Array.from(e.target.files));
 			resetUpload();
 			//const files = event.target.files;
 
@@ -242,16 +242,16 @@
 			files.sort((a, b) => a.webkitRelativePath.localeCompare(b.webkitRelativePath));
 			if(debugLevel>0)
 			{
-				console.log("alphabetical list of files");
+				debugConsole("alphabetical list of files");
 				files.forEach(file => {
-					console.log(file.webkitRelativePath);
+					debugConsole(file.webkitRelativePath);
 				});
 			}
 
 			let data = Alpine.$data(document.getElementById('alpineComponent'));
 			data.allFiles = files;
 
-			//console.log('EVENT: directory-picker: # of files', files.length);
+			//debugConsole('EVENT: directory-picker: # of files', files.length);
 			if (files.length > 0) {
 					// Extract the first file's relative path and get the directory name
 				const firstFilePath = files[0].webkitRelativePath;
@@ -276,46 +276,46 @@
 
 		// Update the upload progress bar
 	window.addEventListener('livewire-upload-progress', event => {
-		console.log("EVENT: processing livewire-upload-progress event");
+		debugConsole("EVENT: processing livewire-upload-progress event");
 		@this.set('progress', event.detail.progress);
 	});
 
 	// On the trigger of file upload
 	$wire.on('upload-file', () => {
 		//jw:todo use index parameter: https://livewire.laravel.com/docs/events
-		console.log('EVENT: upload-file event triggered');
+		debugConsole('EVENT: upload-file event triggered');
 	});
 
 	// On the trigger of upload finished
 	$wire.on('upload-finished', () => {
-		console.log('EVENT: upload-finished event triggered');
+		debugConsole('EVENT: upload-finished event triggered');
 	});
 
 	// On the trigger of upload progress
 	$wire.on('upload-progress', () => {
-		console.log('EVENT: upload-progress event triggered');
+		debugConsole('EVENT: upload-progress event triggered');
 	});
 
 	// On the trigger of upload start
 	$wire.on('livewire-upload-start', () => {
-		console.log('EVENT: livewire-upload-start event triggered');
+		debugConsole('EVENT: livewire-upload-start event triggered');
 	});
 
 	// On the trigger of upload error
 	$wire.on('livewire-upload-error', () => {
-			console.log('EVENT: livewire-upload-error');
+			debugConsole('EVENT: livewire-upload-error');
 	});
 
 	// On the trigger of any errors
 	window.addEventListener('livewire:error', event => {
 		console.error('EVENT: livewire:error:', event.detail);
-		console.log('EVENT: livewire:error:', event.detail);
+		debugConsole('EVENT: livewire:error:', event.detail);
 	});
 
 		// On the trigger of upload error with details
 	document.addEventListener('livewire:init', () => {
 			Livewire.on('livewire-upload-error', (event) => {
-					console.log('EVENT: livewire-upload-error', event.detail);
+					debugConsole('EVENT: livewire-upload-error', event.detail);
 			});
 	});
 
@@ -328,6 +328,8 @@
 	let uploadStart = 0;  // The time the upload started. Used for duration calculation
 
 	let debugLevel = 0; // set to 1 to turn debugging console messages on.
+
+
 
 	////////////////////////////////////////////////////////////////////////////////
 	//	Livewire functions
@@ -346,7 +348,7 @@
 	$js('doFilter', (data) => {
 		// check for existing files first
 		$wire.call('calculateExisting').then(calculatedValue => {
-			console.log("Calling calculateExisting() and waiting for return value before continuing. nFilesExisting = " + calculatedValue);
+			debugConsole("Calling calculateExisting() and waiting for return value before continuing. nFilesExisting = " + calculatedValue);
 			data.nFilesExisting = calculatedValue;
 
 			if (data) {
@@ -363,11 +365,8 @@
 
 				data.dirMode = 0;
 				let df_array = $wire.datasetdefIds; // get the dataset definition (=array with dataset filetypes)
-				if(debugLevel)
-				{
-					console.log('df_array');
-					console.table(df_array);
-				}
+				debugConsole('df_array');
+				debugConsoleTable(df_array);
 				let fn_filter_array = [], postfix_array = [], beg_id_array = [], dummy = [], fn_cnt_array = [];
 				for (let i=0; i<df_array.length; i++)
 				{
@@ -377,7 +376,7 @@
 						fn_filter_array[i]="";
 						postfix_array[i]="";
 						beg_id_array[i]=0;
-						// console.log([i, 'ignored']);
+						// debugConsole([i, 'ignored']);
 					}
 					else
 					{	// nonempty pattern --> create filters
@@ -393,7 +392,7 @@
 						fn_filter = fn_filter.replace(/<ANY>/g, ".+");
 						fn_filter = "^" + fn_filter; // ensure that pattern starts from beginning of the file name only
 						fn_filter = RegExp(fn_filter.replace(/<ID>/g, ".+"));
-						console.log(fn_filter);
+						debugConsole(fn_filter);
 						fn_filter_array[i]=fn_filter;
 						if (data.dirMode == 0 && fn_pattern.indexOf("/") >= 0) data.dirMode=1;
 						let end_filter = fn_pattern.indexOf("ID>")+3; // find the end of the ID
@@ -410,7 +409,7 @@
 						postfix_array[i]=postfix;
 						let beg_id = fn_pattern.indexOf("<"); // zahl anfang: index von < in fn_pattern
 						beg_id_array[i]=beg_id;
-						// console.log([i, fn_pattern, fn_filter, postfix, beg_id, end_filter]);
+						// debugConsole([i, fn_pattern, fn_filter, postfix, beg_id, end_filter]);
 					}
 					dummy[i] = "<NONE>";
 					fn_cnt_array[i] = 0;
@@ -545,13 +544,13 @@
 				//jw:tmp
 				if(debugLevel>0)
 				{
-					console.log("dsn_array / dsnFiltered (filtered dataset names)");
-					console.table(dsn_array);
-					console.log("fn_array / dfnFiltered (filtered filenames)");
-					console.table(fn_array);
-					console.log('descr_array / descrFiltered (filtered dataset descriptions)');
-					console.table(descr_array);
-					console.log('dirMode: ', data.dirMode);
+					debugConsole("dsn_array / dsnFiltered (filtered dataset names)");
+					debugConsoleTable(dsn_array);
+					debugConsole("fn_array / dfnFiltered (filtered filenames)");
+					debugConsoleTable(fn_array);
+					debugConsole('descr_array / descrFiltered (filtered dataset descriptions)');
+					debugConsoleTable(descr_array);
+					debugConsole('dirMode: ', data.dirMode);
 				}
 
 				// select all Datasets in the table
@@ -562,7 +561,7 @@
 				_createPendingFiles(data);
 			}
 			else
-				console.log('doFilter() - data parameter *does not* exist!');
+				debugConsole('doFilter() - data parameter *does not* exist!');
 		}); //end - call to calculateExisting
 	});
 
@@ -576,7 +575,7 @@
 		data.nUploaded = 0;
 		if(data.nFilesToUpload == 0)
 		{
-			console.log('All files exist already: no files to upload!');
+			debugConsole('All files exist already: no files to upload!');
 		}
 		else
 		{
@@ -588,13 +587,14 @@
 
 			let uploads = Object.values($wire.uploads); //jw:todo can delete
 			let offset = uploads.length; //jw:todo can delete
-			//console.log("doUpload() - existing upload count: ", offset);
+			//debugConsole("doUpload() - existing upload count: ", offset);
 			// https://fly.io/laravel-bytes/multi-file-upload-livewire/
-			console.table(data.pendingFiles);
+			debugConsoleTable(data.pendingFiles);
 			data.pendingFiles.forEach( (file, index) => { uploadQueue.push({ index, file }); } );
-			console.log("uploadQueue: ", uploadQueue);
-			console.table(uploadQueue);
-			console.log("uploadQueue.length: ", uploadQueue.length);
+			debugConsole("uploadQueue: ", uploadQueue);
+			debugConsole("uploadQueue: ", uploadQueue);
+			debugConsoleTable(uploadQueue);
+			debugConsole("uploadQueue.length: ", uploadQueue.length);
 			processQueue();
 		}
 		setStatus('Leaving doUpload()...');
@@ -602,14 +602,14 @@
 
 		// Cancel an upload (jw:note not used yet (no button), but works.)
 	$js('cancelUpload', (data) => {
-		console.log('User has cancelled the upload');
+		debugConsole('User has cancelled the upload');
 		resetUpload();
 	});
 
 	$js('toggleOverwriteExisting', (data)  => {
-		//console.log('Toggling overwriteExisting from ' + data.overwriteExisting + ' to ' + data.overwriteExisting ? false : true);
+		//debugConsole('Toggling overwriteExisting from ' + data.overwriteExisting + ' to ' + data.overwriteExisting ? false : true);
 		let newValue = data.overwriteExisting ? false : true;
-		console.log('Toggling overwriteExisting from ' + data.overwriteExisting + ' to ' + newValue);
+		debugConsole('Toggling overwriteExisting from ' + data.overwriteExisting + ' to ' + newValue);
 		data.overwriteExisting = newValue;
 		_createPendingFiles(data);
 	});
@@ -626,56 +626,42 @@
 		let df_array = $wire.datasetdefIds;
 		let existingFilesMetadata = $wire.get('existingFilesMetadata');
 
-		if(debugLevel>0)
-		{
-			console.log("fn_array / pdatafilenames");
-			console.table(fn_array);
-			console.log("dsn_array / pdatasetnames");
-			console.table(dsn_array);
-			console.log("descr_array / pdatasetdescriptions");
-			console.table(descr_array);
-			console.log("df_array / datasetdefIds (list of datasetdef ids for this database)");
-			console.table(df_array);
-			console.log('existingFilesMetadata');
-			console.table(existingFilesMetadata);
-			console.log('overwriteExisting: ' + data.overwriteExisting);
-		}
+		debugConsole("fn_array / pdatafilenames");
+		debugConsoleTable(fn_array);
+		debugConsole("dsn_array / pdatasetnames");
+		debugConsoleTable(dsn_array);
+		debugConsole("descr_array / pdatasetdescriptions");
+		debugConsoleTable(descr_array);
+		debugConsole("df_array / datasetdefIds (list of datasetdef ids for this database)");
+		debugConsoleTable(df_array);
+		debugConsole('existingFilesMetadata');
+		debugConsoleTable(existingFilesMetadata);
+		debugConsole('overwriteExisting: ' + data.overwriteExisting);
 
 		// create list with dataset, datasetdefid and relative file path
 		// to facilitate saving one file to the correct dataset/datafile.
 		// This array's id should correspond to the pendingFiles array.
 		data.pendingFilesMetadata = [];
-		if(debugLevel>0)
-			console.log('looping through fn_array');
+		debugConsole('looping through fn_array');
 		for(let i = 0; i < fn_array.length; i++) {
 			for(let j = 0; j < fn_array[i].length; j++) {
 				if(fn_array[i][j] != undefined)
 				{
-					if(debugLevel>0)
-						console.log("dataset: ", dsn_array[i], "descr: ", descr_array[i], " datasetdefId: ", df_array[j], " relativefilepath: ", fn_array[i][j]);
+					debugConsole("dataset: ", dsn_array[i], "descr: ", descr_array[i], " datasetdefId: ", df_array[j], " relativefilepath: ", fn_array[i][j]);
 					data.pendingFilesMetadata.push({ datasetName: dsn_array[i], datasetDesc: descr_array[i], datasetdefId: df_array[j], relativePath: fn_array[i][j]});
 				}
 			}
 		}
-		if(debugLevel>0)
-		{
-			console.log('data.pendingFilesMetadata');
-			console.table(data.pendingFilesMetadata);
-		}
+		debugConsole('data.pendingFilesMetadata');
+		debugConsoleTable(data.pendingFilesMetadata);
 		// sort by relativePath so this is the same order as the pendingFiles
 		data.pendingFilesMetadata.sort((a, b) => a.relativePath.localeCompare(b.relativePath));
-		if(debugLevel>0)
-		{
-			console.log('data.pendingFilesMetadata - sorted by relativefilepath');
-			console.table(data.pendingFilesMetadata);
-		}
+		debugConsole('data.pendingFilesMetadata - sorted by relativefilepath');
+		debugConsoleTable(data.pendingFilesMetadata);
 		// create list with pending files: data.pendingFiles
 		let filenamesToUpload = fn_array.flat(); // flat list of files to upload. This is a relative path from the directory chosen as input. E.g. P0002/3DSCAN/P0002_watertight.stl
-		if(debugLevel>0)
-		{
-			console.log('filenamesToUpload');
-			console.table(filenamesToUpload);
-		}
+		debugConsole('filenamesToUpload');
+		debugConsoleTable(filenamesToUpload);
 		data.nSelected = fn_array.flat().length; // since this is a multi-dimensional array, we need to flatten it first for length to count all elemets
 		if(data.dirMode == 0)
 		{
@@ -686,27 +672,21 @@
 		}
 		else
 		{	// nested: prepend filenamesToUpload with directory for comparison with allFiles
-			if(debugLevel>0)
-			{
-				console.log("nested");
-				console.table(data.allFiles);
-				console.log('data.directory: ', data.directory);
-			}
+			debugConsole("nested");
+			debugConsoleTable(data.allFiles);
+			debugConsole('data.directory: ', data.directory);
 			let prefix = data.directory+'/';
 			dirPrefixed = filenamesToUpload.map(item => prefix + item);
 			data.pendingFiles = data.allFiles.filter((file) => {
 				return dirPrefixed.includes(file.webkitRelativePath);
 			});
 		}
-		if(debugLevel>0)
-		{
-			console.log('data.pendingFiles - unsorted');
-			console.table(data.pendingFiles);
-		}
+		debugConsole('data.pendingFiles - unsorted');
+		debugConsoleTable(data.pendingFiles);
 
 		if(data.overwriteExisting == false)
 		{
-			console.log("We will *not* overwrite existing files. Hence, we're removing existing files from the pendingFiles list");
+			debugConsole("We will *not* overwrite existing files. Hence, we're removing existing files from the pendingFiles list");
 			//
 			// filter pendingFiles again, removing any entries which correspond to existing datafiles
 			//
@@ -719,30 +699,21 @@
 					obj1.datasetdefId === obj2.datasetdefId
 				);
 			});
-			if(debugLevel>0)
-			{
-				console.log("data.pendingFilesMetadata - after adding 'exist' property");
-				console.table(data.pendingFilesMetadata);
-			}
+			debugConsole("data.pendingFilesMetadata - after adding 'exist' property");
+			debugConsoleTable(data.pendingFilesMetadata);
 			// filter pendingFiles based on the 'exists' field
 			nonexistentPendingFiles = data.pendingFiles.filter((obj2, index) => {
 				// condition based on array1 at the same index
 				return data.pendingFilesMetadata[index].exists === false;
 			});
-			if(debugLevel>0)
-			{
-				console.log('nonexistentPendingFiles - filtered out existing files');
-				console.table(nonexistentPendingFiles);
-			}
+			debugConsole('nonexistentPendingFiles - filtered out existing files');
+			debugConsoleTable(nonexistentPendingFiles);
 			// filter pendingFilesMetadata based on the 'exists' field
 			nonexistentPendingFilesMetadata = data.pendingFilesMetadata.filter((obj2, index) => {
 				return obj2.exists === false;
 			});
-			if(debugLevel>0)
-			{
-				console.log('nonexistentPendingFilesMetadata - filtered out existing files');
-				console.table(nonexistentPendingFilesMetadata);
-			}
+			debugConsole('nonexistentPendingFilesMetadata - filtered out existing files');
+			debugConsoleTable(nonexistentPendingFilesMetadata);
 
 			// assign nonexistent filtered results
 			data.pendingFiles = nonexistentPendingFiles;
@@ -753,9 +724,9 @@
 		data.nFilesToUpload = data.pendingFiles.length;
 		$wire.set('nFilesToUpload', data.nFilesToUpload);
 
-		console.log("data.pendingFiles")
-		console.table(data.pendingFiles);
-		console.log("nFilesToUpload: " + data.nFilesToUpload);
+		debugConsole("data.pendingFiles")
+		debugConsoleTable(data.pendingFiles);
+		debugConsole("nFilesToUpload: " + data.nFilesToUpload);
 
 		return(data);
 	}
@@ -766,7 +737,7 @@
 		tableBody = document.getElementById('results').getElementsByTagName('tbody')[0];
 		if (tableBody.rows.length > 0)
 		{
-			//console.log('Tablebody.rows', tableBody.rows);
+			//debugConsole('Tablebody.rows', tableBody.rows);
 			if (checkBox.checked == true)
 			{
 				for (let i=0; i<tableBody.rows.length; i++)
@@ -839,16 +810,13 @@
 			$wire.set('pdatafilenames', fn_selected); // save the selected filenames
 			$wire.set('nFilesSelected', data.nFilesSelected); // number of unique files to upload
 
-			if(debugLevel>0)
-			{
-				console.log('dsn_selected / pdatasetnames');
-				console.table(dsn_selected);
-				console.log('descr_selected / pdatasetdescriptions');
-				console.table(descr_selected);
-				console.log('fn_selected / pdatafilenames');
-				console.table(fn_selected);
-				console.log('nFilesSelected: ' + data.nFilesSelected);
-			}
+			debugConsole('dsn_selected / pdatasetnames');
+			debugConsoleTable(dsn_selected);
+			debugConsole('descr_selected / pdatasetdescriptions');
+			debugConsoleTable(descr_selected);
+			debugConsole('fn_selected / pdatafilenames');
+			debugConsoleTable(fn_selected);
+			debugConsole('nFilesSelected: ' + data.nFilesSelected);
 
 			// create list of pending files so we know if there is anything to upload
 			_createPendingFiles(data);
@@ -860,7 +828,7 @@
 
 	function processQueue() {
 
-		//console.log('processQueue():start');
+		//debugConsole('processQueue():start');
 		while (uploadQueue.length > 0 && maxParallelUploads > 0) {
 			const { index, file } = uploadQueue.shift();
 			maxParallelUploads--;
@@ -872,7 +840,7 @@
 			let elapsedString = " (Duration: " + String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0') + ")";
 
 			// set metadata
-			console.log('Uploading ' + file.name + ' for dataset ' + data.pendingFilesMetadata[index].datasetName + ' datasetdef ' + data.pendingFilesMetadata[index].datasetdefId);
+			debugConsole('Uploading ' + file.name + ' for dataset ' + data.pendingFilesMetadata[index].datasetName + ' datasetdef ' + data.pendingFilesMetadata[index].datasetdefId);
 			@this.set('uploadsMetadata.'+index+'.datasetName', data.pendingFilesMetadata[index].datasetName );
 			@this.set('uploadsMetadata.'+index+'.datasetdefId', data.pendingFilesMetadata[index].datasetdefId);
 			@this.set('uploadsMetadata.'+index+'.fileName', file.name);
@@ -888,7 +856,7 @@
 					setStatus("File #" + index + " (" + file.name + ") now successfully uploaded");
 					data.progressText = data.nUploaded + "/" + data.nFilesToUpload + " files successfully uploaded." + elapsedString;
 					// save each datafile after it has been uploaded
-					console.log("Calling saveDatafile(" + index + ")");
+					debugConsole("Calling saveDatafile(" + index + ")");
 					$wire.saveDatafile(index);
 					maxParallelUploads++; // Free up a slot
 					// if this is the last upload, set 'uploading' to false
@@ -898,7 +866,7 @@
 						data.uploading = false; // finished
 						data.nFilesToUpload = 0;
 						$wire.call('calculateExisting').then(calculatedValue => {
-							    console.log("Calling calculateExisting() and waiting for return value before continuing. nFilesExisint = " + calculatedValue);
+							    debugConsole("Calling calculateExisting() and waiting for return value before continuing. nFilesExisint = " + calculatedValue);
 								data.nFilesExisting = calculatedValue;
 							    // continue with logic here
 							});
@@ -939,7 +907,7 @@
 	function setStatus(string)
 	{
 
-		console.log("Status (alpine): ", string);
+		debugConsole("Status (alpine): ", string);
 		let data = Alpine.$data(document.getElementById('alpineComponent'));
 		data.status = string;
 	};
@@ -961,6 +929,21 @@
 		maxParallelUploads = 2; // Maximum concurrent uploads
 		setStatus("");
 	}
+
+	/*
+	 * only log to console if debugLevel > 0
+	 */
+    function debugConsole(...args)
+	{
+		if(debugLevel > 0)
+			console.log(...args);
+	}
+	function debugConsoleTable(...args)
+	{
+		if(debugLevel > 0)
+			console.table(...args);
+	}
+
 
 
 	</script>

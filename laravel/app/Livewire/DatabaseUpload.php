@@ -217,7 +217,8 @@ class DatabaseUpload extends Component
 	public function updatedPdatasetnames($value, $key)
 	{
 		//dd("array[$key] = $value");
-		$this->console("updatedPdatasetnames");
+		if($this->debugLevel > 0)
+			$this->console("updatedPdatasetnames");
 	}
 
 	public function updatedPdatafilenames($value, $key)
@@ -529,11 +530,13 @@ class DatabaseUpload extends Component
 	public function resetDatasets()
 	{
 		$title = $this->database->title;
-		$this->console("Deleting all datasets in the database $title");
+		if($this->debugLevel > 0)
+			$this->console("Deleting all datasets in the database $title");
 		// remove all datasets
 		foreach($this->datasets as $dataset)
 		{
-			$this->console("Deleting $dataset->name");
+			if($this->debugLevel > 0)
+				$this->console("Deleting $dataset->name");
 			$dataset->delete();
 		}
 		$this->refresh();
@@ -650,7 +653,8 @@ class DatabaseUpload extends Component
 	private function setStatus($status)
 	{
 		$this->status = "$status";
-		$this->console("Status (Livewire): $status");
+		if($this->debugLevel > 0 )
+			$this->console("Status (Livewire): $status");
 	}
 
 }
