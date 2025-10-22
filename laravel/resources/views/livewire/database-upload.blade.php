@@ -202,6 +202,7 @@
 					<p><small>(Alpine) Directory: <span x-text="directory"></span></small></p>
 					<p><small>(Alpine) Mode: <span x-text="dirMode"></span></small></p>
 					<p><small>(Alpine) nFilesInDir: <span x-text="nFilesInDir"></span></small></p>
+					<p><small>(Alpine) nFilesToUpload: <span x-text="nFilesToUpload"></span></small></p>
 					<p><small>(Alpine) overwriteExisting: <span x-text="overwriteExisting"></span></small></p>
 					<p><small>(Livewire) Mode: {{ $dirMode }}</small></p>
 					<p><small>(Livewire) File to upload: {{ $nFilesToUpload }}</small></p>
@@ -648,9 +649,12 @@
 			console.log('looping through fn_array');
 		for(let i = 0; i < fn_array.length; i++) {
 			for(let j = 0; j < fn_array[i].length; j++) {
-				if(debugLevel>0)
-					console.log("dataset: ", dsn_array[i], "descr: ", descr_array[i], " datasetdefId: ", df_array[j], " relativefilepath: ", fn_array[i][j]);
-				data.pendingFilesMetadata.push({ datasetName: dsn_array[i], datasetDesc: descr_array[i], datasetdefId: df_array[j], relativePath: fn_array[i][j]});
+				if(fn_array[i][j] != undefined)
+				{
+					if(debugLevel>0)
+						console.log("dataset: ", dsn_array[i], "descr: ", descr_array[i], " datasetdefId: ", df_array[j], " relativefilepath: ", fn_array[i][j]);
+					data.pendingFilesMetadata.push({ datasetName: dsn_array[i], datasetDesc: descr_array[i], datasetdefId: df_array[j], relativePath: fn_array[i][j]});
+				}
 			}
 		}
 		if(debugLevel>0)
