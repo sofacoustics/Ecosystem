@@ -907,6 +907,11 @@
 						setStatus("Uploading has finished. All files have been saved to the database.");
 						$wire.dispatch('status-message', { message: 'Uploading has finished' });
 
+						// output redirect message and redirect to 'Datasets'
+						$wire.dispatch('status-message', { message: 'You will be redirected to the datasets page' });
+						setTimeout(() => {
+							$wire.call('redirectToDatasets');
+							}, 3000); // 2 second delay
 					}
 					processQueue(); // Process next in queue
 				},
