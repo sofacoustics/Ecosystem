@@ -7,6 +7,7 @@
 % #Author: Michael Mihocic: several updates and improvements; file renamed from HRIR3.m to HRTFGeneral.m (03.07.2025)
 % #Author: Michael Mihocic: create csv files with properties (09.07.2025)
 % #Author: Michael Mihocic: support for convention SimpleFreeFieldHRTF added; bug fixed when running in Matlab (18.09.2025)
+% #Author: Michael Mihocic: mySOFAplotHRTF for case 'itdhorizontal' updated to compensate Obj.Data.Delay (27.10.2025)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -734,6 +735,53 @@ switch lower(type)
         % Interaural time delay in the horizontal plane
     case 'itdhorizontal'
 
+        % Compensate IR.Delay? only neccessary if Data.Delay is in use
+        if max(max(abs(Obj.Data.Delay))) > 0
+
+            % Expand matrix (optionally)
+            Obj=SOFAexpand(Obj,'Data.Delay');
+
+            % Fetch data
+            IR = Obj.Data.IR;           % (N_directions x N_channels x N_samples)
+            Delay = Obj.Data.Delay;     % (N_directions x N_channels)
+
+            [N_directions, N_channels, N_samples] = size(IR);
+
+            % Determine the final desired length for each signal
+            lengths = zeros(N_directions, N_channels);
+            for dir = 1:N_directions
+                for ch = 1:N_channels
+                    d = Delay(dir, ch);
+                    lengths(dir, ch) = N_samples + abs(d);
+                end
+            end
+            final_length = max(lengths(:)); % All signals will be padded to this length
+
+            % Preallocate output
+            IR_delayed = zeros(N_directions, N_channels, final_length);
+
+            for dir = 1:N_directions
+                for ch = 1:N_channels
+                    d = Delay(dir, ch);
+                    sig = squeeze(IR(dir, ch, :)); % (N_samples x 1)
+                    if d >= 0
+                        sig_delayed = [zeros(d,1); sig];
+                    else
+                        d_abs = abs(d);
+                        sig_delayed = [sig; zeros(d_abs,1)];
+                    end
+                    % Pad to final_length
+                    sig_delayed = [sig_delayed; zeros(final_length - numel(sig_delayed), 1)];
+                    IR_delayed(dir, ch, :) = sig_delayed;
+                end
+            end
+
+            % Save result to Obj, update dimensions
+            Obj.Data.IR = IR_delayed;
+            Obj=SOFAupdateDimensions(Obj);
+        end
+
+        % Calculate ITD
         [itd, ~] = SOFAcalculateITD(Obj, 'time',flags.itdestimator);
         pos = Obj.SourcePosition;
         idx=find(pos(:,2)<(offset+thr) & pos(:,2)>(offset-thr));
