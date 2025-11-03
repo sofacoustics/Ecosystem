@@ -101,11 +101,19 @@ class DatafileListener extends Component
 		
 		$fullPath = $this->datafile->absolutepath();
 		$viewData['fullPath'] = $fullPath;
-		$fileSizeInBytes = filesize($fullPath);
-		$viewData['fileSizeInBytes'] = $fileSizeInBytes;
-		$viewData['fileSizeInKilobytes'] = round($fileSizeInBytes / 1024, 2);
-		$viewData['fileSizeInMegabytes'] = round($fileSizeInBytes / (1024*1024), 2);
-		$viewData['fileSizeInGigabytes'] = round($fileSizeInBytes / (1024*1024*1024), 2);
+		if(file_exists($fullPath))
+		{
+			$fileSizeInBytes = filesize($fullPath);
+			$viewData['fileSizeInBytes'] = $fileSizeInBytes;
+			$viewData['fileSizeInKilobytes'] = round($fileSizeInBytes / 1024, 2);
+			$viewData['fileSizeInMegabytes'] = round($fileSizeInBytes / (1024*1024), 2);
+			$viewData['fileSizeInGigabytes'] = round($fileSizeInBytes / (1024*1024*1024), 2);
+		}
+		else
+		{
+			\Log::error("The datafile " . $this->datafile->id . "('$fullPath') is missing!");
+			$viewData['fileSizeInBytes'] = 0;
+		}
 		$viewData['created_at'] = $this->datafile->created_at;
 		$viewData['updated_at'] = $this->datafile->updated_at;
 
@@ -171,7 +179,7 @@ class DatafileListener extends Component
 				$viewData['csvRows'] = $this->readCSV($sofaAsset, '.sofa_dim.csv');
 				$viewData['csvRowsProp'] = $this->readCSV($sofaAsset, '.sofa_prop.csv');
 				break;
-		
+
 				// DIRECTIVITY GENERAL
 			case 'livewire.datafiles.directivity-general':
 				$files = glob($fullPath . '_amphorizontal_*.png');
