@@ -105,9 +105,6 @@ class DatafileListener extends Component
 		{
 			$fileSizeInBytes = filesize($fullPath);
 			$viewData['fileSizeInBytes'] = $fileSizeInBytes;
-			$viewData['fileSizeInKilobytes'] = round($fileSizeInBytes / 1024, 2);
-			$viewData['fileSizeInMegabytes'] = round($fileSizeInBytes / (1024*1024), 2);
-			$viewData['fileSizeInGigabytes'] = round($fileSizeInBytes / (1024*1024*1024), 2);
 		}
 		else
 		{

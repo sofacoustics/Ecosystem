@@ -1,22 +1,5 @@
 <div>
-	<p><b>Size</b>: {{ $fileSizeInBytes }} bytes
-		@if($fileSizeInBytes > 0)
-			@if($fileSizeInKilobytes > 0)
-			= {{ $fileSizeInKilobytes }} kbytes 
-				@if($fileSizeInMegabytes > 0)
-					= {{ $fileSizeInMegabytes }} MB 
-					@if($fileSizeInGigabytes)
-						= {{ $fileSizeInGigabytes }} GB
-					@endif
-				@endif
-			@endif
-		@else
-			<x-error>The datafile is missing from disk!</x-error>
-		@endif
-		.
-		<b>Date created</b>: {{ $created_at }}.
-	  <b>Date updated</b>: {{ $updated_at }}.
-	</p>	
+	<p><x-datafiles-properties :fileSizeInBytes="$fileSizeInBytes" :createdAt="$created_at" :updatedAt="$updated_at"/></p>
 
 	@hasrole('admin')
 		<p>Internal path: {{ $fullPath }}</p>
