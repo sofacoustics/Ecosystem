@@ -1,13 +1,17 @@
 <div>
-	<p><b>Size</b>: {{ $fileSizeInBytes }} bytes 
-		@if($fileSizeInKilobytes > 0)
-		= {{ $fileSizeInKilobytes }} kbytes 
-			@if($fileSizeInMegabytes > 0)
-				= {{ $fileSizeInMegabytes }} MB 
-				@if($fileSizeInGigabytes)
-					= {{ $fileSizeInGigabytes }} GB
+	<p><b>Size</b>: {{ $fileSizeInBytes }} bytes
+		@if($fileSizeInBytes > 0)
+			@if($fileSizeInKilobytes > 0)
+			= {{ $fileSizeInKilobytes }} kbytes 
+				@if($fileSizeInMegabytes > 0)
+					= {{ $fileSizeInMegabytes }} MB 
+					@if($fileSizeInGigabytes)
+						= {{ $fileSizeInGigabytes }} GB
+					@endif
 				@endif
 			@endif
+		@else
+			<x-error>The datafile is missing from disk!</x-error>
 		@endif
 		.
 		<b>Date created</b>: {{ $created_at }}.
