@@ -66,3 +66,23 @@ windows:
     panes:
       - shell_command:
         - ./artisan queue:monitor default
+  - window_name: log-details 
+    layout: even-vertical
+    suppress_history: false
+    start_directory: "laravel/storage/logs"
+    panes:
+      - "tail -F laravel-error.log"
+      - "tail -F laravel-warning.log"
+      - "tail -F laravel-notice.log"
+      - "tail -F laravel-info.log"
+      - "tail -F laravel-debug.log"
+      - shell_command:
+        - tmux set -w pane-border-status bottom
+        - tmux select-pane -T laravel-error.log -t log-details.0
+        - tmux select-pane -T laravel-warning.log -t log-details.1
+        - tmux select-pane -T laravel-notice.log -t log-details.2
+        - tmux select-pane -T laravel-info.log -t log-details.3
+        - tmux select-pane -T laravel-debug -t log-details.4
+        - tmux select-pane -T laravel-services -t log-details.5
+        - "tail -F laravel-services.log"
+
