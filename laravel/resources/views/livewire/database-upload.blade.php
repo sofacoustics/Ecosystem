@@ -789,9 +789,9 @@
 				}
 				else
 				{  // dataset not selected
-					for (let col=0; col<(fn.length+1); col++)
+					for (let col=0; col<fn.length; col++)
 					{
-						rows[i].cells[col+1].textContent = ""; // remove the datasetname and datasetfilenames
+						rows[i].cells[col+2].textContent = ""; // remove the datasetfilenames
 					}
 				}
 			}
