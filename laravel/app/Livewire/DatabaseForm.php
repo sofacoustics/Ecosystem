@@ -14,6 +14,7 @@ use Livewire\Component;
 class DatabaseForm extends Component
 {
 	public $database;
+	public $isNew = false;
 	public $title;
 	public $additionaltitle;
 	public $additionaltitletype;
@@ -64,50 +65,38 @@ class DatabaseForm extends Component
 		$this->additionaltitletype_base_id = $additionaltitletype_base_id;
 		$this->controlledrights_other_id = (\App\Models\Metadataschema::where('name', 'controlledRights')->where('value', 'OTHER')->first()->id); 
 		
-		if($database) 
+		if($database == null) 
 		{
-			$this->database = $database;
-			$this->title = $database->title;
-			$this->additionaltitle = $database->additionaltitle;
-			if ($database->additionaltitletype == null)
-				$this->additionaltitletype = null;
-			else
-				$this->additionaltitletype = $database->additionaltitletype-$additionaltitletype_base_id;
-			$this->descriptiongeneral = $database->descriptiongeneral;
-			$this->descriptionabstract = $database->descriptionabstract;
-			$this->descriptionmethods = $database->descriptionmethods;
-			$this->descriptionremarks = $database->descriptionremarks;
-			$this->productionyear = $database->productionyear;
-			$this->publicationyear = $database->publicationyear;
-			$this->language = $database->language;
-			$this->datasources = $database->datasources;
-			$this->software = $database->software;
-			$this->processing = $database->processing;
-			$this->relatedinformation = $database->relatedinformation;
-			$this->controlledrights = $database->controlledrights;
-			$this->additionalrights = $database->additionalrights;
+			$database = new Database();
+			$this->isNew = true;
 		}
+
+		$this->database = $database;
+		$this->title = $database->title;
+		$this->additionaltitle = $database->additionaltitle;
+		if ($database->additionaltitletype == null)
+			$this->additionaltitletype = null;
 		else
-		{
-			$this->language = "eng";
-			$this->controlledrights = (\App\Models\Metadataschema::where('name', 'controlledRights')->where('value', 'CC_BY_4_0_ATTRIBUTION')->first()->id); // CC BY as default
-			$this->additionaltitletype = 0; // Subtitle
-			$this->publicationyear = "unknown"; // dummy, will be set by RADAR when Publishing
-		}
+			$this->additionaltitletype = $database->additionaltitletype-$additionaltitletype_base_id;
+		$this->descriptiongeneral = $database->descriptiongeneral;
+		$this->descriptionabstract = $database->descriptionabstract;
+		$this->descriptionmethods = $database->descriptionmethods;
+		$this->descriptionremarks = $database->descriptionremarks;
+		$this->productionyear = $database->productionyear;
+		$this->publicationyear = $database->publicationyear;
+		$this->language = $database->language;
+		$this->datasources = $database->datasources;
+		$this->software = $database->software;
+		$this->processing = $database->processing;
+		$this->relatedinformation = $database->relatedinformation;
+		$this->controlledrights = $database->controlledrights;
+		$this->additionalrights = $database->additionalrights;
 	}
 
 	public function save()
 	{
 
 		$this->validate();
-
-		$isNew = !$this->database;
-
-		if($isNew)
-		{
-			$this->database = new Database();
-			$this->database->user_id = auth()->id();
-		}
 
 		$this->database->title = $this->title;
 		$this->database->additionaltitle = $this->additionaltitle;
@@ -129,7 +118,7 @@ class DatabaseForm extends Component
 		$this->database->additionalrights = $this->additionalrights;
 
 		$this->database->save();
-		if($isNew)
+		if($this->isNew)
 		{
 			$sa = new SubjectArea();
 			$sa->subjectareaable_id = $this->database->id; 
@@ -152,7 +141,7 @@ class DatabaseForm extends Component
 			$pub->nameIdentifierSchemeIndex = 2; // ROR
 			$pub->save(); 
 		}
-		session()->flash('message', $isNew ? 'Database created successfully.' : 'Database updated successfully.');
+		session()->flash('message', $this->isNew ? 'Database created successfully.' : 'Database updated successfully.');
 		return redirect()->route('databases.show', $this->database);
 	}
 

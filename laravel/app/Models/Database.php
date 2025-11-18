@@ -31,6 +31,14 @@ class Database extends Model
 		'radardataset' => RadardatasetpureData::class,
     ];*/
 
+	public function __construct() 
+	{
+		$this->language = "eng";
+		$this->controlledrights = (\App\Models\Metadataschema::where('name', 'controlledRights')->where('value', 'CC_BY_4_0_ATTRIBUTION')->first()->id); // CC BY as default
+		$this->additionaltitletype = 0; // Subtitle
+		$this->publicationyear = "unknown"; // dummy, will be set by RADAR when Publishing
+		$this->user_id = auth()->id();
+	}	
 	protected static function booted()
 	{
 	}

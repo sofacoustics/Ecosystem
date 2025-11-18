@@ -11,6 +11,7 @@ use Livewire\Component;
 class ToolForm extends Component
 {
 	public $tool;
+	public $isNew = false;
 	public $title;
 	public $additionaltitle;
 	public $additionaltitletype;
@@ -72,52 +73,39 @@ class ToolForm extends Component
 		$this->additionaltitletype_base_id = $additionaltitletype_base_id;
 		$this->resourcetype_base_id = $resourcetype_base_id;
 
-		if($tool) 
+		if($tool == null) 
 		{
-			$this->tool = $tool;
-			$this->title = $tool->title;
-			$this->additionaltitle = $tool->additionaltitle;
-			if ($tool->additionaltitletype == null)
-				$this->additionaltitletype = null;
-			else
-				$this->additionaltitletype = $tool->additionaltitletype-$additionaltitletype_base_id;
-			$this->descriptiongeneral = $tool->descriptiongeneral;
-			$this->descriptionabstract = $tool->descriptionabstract;
-			$this->descriptionmethods = $tool->descriptionmethods;
-			$this->descriptionremarks = $tool->descriptionremarks;
-			$this->productionyear = $tool->productionyear;
-			$this->publicationyear = $tool->publicationyear;
-			$this->language = $tool->language;
-			$this->datasources = $tool->datasources;
-			$this->software = $tool->software;
-			$this->processing = $tool->processing;
-			$this->relatedinformation = $tool->relatedinformation;
-			$this->controlledrights = $tool->controlledrights;
-			$this->additionalrights = $tool->additionalrights;
-			$this->resourcetype = $tool->resourcetype-$resourcetype_base_id; 
-			$this->resource = $tool->resource; 
+			$tool = new Tool();
+			$this->isNew = true;
 		}
+		
+		$this->tool = $tool;
+		$this->title = $tool->title;
+		$this->additionaltitle = $tool->additionaltitle;
+		if ($tool->additionaltitletype == null)
+			$this->additionaltitletype = null;
 		else
-		{
-			$this->language = "eng"; 
-			$this->controlledrights = (\App\Models\Metadataschema::where('name', 'controlledRights')->where('value', 'ECOSYSTEM_EUPL')->first()->id); // EUPL as default
-			$this->additionaltitletype = 0; // Subtitle
-			$this->publicationyear = "unknown"; // dummy, will be set by RADAR when Publishing
-			$this->resourcetype = (\App\Models\Metadataschema::where('name', 'resourcetype')->where('value', 'SOFTWARE')->first()->id) - $this->resourcetype_base_id;  
-		}
+			$this->additionaltitletype = $tool->additionaltitletype-$additionaltitletype_base_id;
+		$this->descriptiongeneral = $tool->descriptiongeneral;
+		$this->descriptionabstract = $tool->descriptionabstract;
+		$this->descriptionmethods = $tool->descriptionmethods;
+		$this->descriptionremarks = $tool->descriptionremarks;
+		$this->productionyear = $tool->productionyear;
+		$this->publicationyear = $tool->publicationyear;
+		$this->language = $tool->language;
+		$this->datasources = $tool->datasources;
+		$this->software = $tool->software;
+		$this->processing = $tool->processing;
+		$this->relatedinformation = $tool->relatedinformation;
+		$this->controlledrights = $tool->controlledrights;
+		$this->additionalrights = $tool->additionalrights;
+		$this->resourcetype = $tool->resourcetype-$resourcetype_base_id; 
+		$this->resource = $tool->resource; 
 	}
 
 	public function save()
 	{
 		$this->validate();
-
-		$isNew = !$this->tool;
-
-		if($isNew)
-		{
-				$this->tool = new Tool();
-				$this->tool->user_id = auth()->id();
-		}
 
 		$this->tool->title = $this->title;
 		$this->tool->additionaltitle = $this->additionaltitle;
@@ -140,7 +128,7 @@ class ToolForm extends Component
 
 		$this->tool->save();
 
-		if($isNew)
+		if($this->isNew)
 		{
 			$sa = new SubjectArea(); 
 			$sa->subjectareaable_id = $this->tool->id; 
@@ -164,7 +152,7 @@ class ToolForm extends Component
 			$pub->save(); 
 		}
 		
-		session()->flash('message', $isNew ? 'Tool created successfully.' : 'Tool updated successfully.');
+		session()->flash('message', $this->isNew ? 'Tool created successfully.' : 'Tool updated successfully.');
 		return redirect()->route('tools.show', $this->tool);
 	}
 

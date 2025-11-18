@@ -212,7 +212,7 @@ class DatabaseController extends Controller
 		$new->descriptionmethods = $database->descriptionmethods;
 		$new->descriptionremarks = $database->descriptionremarks;
 		$new->productionyear = strtolower($database->productionyear);
-		$new->publicationyear = $database->publicationyear;
+		$new->publicationyear = $new->publicationyear; // set to default
 		$new->language = $database->language;
 		$new->resourcetype = null; 
 		$new->resource = "SONICOM Ecosystem"; 
@@ -305,8 +305,19 @@ class DatabaseController extends Controller
 			$sa->additionalSubjectArea = $subjectarea->additionalSubjectArea; 
 			$sa->save();
 		}
+			// duplicate dataset definitions
+		foreach($database->datasetdefs as $datasetdef)
+		{
+			$sa = new Datasetdef(); 
+			$sa->database_id = $new->id;
+			$sa->name = $datasetdef->name;
+			$sa->description = $datasetdef->description;
+			$sa->datafiletype_id = $datasetdef->datafiletype_id;
+			$sa->widget_id = $datasetdef->widget_id; 
+			$sa->save();
+		}
 
-		return redirect()->route('databases.show', ['database' => $new])->with('success', 'Database duplicated successfully');
+		return redirect()->route('databases.edit', ['database' => $new])->with('success', 'Database duplicated successfully');
 	}
 	
 	public function download(Request $request, Database $database) 

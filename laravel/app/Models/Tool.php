@@ -23,7 +23,17 @@ class Tool extends Model
 	protected $fillable = [
 			'id', 'title', 'descriptiongeneral'
 	];
+
+	public function __construct() {
 		
+		$this->language = "eng"; 
+		$this->controlledrights = (\App\Models\Metadataschema::where('name', 'controlledRights')->where('value', 'ECOSYSTEM_EUPL')->first()->id); // EUPL as default
+		$this->additionaltitletype = 0; // Subtitle
+		$this->publicationyear = "unknown"; // dummy, will be set by RADAR when Publishing
+		$this->resourcetype = (\App\Models\Metadataschema::where('name', 'resourcetype')->where('value', 'SOFTWARE')->first()->id) - $this->resourcetype_base_id; 
+		$this->user_id = auth()->id();
+	}
+
 	public function directory() : string
 	{
 		$tool_id = $this->id;

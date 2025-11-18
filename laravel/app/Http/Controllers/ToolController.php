@@ -155,7 +155,7 @@ class ToolController extends Controller
 		$new->descriptionmethods = $tool->descriptionmethods;
 		$new->descriptionremarks = $tool->descriptionremarks;
 		$new->productionyear = strtolower($tool->productionyear);
-		$new->publicationyear = $tool->publicationyear;
+		$new->publicationyear = $new->publicationyear; // set to default
 		$new->language = $tool->language;
 		$new->resourcetype = $tool->resourcetype; 
 		$new->resource = $tool->resource; 
@@ -249,7 +249,7 @@ class ToolController extends Controller
 			$sa->save();
 		}
 
-		return redirect()->route('tools.show', ['tool' => $new])->with('success', 'Tool duplicated successfully');
+		return redirect()->route('tools.edit', ['tool' => $new])->with('success', 'Tool duplicated successfully');
 	}
 	
 }
