@@ -81,10 +81,16 @@ class RelatedIdentifier extends Model
 		{
 			case 1: // database
 				$database = \App\Models\Database::find(substr($name, strlen("ECOSYSTEM_DATABASE")+1));
-				return $database->title." (".$database->productionyear.")";
+				if ($database == null)
+					return null;
+				else
+					return $database->title." (".$database->productionyear.")";
 			case 2: // tool
 				$tool = \App\Models\Tool::find(substr($name, strlen("ECOSYSTEM_TOOL")+1));
-				return $tool->title." (".$tool->productionyear.")";
+				if ($tool == null)
+					return null;
+				else
+					return $tool->title." (".$tool->productionyear.")";
 			default:
 				return $defaultname;
 		}
