@@ -222,6 +222,8 @@ class DatabaseController extends Controller
 		$new->relatedinformation = $database->relatedinformation;
 		$new->controlledrights = $database->controlledrights;
 		$new->additionalrights = $database->additionalrights;
+		$new->bulk_upload_dataset_name_filter = $database->bulk_upload_dataset_name_filter;
+		$new->bulk_upload_description_filter = $database->bulk_upload_description_filter;
 		$new->save();	
 		
 			// duplicate creators
@@ -308,13 +310,15 @@ class DatabaseController extends Controller
 			// duplicate dataset definitions
 		foreach($database->datasetdefs as $datasetdef)
 		{
-			$sa = new Datasetdef(); 
-			$sa->database_id = $new->id;
-			$sa->name = $datasetdef->name;
-			$sa->description = $datasetdef->description;
-			$sa->datafiletype_id = $datasetdef->datafiletype_id;
-			$sa->widget_id = $datasetdef->widget_id; 
-			$sa->save();
+			$dsd = new Datasetdef(); 
+			$dsd->database_id = $new->id;
+			$dsd->name = $datasetdef->name;
+			$dsd->description = $datasetdef->description;
+			$dsd->datafiletype_id = $datasetdef->datafiletype_id;
+			$dsd->widget_id = $datasetdef->widget_id; 
+			$dsd->bulk_upload_filename_filter = $datasetdef->bulk_upload_filename_filter;
+			$dsd->bulk_upload_pattern_description = $datasetdef->bulk_upload_pattern_description;
+			$dsd->save();
 		}
 
 		return redirect()->route('databases.edit', ['database' => $new])->with('success', 'Database duplicated successfully');
