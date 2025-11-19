@@ -5,10 +5,13 @@
 
 	<h2>Datasets</h2>
 		@if(count($database->datasets)==0)
-			<p>No datasets found.</p>
+			<p>No datasets availabled.</p>
 		@else
-			<p><b>{{ count($database->datasets) }}</b> datasets found:</p>
-			<table class="table-auto w-full border border-slate-399">
+			<p><b>{{ count($database->datasets) }}</b> datasets available:</p>
+		
+			<livewire:dataset-table-filter :database=$database />
+			
+			<!-- <table class="table-auto w-full border border-slate-399">
 				<thead class="bg-gray-50">
 					<tr>
 						@can('create', [App\Models\Dataset::class, $database])
@@ -40,7 +43,7 @@
 						</tr>
 					@endforeach
 				</tbody>
-			</table>
+			</table> -->
 			
 			<br>
 			<p>
