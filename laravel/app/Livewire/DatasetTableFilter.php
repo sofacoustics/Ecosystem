@@ -15,7 +15,7 @@ class DatasetTableFilter extends Component
 		'description' => '',
 	];
 
-	public $sortField = 'id'; // Default sorting field
+	public $sortField = 'name'; // Default sorting field
 	public $sortAsc = true; // Default sorting order
 	
 	public $database;
@@ -43,10 +43,18 @@ class DatasetTableFilter extends Component
 			$query->where('description', 'like', '%' . $this->filters['description'] . '%');
 		}
 
-		if($this->sortField === 'count')
-			$this->datasets = $query->withCount('datafiles')->orderBy('datafiles_count', $this->sortAsc ? 'asc' : 'desc')->get();
-		else
-			$this->datasets = $query->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')->get();
+		switch($this->sortField)
+		{
+			case 'count':
+				$this->datasets = $query->withCount('datafiles')->orderBy('datafiles_count', $this->sortAsc ? 'asc' : 'desc')->get();
+				break;
+			case 'name':
+				$datasets = $query->get();
+				$this->datasets = $datasets->sortBy('name');
+				break;
+			default:
+				$this->datasets = $query->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')->get();
+		}
 	}
 
 	public function render()
