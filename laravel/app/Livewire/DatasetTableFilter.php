@@ -35,8 +35,6 @@ class DatasetTableFilter extends Component
 		{
 			$query->where('name', 'like', '%' . $this->filters['name'] . '%');
 		}
-		// else
-			// $query = Database::query();
 
 		if (!empty($this->filters['description'])) 
 		{
@@ -50,7 +48,10 @@ class DatasetTableFilter extends Component
 				break;
 			case 'name':
 				$datasets = $query->get();
-				$this->datasets = $datasets->sortBy('name');
+				if($this->sortAsc)
+					$this->datasets = $datasets->sortBy('name', SORT_NATURAL);
+				else
+					$this->datasets = $datasets->sortByDesc('name', SORT_NATURAL);
 				break;
 			default:
 				$this->datasets = $query->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')->get();
