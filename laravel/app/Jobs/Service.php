@@ -43,7 +43,10 @@ class Service implements ShouldQueue
 		public Datafile $datafile
 	) {
 		$this->service = $this->widget->service;
-		$this->timeout = $this->service->timeout + 10; // This 'timeout' appears to be independent of the Process timeout and needs to be high enough
+		// if you set this here, then the database value will be fixed at the time that
+		// the job is put in the queue. Therefore, set it in handle(), which will pull
+		// it out of the database when the job actually runs.
+		//$this->timeout = $this->service->timeout + 10;
 		$this->queue = 'services';
 	}
 
@@ -61,8 +64,13 @@ class Service implements ShouldQueue
 		//		./artisan queue:restart
 		//
 		//	since otherwise your changes won't be used (old version cached).
+		//	This is valid when using supervisorctl too!
 		//
 		////////////////////////////////////////////////////////////////////////////////
+		// This 'timeout' appears to be independent of the Process timeout and needs to be high enough
+		// Setting $this->timeout in __construct happens when the job is queued.
+		// Setting it here will pull the value from the database when the job actually runs.
+		$this->timeout = $this->service->timeout + 10;
 		$widget_id=$this->widget->id;
 		$service_id = $this->service->id;
 		$datafile_id = $this->datafile->id;
@@ -146,11 +154,11 @@ class Service implements ShouldQueue
 					posix_kill((int)$childPid, SIGKILL);
 				}
 			}
+			//jw:todo Send email
 
 			//$process->signal(SIGKILL);
 			//$log .= " Killing via SIGKILL\n";
 		}
-
 
 		$duration = microtime(true) - $start;
 		$execution = "execution time: $duration";
