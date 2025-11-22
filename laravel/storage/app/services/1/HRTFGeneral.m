@@ -67,7 +67,7 @@ switch Obj.GLOBAL_SOFAConventions
 
         %% ETCHorizontal
         if isoctave;  fputs(fid, [ "case SimpleFreeFieldHRIR\n"]);end
-				f=figure('Visible', 'off');
+				f=figure;
         mySOFAplotHRTF(Obj,'ETCHorizontal',1);
         if isoctave;  fputs(fid, [ "just done SOFAplotHRTF\n"]); end
         print (f, '-dpng', "-r600", [SOFAfile '_1.png']);
