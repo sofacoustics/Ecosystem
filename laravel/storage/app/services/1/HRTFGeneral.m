@@ -63,6 +63,25 @@ switch Obj.GLOBAL_SOFAConventions
     % differ cases, depending on SOFA conventions
     case 'SimpleFreeFieldHRIR'
 
+				graphics_toolkit fltk
+				
+        %% ITD
+        figure('Name',SOFAfile);
+        if isoctave;  fputs(fid, [ "created empty figure for " SOFAfile "_7.png\n"]); end
+        mySOFAplotHRTF(Obj,'itdhorizontal');
+        if isoctave;  fputs(fid, [ "plotted " SOFAfile "_7.png\n"]); end
+        print ('-dpng', "-r600", [SOFAfile '_7.png']);
+        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_7.png\n"]); end
+
+        %% Geometry
+        mySOFAplotGeometry(Obj);
+        if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
+        view(45,30);
+        if isoctave; fputs(fid, [ "adapted view\n"]); end
+        title([num2str(Obj.API.M) ' Positions']);
+        print ('-dpng', "-r600", [SOFAfile '_8.png']);
+        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_8.png\n"]); end
+
         graphics_toolkit gnuplot
 
         %% ETCHorizontal
@@ -105,25 +124,6 @@ switch Obj.GLOBAL_SOFAConventions
         print ('-dpng', "-r600", [SOFAfile '_6.png']);
         if isoctave;  fputs(fid, [ "just printed " SOFAfile "_6.png\n"]); end
 
-				graphics_toolkit fltk
-				
-        %% ITD
-        figure('Name',SOFAfile);
-        if isoctave;  fputs(fid, [ "created empty figure for " SOFAfile "_7.png\n"]); end
-        mySOFAplotHRTF(Obj,'itdhorizontal');
-        if isoctave;  fputs(fid, [ "plotted " SOFAfile "_7.png\n"]); end
-        print ('-dpng', "-r600", [SOFAfile '_7.png']);
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_7.png\n"]); end
-
-        %% Geometry
-        mySOFAplotGeometry(Obj);
-        if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
-        view(45,30);
-        if isoctave; fputs(fid, [ "adapted view\n"]); end
-        title([num2str(Obj.API.M) ' Positions']);
-        print ('-dpng', "-r600", [SOFAfile '_8.png']);
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_8.png\n"]); end
-
     case {'GeneralTF'}
 
         graphics_toolkit gnuplot
@@ -144,7 +144,6 @@ switch Obj.GLOBAL_SOFAConventions
 
         %% ETCHorizontal
         if isoctave;  fputs(fid, [ "case SimpleFreeFieldHRTF\n"]);end
-        % plot ETC horizontal plane
         figure('Name',SOFAfile);
         mySOFAplotHRTF(Obj,'ETCHorizontal',1);
         if isoctave;  fputs(fid, [ "just done SOFAplotHRTF\n"]); end
