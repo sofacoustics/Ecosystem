@@ -1,7 +1,9 @@
 <div>
 	<table class="table-auto border border-slate-399">
 		<thead class="bg-gray-50">
-			<th></th>
+			@can('create', [App\Models\Dataset::class, $database])
+				<th></th>
+			@endcan
 			<th></th>
 			<th><input type="text" wire:model.live.debounce.500ms="filters.name" placeholder="Filter by Name..." class="border rounded p-2"></th>
 			<th></th>
