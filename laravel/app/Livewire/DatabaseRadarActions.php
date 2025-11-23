@@ -8,8 +8,11 @@ use App\Events\DatabasePersistentPublicationApproved;
 use App\Events\DatabasePersistentPublicationRejected;
 use App\Jobs\DatabasePublishToRadar;
 use App\Services\DatabaseRadarDatasetBridge;
+use Illuminate\Support\Facades\DB;
+use App\Models\Datafile;
 
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class DatabaseRadarActions extends Component
 {
@@ -34,6 +37,8 @@ class DatabaseRadarActions extends Component
 
 	public $error; // any error message to display
 
+	public $logs_failed; // logs with fails
+	public $jobs; 
 
 	public function mount($database)
 	{
@@ -48,8 +53,44 @@ class DatabaseRadarActions extends Component
 		{
 			$this->dispatch('status-message', 'There is no RADAR dataset associated with this database!');
 		}
+
+		$this->logs_failed = collect();
+		$logs = DB::table('service_logs')->orderby('datafile_id')->get();
+		$logs = $logs->unique('datafile_id');		
+		foreach($logs as $log_df)
+		{
+			$logs_unique = DB::table('service_logs')->where('datafile_id', $log_df->datafile_id)->orderby('created_at','desc')->get();
+			if($logs_unique[0]->exit_code != 0)
+			{ $log = $logs_unique[0];
+				$log->datafile = Datafile::where('id', $log->datafile_id)->first();
+				$this->logs_failed->push($log);
+			}
+		}
+		
+		$this->jobs = collect();
+		$jobs = DB::table('jobs')->orderby('created_at')->get();
+		foreach($jobs as $job)
+		{
+			$pos = strpos($job->payload, "Datafile");
+			if($pos !== false)
+			{
+				$str = substr($job->payload, $pos+15+9);
+				$datafile_id = Str::match('/^(\d+)/', $str);
+				$job->datafile = Datafile::where('id', $datafile_id)->first();
+			}
+			else
+				$job->datafile = null;
+			$this->jobs->push($job);
+		}
 	}
 
+	public function touchDatafile(Datafile $datafile)
+	{
+		dd($datafile);
+		$datafile->touch();
+		$datafile->save();
+	}
+	
 	public function toggleExpand()
 	{
 		$this->isExpanded = !$this->isExpanded; // Toggle the boolean value

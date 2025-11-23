@@ -71,4 +71,52 @@
 		<x-alert>{{ $error }}</x-alert>
 	@endif
 
+	<hr>
+	@if(count($jobs) < 1)
+		<p>No jobs scheduled...</p>
+	@else
+		<p>Following jobs scheduled:</p>
+		<table class="table-auto border border-slate-399">
+			<thead class="bg-gray-50">
+				<th>ID</th>
+				<th>Datafile</th>
+				<th>Attempts</th>
+				<th>Created At</th>
+			</thead>
+			<tbody class="bg-white divide-y divide-gray-200">
+				@foreach($jobs as $job)
+					<tr>
+						<td>{{ $job->id }}</td>
+						<td><a href="{{ route('datafiles.show', $job->datafile->id) }}" target="_blank">{{ $job->datafile->name }}</a></td>
+						<td>{{ $job->attempts }}</td>
+						<td>{{ $job->created_at }}</td>
+					</tr>
+				@endforeach
+			</tbody>
+		</table>
+	@endif
+	
+	<hr>
+	<p>Failed datafiles (table: service_logs)</p>
+	<table class="table-auto border border-slate-399">
+		<thead class="bg-gray-50">
+			<th>Datafile ID</th>
+			<th>Exit Code</th>
+			<th>Created At</th>
+			<th></th>
+			<th></th>
+		</thead>	
+		<tbody class="bg-white divide-y divide-gray-200">
+			@foreach($logs_failed as $log)
+				<tr>
+					<td>{{ $log->datafile_id }}</td>
+					<td>{{ $log->exit_code }}</td>
+					<td>{{ $log->created_at }}</td>
+					<td><a href="{{ route('datafiles.show', $log->datafile->id) }}" target="_blank">{{ $log->datafile->name }}</a></td>
+					<td><x-button method="POST" class="inline" action="{{ route('datafiles.touch', [$log->datafile]) }}">Rerun service</x-button></td>
+				</tr>
+			@endforeach
+		</tbody>
+	</table>
+
 </div>
