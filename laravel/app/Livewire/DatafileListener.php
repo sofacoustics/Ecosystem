@@ -12,6 +12,7 @@ use App\Models\ServiceLog;
 use App\Models\Widget;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
@@ -24,7 +25,6 @@ class DatafileListener extends Component
 	public Datafile $datafile;
 	public Datasetdef $datasetdef;
 	public Datafiletype $datafiletype;
-	public Collection $serviceLogs;
 	public ?ServiceLog $latestLog;
 	public ?Widget $widget;
 	public $counter = 0;
@@ -66,19 +66,14 @@ class DatafileListener extends Component
 		$this->datasetdef = $datafile->datasetdef;
 		$this->datafiletype = $datafile->datasetdef->datafiletype;
 		$this->widget = $datafile->datasetdef->widget;
-		if(isset($datafile->datasetdef->widget->service?->logs))
-			$this->serviceLogs = $datafile->datasetdef->widget->service->logs;
-		if(isset($datafile->datasetdef->widget->service?->latestLog))
-			$this->latestLog = $datafile->datasetdef->widget->service->latestLog;
 		$this->result = 0;
 		$this->isExpanded = false;
 	}
 
 	public function render()
 	{
-		// update in 'render' to get latest value
-		if(isset($datafile->datasetdef->widget->service?->latestLog))
-			$this->latestLog = $this->datafile->datasetdef->widget->service->latestLog;
+		// get latest service log
+		$this->latestLog = ServiceLog::where('datafile_id', $this->datafile->id)->latest()->first();
 		\Log::debug('DatafileListener: datafiletype name = ' . ($this->datafiletype->name ?? 'NULL'));
 		\Log::debug('DatafileListener: widget id = ' . $this->widget->id . ' widget view = ' . ($this->widget->view ?? 'NULL'));
 
