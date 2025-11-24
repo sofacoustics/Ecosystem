@@ -71,11 +71,12 @@
 		<x-alert>{{ $error }}</x-alert>
 	@endif
 
-	<hr>
+	<br><hr><br>
+	<h2>Services</h2>
 	@if(count($jobs) < 1)
-		<p>No jobs scheduled...</p>
+		<x-property name="Jobs">No jobs scheduled</x-property>
 	@else
-		<p>Following jobs scheduled:</p>
+		<x-property name="Jobs">{{count($jobs)}} jobs scheduled:</x-property>
 		<table class="table-auto border border-slate-399">
 			<thead class="bg-gray-50">
 				<th>ID</th>
@@ -97,26 +98,29 @@
 	@endif
 	
 	<hr>
-	<p>Failed datafiles (table: service_logs)</p>
-	<table class="table-auto border border-slate-399">
-		<thead class="bg-gray-50">
-			<th>Datafile ID</th>
-			<th>Exit Code</th>
-			<th>Created At</th>
-			<th></th>
-			<th></th>
-		</thead>	
-		<tbody class="bg-white divide-y divide-gray-200">
-			@foreach($logs_failed as $log)
-				<tr>
-					<td>{{ $log->datafile_id }}</td>
-					<td>{{ $log->exit_code }}</td>
-					<td>{{ $log->created_at }}</td>
-					<td><a href="{{ route('datafiles.show', $log->datafile->id) }}" target="_blank">{{ $log->datafile->name }}</a></td>
-					<td><x-button method="POST" class="inline" action="{{ route('datafiles.touch', [$log->datafile]) }}">Rerun service</x-button></td>
-				</tr>
-			@endforeach
-		</tbody>
-	</table>
-
+	@if(count($logs_failed) < 1)
+		<x-property name="Logs">All services have been resolved (even if they failed originally)</x-property>
+	@else
+		<x-property name="Logs">{{count($logs_failed)}} services have not been resolved:</x-property>
+		<table class="table-auto border border-slate-399">
+			<thead class="bg-gray-50">
+				<th>Datafile ID</th>
+				<th>Exit Code</th>
+				<th>Created At</th>
+				<th></th>
+				<th></th>
+			</thead>	
+			<tbody class="bg-white divide-y divide-gray-200">
+				@foreach($logs_failed as $log)
+					<tr>
+						<td>{{ $log->datafile_id }}</td>
+						<td>{{ $log->exit_code }}</td>
+						<td>{{ $log->created_at }}</td>
+						<td><a href="{{ route('datafiles.show', $log->datafile->id) }}" target="_blank">{{ $log->datafile->name }}</a></td>
+						<td><x-button method="POST" class="inline" action="{{ route('datafiles.touch', [$log->datafile]) }}">Rerun service</x-button></td>
+					</tr>
+				@endforeach
+			</tbody>
+		</table>
+	@endif
 </div>
