@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ServiceLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ServiceLogController extends Controller
 {
@@ -62,4 +63,11 @@ class ServiceLogController extends Controller
     {
         //
     }
+		
+	public function removejob($id)
+	{
+		DB::table('jobs')->where('id', $id)->delete();
+		return redirect()->back();
+	}
+			
 }

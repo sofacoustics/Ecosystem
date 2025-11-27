@@ -14,6 +14,7 @@ use App\Http\Controllers\DatafileController;
 use App\Http\Controllers\DatasetController;
 use App\Http\Controllers\DatasetdefController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ServiceLogController;
 //use App\Http\Controllers\RadarController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ToolController;
@@ -76,6 +77,7 @@ Route::view('/terms-of-use', 'pages.terms-of-use')->name('terms-of-use');
 //jw:note 'implicit binding' https://laravel.com/docs/11.x/routing#implicit-binding
 Route::resource('databases', DatabaseController::class);
 Route::get('/databases/{database}/datathek', [DatabaseController::class, 'datathek'])->name('databases.datathek')->middleware('admin'); // display Datathek status and actions for admin testing
+Route::get('/databases/{database}/servicelog/removejob', [ServiceLogController::class, 'removejob'])->name('servicelog.removejob')->middleware('admin');
 Route::get('/databases/{database}/datasetdefs', [DatabaseController::class, 'datasetdefs'])->name('databases.datasetdefs');
 Route::get('/databases/{database}/datasetdefs/up', [DatabaseController::class, 'datasetdefup'])->name('datasetdefs.up');
 Route::get('/databases/{database}/datasetdefs/down', [DatabaseController::class, 'datasetdefdown'])->name('datasetdefs.down');

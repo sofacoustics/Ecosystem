@@ -83,14 +83,24 @@
 				<th>Datafile</th>
 				<th>Attempts</th>
 				<th>Created At</th>
+				<th></th>
 			</thead>
 			<tbody class="bg-white divide-y divide-gray-200">
 				@foreach($jobs as $job)
 					<tr>
 						<td>{{ $job->id }}</td>
-						<td><a href="{{ route('datafiles.show', $job->datafile->id) }}" target="_blank">{{ $job->datafile->name }}</a></td>
+						<td>
+							@if($job->datafile == null)
+								Datafile not found!
+							@else	
+								<a href="{{ route('datafiles.show', $job->datafile->id) }}" target="_blank">{{ $job->datafile->name }}</a>
+							@endif
+						</td>
 						<td>{{ $job->attempts }}</td>
 						<td>{{ $job->created_at }}</td>
+						<td>
+							<x-button method="GET" action="{{ route('servicelog.removejob', $job->id) }}" class="inline">Remove</x-button>
+						</td>
 					</tr>
 				@endforeach
 			</tbody>
@@ -117,7 +127,13 @@
 						<td>{{ $log->exit_code }}</td>
 						<td>{{ $log->created_at }}</td>
 						<td><a href="{{ route('datafiles.show', $log->datafile->id) }}" target="_blank">{{ $log->datafile->name }}</a></td>
-						<td><x-button method="POST" class="inline" action="{{ route('datafiles.touch', [$log->datafile]) }}">Rerun service</x-button></td>
+						<td>
+							@if($scheduled[$loop->index])
+								Scheduled
+							@else
+								<x-button method="POST" class="inline" action="{{ route('datafiles.touch', [$log->datafile]) }}">Rerun service</x-button>
+							@endif
+						</td>
 					</tr>
 				@endforeach
 			</tbody>
