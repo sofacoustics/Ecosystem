@@ -8,7 +8,7 @@
 		@else
 			<p>Service: {{ $log->name }} (ID: {{ $log->service_id }})</p>
 			<p>Datafile: {{ $log->datafile->name }} (ID: {{ $log->datafile_id }})</p>
-			<p>Created: {{ $log->created_at }} Updated: {{ $log->updated_at }}</p>
+			<p>Created: {{ $log->created_at }} Updated: {{ $log->updated_at }} Execution time: {{ number_format($log->execution_time,2) }} s</p>
 			@if($log->exit_code != 0)
 				<x-alert>Last service job exited with the code {{ $log->exit_code }} ({{ $log->exit_code_text }})
 					<div><b>stdout</b>:<br>
