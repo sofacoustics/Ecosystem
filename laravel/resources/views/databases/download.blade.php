@@ -14,9 +14,11 @@
 		@if($database->doi)
 			<li><b>URL to a TAR file with all datafiles:</b>
 				@if($database->radar_status==4)
-					<a href="https://doi.org/{{ $database->doi }}#">{{ $database->doi }}</a>
-				@else
-					{{ $database->doi }} (the link will be active after persistent publication of this Database)
+					<a href="https://datathek.oeaw.ac.at/radar-backend/archives/{{ substr($database->doi,9) }}/versions/1/content">
+						https://datathek.oeaw.ac.at/radar-backend/archives/{{ substr($database->doi,9) }}/versions/1/content
+					</a>
+				@else 
+					https://datathek.oeaw.ac.at/radar-backend/archives/{{ substr($database->doi,9) }}/versions/1/content (The link will be active after persistent publication of this Database)
 				@endif
 			</li>
 		@endif
