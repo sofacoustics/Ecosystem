@@ -11,6 +11,15 @@
 			<img id="copyURL" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 1.5em; display: inline-block;">
 			<input type="text" id="textURL" value="{{ route('databases.show', ['database' => $database->id]) }}" class="hidden">
 		</li>
+		@if($database->doi)
+			<li><b>URL to a TAR file with all datafiles:</b>
+				@if($database->radar_status==4)
+					<a href="https://doi.org/{{ $database->doi }}#">{{ $database->doi }}</a>
+				@else
+					{{ $database->doi }} (the link will be active after persistent publication of this Database)
+				@endif
+			</li>
+		@endif
 		<li><b>List of all Datafiles in this Database (JSON format):</b> 
 			<a href="{{ route('databases.download', ['database' => $database->id, 'type' => 'json']) }}">
 			{{ route('databases.download', ['database' => $database->id, 'type' => 'json']) }}
@@ -18,19 +27,31 @@
 			<img id="copyJSON" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 1.5em; display: inline-block;">
 			<input type="text" id="textJSON" value="{{ route('databases.download', ['database' => $database->id, 'type' => 'json']) }}" class="hidden">
 		</li>
+<style>
+	code {
+			padding: 2px 4px;
+			font-size: 90%;
+			color: #c7254e; /* A common color for inline code */
+			background-color: #FFFFFF;
+			border-radius: 4px;
+			white-space: nowrap; /* Prevents long code from wrapping */
+	}
+</style>
 		
 		<li><b>Remote clients:</b>
 			<ul class="list-disc list-outside ps-5 mt-2 space-y-1">
-				<li>Matlab: <a href="{{ asset('clients/matlab/databaseDownload.m') }}" download>
-					<img src="{{ asset('images/Matlab_Logo.png') }}" alt="Matlab" title="Example code for Matlab" style="height: 2em; display: inline-block;"/>
-				</a></li>
-				<li>Octave: <a href="{{ asset('clients/octave/databaseDownload.m') }}" download>
-					<img src="{{ asset('images/Gnu-octave-logo.svg') }}" alt="Octave" title="Example code for Octave" style="height: 2em; display: inline-block;"/>
-				</a></li> 
-				<li>Python: <a href="{{ asset('clients/python/databaseDownload.py') }}" download>
-					<img src="{{ asset('images/python-logo-only.png') }}" alt="Python" title="Example code for Python" style="height: 2em; display: inline-block;"/>
-				</a></li>
-				<li>The code above retrieves the list of Datafiles in the Database and downloads them to a local directory. 
+				<li><a href="{{ asset('clients/matlab/databaseDownload.m') }}" download>
+					<img src="{{ asset('images/Matlab_Logo.png') }}" alt="Matlab" title="Example code for Matlab" style="height: 2em; display: inline-block;"/></a>
+				Start with: <code>databaseDownload("destination_directory",{{ $database->id }});</code></li>
+				<li><a href="{{ asset('clients/octave/databaseDownload.m') }}" download>
+					<img src="{{ asset('images/Gnu-octave-logo.svg') }}" alt="Octave" title="Example code for Octave" style="height: 2em; display: inline-block;"/></a>
+				Start with: <code>databaseDownload("destination_directory",{{ $database->id }});</code></li>
+				</li> 
+				<li><a href="{{ asset('clients/python/databaseDownload.py') }}" download>
+					<img src="{{ asset('images/python-logo-only.png') }}" alt="Python" title="Example code for Python" style="height: 2em; display: inline-block;"/></a>
+				Start with: <code> python databaseDownload.py "destination_directory" -id {{ $database->id }}</code></li>
+				</li>
+				<li>The code above retrieves the list of Datafiles in this Database and downloads them to the local directory <code>destination_directory</code>. 
 			</ul>
 		</li>
 	</ul>
