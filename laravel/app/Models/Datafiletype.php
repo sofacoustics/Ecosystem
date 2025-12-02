@@ -11,9 +11,7 @@ class Datafiletype extends Model
 	use HasFactory;
 
 	protected $fillable = [
-		'id',
-		'name',
-		'description'
+		'id', 'name', 'description', 'default_widget', 'extension', 'mimetypes'
 	];
 	
 	public function widgets(): BelongsToMany

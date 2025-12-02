@@ -120,5 +120,11 @@ class DatafiletypeSeeder extends Seeder
 					'extension' => null,
 					'mimetypes' => null,
 					'description' => 'Any type of other data', ]);
+
+				Datafiletype::create([ 'name' => 'Neural Network: (PT/PTH)',
+ 			    'default_widget' => null,
+					'extension' => '.pt,.pth',
+          'mimetypes' => 'application/octet-stream',
+          'description' => 'Structure or weights of a neural network (Pytorch-based formats PT or PTH)']);					
     }
 }
