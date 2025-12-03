@@ -14,7 +14,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $seeder = new DatafiletypeSeeder2();
+        $seeder = new DatafiletypeSeeder_2025_12_02_230239();
         $seeder->run();
     }
 
