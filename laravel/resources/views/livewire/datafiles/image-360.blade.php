@@ -1,4 +1,5 @@
-<div id="imagecontainer">
+<div>
+	<x-servicelog :log="$latestLog"></x-servicelog>
 	<p><x-datafiles-properties :fileSizeInBytes="$fileSizeInBytes" :createdAt="$created_at" :updatedAt="$updated_at"/></p>
 
 	<script type="text/javascript" src="/js/pannellum/pannellum.js"></script>

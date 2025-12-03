@@ -1,4 +1,4 @@
-<div id="imagecontainer">
+<div>
 	<p><x-datafiles-properties :fileSizeInBytes="$fileSizeInBytes" :createdAt="$created_at" :updatedAt="$updated_at"/></p>
 
 	<script src="/js/stl_viewer/stl_viewer.min.js"></script>
@@ -12,7 +12,7 @@
 			{
 				models:
 				[
-					{filename:"{{ $datafile->asset() }}"}
+					{filename:"{{ $datafile->asset('',true) }}"}
 				]
 			}
 		);

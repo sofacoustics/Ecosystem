@@ -1,7 +1,7 @@
-<div id="imagecontainer">
+<div>
+	<x-servicelog :log="$latestLog"></x-servicelog>
 	<p><x-datafiles-properties :fileSizeInBytes="$fileSizeInBytes" :createdAt="$created_at" :updatedAt="$updated_at"/></p>
 
-	<x-servicelog :log="$this->latestLog"></x-servicelog>
 	<script src="/js/stl_viewer/stl_viewer.min.js"></script>
 	<div id="stl_cont{{ $datafile->id }}" style="width:500px;height:500px;margin:0 auto; text-align:left;"></div>
 	

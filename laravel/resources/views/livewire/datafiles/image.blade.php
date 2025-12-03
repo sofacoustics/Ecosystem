@@ -1,4 +1,5 @@
-<div id="imagecontainer">
+<div>
+	<x-servicelog :log="$latestLog"></x-servicelog>
 	<p><x-datafiles-properties :fileSizeInBytes="$fileSizeInBytes" :createdAt="$created_at" :updatedAt="$updated_at"/></p>
 
 	<p>
@@ -41,14 +42,6 @@
 		y = myImg.clientHeight/2 - rect.height/2;
 		myImg.style.top = x + "px";
 		myImg.style.left = y + "px";
-	}
-
- 	function reset(myImg)
-	{
-		myImg.style.transform = "rotate(0deg)";
-		Angle = 0;
-		myImg.style.top = "0px";
-		myImg.style.left = "0px";
 	}
 	
  	function resetbutton{{ $datafile->id }}()

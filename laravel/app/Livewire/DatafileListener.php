@@ -32,10 +32,10 @@ class DatafileListener extends Component
 	public $counter_min = 0;
 	public $isExpanded = false; // for boxes to be expanded
 
-
-	protected $listeners = [
+	/* Disabled to resolve the problem of disappearance of other widgets on any notification. 
+	/*protected $listeners = [
 		'echo:sonicom-ecosystem,.datafile-processed' => 'datafileProcessed',
-	];
+	];*/
 
 	public function toggleExpand()
 	{
