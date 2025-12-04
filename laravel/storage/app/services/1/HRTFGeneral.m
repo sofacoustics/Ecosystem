@@ -16,7 +16,7 @@
 % Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 % See the License for the specific language governing  permissions and limitations under the License.
 
-function HRTFGeneral(SOFAfile)
+function HRTFGeneral(SOFAfile, do_print)
 % for debug purpose comment function row above, and uncomment this one:
 % SOFAfile= 'hrtf_nh4.sofa';
 
@@ -25,6 +25,7 @@ isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
 fid = fopen(logfile, "w");
 s = pwd;
 disp(["pwd = " s]);
+if ~exist('do_print','var'), do_print = true; end
 
 %% Prologue: (un)comment here if you want to:
 close all; % clean-up first
@@ -55,22 +56,20 @@ Obj=SOFAload(SOFAfile);
 
 SaveSOFAproperties(Obj, SOFAfile);
 if isoctave; fputs(fid, ["Successfully saved SOFA details to csv files\n"]); end
-
-if isoctave;  fputs(fid, [ "About to plot\n"]); end
+if isoctave;  fputs(fid, [ "About to plot case " Obj.GLOBAL_SOFAConventions "\n"]);end
 
 %% Plot a few figures
 switch Obj.GLOBAL_SOFAConventions
     % differ cases, depending on SOFA conventions
-    case 'SimpleFreeFieldHRIR'
+    case { 'SimpleFreeFieldHRIR', 'SimpleFreeFieldHRTF'}
 
 				graphics_toolkit fltk
 
         %% ITD
-        figure('Name',SOFAfile);
-        if isoctave;  fputs(fid, [ "created empty figure for " SOFAfile "_7.png\n"]); end
+        f=figure;
         mySOFAplotHRTF(Obj,'itdhorizontal');
         if isoctave;  fputs(fid, [ "plotted " SOFAfile "_7.png\n"]); end
-        print ('-dpng', "-r600", [SOFAfile '_7.png']);
+        if do_print, print ('-dpng', "-r600", [SOFAfile '_7.png']); end
         if isoctave;  fputs(fid, [ "just printed " SOFAfile "_7.png\n"]); end
 
         %% Geometry
@@ -79,49 +78,46 @@ switch Obj.GLOBAL_SOFAConventions
         view(45,30);
         if isoctave; fputs(fid, [ "adapted view\n"]); end
         title([num2str(Obj.API.M) ' Positions']);
-        print ('-dpng', "-r600", [SOFAfile '_8.png']);
+        if do_print, print ('-dpng', "-r600", [SOFAfile '_8.png']); end
         if isoctave;  fputs(fid, [ "just printed " SOFAfile "_8.png\n"]); end
 
         graphics_toolkit gnuplot
 
         %% ETCHorizontal
-        if isoctave;  fputs(fid, [ "case SimpleFreeFieldHRIR\n"]);end
 				f=figure;
         mySOFAplotHRTF(Obj,'ETCHorizontal',1);
         if isoctave;  fputs(fid, [ "just done SOFAplotHRTF\n"]); end
-        print (f, '-dpng', "-r600", [SOFAfile '_1.png']);
+        if do_print, print (f, '-dpng', "-r600", [SOFAfile '_1.png']); end
         if isoctave;  fputs(fid, [ "just printed " SOFAfile "_1.png\n"]); end
 
-        figure('Name',SOFAfile);
+        f=figure;
         mySOFAplotHRTF(Obj,'ETCHorizontal',2);
         if isoctave;  fputs(fid, [ "just done SOFAplotHRTF\n"]); end
-        print ('-dpng', "-r600", [SOFAfile '_2.png']);
+        if do_print, print ('-dpng', "-r600", [SOFAfile '_2.png']); end
         if isoctave;  fputs(fid, [ "just printed " SOFAfile "_2.png\n"]); end
 
         %% MagMedian, lin
-        figure('Name',SOFAfile);
+        f=figure;
         mySOFAplotHRTF(Obj,'MagMedian',1);
-        print ('-dpng', "-r600", [SOFAfile '_3.png']);
+        if do_print, print ('-dpng', "-r600", [SOFAfile '_3.png']); end
         if isoctave;  fputs(fid, [ "just printed " SOFAfile "_3.png\n"]); end
 
-        figure('Name',SOFAfile);
+        f=figure;
         mySOFAplotHRTF(Obj,'MagMedian',2);
-        print ('-dpng', "-r600", [SOFAfile '_4.png']);
+        if do_print, print ('-dpng', "-r600", [SOFAfile '_4.png']); end
         if isoctave;  fputs(fid, [ "just printed " SOFAfile "_4.png\n"]); end
 
         %% MagMedian, log
-        if isoctave;  fputs(fid, [ "About to print MagMedian,log 1\n"]); end
-        figure('Name',SOFAfile);
+        f=figure;
         mySOFAplotHRTF(Obj,'MagMedianLog',1);
         if isoctave;  fputs(fid, [ "About to save: " SOFAfile "_5.png\n"]); end
-        print ('-dpng', "-r600", [SOFAfile '_5.png']);
+        if do_print, print ('-dpng', "-r600", [SOFAfile '_5.png']); end
         if isoctave;  fputs(fid, [ "just printed " SOFAfile "_5.png\n"]); end
 
-        if isoctave;  fputs(fid, [ "About to print MagMedian,log 2\n"]); end
-        figure('Name',SOFAfile);
+        f=figure;
         mySOFAplotHRTF(Obj,'MagMedianLog',2);
         if isoctave;  fputs(fid, [ "About to save: " SOFAfile "_6.png\n"]); end
-        print ('-dpng', "-r600", [SOFAfile '_6.png']);
+        if do_print, print ('-dpng', "-r600", [SOFAfile '_6.png']); end
         if isoctave;  fputs(fid, [ "just printed " SOFAfile "_6.png\n"]); end
 
     case {'GeneralTF'}
@@ -130,85 +126,25 @@ switch Obj.GLOBAL_SOFAConventions
 
         if isoctave; fputs(fid, [ "case GeneralTF\n"]); end
         % plot magnitude spectrum in the median plane, channel 1
-        figure('Name',SOFAfile);
+        f=figure;
         mySOFAplotHRTF(Obj,'MagMedian',1,'conversion2ir');
-        print ('-dpng', "-r600", [SOFAfile '_1.png']);
+        if do_print, print ('-dpng', "-r600", [SOFAfile '_1.png']); end
+        close(f);
 
-        figure('Name',mfilename);
+        f=figure;
         mySOFAplotHRTF(Obj,'MagMedian',1,'noconversion2ir');
-        print ('-dpng', "-r600", [SOFAfile '_2.png']);
-
-    case {'SimpleFreeFieldHRTF'}
-
-        graphics_toolkit gnuplot
-
-        %% ETCHorizontal
-        if isoctave;  fputs(fid, [ "case SimpleFreeFieldHRTF\n"]);end
-        figure('Name',SOFAfile);
-        mySOFAplotHRTF(Obj,'ETCHorizontal',1);
-        if isoctave;  fputs(fid, [ "just done SOFAplotHRTF\n"]); end
-        print ('-dpng', "-r600", [SOFAfile '_1.png']);
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_1.png\n"]); end
-
-        figure('Name',SOFAfile);
-        mySOFAplotHRTF(Obj,'ETCHorizontal',2);
-        if isoctave;  fputs(fid, [ "just done SOFAplotHRTF\n"]); end
-        print ('-dpng', "-r600", [SOFAfile '_2.png']);
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_2.png\n"]); end
-
-        %% MagMedian, lin
-        figure('Name',SOFAfile);
-        mySOFAplotHRTF(Obj,'MagMedian',1);
-        print ('-dpng', "-r600", [SOFAfile '_3.png']);
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_3.png\n"]); end
-
-        figure('Name',SOFAfile);
-        mySOFAplotHRTF(Obj,'MagMedian',2);
-        print ('-dpng', "-r600", [SOFAfile '_4.png']);
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_4.png\n"]); end
-
-        %% MagMedian, log
-        if isoctave;  fputs(fid, [ "About to print MagMedian,log 1\n"]); end
-        figure('Name',SOFAfile);
-        mySOFAplotHRTF(Obj,'MagMedianLog',1);
-        if isoctave;  fputs(fid, [ "About to save: " SOFAfile "_5.png\n"]); end
-        print ('-dpng', "-r600", [SOFAfile '_5.png']);
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_5.png\n"]); end
-
-        if isoctave;  fputs(fid, [ "About to print MagMedian,log 2\n"]); end
-        figure('Name',SOFAfile);
-        mySOFAplotHRTF(Obj,'MagMedianLog',2);
-        if isoctave;  fputs(fid, [ "About to save: " SOFAfile "_6.png\n"]); end
-        print ('-dpng', "-r600", [SOFAfile '_6.png']);
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_6.png\n"]); end
-
-				graphics_toolkit fltk
-
-        %% ITD
-        figure('Name',SOFAfile);
-        if isoctave;  fputs(fid, [ "created empty figure for " SOFAfile "_7.png\n"]); end
-        mySOFAplotHRTF(Obj,'itdhorizontal');
-        if isoctave;  fputs(fid, [ "plotted " SOFAfile "_7.png\n"]); end
-        print ('-dpng', "-r600", [SOFAfile '_7.png']);
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_7.png\n"]); end
-
-        %% Geometry
-        mySOFAplotGeometry(Obj);
-        if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
-        view(45,30);
-        if isoctave; fputs(fid, [ "adapted view\n"]); end
-        title([num2str(Obj.API.M) ' Positions']);
-        print ('-dpng', "-r600", [SOFAfile '_8.png']);
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_8.png\n"]); end
+        if do_print, print ('-dpng', "-r600", [SOFAfile '_2.png']); end
+        close(f);
 
     case 'GeneralFIR'
 
 				graphics_toolkit fltk
 
         if isoctave; fputs(fid, [ "case GeneralFIR\n"]); end
-        mySOFAplotGeometry(Obj);
+        f=mySOFAplotGeometry(Obj);
         set(gcf, 'Name', mfilename);
-        print ('-dpng', "-r600", [SOFAfile '_1.png']);
+        if do_print, print ('-dpng', "-r600", [SOFAfile '_1.png']); end
+        close(f);
 
     case 'AnnotatedReceiverAudio'
         % no plan yet for this convention ;-)
@@ -331,7 +267,12 @@ switch lower(type)
         hM=double(squeeze(Obj.Data.IR(:,R,:)));
         pos=Obj.SourcePosition;
         pos(pos(:,1)>180,1)=pos(pos(:,1)>180,1)-360;
-        idx=find(pos(:,2)<(offset+thr) & pos(:,2)>(offset-thr));
+        idx=[];
+        thr = thr/2;
+        while length(idx)<6 && thr<45
+          thr = thr*2;
+          idx=find(pos(:,2)<(offset+thr) & pos(:,2)>(offset-thr));
+        end
         M=(20*log10(abs(hM(idx,:))));
         pos=pos(idx,:);
         del=round(Obj.Data.Delay(idx,R));
@@ -361,7 +302,7 @@ switch lower(type)
         xlabel('Time (ms)');
         ylabel('Azimuth angle (deg)');
         a=colorbar; ylabel(a,'dB re max');
-        % title([titleprefix 'receiver: ' num2str(R)],'Interpreter','none');
+        title(['Horizontal plane +/-' num2str(thr) ' degrees']);
 
         %     % Magnitude spectrum in the horizontal plane
         % case 'maghorizontal'
@@ -411,7 +352,11 @@ switch lower(type)
         idx0=find(abs(pos(:,1))>90);
         pos(idx0,2)=180-pos(idx0,2);
         pos(idx0,1)=180-pos(idx0,1);
-        idx=find(pos(:,1)<(azi+thr) & pos(:,1)>(azi-thr));
+        idx=[]; thr=thr/2;
+        while length(idx)<6 && thr<45
+          thr=thr*2;
+          idx=find(pos(:,1)<(azi+thr) & pos(:,1)>(azi-thr));
+        end
         pos=pos(idx,:);
         meta.idx=idx; % PM: TODO: check if the correct index
 
@@ -449,7 +394,7 @@ switch lower(type)
         box on;
         colorbar;
         a=colorbar; ylabel(a,'dB re max');
-        % title([titleprefix 'receiver: ' num2str(R) titlepostfix],'Interpreter','none');
+        title(['Median plane +/-' num2str(thr) ' degrees']);
 
     case 'magmedianlog'
         % if isoctave;  fputs(fid, [ "Plot: magmedianlog\n"]); end
@@ -458,7 +403,11 @@ switch lower(type)
         idx0=find(abs(pos(:,1))>90);
         pos(idx0,2)=180-pos(idx0,2);
         pos(idx0,1)=180-pos(idx0,1);
-        idx=find(pos(:,1)<(azi+thr) & pos(:,1)>(azi-thr));
+				idx=[]; thr=thr/2;
+        while length(idx)<6 && thr<45
+          thr=thr*2;
+					idx=find(pos(:,1)<(azi+thr) & pos(:,1)>(azi-thr));
+				end
         pos=pos(idx,:);
         meta.idx=idx;
 
@@ -716,7 +665,12 @@ switch lower(type)
         % Calculate ITD
         [itd, ~] = SOFAcalculateITD(Obj, 'time',flags.itdestimator);
         pos = Obj.SourcePosition;
-        idx=find(pos(:,2)<(offset+thr) & pos(:,2)>(offset-thr));
+        idx = [];
+        thr = thr/2;
+        while length(idx)<6 && thr<45
+          thr = thr*2;
+          idx=find(pos(:,2)<(offset+thr) & pos(:,2)>(offset-thr));
+        end
         itd = itd(idx);
         meta.idx=idx;
         [pos, idx_sort] = sort(pos(idx,1));
@@ -727,7 +681,8 @@ switch lower(type)
             polar(angles, abs(itd*1000), 'b');
             view(-90, 90)
             rticks([round(1000*max(itd*1000))/1000*2/3, round(1000*max(itd*1000))/1000]);
-            text(0.7, 0.7, 'ITD (ms)')
+            text(max(itd)*1000, max(itd)*1000, 'ITD (ms)');
+            text(-max(itd)*1000, max(itd)*1000, ['Horizontal plane +/- ' num2str(thr) ' degrees']);
             grid on;
         else
             polarplot(angles, abs(itd), 'linewidth', 1.2);
@@ -749,7 +704,7 @@ end
 
 end
 
-function mySOFAplotGeometry(Obj0,varargin)
+function f = mySOFAplotGeometry(Obj0,varargin)
 
 definput.keyvals.index=1:Obj0.API.M;
 definput.keyvals.shorder=Inf;
@@ -806,12 +761,12 @@ switch Obj0.GLOBAL_SOFAConventions
             yd = max(Obj.RoomCornerA(2), Obj.RoomCornerB(2));
             w = xd - x;
             h = yd - y;
-            figure('Position',[1 1 w*1.2 h]*100);
+            f=figure('Position',[1 1 w*1.2 h]*100);
             box on; hold on;
             % plot the room
             rectangle('Position',[x y w h]);
         else
-            figure; hold on;
+            f=figure; hold on;
         end
 
         legendEntries = [];
