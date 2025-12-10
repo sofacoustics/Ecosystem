@@ -104,6 +104,7 @@ class Service implements ShouldQueue
 		$process = new Process($args, null,$envvars);
 		$process->setWorkingDirectory($directory);
 		$process->setTimeout($this->service->timeout); // use class timeout (set from service column)
+		$process->setIdleTimeout(60); // create time out if the process does not produce any output within 60 seconds
 
 		$process->start();
 
@@ -139,12 +140,13 @@ class Service implements ShouldQueue
 				$serviceLog->stderr = $process->getErrorOutput();
 				$serviceLog->save();
 				$process->checkTimeout(); // This will throw if timeout is reached
-				usleep(100000); // Sleep for 0.1 seconds
+				usleep(1000000); // Sleep for 1 second
 			}
 			$output = $process->getOutput();
 			$errorOutput = $process->getErrorOutput();
 			app('log')->channel('services_stack')->debug("Process $pid has finished");
-		} catch (ProcessTimedOutException $e) {
+		} 
+		catch (ProcessTimedOutException $e) {
 		    app('log')->channel('services_stack')->debug("Job $jobid Process $pid has reached it's timeout");
 			app('log')->channel('services_stack')->warning("Process $pid has reached it's timeout");
 		    app('log')->channel('services_stack')->debug("Job $jobid Process $pid: sending children SIGKILL");
@@ -155,9 +157,11 @@ class Service implements ShouldQueue
 					posix_kill((int)$childPid, SIGKILL);
 				}
 			}
-		} catch (\Exception $e) {
-			app('log')->channel('services_stack')->warning("Process $pid - generic error");
-		} finally {
+		} 
+		catch (\Exception $e) {
+			app('log')->channel('services_stack')->debug("Process $pid - generic error");
+		} 
+		finally {
 			app('log')->channel('services_stack')->debug("Process $pid - entering 'finally' section");
 			$duration = microtime(true) - $start;
 			$execution = "execution time: $duration";
