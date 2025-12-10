@@ -19,44 +19,39 @@
 function HRTFGeneral(SOFAfile, do_print)
 % for debug purpose comment function row above, and uncomment this one:
 % SOFAfile= 'hrtf_nh4.sofa';
+% "D:\\ISF\\Github\\SONICOM Ecosystem (sofacoustics)\\laravel\\storage\\app\\services\\1"
 
 logfile="HRTFGeneral.log";
-isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
 fid = fopen(logfile, "w");
-s = pwd;
-disp(["pwd = " s]);
-if ~exist('do_print','var'), do_print = true; end
+disp(['Current directory: ' pwd]);
 
-%% Prologue: (un)comment here if you want to:
+%% Prologue
 close all; % clean-up first
 tic; % timer
-SOFAstart; % remove this optionally
-% warning('off','SOFA:upgrade');
-% warning('off','SOFA:load');
-% warning('off','SOFA:save');
-% warning('off','SOFA:save:API');
+SOFAstart('silent'); 
 warning('off'); %jw:note disable all warnings
 
-%jw:note Check if function called with parameter. If not, use command line parameter^M
-if(exist("SOFAfile"))
-    if(length(SOFAfile)==0)
-        disp('The SOFA file name SOFAfile is empty');
-    end
-else
-    % Use command line parameter for SOFAfile
-    disp(argv);
-    arg_list = argv();
-    fn = arg_list{1};
-    disp(fn);
-    SOFAfile = fn;
+% Check if function called with parameter. If not, use command line parameter
+if(~exist('SOFAfile','var'))
+		% Use command line parameter for SOFAfile
+	arg_list = argv();
+	fn = arg_list{1};
+	disp(['File to be processed: ' fn]);
+	SOFAfile = fn;
 end
+if(length(SOFAfile)==0)
+	error('The SOFA file name is empty');
+end
+
+% Check if we need to print figures. Default: yes, print.
+if ~exist('do_print','var'), do_print = true; end
 
 %% Load SOFA file
 Obj=SOFAload(SOFAfile);
 
 SaveSOFAproperties(Obj, SOFAfile);
-if isoctave; fputs(fid, ["Successfully saved SOFA details to csv files\n"]); end
-if isoctave;  fputs(fid, [ "About to plot case " Obj.GLOBAL_SOFAConventions "\n"]);end
+mylog(fid, ["Successfully saved SOFA details to csv files"]);
+mylog(fid, [ "About to plot case " Obj.GLOBAL_SOFAConventions]);
 
 %% Plot a few figures
 switch Obj.GLOBAL_SOFAConventions
@@ -68,82 +63,82 @@ switch Obj.GLOBAL_SOFAConventions
         %% ITD
         f=figure;
         mySOFAplotHRTF(Obj,'itdhorizontal');
-        if isoctave;  fputs(fid, [ "plotted " SOFAfile "_7.png\n"]); end
-        if do_print, print ('-dpng', "-r600", [SOFAfile '_7.png']); end
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_7.png\n"]); end
-
+        mylog(fid, [ "plotted " SOFAfile "_7.png"]);
+        myprint(do_print, [SOFAfile '_7.png']);
+        mylog(fid, [ "just printed " SOFAfile "_7.png"]);
+				
         %% Geometry
         mySOFAplotGeometry(Obj);
-        if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
+        mylog(fid, [ "just done SOFAplotGeometry"]);
         view(45,30);
-        if isoctave; fputs(fid, [ "adapted view\n"]); end
+        mylog(fid, [ "adapted view"]);
         title([num2str(Obj.API.M) ' Positions']);
-        if do_print, print ('-dpng', "-r600", [SOFAfile '_8.png']); end
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_8.png\n"]); end
+        myprint(do_print, [SOFAfile '_8.png']);
+        mylog(fid, [ "just printed " SOFAfile "_8.png"]);
 
         graphics_toolkit gnuplot
 
         %% ETCHorizontal
 				f=figure;
         mySOFAplotHRTF(Obj,'ETCHorizontal',1);
-        if isoctave;  fputs(fid, [ "just done SOFAplotHRTF\n"]); end
-        if do_print, print (f, '-dpng', "-r600", [SOFAfile '_1.png']); end
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_1.png\n"]); end
+        mylog(fid, [ "just done SOFAplotHRTF ETCHorizontal 1"]);
+        myprint(do_print, [SOFAfile '_1.png']);
+        mylog(fid, [ "just printed " SOFAfile "_1.png"]);
 
         f=figure;
         mySOFAplotHRTF(Obj,'ETCHorizontal',2);
-        if isoctave;  fputs(fid, [ "just done SOFAplotHRTF\n"]); end
-        if do_print, print ('-dpng', "-r600", [SOFAfile '_2.png']); end
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_2.png\n"]); end
+        mylog(fid, [ "just done SOFAplotHRTF ETCHorizontal 2"]);
+        myprint(do_print, [SOFAfile '_2.png']);
+        mylog(fid, [ "just printed " SOFAfile "_2.png"]);
 
         %% MagMedian, lin
         f=figure;
         mySOFAplotHRTF(Obj,'MagMedian',1);
-        if do_print, print ('-dpng', "-r600", [SOFAfile '_3.png']); end
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_3.png\n"]); end
+        myprint(do_print, [SOFAfile '_3.png']);
+        mylog(fid, [ "just printed " SOFAfile "_3.png"]);
 
         f=figure;
         mySOFAplotHRTF(Obj,'MagMedian',2);
-        if do_print, print ('-dpng', "-r600", [SOFAfile '_4.png']); end
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_4.png\n"]); end
+        myprint(do_print, [SOFAfile '_4.png']);
+        mylog(fid, [ "just printed " SOFAfile "_4.png"]);
 
         %% MagMedian, log
         f=figure;
         mySOFAplotHRTF(Obj,'MagMedianLog',1);
-        if isoctave;  fputs(fid, [ "About to save: " SOFAfile "_5.png\n"]); end
-        if do_print, print ('-dpng', "-r600", [SOFAfile '_5.png']); end
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_5.png\n"]); end
+        mylog(fid, [ "About to save: " SOFAfile "_5.png"]);
+        myprint(do_print, [SOFAfile '_5.png']);
+        mylog(fid, [ "just printed " SOFAfile "_5.png"]);
 
         f=figure;
         mySOFAplotHRTF(Obj,'MagMedianLog',2);
-        if isoctave;  fputs(fid, [ "About to save: " SOFAfile "_6.png\n"]); end
-        if do_print, print ('-dpng', "-r600", [SOFAfile '_6.png']); end
-        if isoctave;  fputs(fid, [ "just printed " SOFAfile "_6.png\n"]); end
+        mylog(fid, [ "About to save: " SOFAfile "_6.png"]);
+        myprint(do_print, [SOFAfile '_6.png']);
+        mylog(fid, [ "just printed " SOFAfile "_6.png"]);
 
     case {'GeneralTF'}
 
         graphics_toolkit gnuplot
 
-        if isoctave; fputs(fid, [ "case GeneralTF\n"]); end
+        mylog(fid, [ "case GeneralTF"]);
         % plot magnitude spectrum in the median plane, channel 1
         f=figure;
         mySOFAplotHRTF(Obj,'MagMedian',1,'conversion2ir');
-        if do_print, print ('-dpng', "-r600", [SOFAfile '_1.png']); end
+        myprint(do_print, [SOFAfile '_1.png']);
         close(f);
 
         f=figure;
         mySOFAplotHRTF(Obj,'MagMedian',1,'noconversion2ir');
-        if do_print, print ('-dpng', "-r600", [SOFAfile '_2.png']); end
+        myprint(do_print, [SOFAfile '_2.png']);
         close(f);
 
     case 'GeneralFIR'
 
 				graphics_toolkit fltk
 
-        if isoctave; fputs(fid, [ "case GeneralFIR\n"]); end
+        mylog(fid, [ "case GeneralFIR"]);
         f=mySOFAplotGeometry(Obj);
         set(gcf, 'Name', mfilename);
-        if do_print, print ('-dpng', "-r600", [SOFAfile '_1.png']); end
+        myprint(do_print, [SOFAfile '_1.png']);
         close(f);
 
     case 'AnnotatedReceiverAudio'
@@ -154,10 +149,19 @@ end
 
 %% Epilogue: (un)comment if you want to:
 disp('DONE');
-if isoctave;  fputs(fid, [ "\n### DONE ###\n"]); end
+mylog(fid, [ "### DONE ###"]);
 fclose(fid);
 toc; % timer
 
+end
+
+function myprint(do_print, fn)
+	if do_print, print ('-dpng', '-r600', fn); end
+end
+
+function mylog (fid, msg)
+	fputs(fid, msg);
+	disp(msg);
 end
 
 function [M,meta,h]=mySOFAplotHRTF(Obj,type,varargin)
@@ -174,10 +178,10 @@ if nargin == 3 && ischar(type) && isscalar(varargin{1})
     offset=0;
     noisefloor=-50;
     %     convert=1; more comples differing below:
-    % if isoctave;  fputs(fid, [ "Plot: debug check point 4\n"]); end
+    % mylog(fid, [ "Plot: debug check point 4"]);
     if exist('OCTAVE_VERSION','builtin')
         % We're in Octave
-        % if isoctave;  fputs(fid, [ "Plot: Octave detected\n"]); end
+        % mylog(fid, [ "Plot: Octave detected"]);
         if ismember(type,{'MagHorizontal','MagMedian','MagMedianLog','MagSpectrum','MagSagittal'}) && ismember(lower(Obj.GLOBAL_SOFAConventions),{'freefielddirectivitytf','generaltf','simplefreefieldhrtf'})
             % In Octave 'contains' is not available, thus, the list has to be extended manually
             do_conversion2ir = 0;
@@ -185,17 +189,10 @@ if nargin == 3 && ischar(type) && isscalar(varargin{1})
             do_conversion2ir = 1;
         end
     else
-        % We're in Matlab
-        if contains(lower(type),'mag') && ismember(lower(Obj.GLOBAL_SOFAConventions),{'freefielddirectivitytf','generaltf','simplefreefieldhrtf'})
-            % frequency domain input data only
-            do_conversion2ir = 0;
-        else
-            do_conversion2ir = 1;
-        end
+        error('Run this in Octave');
     end
 
 else
-    % if isoctave;  fputs(fid, [ "Plot: debug check point 6\n"]); end
     definput.keyvals.receiver=1;
     definput.keyvals.dir=[0,0];
     definput.keyvals.thr=2;
@@ -231,19 +228,12 @@ if do_conversion2ir == 1
     if R > size(Obj.Data.IR,2)
         error(['Choosen receiver out of range. Only ', num2str(size(Obj.Data.IR,2)), ' receivers recorded.'])
     end
-    % titlepostfix=' (converted to IR)';
 else
     %% check if receiver selection is possible
     if R > size(Obj.Data.Real,2)
         error(['Choosen receiver out of range. Only ', num2str(size(Obj.Data.Real,2)), ' receivers recorded.'])
     end
-    % titlepostfix='';
 end
-% if isfield(Obj, 'GLOBAL_Title') && isempty(Obj.GLOBAL_Title) == 0
-%     titleprefix = [Obj.GLOBAL_Title ': '];
-% else
-%     titleprefix = '';
-% end
 
 
 %% Convert to spherical if cartesian
@@ -304,47 +294,6 @@ switch lower(type)
         a=colorbar; ylabel(a,'dB re max');
         title(['Horizontal plane +/-' num2str(thr) ' degrees']);
 
-        %     % Magnitude spectrum in the horizontal plane
-        % case 'maghorizontal'
-        %     pos=Obj.SourcePosition;   % copy pos to temp. variable
-        %     pos(pos(:,1)>180,1)=pos(pos(:,1)>180,1)-360; % find horizontal plane
-        %     idx=find(pos(:,2)<(offset+thr) & pos(:,2)>(offset-thr)); % find indices
-        %     pos=pos(idx,:); % truncate pos
-        %     meta.idx=idx;
-        %     if do_conversion2ir == 1  % converted
-        %         hM=double(squeeze(Obj.Data.IR(:,R,:)));
-        %         M=(20*log10(abs(fft(hM(idx,:)')')));
-        %         M=M(:,1:floor(size(M,2)/2));  % only positive frequencies
-        %         if flags.do_normalization
-        %             M=M-max(max(M));
-        %         end
-        %
-        %         M(M<noisefloor)=noisefloor;
-        %         [azi,i]=sort(pos(:,1));
-        %         M=M(i,:);
-        %         meta.freq = 0:fs/size(hM,2):(size(M,2)-1)*fs/size(hM,2);
-        %         meta.azi = azi;
-        %         %         figure;
-        %         h=surface(meta.freq,azi,M(:,:));
-        %
-        %     else
-        %         M=20*log10(abs(sqrt(squeeze(Obj.Data.Real(idx,R,:)).^2 + squeeze(Obj.Data.Imag(idx,R,:)).^2)));
-        %         if flags.do_normalization
-        %             M=M-max(max(M));
-        %         end
-        %         M(M<noisefloor)=noisefloor;
-        %         [azi,i]=sort(pos(:,1));
-        %         M=M(i,:);
-        %         %         figure;
-        %
-        %         h=surface(Obj.N',azi,M);
-        %
-        %     end
-        %     shading flat
-        %     xlabel('Frequency (Hz)');
-        %     ylabel('Azimuth (deg)');
-        %     title([titleprefix 'receiver: ' num2str(R) titlepostfix],'Interpreter','none');
-
         % Magnitude spectrum in the median plane
     case 'magmedian'
         azi=0;
@@ -384,7 +333,6 @@ switch lower(type)
             M(M<noisefloor)=noisefloor;
             [ele,i]=sort(pos(:,2));
             M=M(i,:);
-            %         figure;
             h=surface(Obj.N',ele,M);
 
         end
@@ -397,7 +345,6 @@ switch lower(type)
         title(['Median plane +/-' num2str(thr) ' degrees']);
 
     case 'magmedianlog'
-        % if isoctave;  fputs(fid, [ "Plot: magmedianlog\n"]); end
         azi=0;
         pos=Obj.SourcePosition;
         idx0=find(abs(pos(:,1))>90);
@@ -411,11 +358,8 @@ switch lower(type)
         pos=pos(idx,:);
         meta.idx=idx;
 
-        % if isoctave;  fputs(fid, [ "Plot: data manipulated\n"]); end
-
         if do_conversion2ir == 1  % converted
-            % if isoctave;  fputs(fid, [ "Plot: case do conversion\n"]); end
-
+ 
             hM=double(squeeze(Obj.Data.IR(:,R,:)));
             M=(20*log10(abs(fft(hM(idx,:)')')));
             M=M(:,1:floor(size(M,2)/2));  % only positive frequencies
@@ -453,165 +397,6 @@ switch lower(type)
         box on;
         colorbar;
         a=colorbar; ylabel(a,'dB re max');
-        % title([titleprefix 'receiver: ' num2str(R) titlepostfix ' (log scale)'],'Interpreter','none');
-
-        % case 'magsagittal'
-        %
-        %     [lat,pol]=sph2hor(Obj.SourcePosition(:,1),Obj.SourcePosition(:,2));
-        %     pos=[lat pol];
-        %     idx=find(pos(:,1)<(offset+thr) & pos(:,1)>(offset-thr));
-        %     pos=pos(idx,:);
-        %     meta.idx=idx;
-        %
-        %     if do_conversion2ir == 1  % converted
-        %
-        %         hM=double(squeeze(Obj.Data.IR(:,R,:)));
-        %         M=(20*log10(abs(fft(hM(idx,:)')')));
-        %         M=M(:,1:floor(size(M,2)/2));  % only positive frequencies
-        %         if flags.do_normalization
-        %             M=M-max(max(M));
-        %         end
-        %         M(M<noisefloor)=noisefloor;
-        %         [ele,i]=sort(pos(:,2));
-        %         M=M(i,:);
-        %         meta.freq = 0:fs/size(hM,2):(size(M,2)-1)*fs/size(hM,2);
-        %         meta.ele = ele;
-        %         h=surface(meta.freq,ele,M(:,:));
-        %     else
-        %         M=20*log10(abs(sqrt(squeeze(Obj.Data.Real(idx,R,:)).^2 + squeeze(Obj.Data.Imag(idx,R,:)).^2)));
-        %         if flags.do_normalization
-        %             M=M-max(max(M));
-        %         end
-        %         M(M<noisefloor)=noisefloor;
-        %         [ele,i]=sort(pos(:,2));
-        %         M=M(i,:);
-        %         h=surface(Obj.N',ele,M(:,:));
-        %
-        %     end
-        %     shading flat
-        %     xlabel('Frequency (Hz)');
-        %     ylabel('Polar angle (deg)');
-        %     title([titleprefix 'receiver: ' num2str(R) '; Lateral angle: ' num2str(offset) 'deg' titlepostfix],'Interpreter','none');
-
-
-        %     % ETC in the median plane
-        % case 'etcmedian'
-        %     %     noisefloor=-50;
-        %     azi=0;
-        %     Obj=SOFAexpand(Obj,'Data.Delay');
-        %     hM=double(squeeze(Obj.Data.IR(:,R,:)));
-        %     pos=Obj.SourcePosition;
-        %     idx0=find(abs(pos(:,1))>90);
-        %     pos(idx0,2)=180-pos(idx0,2);
-        %     pos(idx0,1)=180-pos(idx0,1);
-        %     idx=find(pos(:,1)<(azi+thr) & pos(:,1)>(azi-thr));
-        %     meta.idx=idx; % PM: TODO: Check if the correct index
-        %     M=(20*log10(abs(hM(idx,:))));
-        %     pos=pos(idx,:);
-        %     del=round(Obj.Data.Delay(idx,R));
-        %     M2=zeros(size(M)+[0 max(del)]);
-        %     for ii=1:size(M,1)
-        %         M2(ii,del(ii)+(1:Obj.API.N))=M(ii,:);
-        %     end
-        %     if flags.do_normalization
-        %         M=M2-max(max(M2));
-        %     else
-        %         M = M2;
-        %     end
-        %     M(M<noisefloor)=noisefloor;
-        %     [ele,i]=sort(pos(:,2));
-        %     M=M(i,:);
-        %     meta.time = 0:1/fs*1000:(size(M,2)-1)/fs*1000;
-        %     meta.ele = ele;
-        %     h=surface(meta.time,ele,M(:,:));
-        %     set(gca,'FontName','Arial','FontSize',10);
-        %     set(gca, 'TickLength', [0.02 0.05]);
-        %     set(gca,'LineWidth',1);
-        %     cmap=colormap(hot);
-        %     cmap=flipud(cmap);
-        %     shading flat
-        %     colormap(cmap);
-        %     box on;
-        %     colorbar;
-        %     xlabel('Time (ms)');
-        %     ylabel('Elevation (deg)');
-        %     title([titleprefix 'receiver: ' num2str(R)],'Interpreter','none');
-
-        % case 'magspectrum'
-        %     pos=round(Obj.SourcePosition*10)/10;
-        %     switch size(dir,2)
-        %         case 1
-        %             aziPos = pos(:,1);
-        %             aziDir=dir(:,1);
-        %             aziComp = intersect(aziPos,aziDir,'rows');
-        %             idx= find(ismember(aziPos,aziComp,'rows'));
-        %         case 2
-        %             aziPos = pos(:,1);
-        %             aziDir=dir(:,1);
-        %             elePos = pos(:,2);
-        %             eleDir=dir(:,2);
-        %             aziComp = intersect(aziPos,aziDir,'rows');
-        %             eleComp = intersect(elePos,eleDir,'rows');
-        %             idx=find(ismember(aziPos,aziComp,'rows') & ...
-        %                 ismember(elePos,eleComp,'rows'));
-        %         otherwise
-        %             aziPos = pos(:,1);
-        %             aziDir=dir(:,1);
-        %             elePos = pos(:,2);
-        %             eleDir=dir(:,2);
-        %             rPos = pos(:,3);
-        %             rDir=dir(:,3);
-        %             aziComp = intersect(aziPos,aziDir,'rows');
-        %             eleComp = intersect(elePos,eleDir,'rows');
-        %             rComp = intersect(rPos,rDir,'rows');
-        %             idx=find(ismember(aziPos,aziComp,'rows') & ...
-        %                 ismember(elePos,eleComp,'rows') & ismember(rPos,rComp,'rows'));
-        %     end
-        %     if isempty(idx), error('Position not found'); end
-        %     meta.idx=idx;
-        %
-        %     if do_conversion2ir == 1  % convert
-        %         IR=squeeze(Obj.Data.IR(idx,R,:));
-        %         if length(idx) > 1
-        %             M=20*log10(abs(fft(IR')))';
-        %             M=M(:,1:floor(size(M,2)/2));  % only positive frequencies
-        %             h=plot(0:fs/2/size(M,2):(size(M,2)-1)*fs/2/size(M,2),M);
-        %             for ii=1:length(idx)
-        %                 labels{ii}=['#' num2str(idx(ii)) ': (' num2str(pos(idx(ii),1)) ', ' num2str(pos(idx(ii),2)) ')'];
-        %             end
-        %             legend(labels);
-        %         else % only one curve
-        %             hM=20*log10(abs(fft(IR)));
-        %             M=hM(1:floor(length(hM)/2));
-        %             hold on;
-        %             h=plot(0:fs/2/length(M):(length(M)-1)*fs/2/length(M),M,color,...
-        %                 'DisplayName',['#' num2str(idx) ': (' num2str(pos(idx,1)) ', ' num2str(pos(idx,2)) ')']);
-        %             legend;
-        %         end
-        %         xlim([0 fs/2]);
-        %         titlepostfix=' (converted to IR)';
-        %     else
-        %
-        %         M=20*log10(abs(sqrt(squeeze(Obj.Data.Real(idx,R,:)).^2 + squeeze(Obj.Data.Imag(idx,R,:)).^2)));
-        %
-        %         if length(idx) > 1
-        %             h=plot(Obj.N',M);
-        %             for ii=1:length(idx)
-        %                 labels{ii}=['#' num2str(idx(ii)) ': (' num2str(pos(idx(ii),1)) ', ' num2str(pos(idx(ii),2)) ')'];
-        %             end
-        %             legend(labels);
-        %         else
-        %             hold on;
-        %             h=plot(Obj.N',M,color,...
-        %                 'DisplayName',['#' num2str(idx) ': (' num2str(pos(idx,1)) ', ' num2str(pos(idx,2)) ')']);
-        %             legend;
-        %         end
-        %         titlepostfix='';
-        %     end
-        %     ylabel('Magnitude (dB)');
-        %     xlabel('Frequency (Hz)');
-        %     ylim([max(max(M))+noisefloor-10 max(max(M))+10]);
-        %     title([titleprefix 'receiver: ' num2str(R) titlepostfix],'Interpreter','none');
 
         % Interaural time delay in the horizontal plane
     case 'itdhorizontal'
@@ -1073,15 +858,11 @@ switch Obj0.GLOBAL_SOFAConventions
                     LU(ii,:) = LU(ii,:)./norm(LU(ii,:));
                 end
                 quiver3(LP(ii,1),LP(ii,2),LP(ii,3),LU(ii,1),LU(ii,2),LU(ii,3),0,'AutoScale','off','Color',[0 0 0],'MarkerFaceColor',[0 0 0]);
-                %               quiver3(LP(ii,1),LP(ii,2),LP(ii,3),LU(ii,1),LU(ii,2),LU(ii,3),'Color',[0 0 0],'MarkerFaceColor',[0 0 0]);
-                %             quiver3(LP(ii,1),LP(ii,2),LP(ii,3),LV(ii,1),LV(ii,2),LV(ii,3),'Color',[1 0 0],'MarkerFaceColor',[1 0 0]);
             end
             if flags.do_normalize
                 LU(1,:) = LU(1,:)./norm(LU(1,:));
             end
             legendEntries(end+1) = quiver3(LP(1,1),LP(1,2),LP(1,3),LU(1,1),LU(1,2),LU(1,3),0,'AutoScale','off','Color',[0 0 0],'MarkerFaceColor',[0 0 0]);
-            %         legendEntries(end+1) = quiver3(LP(1,1),LP(1,2),LP(1,3),LU(1,1),LU(1,2),LU(1,3),'Color',[0 0 0],'MarkerFaceColor',[0 0 0]);
-            %         legendEntries(end+1) = quiver3(LP(1,1),LP(1,2),LP(1,3),LV(1,1),LV(1,2),LV(1,3),'Color',[1 0 0],'MarkerFaceColor',[1 0 0]);
         end
         if exist('SV','var')
             SV=unique(SV,'rows');
@@ -1230,36 +1011,26 @@ for i = 1:length(field_namesDim)
         % end
     end
 end
-% if isoctave; fputs(log_fid, "Collected dimensions definitions from SOFA file.\n"); end
-
 
 %% Write dimensions data to CSV using Octave's file I/O
 header = {'SOFA Conventions', 'R', 'E', 'M', 'N', 'S'}; % Define header
 dataDim = {[Obj.GLOBAL_SOFAConventions ' ' Obj.GLOBAL_SOFAConventionsVersion], dimR, dimE, dimM, dimN, dimS}; % Define data
 output_filename = [SOFAfile, '_dim.csv']; % Construct output filename
 delimiter = char(9); % Define tabulator as delimiter
-% if isoctave; fputs(log_fid, ["Attempting to write CSV: " output_filename "\n"]); end
 csv_fid = fopen(output_filename, 'w'); % Open file for writing
 if csv_fid < 0
-    % if isoctave; fputs(log_fid, ["Error opening output CSV file: " output_filename "\n"]); fclose(log_fid); end
     error('Cannot open output file for writing: %s', output_filename);
 end
 try
     % Write header
-    % fprintf(csv_fid, '%s%s%s%s%s%s\n', header{1}, delimiter, header{2}, delimiter, header{3}, delimiter, header{4}, delimiter, header{5}, delimiter, header{6});
     fprintf(csv_fid, '%s%s%s%s%s%s%s%s%s%s%s\n', header{1}, delimiter, header{2}, delimiter, header{3}, delimiter, header{4}, delimiter, header{5}, delimiter, header{6});
-
-    % if isoctave; fputs(log_fid, "CSV header written.\n"); end
     fprintf(csv_fid, '%s%s%s%s%s%s%s%s%s%s%s\n', dataDim{1}, delimiter, dataDim{2}, delimiter, dataDim{3}, delimiter, dataDim{4}, delimiter, dataDim{5}, delimiter, dataDim{6});
 
-    % if isoctave; fputs(log_fid, ["Data rows written to CSV.\n"]); end
 catch ME
     fclose(csv_fid); % Close file even if error occurs during writing
-    % if isoctave; fputs(log_fid, ["Error writing CSV data: " ME.message "\n"]); fclose(log_fid); end
     error('Error writing data to CSV file "%s\": %s', output_filename, ME.message);
 end
 fclose(csv_fid); % Close the output file successfully
-% if isoctave; fputs(log_fid, ["Successfully saved SOFA details to " output_filename "\n"]); end
 disp(['Successfully saved SOFA details to ' output_filename]);
 
 %% Iterate over all fields in the SOFA object
@@ -1273,22 +1044,19 @@ for i = 1:length(field_namesProp)
         dataProp{end, 2} = get_sofa_field(Obj, field_name, 'unknown');
     end
 end
-% if isoctave; fputs(log_fid, "Collected GLOBAL data from SOFA file.\n"); end
+% mylog(log_fid, "Collected GLOBAL data from SOFA file."); end
 
 %% Write properties data to CSV using Octave's file I/O
 header = {'Name', 'Value'}; % Define header
 output_filename = [SOFAfile, '_prop.csv']; % Construct output filename
 % delimiter = char(9); % Define tabulator as delimiter
-% if isoctave; fputs(log_fid, ["Attempting to write CSV: " output_filename "\n"]); end
 csv_fid = fopen(output_filename, 'w'); % Open file for writing
 if csv_fid < 0
-    % if isoctave; fputs(log_fid, ["Error opening output CSV file: " output_filename "\n"]); fclose(log_fid); end
     error('Cannot open output file for writing: %s', output_filename);
 end
 try
     % Write header
     fprintf(csv_fid, '%s%s%s\n', header{1}, delimiter, header{2});
-    % if isoctave; fputs(log_fid, "CSV header written.\n"); end
     % Write data rows
     for i = 1:size(dataProp, 1)
         % Ensure both elements are strings before writing
@@ -1301,14 +1069,11 @@ try
         value_str = ['"', strrep(strrep(value_str, char(10), ' '), char(13), ' '), '"']; % Quote, replace LF and CR with space
         fprintf(csv_fid, '%s%s%s\n', name_str, delimiter, value_str);
     end
-    % if isoctave; fputs(log_fid, ["Data rows written to CSV.\n"]); end
 catch ME
     fclose(csv_fid); % Close file even if error occurs during writing
-    % if isoctave; fputs(log_fid, ["Error writing CSV data: " ME.message "\n"]); fclose(log_fid); end
     error('Error writing data to CSV file "%s\": %s', output_filename, ME.message);
 end
 fclose(csv_fid); % Close the output file successfully
-% if isoctave; fputs(log_fid, ["Successfully saved SOFA details to " output_filename "\n"]); end
 disp(['Successfully saved SOFA details to ' output_filename]);
 
 end

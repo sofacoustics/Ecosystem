@@ -12,10 +12,10 @@
 			@if($log->exit_code != 0)
 				<x-alert>Last service job exited with the code {{ $log->exit_code }} ({{ $log->exit_code_text }})
 					<div><b>stdout</b>:<br>
-						{{ $log->stdout }}
+						{!! nl2br($log->stdout) !!}
 					</div>
 					<div><b>stderr</b>:<br>
-						{{ $log->stderr }}
+						{!! nl2br($log->stderr) !!}
 					</div>
 				</x-alert>
 			@else
