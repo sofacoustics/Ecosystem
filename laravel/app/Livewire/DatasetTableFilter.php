@@ -21,6 +21,9 @@ class DatasetTableFilter extends Component
 	public $sortField = 'name'; // Default sorting field
 	public $sortAsc = true; // Default sorting order
 	public $database;
+	
+	public $perPage = 20;
+	public $perPageOptions = [10, 20, 50, 100, 200];
 
 	public function mount()
 	{
@@ -46,16 +49,16 @@ class DatasetTableFilter extends Component
 		switch($sF)
 		{
 			case 'count':
-				$datasets = $query->withCount('datafiles')->orderBy('datafiles_count', $sA ? 'asc' : 'desc')->paginate(15)->withQueryString();
+				$datasets = $query->withCount('datafiles')->orderBy('datafiles_count', $sA ? 'asc' : 'desc')->paginate($this->perPage)->withQueryString();
 				break;
 			case 'name':
 				$datasets = $query->orderByRaw('LENGTH(' . $sF. ') ' . ($sA ? 'asc' : 'desc'))->
 											orderBy($sF, $sA ? 'asc' : 'desc')->
-											paginate(15)->
+											paginate($this->perPage)->
 											withQueryString();
 				break;
 			default:
-				$datasets = $query->orderBy($sF, $sA ? 'asc' : 'desc')->paginate(15);
+				$datasets = $query->orderBy($sF, $sA ? 'asc' : 'desc')->paginate($this->perPage);
 		}
 		
 		return $datasets;		

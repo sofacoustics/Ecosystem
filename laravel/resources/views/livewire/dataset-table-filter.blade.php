@@ -9,8 +9,16 @@
 			<th><input type="text" wire:model.live.debounce.500ms="filters.name" placeholder="Filter by Name..." class="border rounded p-2"></th>
 			<th></th>
 			<th><input type="text" wire:model.live.debounce.500ms="filters.description" placeholder="... by Description" class="border rounded p-2"></th>
-			<th></th>
 			<th><button wire:click="clearFilters" class="bg-gray-200 rounded p-2">Clear Filters</button></th>
+			<th>
+				<select wire:model.live="perPage">
+					@foreach ($perPageOptions as $option)
+            <option value="{{ $option }}">
+							{{ $option }} per page
+						</option>
+					@endforeach
+				</select>
+			</th>			
 		</thead>
 		<thead class="bg-gray-50">
 			<th>#</th>
