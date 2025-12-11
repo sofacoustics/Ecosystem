@@ -104,7 +104,7 @@ class Service implements ShouldQueue
 		$process = new Process($args, null,$envvars);
 		$process->setWorkingDirectory($directory);
 		$process->setTimeout($this->service->timeout); // use class timeout (set from service column)
-		$process->setIdleTimeout(60); // create time out if the process does not produce any output within 60 seconds
+		//$process->setIdleTimeout(60); // create time out if the process does not produce any output within 60 seconds. But: this terminated running and processing Octave services. Thus, we can't use this.
 
 		$process->start();
 
