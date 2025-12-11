@@ -1,6 +1,7 @@
 <div>
 	<table class="table-auto border border-slate-399">
 		<thead class="bg-gray-50">
+			<th></th>
 			@can('create', [App\Models\Dataset::class, $database])
 				<th></th>
 			@endcan
@@ -12,11 +13,12 @@
 			<th><button wire:click="clearFilters" class="bg-gray-200 rounded p-2">Clear Filters</button></th>
 		</thead>
 		<thead class="bg-gray-50">
+			<th>#</th>
 			@can('create', [App\Models\Dataset::class, $database])
 				<th class="border p-2 w-48">Command</th>
 			@endcan
 			<th class="border p-2" title="This sorts by the internal ID of each dataset.">
-				<button wire:click="sortBy('id')">#
+				<button wire:click="sortBy('id')">ID
 					@if ($sortField === 'id')
 						@if ($sortAsc)
 							<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -109,13 +111,14 @@
 		<tbody class="bg-white divide-y divide-gray-200">
 			@foreach($datasets as $dataset)
 				<tr>
+					<td class="border p-2 text-center">#{{ $datasets->firstItem()+$loop->index}}</td>
 					@can('update', [App\Models\Dataset::class, $dataset])
 						<td class="border p-2">
 							<x-button method="DELETE" class="inline" action="{{ route('datasets.destroy', [$dataset]) }}">Delete</x-button>
 							<x-button method="GET" class="inline" action="{{ route('datasets.edit', $dataset) }}" >Edit</x-button>
 						</td>
 					@endcan
-					<td class="border p-2 text-center">#{{ $loop->index+1}}</td>
+					<td class="border p-2 text-center">{{ $dataset->id }}</td>
 					<td class="border p-2 text-center"><a href="{{ route('datasets.show', $dataset->id) }}">{{ $dataset->name }}</a></td>
 					<td class="border p-2 text-center">{{ count($dataset->datafiles) }}</td>
 					<td class="border p-2">{{ $dataset->description }}</td>
@@ -125,5 +128,8 @@
 			@endforeach
 		</tbody>
 	</table>
+	
+
+		 {{ $datasets->links() }}
 </div>
 

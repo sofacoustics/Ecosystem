@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Dataset;
@@ -10,6 +11,8 @@ use App\Models\Dataset;
 
 class DatasetTableFilter extends Component
 {
+	use WithPagination;
+	
 	public $filters = [
 		'name' => '',
 		'description' => '',
@@ -17,18 +20,15 @@ class DatasetTableFilter extends Component
 
 	public $sortField = 'name'; // Default sorting field
 	public $sortAsc = true; // Default sorting order
-	
 	public $database;
-	public $datasets;
 
 	public function mount()
 	{
-		$this->applyFilters();
+		
 	}
 
 	public function applyFilters()
 	{
-		// $query = Dataset::query();
 		$query = Dataset::where('database_id',$this->database->id);
 		
 		if (!empty($this->filters['name'])) 
@@ -41,27 +41,30 @@ class DatasetTableFilter extends Component
 			$query->where('description', 'like', '%' . $this->filters['description'] . '%');
 		}
 
-		switch($this->sortField)
+		$sF = $this->sortField;
+		$sA = $this->sortAsc;
+		switch($sF)
 		{
 			case 'count':
-				$this->datasets = $query->withCount('datafiles')->orderBy('datafiles_count', $this->sortAsc ? 'asc' : 'desc')->get();
+				$datasets = $query->withCount('datafiles')->orderBy('datafiles_count', $sA ? 'asc' : 'desc')->paginate(15)->withQueryString();
 				break;
 			case 'name':
-				$datasets = $query->get();
-				if($this->sortAsc)
-					$this->datasets = $datasets->sortBy('name', SORT_NATURAL);
-				else
-					$this->datasets = $datasets->sortByDesc('name', SORT_NATURAL);
+				$datasets = $query->orderByRaw('LENGTH(' . $sF. ') ' . ($sA ? 'asc' : 'desc'))->
+											orderBy($sF, $sA ? 'asc' : 'desc')->
+											paginate(15)->
+											withQueryString();
 				break;
 			default:
-				$this->datasets = $query->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')->get();
+				$datasets = $query->orderBy($sF, $sA ? 'asc' : 'desc')->paginate(15);
 		}
+		
+		return $datasets;		
 	}
 
 	public function render()
 	{
-		$this->applyFilters();
-		return view('livewire.dataset-table-filter');
+		$datasets = $this->applyFilters();
+		return view('livewire.dataset-table-filter', ['datasets' => $datasets]);
 	}
 
 	public function clearFilters() 
