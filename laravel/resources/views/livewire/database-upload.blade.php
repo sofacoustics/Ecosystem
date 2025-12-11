@@ -28,10 +28,11 @@
 		<h3>1) Select a directory with all your datafiles:</h3>
 		<p>Maximal size per file: 2 GB</p>		
 		<div>
-			<x-button id="actual-directory-picker" x-bind:disabled="uploading" wire:ignore>Select a Directory</x-button>
+			<x-button id="actual-directory-picker" 
+							x-bind:class="nFilesToUpload == 0 | uploading? '{{ $buttonColorDisabled }}' : '{{ $buttonColorEnabled }}'"
+							wire:ignore>Select a Directory</x-button>
 			<input id="directory-picker" type="file" webkitdirectory directory style="display:none"
 																	  x-bind:disabled="uploading">
-{{--				x-on:change="allFiles = Array.from($event.target.files);"> --}}
 		</div>
 		<template x-if="nFilesInDir > 0">
 			<div>
@@ -55,6 +56,7 @@
 			<div>
 
 				<x-button wire:click="$js.doFilter($data)" x-bind:disabled="nFilesInDir == 0 || uploading">Apply filter</x-button>
+			
 			</div>
 
 				<p>Analysis results:</p>
@@ -234,7 +236,7 @@
 		"change",
 		(e) => {
 			//debugConsole('EVENT: directory-picker: files: ', Array.from(e.target.files));
-			resetUpload();
+			//resetUpload();
 			//const files = event.target.files;
 
 			let files = Array.from(event.target.files);
