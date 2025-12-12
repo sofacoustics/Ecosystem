@@ -16,7 +16,7 @@
 		status: '',
 		directory: '',
 		dirMode: 0,
-		nFilesInDir: 0,
+		nFilesInDir: -1,
 		nFilesSelected: 0,
 		canUpload: @entangle('canUpload'),
 		overwriteExisting: @entangle('overwriteExisting'),
@@ -186,19 +186,6 @@
 				<br>
 				<hr>
 
-				{{--
-				<h3>5) Save the uploaded datafiles to the database:</h3>
-				<button
-					x-bind:disabled="saving || nFilesToUpload > nFilesUploaded || nFilesToUpload == 0"
-					@click="saving = true"
-					wire:click="save"
-					x-text="saving? 'Saving...' : 'Save files to database'"
-					class="{{ $buttonStyle }}"
-					x-bind:class="saving || nFilesToUpload > nFilesUploaded || nFilesToUpload == 0? '{{ $buttonColorDisabled }}' : '{{ $buttonColorEnabled }}'"
-					>
-					Save files to database
-				</button>
-				--}}
 				@hasrole('admin')
 					<p><small>(Livewire) Status: {{ $status }}</small></p>
 					<p><small>(Alpine) Directory: <span x-text="directory"></span></small></p>
@@ -217,6 +204,11 @@
 				<p>No files in the selected directory.</p>
 		    </div>
 		</template>
+		<template x-if="nFilesInDir == -1">
+			<div>
+				<p>After picking the directory, please stand by while we parse the directory structure...</p>
+		    </div>
+		</template>		
 	</form>
 
 
@@ -229,18 +221,19 @@
 		
 		// Trigger the actual directory picker when clicked on the fake but nicely looking button
 	document.querySelector('#actual-directory-picker').addEventListener('click', e =>
-	document.querySelector('#directory-picker').click());
+	{ 
+		let data = Alpine.$data(document.getElementById('alpineComponent'));
+		data.nFilesInDir = -1;
+		setTimeout(() => { document.querySelector('#directory-picker').click(); } ,0); 
+	});
 
 		// Process the actual directory picker
 	document.getElementById("directory-picker").addEventListener(
 		"change",
 		(e) => {
-			//debugConsole('EVENT: directory-picker: files: ', Array.from(e.target.files));
-			//resetUpload();
-			//const files = event.target.files;
 
 			let files = Array.from(event.target.files);
-			// sort alphabetically
+				// sort alphabetically
 			files.sort((a, b) => a.webkitRelativePath.localeCompare(b.webkitRelativePath));
 			if(debugLevel>0)
 			{
@@ -253,7 +246,6 @@
 			let data = Alpine.$data(document.getElementById('alpineComponent'));
 			data.allFiles = files;
 
-			//debugConsole('EVENT: directory-picker: # of files', files.length);
 			if (files.length > 0) {
 					// Extract the first file's relative path and get the directory name
 				const firstFilePath = files[0].webkitRelativePath;
@@ -282,33 +274,33 @@
 		@this.set('progress', event.detail.progress);
 	});
 
-	// On the trigger of file upload
+		// On the trigger of file upload
 	$wire.on('upload-file', () => {
-		//jw:todo use index parameter: https://livewire.laravel.com/docs/events
+			//jw:todo use index parameter: https://livewire.laravel.com/docs/events
 		debugConsole('EVENT: upload-file event triggered');
 	});
 
-	// On the trigger of upload finished
+		// On the trigger of upload finished
 	$wire.on('upload-finished', () => {
 		debugConsole('EVENT: upload-finished event triggered');
 	});
 
-	// On the trigger of upload progress
+		// On the trigger of upload progress
 	$wire.on('upload-progress', () => {
 		debugConsole('EVENT: upload-progress event triggered');
 	});
 
-	// On the trigger of upload start
+		// On the trigger of upload start
 	$wire.on('livewire-upload-start', () => {
 		debugConsole('EVENT: livewire-upload-start event triggered');
 	});
 
-	// On the trigger of upload error
+		// On the trigger of upload error
 	$wire.on('livewire-upload-error', () => {
 			debugConsole('EVENT: livewire-upload-error');
 	});
 
-	// On the trigger of any errors
+		// On the trigger of any errors
 	window.addEventListener('livewire:error', event => {
 		console.error('EVENT: livewire:error:', event.detail);
 		debugConsole('EVENT: livewire:error:', event.detail);
