@@ -403,3 +403,31 @@ We're using Tailwind CSS.
 If you want to convert a HEX color into a Tailwind color, you could use this site: <https://nearest-tailwind-color.netlify.app/>
 
 Modified by Jonnie
+
+## HRTFGeneral.m
+
+Called using:
+
+    sudo -u www-data XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a 
+
+Octave-Version      Octave-Call         Graphics-Toolkit        Error
+
+8.4.0 (deb)         octave-cli          gnuplot,fltk            multiplot> t;
+                                                                           ^
+                                                                           line 0: invalid command
+                    octave-cli          fltk                    GL2PS warning: GL2PS must be compiled with PNG support in order to embed images in SVG streams
+                                                                Missing graphic scales
+                    octave --gui        qt                      OK!!! 
+
+10.2.0 (build)      octave-cli          gnuplot,fltk            multiplot> nt GPVAL_TERM; else print NaN
+                                                                           ^
+                                                                           line 0: invalid command
+                    octave-cli          fltk                    Possibly incomplete median plane
+                                                                Failed to parse XML contents
+                                                                unexpected end of file
+                                                                Segmentation fault (core dumped)
+                    octave --gui        qt                      ### DONE ###
+                                                                Elapsed time is 18.6659 seconds.
+                                                                fatal: caught signal Segmentation fault -- stopping myself...
+                                                                Segmentation fault (core dumped)
+
