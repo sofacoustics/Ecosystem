@@ -280,7 +280,7 @@ class DatabaseUpload extends Component
 		return view('livewire.database-upload');
 	}
 
-	public function resetDatasets()
+	/*public function resetDatasets()
 	{
 		$title = $this->database->title;
 		if($this->debugLevel > 0)
@@ -293,7 +293,7 @@ class DatabaseUpload extends Component
 			$dataset->delete();
 		}
 		$this->refresh();
-	}
+	}*/
 
 	public function redirectToDatasets()
 	{
@@ -304,13 +304,13 @@ class DatabaseUpload extends Component
 	// PRIVATE
 	////////////////////////////////////////////////////////////////////////////////
 
-	private function refresh()
+	/*private function refresh()
 	{
 		$this->database->refresh();
 		$this->datasets = $this->database->datasets;
 		$this->calculateDatasetCount();
 		$this->calculateExisting();
-	}
+	}*/
 
 	private function error($p)
 	{

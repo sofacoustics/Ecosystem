@@ -34,11 +34,24 @@
 			<input id="directory-picker" type="file" webkitdirectory directory style="display:none"
 																	  x-bind:disabled="uploading">
 		</div>
+		
+		<template x-if="nFilesInDir == 0">
+			<div>
+				<p>No files in the selected directory.</p>
+		  </div>
+		</template>
+		
+		<template x-if="nFilesInDir == -1">
+			<div>
+				<p>After picking the directory, please stand by while we parse the directory structure...</p>
+		  </div>
+		</template>			
+		
 		<template x-if="nFilesInDir > 0">
 			<div>
 				<p><b>Files found:</b> <span x-text="nFilesInDir"></span></p>
-		<br>
-		<hr>
+			<br>
+			<hr>
 
 			<h3>2) Apply filter on your datafiles:<h3>
 			<small>Pattern for the datasets names: (use &lt;ID&gt; to encode an identifier changing with each dataset)</small>
@@ -54,9 +67,7 @@
 					wire:model.blur="descriptionfilter" />
 			<br>
 			<div>
-
 				<x-button wire:click="$js.doFilter($data)" x-bind:disabled="nFilesInDir == 0 || uploading">Apply filter</x-button>
-			
 			</div>
 
 				<p>Analysis results:</p>
@@ -141,74 +152,65 @@
 					</style>
 				</div>
 
-			@if($dirMode >= 0)
-				<br>
-				<p>Files selected for upload: <span x-text="nFilesSelected"></span></p>
-				<p>Files which already exist in the database: <span x-text="nFilesExisting"></span></p>
-				<p>Files pending upload: <span x-text="nFilesToUpload"></span></p>
-				<hr>
+				@if($dirMode >= 0)
+					<br>
+					<p>Files selected for upload: <span x-text="nFilesSelected"></span></p>
+					<p>Files which already exist in the database: <span x-text="nFilesExisting"></span></p>
+					<p>Files pending upload: <span x-text="nFilesToUpload"></span></p>
+					<hr>
 
-				<h3>4) Upload the datafiles:</h3>
-				<label>Overwrite existing files?
-					<input type="checkbox" x-model="overwriteExisting" @click="$js.toggleOverwriteExisting($data)">
-				</label><br>
+					<h3>4) Upload the datafiles:</h3>
+					<label>Overwrite existing files?
+						<input type="checkbox" x-model="overwriteExisting" @click="$js.toggleOverwriteExisting($data)">
+					</label><br>
 
-				<div>
-					<button
-						x-bind:disabled="uploading || nFilesToUpload == 0"
-						@click="$js.doUpload($data)"
-						x-text="uploading? 'Uploading...' : 'Start upload'"
-						class="{{ $buttonStyle }}"
-						x-bind:class="nFilesToUpload == 0 | uploading? '{{ $buttonColorDisabled }}' : '{{ $buttonColorEnabled }}'"
-					>
-						Start upload
-					</button>
-				</div>
-				<p> Status:  <span x-text="status"></span></p>
-				<p id="nUploaded" wire:ignore></p>
-				<p id="nUploadProgress" wire:ignore></p>
-
-				<div x-cloak>
-					<div class="bg-gray-100">
-						<x-message show="cancelled" timeout="2000">The upload has been cancelled</x-message>
-						<x-message type="error" show="error">Error: there was an error uploading. Please try again!</x-message>
-						<x-message show="uploading">Uploading to server</x-message>
+					<div>
+						<button
+							x-bind:disabled="uploading || nFilesToUpload == 0"
+							@click="$js.doUpload($data)"
+							x-text="uploading? 'Uploading...' : 'Start upload'"
+							class="{{ $buttonStyle }}"
+							x-bind:class="nFilesToUpload == 0 | uploading? '{{ $buttonColorDisabled }}' : '{{ $buttonColorEnabled }}'"
+						>
+							Start upload
+						</button>
 					</div>
-				</div>
-				<div>
-					<p>Upload progress: <span x-text="progressText"></span></p>
-					<div class="relative h-2 mt-2 rounded-full bg-base-200">
-						<div
-							x-bind:style="'width: ' + progress + '%;'"
-							class="absolute top-0 left-0 h-full bg-orange-500 rounded-full">
-						</div>
-				</div>
-				<br>
-				<hr>
+					<p> Status:  <span x-text="status"></span></p>
+					<p id="nUploaded" wire:ignore></p>
+					<p id="nUploadProgress" wire:ignore></p>
 
-				@hasrole('admin')
-					<p><small>(Livewire) Status: {{ $status }}</small></p>
-					<p><small>(Alpine) Directory: <span x-text="directory"></span></small></p>
-					<p><small>(Alpine) Mode: <span x-text="dirMode"></span></small></p>
-					<p><small>(Alpine) nFilesInDir: <span x-text="nFilesInDir"></span></small></p>
-					<p><small>(Alpine) nFilesToUpload: <span x-text="nFilesToUpload"></span></small></p>
-					<p><small>(Alpine) overwriteExisting: <span x-text="overwriteExisting"></span></small></p>
-					<p><small>(Livewire) Mode: {{ $dirMode }}</small></p>
-					<p><small>(Livewire) File to upload: {{ $nFilesToUpload }}</small></p>
-				@endhasrole
-			@endif
-		    </div>
-		</template>
-		<template x-if="nFilesInDir == 0">
-			<div>
-				<p>No files in the selected directory.</p>
-		    </div>
-		</template>
-		<template x-if="nFilesInDir == -1">
-			<div>
-				<p>After picking the directory, please stand by while we parse the directory structure...</p>
-		    </div>
-		</template>		
+					<div x-cloak>
+						<div class="bg-gray-100">
+							<x-message show="cancelled" timeout="2000">The upload has been cancelled</x-message>
+							<x-message type="error" show="error">Error: there was an error uploading. Please try again!</x-message>
+							<x-message show="uploading">Uploading to server</x-message>
+						</div>
+					</div>
+					<div>
+						<p>Upload progress: <span x-text="progressText"></span></p>
+						<div class="relative h-2 mt-2 rounded-full bg-base-200">
+							<div
+								x-bind:style="'width: ' + progress + '%;'"
+								class="absolute top-0 left-0 h-full bg-orange-500 rounded-full">
+							</div>
+					</div>
+					<br>
+					<hr>
+
+						@hasrole('admin')
+							<p><small>(Livewire) Status: {{ $status }}</small></p>
+							<p><small>(Alpine) Directory: <span x-text="directory"></span></small></p>
+							<p><small>(Alpine) Mode: <span x-text="dirMode"></span></small></p>
+							<p><small>(Alpine) nFilesInDir: <span x-text="nFilesInDir"></span></small></p>
+							<p><small>(Alpine) nFilesToUpload: <span x-text="nFilesToUpload"></span></small></p>
+							<p><small>(Alpine) overwriteExisting: <span x-text="overwriteExisting"></span></small></p>
+							<p><small>(Livewire) Mode: {{ $dirMode }}</small></p>
+							<p><small>(Livewire) File to upload: {{ $nFilesToUpload }}</small></p>
+						@endhasrole
+					</div>
+				@endif
+			</div>
+		</template>	
 	</form>
 
 
@@ -235,7 +237,7 @@
 			let files = Array.from(event.target.files);
 				// sort alphabetically
 			files.sort((a, b) => a.webkitRelativePath.localeCompare(b.webkitRelativePath));
-			if(debugLevel>0)
+			if(debugLevel>2)
 			{
 				debugConsole("alphabetical list of files");
 				files.forEach(file => {
@@ -321,7 +323,7 @@
 	let uploadQueue = []; // Upload queue, will be filled by ??? and processed by processQueue()
 	let uploadStart = 0;  // The time the upload started. Used for duration calculation
 
-	let debugLevel = 0; // set to 1 to turn debugging console messages on.
+	let debugLevel = 1; // set to 1 to turn debugging console messages on. set to 2 to list all files. 
 
 
 
@@ -341,11 +343,15 @@
 	// Apply the filter and prepare a table with filenames for the upload
 	$js('doFilter', (data) => {
 		// check for existing files first
+		debugConsole("Calling calculateExisting() and waiting for return value before continuing.");
+		console.time("calculateExisting");
 		$wire.call('calculateExisting').then(calculatedValue => {
-			debugConsole("Calling calculateExisting() and waiting for return value before continuing. nFilesExisting = " + calculatedValue);
+			console.timeEnd("calculateExisting");
+			debugConsole("Called calculateExisting(). nFilesExisting = " + calculatedValue);
 			data.nFilesExisting = calculatedValue;
 
 			if (data) {
+				console.time("Parse files");
 				// load the pattern of the dataset names and description
 				let dsn_pattern = document.getElementById("dsn_pattern").value.trim();
 				let descr_pattern = document.getElementById("description_pattern").value.trim();
@@ -355,12 +361,12 @@
 					window.alert("Dataset name must not be empty");
 					return;
 				}
-				resetUpload();
+				//resetUpload();
 
 				data.dirMode = 0;
 				let df_array = $wire.datasetdefIds; // get the dataset definition (=array with dataset filetypes)
-				debugConsole('df_array');
-				debugConsoleTable(df_array);
+				//debugConsole('df_array');
+				//debugConsoleTable(df_array);
 				let fn_filter_array = [], postfix_array = [], beg_id_array = [], dummy = [], fn_cnt_array = [];
 				for (let i=0; i<df_array.length; i++)
 				{
@@ -386,7 +392,7 @@
 						fn_filter = fn_filter.replace(/<ANY>/g, ".+");
 						fn_filter = "^" + fn_filter; // ensure that pattern starts from beginning of the file name only
 						fn_filter = RegExp(fn_filter.replace(/<ID>/g, ".+"));
-						debugConsole(fn_filter);
+						//debugConsole(fn_filter);
 						fn_filter_array[i]=fn_filter;
 						if (data.dirMode == 0 && fn_pattern.indexOf("/") >= 0) data.dirMode=1;
 						let end_filter = fn_pattern.indexOf("ID>")+3; // find the end of the ID
@@ -536,7 +542,7 @@
 				$wire.set('dirMode', data.dirMode); // save the directory dirMode (0: flat, 1: nested)
 
 				//jw:tmp
-				if(debugLevel>0)
+				if(debugLevel>2)
 				{
 					debugConsole("dsn_array / dsnFiltered (filtered dataset names)");
 					debugConsoleTable(dsn_array);
@@ -547,6 +553,8 @@
 					debugConsole('dirMode: ', data.dirMode);
 				}
 
+				console.timeEnd("Parse files");
+				
 				// select all Datasets in the table
 				document.getElementById("checkAll").checked = true; // select all
 				data = _checkAll(data);
@@ -614,13 +622,14 @@
 
 	function _createPendingFiles(data)
 	{
+		console.time("createPendingFiles");
 		let fn_array = $wire.get('pdatafilenames');
 		let dsn_array = $wire.get('pdatasetnames');
 		let descr_array = $wire.get('pdatasetdescriptions');
 		let df_array = $wire.datasetdefIds;
 		let existingFilesMetadata = $wire.get('existingFilesMetadata');
 
-		debugConsole("fn_array / pdatafilenames");
+		/*debugConsole("fn_array / pdatafilenames");
 		debugConsoleTable(fn_array);
 		debugConsole("dsn_array / pdatasetnames");
 		debugConsoleTable(dsn_array);
@@ -630,32 +639,32 @@
 		debugConsoleTable(df_array);
 		debugConsole('existingFilesMetadata');
 		debugConsoleTable(existingFilesMetadata);
-		debugConsole('overwriteExisting: ' + data.overwriteExisting);
+		debugConsole('overwriteExisting: ' + data.overwriteExisting);*/
 
 		// create list with dataset, datasetdefid and relative file path
 		// to facilitate saving one file to the correct dataset/datafile.
 		// This array's id should correspond to the pendingFiles array.
 		data.pendingFilesMetadata = [];
-		debugConsole('looping through fn_array');
+		//debugConsole('looping through fn_array');
 		for(let i = 0; i < fn_array.length; i++) {
 			for(let j = 0; j < fn_array[i].length; j++) {
 				if(fn_array[i][j] != undefined)
 				{
-					debugConsole("dataset: ", dsn_array[i], "descr: ", descr_array[i], " datasetdefId: ", df_array[j], " relativefilepath: ", fn_array[i][j]);
+					//debugConsole("dataset: ", dsn_array[i], "descr: ", descr_array[i], " datasetdefId: ", df_array[j], " relativefilepath: ", fn_array[i][j]);
 					data.pendingFilesMetadata.push({ datasetName: dsn_array[i], datasetDesc: descr_array[i], datasetdefId: df_array[j], relativePath: fn_array[i][j]});
 				}
 			}
 		}
-		debugConsole('data.pendingFilesMetadata');
-		debugConsoleTable(data.pendingFilesMetadata);
+		//debugConsole('data.pendingFilesMetadata');
+		//debugConsoleTable(data.pendingFilesMetadata);
 		// sort by relativePath so this is the same order as the pendingFiles
 		data.pendingFilesMetadata.sort((a, b) => a.relativePath.localeCompare(b.relativePath));
-		debugConsole('data.pendingFilesMetadata - sorted by relativefilepath');
-		debugConsoleTable(data.pendingFilesMetadata);
+		//debugConsole('data.pendingFilesMetadata - sorted by relativefilepath');
+		//debugConsoleTable(data.pendingFilesMetadata);
 		// create list with pending files: data.pendingFiles
 		let filenamesToUpload = fn_array.flat(); // flat list of files to upload. This is a relative path from the directory chosen as input. E.g. P0002/3DSCAN/P0002_watertight.stl
-		debugConsole('filenamesToUpload');
-		debugConsoleTable(filenamesToUpload);
+		//debugConsole('filenamesToUpload');
+		//debugConsoleTable(filenamesToUpload);
 		data.nSelected = fn_array.flat().length; // since this is a multi-dimensional array, we need to flatten it first for length to count all elemets
 		if(data.dirMode == 0)
 		{
@@ -666,26 +675,25 @@
 		}
 		else
 		{	// nested: prepend filenamesToUpload with directory for comparison with allFiles
-			debugConsole("nested");
-			debugConsoleTable(data.allFiles);
-			debugConsole('data.directory: ', data.directory);
+			//debugConsole("nested");
+			//debugConsoleTable(data.allFiles);
+			//debugConsole('data.directory: ', data.directory);
 			let prefix = data.directory+'/';
 			dirPrefixed = filenamesToUpload.map(item => prefix + item);
 			data.pendingFiles = data.allFiles.filter((file) => {
 				return dirPrefixed.includes(file.webkitRelativePath);
 			});
 		}
-		debugConsole('data.pendingFiles - unsorted');
-		debugConsoleTable(data.pendingFiles);
+		//debugConsole('data.pendingFiles - unsorted');
+		//debugConsoleTable(data.pendingFiles);
 
 		if(data.overwriteExisting == false)
 		{
-			debugConsole("We will *not* overwrite existing files. Hence, we're removing existing files from the pendingFiles list");
+			//debugConsole("We will *not* overwrite existing files. Hence, we're removing existing files from the pendingFiles list");
+			
 			//
 			// filter pendingFiles again, removing any entries which correspond to existing datafiles
 			//
-
-
 			// first add 'exists' field and set to true if datafile already exists
 			data.pendingFilesMetadata.forEach(obj1 => {
 				obj1.exists = existingFilesMetadata.some(obj2 =>
@@ -693,21 +701,21 @@
 					obj1.datasetdefId === obj2.datasetdefId
 				);
 			});
-			debugConsole("data.pendingFilesMetadata - after adding 'exist' property");
-			debugConsoleTable(data.pendingFilesMetadata);
+			//debugConsole("data.pendingFilesMetadata - after adding 'exist' property");
+			//debugConsoleTable(data.pendingFilesMetadata);
 			// filter pendingFiles based on the 'exists' field
 			nonexistentPendingFiles = data.pendingFiles.filter((obj2, index) => {
 				// condition based on array1 at the same index
 				return data.pendingFilesMetadata[index].exists === false;
 			});
-			debugConsole('nonexistentPendingFiles - filtered out existing files');
-			debugConsoleTable(nonexistentPendingFiles);
+			//debugConsole('nonexistentPendingFiles - filtered out existing files');
+			//debugConsoleTable(nonexistentPendingFiles);
 			// filter pendingFilesMetadata based on the 'exists' field
 			nonexistentPendingFilesMetadata = data.pendingFilesMetadata.filter((obj2, index) => {
 				return obj2.exists === false;
 			});
-			debugConsole('nonexistentPendingFilesMetadata - filtered out existing files');
-			debugConsoleTable(nonexistentPendingFilesMetadata);
+			//debugConsole('nonexistentPendingFilesMetadata - filtered out existing files');
+			//debugConsoleTable(nonexistentPendingFilesMetadata);
 
 			// assign nonexistent filtered results
 			data.pendingFiles = nonexistentPendingFiles;
@@ -718,15 +726,17 @@
 		data.nFilesToUpload = data.pendingFiles.length;
 		$wire.set('nFilesToUpload', data.nFilesToUpload);
 
-		debugConsole("data.pendingFiles")
-		debugConsoleTable(data.pendingFiles);
-		debugConsole("nFilesToUpload: " + data.nFilesToUpload);
-
+		//debugConsole("data.pendingFiles")
+		//debugConsoleTable(data.pendingFiles);
+		debugConsole("_pendingFiles: nFilesToUpload: " + data.nFilesToUpload);
+		
+		console.timeEnd("createPendingFiles");
 		return(data);
 	}
 
 	function _checkAll(data)
 	{
+		debugConsoleTable("_checkAll");
 		var checkBox = document.getElementById("checkAll");
 		tableBody = document.getElementById('results').getElementsByTagName('tbody')[0];
 		if (tableBody.rows.length > 0)
@@ -748,6 +758,7 @@
 
 	function _updateSelected(data)
 	{
+		debugConsoleTable("_updateSelected");
 		tableBody = document.getElementById('results').getElementsByTagName('tbody')[0];
 		rows = tableBody.rows; 
 		if (rows != null)
@@ -804,13 +815,13 @@
 			$wire.set('pdatafilenames', fn_selected); // save the selected filenames
 			$wire.set('nFilesSelected', data.nFilesSelected); // number of unique files to upload
 
-			debugConsole('dsn_selected / pdatasetnames');
+			/*debugConsole('dsn_selected / pdatasetnames');
 			debugConsoleTable(dsn_selected);
 			debugConsole('descr_selected / pdatasetdescriptions');
 			debugConsoleTable(descr_selected);
 			debugConsole('fn_selected / pdatafilenames');
 			debugConsoleTable(fn_selected);
-			debugConsole('nFilesSelected: ' + data.nFilesSelected);
+			debugConsole('nFilesSelected: ' + data.nFilesSelected);*/
 
 			// create list of pending files so we know if there is anything to upload
 			_createPendingFiles(data);
@@ -818,7 +829,7 @@
 		return data;
 	}
 
-	let maxParallelUploads = 2; // Maximum concurrent uploads
+	let maxParallelUploads = 1; // Maximum concurrent uploads
 
 	function processQueue() {
 
@@ -847,7 +858,7 @@
 				() => {
 					/* Success handler */
 					data.nUploaded++;
-					setStatus("File #" + index + " (" + file.name + ") now successfully uploaded");
+					setStatus("File #" + index + 1 + " (" + file.name + ") now successfully uploaded");
 					data.progressText = data.nUploaded + "/" + data.nFilesToUpload + " files successfully uploaded." + elapsedString;
 					// save each datafile after it has been uploaded
 					debugConsole("Calling saveDatafile(" + index + ")");
@@ -900,7 +911,6 @@
 	// set both Livewire, Alpine and inner HTML status.
 	function setStatus(string)
 	{
-
 		debugConsole("Status (alpine): ", string);
 		let data = Alpine.$data(document.getElementById('alpineComponent'));
 		data.status = string;
@@ -920,7 +930,7 @@
 		setStatus("resetUpload() - settings nFilesToUpload to 0");
 		data.nFilesToUpload = 0;
 		uploadQueue = [];
-		maxParallelUploads = 2; // Maximum concurrent uploads
+		maxParallelUploads = 1; // Maximum concurrent uploads
 		setStatus("");
 	}
 
