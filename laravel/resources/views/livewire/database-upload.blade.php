@@ -75,6 +75,7 @@
 				<br>
 				<hr>
 				<h3>3) Prepare the filtering results for data upload:</h3>
+				<small><p id="table-hint" wire:ignore><br></p></small>
 				<table id="results" wire:ignore class="w-full table-auto border border-slate-399" >
 					<thead class="bg-gray-50" >
 						<tr>
@@ -101,7 +102,7 @@
 					<input type="checkbox" id="read-more-toggle" wire:ignore class="read-more-checkbox">
 					<label for="read-more-toggle" class="read-more-label" wire:ignore>
 							<span class="read-more-text" id="skipped" wire:ignore></span>
-							<span class="read-less-text" wire:ignore>Close the list...</span>
+							<span class="read-less-text" wire:ignore>Showing only first 40 files. Click to close the list...</span>
 					</label>
 					<div class="read-more-content">
 							<p class="hidden-content" id="skipped-list" wire:ignore></p>
@@ -137,7 +138,7 @@
 						.read-more-checkbox:checked ~ .read-more-label .read-less-text { /* When the checkbox is checked, display the 'Read less' text */
 								display: inline;
 						}
-						.read-more-content { /* Optional: Add a transition for a smoother effect */
+						.read-more-content { 
 								max-height: 100px; /* A placeholder max-height for a transition effect */
 								overflow: hidden;
 								transition: max-height 0.3s ease-in-out;
@@ -515,7 +516,8 @@
 
 					// Table - Filenames
 				tableBody = document.getElementById('results').getElementsByTagName('tbody')[0];
-				for (let i=0; i<dsn_array.length; i++)
+				rows_max = (dsn_array.length > 200) ? 200 : dsn_array.length;
+				for (let i=0; i<rows_max; i++)
 				{
 					newRow = tableBody.insertRow(-1);
 					cell = newRow.insertCell(-1);
@@ -534,6 +536,7 @@
 				}
 				table = document.getElementById('results');
 				table.style.visibility = "visible"; // show the table
+				document.getElementById("table-hint").innerHTML = "Showing " + (rows_max == dsn_array.length ? "all" : "200 first") + " datasets found";
 
 				// save variables in Livewire for upload procedure
 				$wire.set('dsnFiltered', dsn_array); // save the filtered dataset names
@@ -858,7 +861,7 @@
 				() => {
 					/* Success handler */
 					data.nUploaded++;
-					setStatus("File #" + index + 1 + " (" + file.name + ") now successfully uploaded");
+					setStatus("File #" + (index + 1) + " (" + file.name + ") now successfully uploaded");
 					data.progressText = data.nUploaded + "/" + data.nFilesToUpload + " files successfully uploaded." + elapsedString;
 					// save each datafile after it has been uploaded
 					debugConsole("Calling saveDatafile(" + index + ")");

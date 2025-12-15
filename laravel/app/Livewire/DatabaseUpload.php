@@ -20,7 +20,6 @@ class DatabaseUpload extends Component
 
 	public Database $database;
 	public $datasetdefIds; // array of datasetdef ids
-	public $datasets;
 	public $datasetnamefilter;
 	public $descriptionfilter;
 	public $datafilenamefilters= [];
@@ -37,7 +36,6 @@ class DatabaseUpload extends Component
 	public array $uploadsMetadata;  // additional metadata for '$uploads': 'datasetName', 'datasetDesc', 'datasetdefId', 'fileName'
 	public array $existingFilesMetadata; // a list of existing datafiles including their dataset names and datasetdefIds.
 
-	public array $existing; // a list of names of the datafiles which already exists
 	public array $saved;    // a list of names of the files which have been saved to the database;
 	public array $filtered; // a list of names of the files which fit the filter criteria
 	public array $uploaded; // a list of names of the files which have been uploaded
@@ -73,8 +71,6 @@ class DatabaseUpload extends Component
 	{
 		$this->database = $database->load('datasetdefs','datasets'); // https://laracasts.com/discuss/channels/livewire/livewire-wiremodel-with-model-relationship
 		$this->datasetdefIds = $this->database->datasetdefs->pluck('id');
-		//$this->datasets = $this->database->datasets;
-		//$this->datasetsCount = count($this->datasets);
 		$this->datasetnamefilter = $database->bulk_upload_dataset_name_filter;
 		$this->descriptionfilter = $database->bulk_upload_description_filter;
 		foreach($this->database->datasetdefs as $datasetdef)
@@ -83,7 +79,6 @@ class DatabaseUpload extends Component
 		}
 
 		$this->overwriteExisting = session()->get('sonicomEcosystemBulkUploadOverwrite') == 1 ? true : false;
-		//$this->calculateExisting();
 		$this->debug(1, "Mounted");
 	}
 
@@ -99,27 +94,6 @@ class DatabaseUpload extends Component
 		$this->started = true;
 	}
 
-	/*
-	 *	Remove all files from disk
-	 *	Empty array
-	 *	Recalculate existing
-	 */
-	/*public function resetUploads()
-	{
-		$this->setStatus("resetUploads()");
-		foreach($this->uploads as $key => $upload)
-		{
-			$file = $upload; //$upload['fileRef'];
-			$this->console("resetUploads(): deleting file (" . $this->uploadsMetadata[$key]['fileName'] . ") from livewire-tmp");
-			$file->delete();
-			unset($this->uploads[$key]);
-			unset($this->uploadsMetadata[$key]); //jw:todo Does the whole array need anulling?
-		}
-		$this->uploading = false;
-		$this->nFilesToUpload = 0;
-		$this->calculateExisting();
-	}*/
-
 	public function updatedOverwriteExisting($param)
 	{
 		session()->put('sonicomEcosystemBulkUploadOverwrite', "$param");
@@ -127,7 +101,6 @@ class DatabaseUpload extends Component
 
 	public function updatedPdatasetnames($value, $key)
 	{
-		//dd("array[$key] = $value");
 		if($this->debugLevel > 0)
 			$this->console("updatedPdatasetnames");
 	}
@@ -168,9 +141,6 @@ class DatabaseUpload extends Component
 				$this->database->save();
 				break;
 			case 'uploads':
-				// $field = e.g. "uploads.0"
-				// $value = Livewire file object
-				//$this->calculateUploaded();
 				break;
 			case 'uploadsMetadata':
 				break;
@@ -181,13 +151,15 @@ class DatabaseUpload extends Component
 				$this->saved = [];
 				break;
 			case 'nFilesToUpload':
-				//$this->setStatus("Updating nFilesToUpload to $value");
 				break;
 			default:
-				//dd("$field: $value");
 		}
 	}
 
+	/*
+	 index
+	 uploadsMetadata: structure indexed by filename, fields: datasetName, datasetDesc, datasetdefId, filename
+	*/
 	public function saveDatafile($index) // Save a single datafile referenced by the 'uploaded' index
 	{
 		$file = $this->uploads[$index];
@@ -280,21 +252,6 @@ class DatabaseUpload extends Component
 		return view('livewire.database-upload');
 	}
 
-	/*public function resetDatasets()
-	{
-		$title = $this->database->title;
-		if($this->debugLevel > 0)
-			$this->console("Deleting all datasets in the database $title");
-		// remove all datasets
-		foreach($this->datasets as $dataset)
-		{
-			if($this->debugLevel > 0)
-				$this->console("Deleting $dataset->name");
-			$dataset->delete();
-		}
-		$this->refresh();
-	}*/
-
 	public function redirectToDatasets()
 	{
 		return redirect()->to("/databases/".$this->database->id."/showdatasets");
@@ -303,14 +260,6 @@ class DatabaseUpload extends Component
 	////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE
 	////////////////////////////////////////////////////////////////////////////////
-
-	/*private function refresh()
-	{
-		$this->database->refresh();
-		$this->datasets = $this->database->datasets;
-		$this->calculateDatasetCount();
-		$this->calculateExisting();
-	}*/
 
 	private function error($p)
 	{
@@ -337,32 +286,28 @@ class DatabaseUpload extends Component
 	 */
 	public function calculateExisting() : int
 	{
-		$this->existing = [];
 		$this->database = $this->database->fresh(['datasetdefs', 'datasets.datafiles']);
-		$this->existingFilesMetadata = [];
+		$existingFilesMetadata = [];
 		foreach($this->database->datasets as $dataset)
 		{
+			$datasetname = $dataset->name;
+			$datasetdescription = $dataset->description;
 			foreach($dataset->datafiles as $datafile) 
-			{
-				$this->existing[] = $datafile->name;
-				// save metadata of existing datafiles so we can compare with pendingUploads and know
-				// which ones we actually have to upload!
-				// additional metadata for '$uploads': 'datasetName', 'datasetDesc', 'datasetdefId', 'fileName'
-				$index = count($this->existingFilesMetadata);
-				$this->existingFilesMetadata[$index]['datasetName'] = $dataset->name;
-				$this->existingFilesMetadata[$index]['datasetDesc'] = $dataset->description;
-				$this->existingFilesMetadata[$index]['datasetdefId'] = $datafile->datasetdef->id;
+			{				
+					// save metadata of existing datafiles so we can compare with pendingUploads and know
+					// which ones we actually have to upload!
+					// additional metadata for '$uploads': 'datasetName', 'datasetDesc', 'datasetdefId', 'fileName'				
+					// Using local variables (instead of $this->) saves processing time. 
+				$index = count($existingFilesMetadata);
+				$existingFilesMetadata[$index]['datasetName'] = $datasetname;
+				$existingFilesMetadata[$index]['datasetDesc'] = $datasetdescription;
+				$existingFilesMetadata[$index]['datasetdefId'] = $datafile->datasetdef_id;			
 			}
 		}
-		sort($this->existing);
-		$this->nFilesExisting = count($this->existingFilesMetadata);
+		
+		$this->existingFilesMetadata = $existingFilesMetadata;
+		$this->nFilesExisting = count($existingFilesMetadata);	
 		return $this->nFilesExisting;
-	}
-
-	private function calculateDatasetCount()
-	{
-		$this->datasetsCount = count($this->datasets);
-		$this->console("Updating datasetsCount to $this->datasetsCount");
 	}
 
 	private function setStatus($status)
