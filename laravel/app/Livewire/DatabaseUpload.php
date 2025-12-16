@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\Attributes\SkipHydration;
 
 use App\Models\Database;
 use App\Models\Datafile;
@@ -45,6 +46,7 @@ class DatabaseUpload extends Component
 	public array $dsnFiltered= []; // array with filtered dataset names, e.g. NH01
 	public array $descrFiltered= []; // array with filtered descriptions
 	public array $dfnFiltered= []; // a 2D array with filtered datafilenames, dim 1: index of pdatasetnames, dim 2: index of datasetdefIds
+	
 	public $dirMode = -1; // -1: filter not applied yet, 0: flat directory structure, 1: nested directory structure
 	public array $pdatasetnames= []; // array with selected (=subset of dsnFiltered) dataset names
 	public array $pdatasetdescriptions= []; // array with selected (=subset of descrFiltered) descriptions
@@ -77,7 +79,6 @@ class DatabaseUpload extends Component
 		{
 			$this->datafilenamefilters[$datasetdef->id] = $datasetdef->bulk_upload_filename_filter;
 		}
-
 		$this->overwriteExisting = session()->get('sonicomEcosystemBulkUploadOverwrite') == 1 ? true : false;
 		$this->debug(1, "Mounted");
 	}
@@ -101,12 +102,14 @@ class DatabaseUpload extends Component
 
 	public function updatedPdatasetnames($value, $key)
 	{
+		dd(["updatedPdatasetnames", $value, $key]);
 		if($this->debugLevel > 0)
 			$this->console("updatedPdatasetnames");
 	}
 
 	public function updatedPdatafilenames($value, $key)
 	{
+		dd(["updatedPdatafilenames", $value, $key]);
 		$nTotalElements = count($this->pdatafilenames, 1); // count multi-dimensional array
 		$nDatasets = count($this->pdatafilenames);
 		$nDatafiles = $nTotalElements - $nDatasets;
@@ -120,6 +123,7 @@ class DatabaseUpload extends Component
 
 	public function updatedDatafilenamefilters($value, $key) // https://dev.to/zaxwebs/accessing-updated-index-in-livewire-48oc
 	{
+		dd(["updatedDatafilenamefilters", $value, $key]);
 		$datasetdef = Datasetdef::find($key);
 		$datasetdef->bulk_upload_filename_filter = "$value";
 		$datasetdef->save();
@@ -289,7 +293,7 @@ class DatabaseUpload extends Component
 		$this->database = $this->database->fresh(['datasetdefs', 'datasets.datafiles']);
 		$existingFilesMetadata = [];
 		foreach($this->database->datasets as $dataset)
-		{
+		{ 
 			$datasetname = $dataset->name;
 			$datasetdescription = $dataset->description;
 			foreach($dataset->datafiles as $datafile) 

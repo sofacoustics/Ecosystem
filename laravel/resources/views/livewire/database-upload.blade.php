@@ -1,30 +1,43 @@
 <div> {{-- component div:START --}}
-	<div x-data="{
-		allFiles: [],
-		filteredFiles: [],
-		pendingFiles: [],
-		pendingFilesMetadata: [],
-		uploading: false,
-		saving: false,
-		nSelected: 0,
-		nUploaded: 0,
-		progress: 0,
-		progressText: '',
-		finished: false,
-		error: false,
-		cancelled: false,
-		status: '',
-		directory: '',
-		dirMode: 0,
-		nFilesInDir: -1,
-		nFilesSelected: 0,
-		canUpload: @entangle('canUpload'),
-		overwriteExisting: @entangle('overwriteExisting'),
-		nFilesExisting: 0,
-		nFilesToUpload: 0
-		}" id='alpineComponent'>
+	<div 
+		x-data="{
+			allFiles: [],
+			filteredFiles: [],
+			pendingFiles: [],
+			pendingFilesMetadata: [],
+			uploading: false,
+			saving: false,
+			nSelected: 0,
+			nUploaded: 0,
+			progress: 0,
+			progressText: '',
+			finished: false,
+			error: false,
+			cancelled: false,
+			status: '',
+			directory: '',
+			dirMode: 0,
+			nFilesInDir: -1,
+			nFilesSelected: 0,
+			canUpload: @entangle('canUpload'),
+			overwriteExisting: @entangle('overwriteExisting'),
+			nFilesExisting: null,
+			nFilesToUpload: 0
+		}" 
+		x-init="setTimeout(() => { 
+				console.log('Calculate Exististing on load starts');
+				$wire.calculateExisting(); 
+				console.log('Calculate Exististing on load: done');
+			}, 100)"
+		id='alpineComponent'>
 
 	<form>
+		@if($nFilesExisting == null)
+			<p id="filesexisting">Please stand by while information about the existing dataset is collected...</p>
+		@else
+			<p>Files in the database: {{ $nFilesExisting }}</p>
+		@endif
+		
 		<h3>1) Select a directory with all your datafiles:</h3>
 		<p>Maximal size per file: 2 GB</p>		
 		<div>
@@ -50,25 +63,25 @@
 		<template x-if="nFilesInDir > 0">
 			<div>
 				<p><b>Files found:</b> <span x-text="nFilesInDir"></span></p>
-			<br>
-			<hr>
+				<br>
+				<hr>
 
-			<h3>2) Apply filter on your datafiles:<h3>
-			<small>Pattern for the datasets names: (use &lt;ID&gt; to encode an identifier changing with each dataset)</small>
-				<input class="w-full" type="text" placeholder="Can include <ID>, e.g., name <ID>. Must not be empty." id="dsn_pattern" required
-					wire:model.blur="datasetnamefilter" />
-			@foreach ($database->datasetdefs as $index => $datasetdef)
-				<small>#{{ $loop->index+1}}: Pattern for the datafile names of <b>{{ $datasetdef->name }}</b>:</small>
-					<input class="w-full" type="text" placeholder="Can include <ID>, <NUM> or <ANY>, e.g. prefix<ID>_maytest<ANY>.ext. Can be empty to exclude a datasetfile."
-						id="fn_pattern{{ $datasetdef->id }}" wire:model.blur="datafilenamefilters.{{ $datasetdef->id }}" />
-			@endforeach
-			<small>Pattern for the datasets descriptions (optional):</small>
-				<input class="w-full" type="text" placeholder="Can include <ID>, e.g., description <ID>. Can be empty." id="description_pattern"
-					wire:model.blur="descriptionfilter" />
-			<br>
-			<div>
-				<x-button wire:click="$js.doFilter($data)" x-bind:disabled="nFilesInDir == 0 || uploading">Apply filter</x-button>
-			</div>
+				<h3>2) Apply filter on your datafiles:<h3>
+				<small>Pattern for the datasets names: (use &lt;ID&gt; to encode an identifier changing with each dataset)</small>
+					<input class="w-full" type="text" placeholder="Can include <ID>, e.g., name <ID>. Must not be empty." id="dsn_pattern" required
+						wire:model.blur="datasetnamefilter" />
+				@foreach ($database->datasetdefs as $index => $datasetdef)
+					<small>#{{ $loop->index+1}}: Pattern for the datafile names of <b>{{ $datasetdef->name }}</b>:</small>
+						<input class="w-full" type="text" placeholder="Can include <ID>, <NUM> or <ANY>, e.g. prefix<ID>_maytest<ANY>.ext. Can be empty to exclude a datasetfile."
+							id="fn_pattern{{ $datasetdef->id }}" wire:model.blur="datafilenamefilters.{{ $datasetdef->id }}" />
+				@endforeach
+				<small>Pattern for the datasets descriptions (optional):</small>
+					<input class="w-full" type="text" placeholder="Can include <ID>, e.g., description <ID>. Can be empty." id="description_pattern"
+						wire:model.blur="descriptionfilter" />
+				<br>
+				<div>
+					<x-button wire:click="$js.doFilter($data)" x-bind:disabled="nFilesInDir == 0 || uploading">Apply filter</x-button>
+				</div>
 
 				<p>Analysis results:</p>
 				<small><p id="analysis-summary" wire:ignore><br></p></small>
@@ -222,6 +235,19 @@
 		//	Events
 		////////////////////////////////////////////////////////////////////////////////
 		
+		// Collect information about the existing datasets. This code runs only after the ENTIRE page (HTML, images, scripts, etc.) has finished loading.
+	/*window.addEventListener('load', function() { 
+		//let data = Alpine.$data(document.getElementById('alpineComponent'));
+		debugConsole("doExisting: Calling calculateExisting()");
+		console.time("calculateExisting");
+		$wire.call('calculateExisting').then(calculatedValue => 
+		{
+			//data.nFilesExisting = calculatedValue;
+		});
+		console.timeEnd("calculateExisting");
+	}*/
+ 
+
 		// Trigger the actual directory picker when clicked on the fake but nicely looking button
 	document.querySelector('#actual-directory-picker').addEventListener('click', e =>
 	{ 
@@ -323,7 +349,6 @@
 		
 	let uploadQueue = []; // Upload queue, will be filled by ??? and processed by processQueue()
 	let uploadStart = 0;  // The time the upload started. Used for duration calculation
-
 	let debugLevel = 1; // set to 1 to turn debugging console messages on. set to 2 to list all files. 
 
 
@@ -336,17 +361,17 @@
 		data = _updateSelected(data);
 	});
 
-	// On "Check All Datasets" or "Check None of the Datasets"
+		// On "Check All Datasets" or "Check None of the Datasets"
 	$js('checkAll', (data) => {
 		data = _checkAll();
 	});
-
-	// Apply the filter and prepare a table with filenames for the upload
+			
+		// Apply the filter and prepare a table with filenames for the upload
 	$js('doFilter', (data) => {
 		// check for existing files first
 		debugConsole("Calling calculateExisting() and waiting for return value before continuing.");
 		console.time("calculateExisting");
-		$wire.call('calculateExisting').then(calculatedValue => {
+		$wire.call('calculateExisting').then(calculatedValue => {			// DAS ENTFERNEN!!!
 			console.timeEnd("calculateExisting");
 			debugConsole("Called calculateExisting(). nFilesExisting = " + calculatedValue);
 			data.nFilesExisting = calculatedValue;
@@ -362,12 +387,9 @@
 					window.alert("Dataset name must not be empty");
 					return;
 				}
-				//resetUpload();
 
 				data.dirMode = 0;
 				let df_array = $wire.datasetdefIds; // get the dataset definition (=array with dataset filetypes)
-				//debugConsole('df_array');
-				//debugConsoleTable(df_array);
 				let fn_filter_array = [], postfix_array = [], beg_id_array = [], dummy = [], fn_cnt_array = [];
 				for (let i=0; i<df_array.length; i++)
 				{
@@ -377,7 +399,6 @@
 						fn_filter_array[i]="";
 						postfix_array[i]="";
 						beg_id_array[i]=0;
-						// debugConsole([i, 'ignored']);
 					}
 					else
 					{	// nonempty pattern --> create filters
@@ -410,7 +431,6 @@
 						postfix_array[i]=postfix;
 						let beg_id = fn_pattern.indexOf("<"); // zahl anfang: index von < in fn_pattern
 						beg_id_array[i]=beg_id;
-						// debugConsole([i, fn_pattern, fn_filter, postfix, beg_id, end_filter]);
 					}
 					dummy[i] = "<NONE>";
 					fn_cnt_array[i] = 0;
@@ -536,13 +556,16 @@
 				}
 				table = document.getElementById('results');
 				table.style.visibility = "visible"; // show the table
-				document.getElementById("table-hint").innerHTML = "Showing " + (rows_max == dsn_array.length ? "all" : "200 first") + " datasets found";
+				document.getElementById("table-hint").innerHTML = "Showing " + (rows_max == dsn_array.length ? "all" : "200 first") + " datasets:";
 
 				// save variables in Livewire for upload procedure
 				$wire.set('dsnFiltered', dsn_array); // save the filtered dataset names
 				$wire.set('descrFiltered', descr_array); // save the filtered dataset descriptions
-				$wire.set('dfnFiltered', fn_array); // save the filtered filenames
+				$wire.set('dfnFiltered', fn_array); // save the filtered filenames (this is causing memory errors for large arrays!!!
 				$wire.set('dirMode', data.dirMode); // save the directory dirMode (0: flat, 1: nested)
+				debugConsole("Size of dsnFiltered: " + estimateArraySizeInBytes(dsn_array) + " bytes");
+				debugConsole("Size of descrFiltered: " + estimateArraySizeInBytes(descr_array) + " bytes");
+				debugConsole("Size of fn_array: " + estimateArraySizeInBytes(fn_array) + " bytes");
 
 				//jw:tmp
 				if(debugLevel>2)
@@ -940,7 +963,7 @@
 	/*
 	 * only log to console if debugLevel > 0
 	 */
-    function debugConsole(...args)
+  function debugConsole(...args)
 	{
 		if(debugLevel > 0)
 			console.log(...args);
@@ -951,6 +974,15 @@
 			console.table(...args);
 	}
 
+	function estimateArraySizeInBytes(arr) 
+	{
+		const jsonString = JSON.stringify(arr); // Serialize the array to a JSON string
+		if (typeof TextEncoder !== 'undefined') { // Requires TextEncoder (Modern Browsers/Node.js) ---
+			const encoder = new TextEncoder();
+			return encoder.encode(jsonString).length;
+		}
+		else return 0;
+	}
 
 
 	</script>
