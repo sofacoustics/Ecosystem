@@ -1,23 +1,21 @@
 <div> {{-- component div:START --}}
 	<div 
 		x-data="{
+				maxDisplayDatasets: 100, // Largest number of Datasets displayed in the table
   			allFiles: [], // All files from the picked local directory
 	  		directory: '', // Root of the local directory  
-			  nFilesInDir: -1, // Number of files in the local directory. -1: not picked yet.
-				dsn_array: [], // 1D Array with dataset names
-				descr_array: [], // 1D Array with dataset descriptions
-				fn_array: [], // 2D Array with datafile names per dataset
+				allDatasetNames: [], // 1D Array with dataset names
+				allDatasetDescriptions: [], // 1D Array with dataset descriptions
+				allDatafileNames: [], // 2D Array with datafile names per dataset
 				nDatasetsFound: -1, // Number of datasets found by Apply Filter. -1: Filter not applied yet.
-				pdatasetdescriptions: [], // 1D Array with pending dataset descriptions. Temporary solution, unclear if required.
-				pdatasetnames: [], // Array with pending dataset names. Temporary solution, unclear if required.
-				pdatafilenames: [], // Array with pending datafile names. Temporary solution, unclear if required.
-				maxDisplayDatasets: 200, // Largest number of Datasets displayed in the table
-			filteredFiles: [],
-			pendingFiles: [],
-			pendingFilesMetadata: [],
+				selDatasetDescriptions: [], // 1D Array with selected dataset descriptions. 
+				selDatasetNames: [], // Array with selected dataset names. 
+				selDatafileNames: [], // Array with selected datafile names. 
+			  pendingFiles: [], // Array with pending filenames, i.e., files to be uploaded
+			  pendingFilesMetadata: [], // Structure with arrays of pending datafiles, i.e., to be created/updated
+			  nFilesInDir: -1, // Number of files in the local directory. -1: not picked yet.
 			uploading: false,
 			saving: false,
-			nSelected: 0,
 			nUploaded: 0,
 			progress: 0,
 			progressText: '',
@@ -232,7 +230,6 @@
 	document.querySelector('#actual-directory-picker').addEventListener('click', e =>
 	{ 
 		let data = Alpine.$data(document.getElementById('alpineComponent'));
-		console.log("queryselector");
 		setTimeout(() => { document.querySelector('#directory-picker').click(); } ,0); 
 	});
 
@@ -521,9 +518,9 @@
 		//$wire.set('descrFiltered', descr_array); // save the filtered dataset descriptions
 		//$wire.set('dfnFiltered', fn_array); // save the filtered filenames (this is causing memory errors for large arrays!!!
 		//$wire.set('dirMode', data.dirMode); // save the directory dirMode (0: flat, 1: nested)
-		data.dsn_array = dsn_array;
-		data.descr_array = descr_array;
-		data.fn_array = fn_array;
+		data.allDatasetNames = dsn_array;
+		data.allDatasetDescriptions = descr_array;
+		data.allDatafileNames = fn_array;
 		data.nDatasetsFound = dsn_array.length;
 		//debugConsole("Size of dsnFiltered: " + estimateArraySizeInBytes(dsn_array) + " bytes");
 		//debugConsole("Size of descrFiltered: " + estimateArraySizeInBytes(descr_array) + " bytes");
@@ -559,11 +556,10 @@
 			let offset = uploads.length; //jw:todo can delete
 			//debugConsole("doUpload() - existing upload count: ", offset);
 			// https://fly.io/laravel-bytes/multi-file-upload-livewire/
-			debugConsoleTable(data.pendingFiles);
+			//debugConsoleTable(data.pendingFiles);
 			data.pendingFiles.forEach( (file, index) => { uploadQueue.push({ index, file }); } );
 			debugConsole("uploadQueue: ", uploadQueue);
-			debugConsole("uploadQueue: ", uploadQueue);
-			debugConsoleTable(uploadQueue);
+			//debugConsoleTable(uploadQueue);
 			debugConsole("uploadQueue.length: ", uploadQueue.length);
 			processQueue();
 		}
@@ -591,99 +587,61 @@
 	function _createPendingFiles(data)
 	{
 		console.time("createPendingFiles");
-		let fn_array = data.pdatafilenames;
-		let dsn_array = data.pdatasetnames;
-		let descr_array = data.pdatasetdescriptions;
+		let fn_array = data.selDatafileNames;
+		let dsn_array = data.selDatasetNames;
+		let descr_array = data.selDatasetDescriptions;
 		let df_array = $wire.datasetdefIds;
 		let existingFilesMetadata = $wire.get('existingFilesMetadata');
 
-		/*debugConsole("fn_array / pdatafilenames");
-		debugConsoleTable(fn_array);
-		debugConsole("dsn_array / pdatasetnames");
-		debugConsoleTable(dsn_array);
-		debugConsole("descr_array / pdatasetdescriptions");
-		debugConsoleTable(descr_array);
-		debugConsole("df_array / datasetdefIds (list of datasetdef ids for this database)");
-		debugConsoleTable(df_array);
-		debugConsole('existingFilesMetadata');
-		debugConsoleTable(existingFilesMetadata);
-		debugConsole('overwriteExisting: ' + data.overwriteExisting);*/
-
-		// create list with dataset, datasetdefid and relative file path
-		// to facilitate saving one file to the correct dataset/datafile.
-		// This array's id should correspond to the pendingFiles array.
+			// Create list with dataset, datasetdefid and relative file path to facilitate saving one file to the correct dataset/datafile.
+			// Array's index corresponds to pendingFiles array.
 		data.pendingFilesMetadata = [];
-		//debugConsole('looping through fn_array');
 		for(let i = 0; i < fn_array.length; i++) {
 			for(let j = 0; j < fn_array[i].length; j++) {
 				if(fn_array[i][j] != undefined)
 				{
-					//debugConsole("dataset: ", dsn_array[i], "descr: ", descr_array[i], " datasetdefId: ", df_array[j], " relativefilepath: ", fn_array[i][j]);
 					data.pendingFilesMetadata.push({ datasetName: dsn_array[i], datasetDesc: descr_array[i], datasetdefId: df_array[j], relativePath: fn_array[i][j]});
 				}
 			}
 		}
-		//debugConsole('data.pendingFilesMetadata');
-		//debugConsoleTable(data.pendingFilesMetadata);
-		// sort by relativePath so this is the same order as the pendingFiles
 		data.pendingFilesMetadata.sort((a, b) => a.relativePath.localeCompare(b.relativePath));
-		//debugConsole('data.pendingFilesMetadata - sorted by relativefilepath');
-		//debugConsoleTable(data.pendingFilesMetadata);
-		// create list with pending files: data.pendingFiles
+			// Create list with pending files: data.pendingFiles
 		let filenamesToUpload = fn_array.flat(); // flat list of files to upload. This is a relative path from the directory chosen as input. E.g. P0002/3DSCAN/P0002_watertight.stl
-		//debugConsole('filenamesToUpload');
-		//debugConsoleTable(filenamesToUpload);
-		data.nSelected = fn_array.flat().length; // since this is a multi-dimensional array, we need to flatten it first for length to count all elemets
 		if(data.dirMode == 0)
-		{
-			// flat: get filtered list of file objects
-			data.pendingFiles = data.allFiles.filter((file) => { // the data.allFiles 'name' is *just* the file name. There is a relative path, but it also contains the parent folder. E.g. AXD-small/P0002/3DSCAN/P0002_watertight.stl
-				return filenamesToUpload.includes(file.name);
+		{ // flat: get filtered list of file objects
+			data.pendingFiles = data.allFiles.filter((file) => { return filenamesToUpload.includes(file.name);
+				// the data.allFiles 'name' is *just* the file name. There is a relative path, but it also contains the parent folder. 
+				// E.g. AXD-small/P0002/3DSCAN/P0002_watertight.stl
 			});
 		}
 		else
 		{	// nested: prepend filenamesToUpload with directory for comparison with allFiles
-			//debugConsole("nested");
-			//debugConsoleTable(data.allFiles);
-			//debugConsole('data.directory: ', data.directory);
 			let prefix = data.directory+'/';
 			dirPrefixed = filenamesToUpload.map(item => prefix + item);
-			data.pendingFiles = data.allFiles.filter((file) => {
-				return dirPrefixed.includes(file.webkitRelativePath);
-			});
+			data.pendingFiles = data.allFiles.filter((file) => { return dirPrefixed.includes(file.webkitRelativePath); });
 		}
-		//debugConsole('data.pendingFiles - unsorted');
-		//debugConsoleTable(data.pendingFiles);
 
 		if(data.overwriteExisting == false)
-		{
-			//debugConsole("We will *not* overwrite existing files. Hence, we're removing existing files from the pendingFiles list");
-			
+		{	// We will *not* overwrite existing files. Hence, we're removing existing files from the pendingFiles list			
 			//
 			// filter pendingFiles again, removing any entries which correspond to existing datafiles
 			//
-			// first add 'exists' field and set to true if datafile already exists
+				// first add 'exists' field and set to true if datafile already exists
 			data.pendingFilesMetadata.forEach(obj1 => {
 				obj1.exists = existingFilesMetadata.some(obj2 =>
 					obj1.datasetName === obj2.datasetName &&
 					obj1.datasetdefId === obj2.datasetdefId
 				);
 			});
-			//debugConsole("data.pendingFilesMetadata - after adding 'exist' property");
-			//debugConsoleTable(data.pendingFilesMetadata);
-			// filter pendingFiles based on the 'exists' field
+				// filter pendingFiles based on the 'exists' field
 			nonexistentPendingFiles = data.pendingFiles.filter((obj2, index) => {
 				// condition based on array1 at the same index
 				return data.pendingFilesMetadata[index].exists === false;
 			});
-			//debugConsole('nonexistentPendingFiles - filtered out existing files');
-			//debugConsoleTable(nonexistentPendingFiles);
 			// filter pendingFilesMetadata based on the 'exists' field
 			nonexistentPendingFilesMetadata = data.pendingFilesMetadata.filter((obj2, index) => {
 				return obj2.exists === false;
 			});
-			//debugConsole('nonexistentPendingFilesMetadata - filtered out existing files');
-			//debugConsoleTable(nonexistentPendingFilesMetadata);
 
 			// assign nonexistent filtered results
 			data.pendingFiles = nonexistentPendingFiles;
@@ -692,10 +650,6 @@
 
 		// update the actual number of files to upload, so Livewire knows how many files to expect.
 		data.nFilesToUpload = data.pendingFiles.length;
-		//$wire.set('nFilesToUpload', data.nFilesToUpload);
-
-		//debugConsole("data.pendingFiles")
-		//debugConsoleTable(data.pendingFiles);
 		debugConsole("_pendingFiles: nFilesToUpload: " + data.nFilesToUpload);
 		
 		console.timeEnd("createPendingFiles");
@@ -725,7 +679,7 @@
 	}
 
 		// Updates the data and table on click of dataset selection
-		//   Creates Alpine variables: pdatasetnames, pdatasetdescriptions, pdatafilenames, canUpload, nFilesSelected
+		//   Creates Alpine variables: selDatasetNames, selDatasetDescriptions, selDatafileNames, canUpload, nFilesSelected
 	function _updateSelected(data)
 	{
 		debugConsoleTable("_updateSelected");
@@ -743,7 +697,7 @@
 			let descr_selected = [];
 			for (let i=0; i<data.nDatasetsFound; i++)
 			{
-				fn = data.fn_array[i];
+				fn = data.allDatafileNames[i];
 				if(i<rows.length)
 					checked = document.getElementById("check"+(i+1)).checked; // within the table range -> checked if selected
 				else
@@ -751,9 +705,9 @@
 				if(checked) 
 				{  // Dataset selected
 					dsn_cnt++; // count the number of selected datasets
-					dsn_selected[dsn_selected.length] = data.dsn_array[i];
-					descr_selected[descr_selected.length] = data.descr_array[i];
-					if(i<rows.length) rows[i].cells[1].textContent = data.dsn_array[i]; // update the table
+					dsn_selected[dsn_selected.length] = data.allDatasetNames[i];
+					descr_selected[descr_selected.length] = data.allDatasetDescriptions[i];
+					if(i<rows.length) rows[i].cells[1].textContent = data.allDatasetNames[i]; // update the table
 						// insert selected datafilenames
 					fn_selected[fn_selected.length] = fn;
 					for (let col=0; col<fn.length; col++)
@@ -782,9 +736,9 @@
 				data.canUpload = true; 	
 			else
 				data.canUpload = false;
-			data.pdatasetnames = dsn_selected; // save the selected dataset names
-			data.pdatasetdescriptions = descr_selected; // save the selected descriptons
-			data.pdatafilenames = fn_selected; // save the selected filenames
+			data.selDatasetNames = dsn_selected; // save the selected dataset names
+			data.selDatasetDescriptions = descr_selected; // save the selected descriptons
+			data.selDatafileNames = fn_selected; // save the selected filenames
 			
 			console.timeEnd("_updateSelected");
 				// create list of pending files so we know if there is anything to upload
