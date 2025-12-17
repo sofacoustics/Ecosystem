@@ -514,17 +514,10 @@
 		document.getElementById("table-hint").innerHTML = "Showing " + (rows_max == dsn_array.length ? "all" : (rows_max + " first")) + " datasets:";
 
 		// save variables in Livewire for upload procedure
-		//$wire.set('dsnFiltered', dsn_array); // save the filtered dataset names
-		//$wire.set('descrFiltered', descr_array); // save the filtered dataset descriptions
-		//$wire.set('dfnFiltered', fn_array); // save the filtered filenames (this is causing memory errors for large arrays!!!
-		//$wire.set('dirMode', data.dirMode); // save the directory dirMode (0: flat, 1: nested)
 		data.allDatasetNames = dsn_array;
 		data.allDatasetDescriptions = descr_array;
 		data.allDatafileNames = fn_array;
 		data.nDatasetsFound = dsn_array.length;
-		//debugConsole("Size of dsnFiltered: " + estimateArraySizeInBytes(dsn_array) + " bytes");
-		//debugConsole("Size of descrFiltered: " + estimateArraySizeInBytes(descr_array) + " bytes");
-		//debugConsole("Size of fn_array: " + estimateArraySizeInBytes(fn_array) + " bytes");
 		console.timeEnd("Parse files");
 		
 			// select all Datasets in the table, which also calls createPendingfiles
@@ -537,8 +530,7 @@
 	  uploadStart = performance.now();
 		response=confirm("This will start the upload and this might take a long time. Do not leave this page while uploading.\n\nTo cancel the upload, refresh or close the page. ");
 		if(response==false) return;
-		//resetUpload();
-		data = _createPendingFiles(data); // create the list with PendingFiles
+		//data = _createPendingFiles(data); // create the list with PendingFiles
 		data.nUploaded = 0;
 		if(data.nFilesToUpload == 0)
 		{
@@ -554,12 +546,9 @@
 
 			let uploads = Object.values($wire.uploads); //jw:todo can delete
 			let offset = uploads.length; //jw:todo can delete
-			//debugConsole("doUpload() - existing upload count: ", offset);
 			// https://fly.io/laravel-bytes/multi-file-upload-livewire/
-			//debugConsoleTable(data.pendingFiles);
 			data.pendingFiles.forEach( (file, index) => { uploadQueue.push({ index, file }); } );
 			debugConsole("uploadQueue: ", uploadQueue);
-			//debugConsoleTable(uploadQueue);
 			debugConsole("uploadQueue.length: ", uploadQueue.length);
 			processQueue();
 		}
@@ -573,9 +562,7 @@
 	});
 
 	$js('toggleOverwriteExisting', (data)  => {
-		//debugConsole('Toggling overwriteExisting from ' + data.overwriteExisting + ' to ' + data.overwriteExisting ? false : true);
 		let newValue = data.overwriteExisting ? false : true;
-		debugConsole('Toggling overwriteExisting from ' + data.overwriteExisting + ' to ' + newValue);
 		data.overwriteExisting = newValue;
 		_createPendingFiles(data);
 	});
@@ -663,7 +650,6 @@
 		tableBody = document.getElementById('results').getElementsByTagName('tbody')[0];
 		if (tableBody.rows.length > 0)
 		{
-			//debugConsole('Tablebody.rows', tableBody.rows);
 			if (checkBox.checked == true)
 			{
 				for (let i=0; i<tableBody.rows.length; i++)
@@ -751,7 +737,6 @@
 
 	function processQueue() {
 
-		//debugConsole('processQueue():start');
 		while (uploadQueue.length > 0 && maxParallelUploads > 0) {
 			const { index, file } = uploadQueue.shift();
 			maxParallelUploads--;
@@ -788,21 +773,18 @@
 					{
 						data.uploading = false; // finished
 						data.nFilesToUpload = 0;
-						$wire.call('calculateExisting').then(calculatedValue => {
+						/*$wire.call('calculateExisting').then(calculatedValue => {
 							    debugConsole("Calling calculateExisting() and waiting for return value before continuing. nFilesExisint = " + calculatedValue);
-								//data.nFilesExisting = calculatedValue;
+								//data.nFilesExisting = calculatedValue; 
 							    // continue with logic here
-							});
-
+							});*/
 
 						setStatus("Uploading has finished. All files have been saved to the database.");
 						$wire.dispatch('status-message', { message: 'Uploading has finished' });
 
 						// output redirect message and redirect to 'Datasets'
 						$wire.dispatch('status-message', { message: 'You will be redirected to the datasets page' });
-						setTimeout(() => {
-							$wire.call('redirectToDatasets');
-							}, 3000); // 3 second delay
+						setTimeout(() => { $wire.call('redirectToDatasets'); }, 3000); // 3 second delay
 					}
 					processQueue(); // Process next in queue
 				},
@@ -811,7 +793,6 @@
 					setStatus("Error " + index + " (" + error + ")");
 					data.error = true;
 					//jw:tmp maybe don't reset the upload, but carry on? 
-					//resetUpload();
 				},
 				(progress) => {
 					/* Progress updates */
@@ -834,25 +815,6 @@
 		data.status = string;
 	};
 
-		// PM: Unused currently
-	function resetUpload()
-	{
-		setStatus("resetUpload");
-		//$wire.resetUploads();
-		let data = Alpine.$data(document.getElementById('alpineComponent'));
-		data.progress = 0;
-		data.progressText = '';
-		data.nUploaded = 0;
-		data.uploading = false;
-		//data.nFilesExisting = await $wire.get('nFilesExisting');
-		//data.nFilesExisting = $wire.get('nFilesExisting');
-		setStatus("resetUpload() - settings nFilesToUpload to 0");
-		data.nFilesToUpload = 0;
-		uploadQueue = [];
-		maxParallelUploads = 1; // Maximum concurrent uploads
-		setStatus("");
-	}
-
 	/*
 	 * only log to console if debugLevel > 0
 	 */
@@ -865,16 +827,6 @@
 	{
 		if(debugLevel > 0)
 			console.table(...args);
-	}
-
-	function estimateArraySizeInBytes(arr) 
-	{
-		const jsonString = JSON.stringify(arr); // Serialize the array to a JSON string
-		if (typeof TextEncoder !== 'undefined') { // Requires TextEncoder (Modern Browsers/Node.js) ---
-			const encoder = new TextEncoder();
-			return encoder.encode(jsonString).length;
-		}
-		else return 0;
 	}
 
 

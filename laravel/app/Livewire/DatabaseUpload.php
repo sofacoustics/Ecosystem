@@ -41,26 +41,12 @@ class DatabaseUpload extends Component
 	public array $filtered; // a list of names of the files which fit the filter criteria
 	public array $uploaded; // a list of names of the files which have been uploaded
 
-	public $overwriteExisting = false; // set to true, if existing datafiles should be overwritten.
-
-	//public array $dsnFiltered= []; // array with filtered dataset names, e.g. NH01
-	//public array $descrFiltered= []; // array with filtered descriptions
-	//public array $dfnFiltered= []; // a 2D array with filtered datafilenames, dim 1: index of pdatasetnames, dim 2: index of datasetdefIds
-	
-	//public $dirMode = -1; 
-	//public array $pdatasetnames= []; // array with selected (=subset of dsnFiltered) dataset names
-	//public array $pdatasetdescriptions= []; // array with selected (=subset of descrFiltered) descriptions
-	//public array $pdatafilenames= []; // a 2D array with selected (=a subset of dfnFiltered) datafilenames, dim 1: index of pdatasetnames, dim 2: index of datasetdefIds
+	public $overwriteExisting = true; // set to true, if existing datafiles should be overwritten.
 
 	public $progress;
 	public $uploading;
 
-	//public $nFilesFiltered = 0;
 	public $nFilesExisting = -1; // The number of datafiles which already exist in the database (jw:todo not sure if this works with pending files resulting from filtering)
-	//public $nFilesToUpload = 0; // The number of files to upload. This is set in the javascript function 'doUpload'
-	//public $nFilesUploaded = 0;
-	//public $nDatasetsSelected = 0; // Number of selected datasets (=subset of filtered datasets)
-	//public $nFilesSelected = 0; // Number of selected datafiles if uploaded
 
 	public bool $canUpload = false; // set to true, if there are filtered files we can upload jw:todo maybe use nFilesToUpload instead!
 
@@ -85,8 +71,6 @@ class DatabaseUpload extends Component
 
 	public function boot()
 	{
-		/*$this->calculateExisting();
-		$this->debug(1, "calculatingExisting() from boot()");*/
 	}
 
 
@@ -99,27 +83,6 @@ class DatabaseUpload extends Component
 	{
 		session()->put('sonicomEcosystemBulkUploadOverwrite', "$param");
 	}
-
-	/*public function updatedPdatasetnames($value, $key)
-	{
-		dd(["updatedPdatasetnames", $value, $key]);
-		if($this->debugLevel > 0)
-			$this->console("updatedPdatasetnames");
-	}*/
-
-		// now it is in Javascript
-	/*public function updatedPdatafilenames($value, $key)
-	{
-		$nTotalElements = count($this->pdatafilenames, 1); // count multi-dimensional array
-		$nDatasets = count($this->pdatafilenames);
-		$nDatafiles = $nTotalElements - $nDatasets;
-		if($nDatafiles > 0)
-			$this->canUpload = true;
-		else
-			$this->canUpload = false;
-		$this->nFilesFiltered = $nDatafiles; // number of datafiles minus number of datasets
-		$this->setStatus("\$this->pdatafilenames set to $this->nFilesFiltered entries");
-	}*/ 
 	
 		// Updates the filter patterns
 	public function updatedDatafilenamefilters($value, $key) // https://dev.to/zaxwebs/accessing-updated-index-in-livewire-48oc
@@ -147,12 +110,6 @@ class DatabaseUpload extends Component
 			case 'uploads':
 				break;
 			case 'uploadsMetadata':
-				break;
-			case 'filtered':
-				dd("$property updated");
-				$this->console('filtered['.$key.'] updated');
-				sort($this->filtered);
-				$this->saved = [];
 				break;
 			case 'nFilesToUpload':
 				break;
