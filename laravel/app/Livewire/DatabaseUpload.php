@@ -43,19 +43,19 @@ class DatabaseUpload extends Component
 
 	public $overwriteExisting = false; // set to true, if existing datafiles should be overwritten.
 
-	public array $dsnFiltered= []; // array with filtered dataset names, e.g. NH01
-	public array $descrFiltered= []; // array with filtered descriptions
-	public array $dfnFiltered= []; // a 2D array with filtered datafilenames, dim 1: index of pdatasetnames, dim 2: index of datasetdefIds
+	//public array $dsnFiltered= []; // array with filtered dataset names, e.g. NH01
+	//public array $descrFiltered= []; // array with filtered descriptions
+	//public array $dfnFiltered= []; // a 2D array with filtered datafilenames, dim 1: index of pdatasetnames, dim 2: index of datasetdefIds
 	
-	public $dirMode = -1; // -1: filter not applied yet, 0: flat directory structure, 1: nested directory structure
-	public array $pdatasetnames= []; // array with selected (=subset of dsnFiltered) dataset names
-	public array $pdatasetdescriptions= []; // array with selected (=subset of descrFiltered) descriptions
-	public array $pdatafilenames= []; // a 2D array with selected (=a subset of dfnFiltered) datafilenames, dim 1: index of pdatasetnames, dim 2: index of datasetdefIds
+	//public $dirMode = -1; 
+	//public array $pdatasetnames= []; // array with selected (=subset of dsnFiltered) dataset names
+	//public array $pdatasetdescriptions= []; // array with selected (=subset of descrFiltered) descriptions
+	//public array $pdatafilenames= []; // a 2D array with selected (=a subset of dfnFiltered) datafilenames, dim 1: index of pdatasetnames, dim 2: index of datasetdefIds
 
 	public $progress;
 	public $uploading;
 
-	public $nFilesFiltered = 0;
+	//public $nFilesFiltered = 0;
 	public $nFilesExisting = -1; // The number of datafiles which already exist in the database (jw:todo not sure if this works with pending files resulting from filtering)
 	//public $nFilesToUpload = 0; // The number of files to upload. This is set in the javascript function 'doUpload'
 	//public $nFilesUploaded = 0;
@@ -107,9 +107,9 @@ class DatabaseUpload extends Component
 			$this->console("updatedPdatasetnames");
 	}*/
 
-	public function updatedPdatafilenames($value, $key)
+		// no idea what it does, but it is required
+	/*public function updatedPdatafilenames($value, $key)
 	{
-		//dd(["updatedPdatafilenames", $value, $key]);
 		$nTotalElements = count($this->pdatafilenames, 1); // count multi-dimensional array
 		$nDatasets = count($this->pdatafilenames);
 		$nDatafiles = $nTotalElements - $nDatasets;
@@ -119,11 +119,11 @@ class DatabaseUpload extends Component
 			$this->canUpload = false;
 		$this->nFilesFiltered = $nDatafiles; // number of datafiles minus number of datasets
 		$this->setStatus("\$this->pdatafilenames set to $this->nFilesFiltered entries");
-	}
-
+	}*/ 
+	
+		// Updates the filter patterns
 	public function updatedDatafilenamefilters($value, $key) // https://dev.to/zaxwebs/accessing-updated-index-in-livewire-48oc
 	{
-		//dd(["updatedDatafilenamefilters", $value, $key]);
 		$datasetdef = Datasetdef::find($key);
 		$datasetdef->bulk_upload_filename_filter = "$value";
 		$datasetdef->save();
