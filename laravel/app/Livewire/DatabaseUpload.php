@@ -107,7 +107,7 @@ class DatabaseUpload extends Component
 			$this->console("updatedPdatasetnames");
 	}*/
 
-		// no idea what it does, but it is required
+		// now it is in Javascript
 	/*public function updatedPdatafilenames($value, $key)
 	{
 		$nTotalElements = count($this->pdatafilenames, 1); // count multi-dimensional array

@@ -11,7 +11,7 @@
 				pdatasetdescriptions: [], // 1D Array with pending dataset descriptions. Temporary solution, unclear if required.
 				pdatasetnames: [], // Array with pending dataset names. Temporary solution, unclear if required.
 				pdatafilenames: [], // Array with pending datafile names. Temporary solution, unclear if required.
-				maxDisplayDatasets: 2000, // Largest number of Datasets displayed in the table
+				maxDisplayDatasets: 200, // Largest number of Datasets displayed in the table
 			filteredFiles: [],
 			pendingFiles: [],
 			pendingFilesMetadata: [],
@@ -75,7 +75,6 @@
 					wire:model.blur="descriptionfilter" />
 			<br>
 			<x-button wire:click="$js.doFilter($data)" x-bind:disabled="uploading">Apply filter</x-button>
-			<span x-text="nDatasetsFound"></span>
 			
 			<div x-show="nDatasetsFound >= 0">
 				<p>Analysis results:</p>
@@ -726,76 +725,69 @@
 	}
 
 		// Updates the data and table on click of dataset selection
-		//   Updated variables: 
+		//   Creates Alpine variables: pdatasetnames, pdatasetdescriptions, pdatafilenames, canUpload, nFilesSelected
 	function _updateSelected(data)
 	{
 		debugConsoleTable("_updateSelected");
 		tableBody = document.getElementById('results').getElementsByTagName('tbody')[0];
+		checkAll = document.getElementById("checkAll");
 		rows = tableBody.rows; 
-		if (data.nDatasetsFound > -1)
+		if (data.nDatasetsFound > 0)
 		{
 			console.time("_updateSelected");
-			let nDatasetdef = $wire.datasetdefIds.length;
+			let nDatasetdef = $wire.datasetdefIds.length; // number of dataset definitions (i.e., table columns)
 			let fn_cnt_array = new Array(nDatasetdef).fill(0);
 			let dsn_cnt = 0;
 			let fn_selected = []; // 2D array of selected filenames (outer dim: datasets, inner dim: datafile defs)
 			let dsn_selected = [];
 			let descr_selected = [];
-			for (let i=0; i<rows.length; i++)
+			for (let i=0; i<data.nDatasetsFound; i++)
 			{
 				fn = data.fn_array[i];
-				if(document.getElementById("check"+(i+1)).checked) 
-				{  // checked --> dataset selected
+				if(i<rows.length)
+					checked = document.getElementById("check"+(i+1)).checked; // within the table range -> checked if selected
+				else
+					checked = checkAll.checked; // outside the table range -> checked if all selected
+				if(checked) 
+				{  // Dataset selected
 					dsn_cnt++; // count the number of selected datasets
-					rows[i].cells[1].textContent = data.dsn_array[i]; // insert datasetname
 					dsn_selected[dsn_selected.length] = data.dsn_array[i];
 					descr_selected[descr_selected.length] = data.descr_array[i];
+					if(i<rows.length) rows[i].cells[1].textContent = data.dsn_array[i]; // update the table
 						// insert selected datafilenames
 					fn_selected[fn_selected.length] = fn;
 					for (let col=0; col<fn.length; col++)
-					{
-						if(fn[col] != null)
+					{	if(fn[col] != null)
 						{
-							rows[i].cells[col+2].textContent = fn[col];
+							if(i<rows.length) rows[i].cells[col+2].textContent = fn[col];
 							fn_cnt_array[col]++; // count the number of datafiles in the corresponding datafiledef
 						}
 					}
 				}
-				else
-				{  // dataset not selected
-					for (let col=0; col<fn.length; col++)
-					{
-						rows[i].cells[col+2].textContent = ""; // remove the datasetfilenames
-					}
+				else // Dataset not selected
+				{ if(i<rows.length)
+						for (let col=0; col<fn.length; col++)
+							rows[i].cells[col+2].textContent = ""; // update the table
 				}
 			}
-			// Table - Summary header
+				// Update table summary header
 			headers = document.getElementById('results').getElementsByTagName('th');
 			headers[nDatasetdef+3].textContent = dsn_selected.length; // insert count of Names
 			for (let j=0; j<nDatasetdef; j++) // for each column
 				headers[nDatasetdef+4+j].textContent = fn_cnt_array[j]; // insert the count of fns
-			// Update Alpine variables
-			//
+				// Update Alpine variables
 			const uniqueSet = new Set(fn_selected.flat());
-			data.nFilesSelected= uniqueSet.size; // save the number of unique files to upload
-			
-			data.nFilesSelected 			// $nTotalElements = count($this->pdatafilenames, 1); // count multi-dimensional array
-			dsn_cnt; 									// $nDatasets = count($this->pdatafilenames);
-																// $nDatafiles = $nTotalElements - $nDatasets;
-			if(data.nFilesSelected-dsn_cnt > 0) //if($nDatafiles > 0)
-				data.canUpload = true; 	// $this->canUpload = true;
+			data.nFilesSelected= uniqueSet.size; // save the number of unique files to upload			
+			if(data.nFilesSelected-dsn_cnt > 0) 
+				data.canUpload = true; 	
 			else
-				data.canUpload = false; // $this->canUpload = false;
-																// $this->nFilesFiltered = $nDatafiles; 
-																// $this->setStatus("\$this->pdatafilenames set to $this->nFilesFiltered entries");
-			
-			// Update Livewire variables
+				data.canUpload = false;
 			data.pdatasetnames = dsn_selected; // save the selected dataset names
 			data.pdatasetdescriptions = descr_selected; // save the selected descriptons
 			data.pdatafilenames = fn_selected; // save the selected filenames
 			
 			console.timeEnd("_updateSelected");
-			// create list of pending files so we know if there is anything to upload
+				// create list of pending files so we know if there is anything to upload
 			data = _createPendingFiles(data);
 		}
 		return data;
@@ -888,6 +880,7 @@
 		data.status = string;
 	};
 
+		// PM: Unused currently
 	function resetUpload()
 	{
 		setStatus("resetUpload");
