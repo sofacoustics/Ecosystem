@@ -56,28 +56,28 @@
 			<span x-show="nFilesInDir == 0">Directory not picked or no files in the selected directory. Nothing to do...</span>
 		</div>
 				
-		<template x-if="nFilesInDir > 0">
-			<div>
-				<p>We found <b><span x-text="nFilesInDir"></span></b> files in the local directory.</p>
-				<br>
-				<hr>
+		<template x-if="nFilesInDir > 0"><div>
+			<p>We found <b><span x-text="nFilesInDir"></span></b> files in the local directory.</p>
+			<br>
+			<hr>
 
-				<h3>2) Apply filter on your datafiles:<h3>
-				<small>Pattern for the datasets names: (use &lt;ID&gt; to encode an identifier changing with each dataset)</small>
-					<input class="w-full" type="text" placeholder="Can include <ID>, e.g., name <ID>. Must not be empty." id="dsn_pattern" required
-						wire:model.blur="datasetnamefilter" />
-				@foreach ($database->datasetdefs as $index => $datasetdef)
-					<small>#{{ $loop->index+1}}: Pattern for the datafile names of <b>{{ $datasetdef->name }}</b>:</small>
-						<input class="w-full" type="text" placeholder="Can include <ID>, <NUM> or <ANY>, e.g. prefix<ID>_maytest<ANY>.ext. Can be empty to exclude a datasetfile."
-							id="fn_pattern{{ $datasetdef->id }}" wire:model.blur="datafilenamefilters.{{ $datasetdef->id }}" />
-				@endforeach
-				<small>Pattern for the datasets descriptions (optional):</small>
-					<input class="w-full" type="text" placeholder="Can include <ID>, e.g., description <ID>. Can be empty." id="description_pattern"
-						wire:model.blur="descriptionfilter" />
-				<br>
-				<x-button wire:click="$js.doFilter($data)" x-bind:disabled="uploading">Apply filter</x-button>
-				<span x-text="nDatasetsFound"></span>
-				
+			<h3>2) Apply filter on your datafiles:<h3>
+			<small>Pattern for the datasets names: (use &lt;ID&gt; to encode an identifier changing with each dataset)</small>
+				<input class="w-full" type="text" placeholder="Can include <ID>, e.g., name <ID>. Must not be empty." id="dsn_pattern" required
+					wire:model.blur="datasetnamefilter" />
+			@foreach ($database->datasetdefs as $index => $datasetdef)
+				<small>#{{ $loop->index+1}}: Pattern for the datafile names of <b>{{ $datasetdef->name }}</b>:</small>
+					<input class="w-full" type="text" placeholder="Can include <ID>, <NUM> or <ANY>, e.g. prefix<ID>_maytest<ANY>.ext. Can be empty to exclude a datasetfile."
+						id="fn_pattern{{ $datasetdef->id }}" wire:model.blur="datafilenamefilters.{{ $datasetdef->id }}" />
+			@endforeach
+			<small>Pattern for the datasets descriptions (optional):</small>
+				<input class="w-full" type="text" placeholder="Can include <ID>, e.g., description <ID>. Can be empty." id="description_pattern"
+					wire:model.blur="descriptionfilter" />
+			<br>
+			<x-button wire:click="$js.doFilter($data)" x-bind:disabled="uploading">Apply filter</x-button>
+			<span x-text="nDatasetsFound"></span>
+			
+			<div x-show="nDatasetsFound >= 0">
 				<p>Analysis results:</p>
 				<small><p id="analysis-summary" wire:ignore><br></p></small>
 				<br>
@@ -161,55 +161,55 @@
 					</style>
 				</div>
 
-				<div x-show="dirMode >= 0">
-					<br>
-					<p>Files selected for upload: <span x-text="nFilesSelected"></span></p>
-					<p>Files pending upload: <span x-text="nFilesToUpload"></span></p>
-					<hr>
 
-					<h3>4) Upload the datafiles:</h3>
-					<label>Overwrite existing files?
-						<input type="checkbox" x-model="overwriteExisting" @click="$js.toggleOverwriteExisting($data)">
-					</label><br>
-
-					<div>
-						<button
-							x-bind:disabled="uploading || nFilesToUpload == 0"
-							@click="$js.doUpload($data)"
-							x-text="uploading? 'Uploading...' : 'Start upload'"
-							class="{{ $buttonStyle }}"
-							x-bind:class="nFilesToUpload == 0 | uploading? '{{ $buttonColorDisabled }}' : '{{ $buttonColorEnabled }}'"
-						>
-							Start upload
-						</button>
-					</div>
-					<p> Status:  <span x-text="status"></span></p>
-					<p id="nUploaded" wire:ignore></p>
-					<p id="nUploadProgress" wire:ignore></p>
-
-					<div x-cloak>
-						<div class="bg-gray-100">
-							<x-message show="cancelled" timeout="2000">The upload has been cancelled</x-message>
-							<x-message type="error" show="error">Error: there was an error uploading. Please try again!</x-message>
-							<x-message show="uploading">Uploading to server</x-message>
-						</div>
-					</div>
-					<div>
-						<p>Upload progress: <span x-text="progressText"></span></p>
-						<div class="relative h-2 mt-2 rounded-full bg-base-200">
-							<div
-								x-bind:style="'width: ' + progress + '%;'"
-								class="absolute top-0 left-0 h-full bg-orange-500 rounded-full">
-							</div>
-					</div>
-					<br>
-					<hr>
+				<br>
+				<label>Overwrite existing files?
+					<input type="checkbox" x-model="overwriteExisting" @click="$js.toggleOverwriteExisting($data)">
+				</label><br>
+				<p>Files selected for upload: <span x-text="nFilesSelected"></span></p>
+				<p>Files pending upload: <span x-text="nFilesToUpload"></span></p>
+				<hr>
 
 
+				<h3>4) Upload the datafiles:</h3>
+
+				<div>
+					<button
+						x-bind:disabled="uploading || nFilesToUpload == 0"
+						@click="$js.doUpload($data)"
+						x-text="uploading? 'Uploading...' : 'Start upload'"
+						class="{{ $buttonStyle }}"
+						x-bind:class="nFilesToUpload == 0 | uploading? '{{ $buttonColorDisabled }}' : '{{ $buttonColorEnabled }}'"
+					>
+						Start upload
+					</button>
+				</div>
+				<p> Status:  <span x-text="status"></span></p>
+				<p id="nUploaded" wire:ignore></p>
+				<p id="nUploadProgress" wire:ignore></p>
+
+				<div x-cloak>
+					<div class="bg-gray-100">
+						<x-message show="cancelled" timeout="2000">The upload has been cancelled</x-message>
+						<x-message type="error" show="error">Error: there was an error uploading. Please try again!</x-message>
+						<x-message show="uploading">Uploading to server</x-message>
 					</div>
 				</div>
-			</div>
-		</template>	
+				<div>
+					<p>Upload progress: <span x-text="progressText"></span></p>
+					<div class="relative h-2 mt-2 rounded-full bg-base-200">
+						<div
+							x-bind:style="'width: ' + progress + '%;'"
+							class="absolute top-0 left-0 h-full bg-orange-500 rounded-full">
+						</div>
+				</div>
+				<br>
+				<hr>
+
+
+				</div>
+			</div> <!-- datasets found --> 
+		</div></template>	<!-- files in local directory -->
 	</form>
 
 	@hasrole('admin')
