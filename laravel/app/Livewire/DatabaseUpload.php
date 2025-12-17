@@ -56,11 +56,11 @@ class DatabaseUpload extends Component
 	public $uploading;
 
 	public $nFilesFiltered = 0;
-	public $nFilesExisting = 0; // The number of datafiles which already exist in the database (jw:todo not sure if this works with pending files resulting from filtering)
-	public $nFilesToUpload = 0; // The number of files to upload. This is set in the javascript function 'doUpload'
+	public $nFilesExisting = -1; // The number of datafiles which already exist in the database (jw:todo not sure if this works with pending files resulting from filtering)
+	//public $nFilesToUpload = 0; // The number of files to upload. This is set in the javascript function 'doUpload'
 	//public $nFilesUploaded = 0;
-	public $nDatasetsSelected = 0; // Number of selected datasets (=subset of filtered datasets)
-	public $nFilesSelected = 0; // Number of selected datafiles if uploaded
+	//public $nDatasetsSelected = 0; // Number of selected datasets (=subset of filtered datasets)
+	//public $nFilesSelected = 0; // Number of selected datafiles if uploaded
 
 	public bool $canUpload = false; // set to true, if there are filtered files we can upload jw:todo maybe use nFilesToUpload instead!
 
@@ -100,16 +100,16 @@ class DatabaseUpload extends Component
 		session()->put('sonicomEcosystemBulkUploadOverwrite', "$param");
 	}
 
-	public function updatedPdatasetnames($value, $key)
+	/*public function updatedPdatasetnames($value, $key)
 	{
 		dd(["updatedPdatasetnames", $value, $key]);
 		if($this->debugLevel > 0)
 			$this->console("updatedPdatasetnames");
-	}
+	}*/
 
 	public function updatedPdatafilenames($value, $key)
 	{
-		dd(["updatedPdatafilenames", $value, $key]);
+		//dd(["updatedPdatafilenames", $value, $key]);
 		$nTotalElements = count($this->pdatafilenames, 1); // count multi-dimensional array
 		$nDatasets = count($this->pdatafilenames);
 		$nDatafiles = $nTotalElements - $nDatasets;
@@ -123,7 +123,7 @@ class DatabaseUpload extends Component
 
 	public function updatedDatafilenamefilters($value, $key) // https://dev.to/zaxwebs/accessing-updated-index-in-livewire-48oc
 	{
-		dd(["updatedDatafilenamefilters", $value, $key]);
+		//dd(["updatedDatafilenamefilters", $value, $key]);
 		$datasetdef = Datasetdef::find($key);
 		$datasetdef->bulk_upload_filename_filter = "$value";
 		$datasetdef->save();
