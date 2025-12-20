@@ -58,7 +58,7 @@ switch Obj.GLOBAL_SOFAConventions
     % differ cases, depending on SOFA conventions
     case { 'SimpleFreeFieldHRIR', 'SimpleFreeFieldHRTF'}
 
-				graphics_toolkit fltk
+				%graphics_toolkit fltk
 
         %% ITD
         f=figure;
@@ -76,7 +76,7 @@ switch Obj.GLOBAL_SOFAConventions
         myprint(do_print, [SOFAfile '_8.png']);
         mylog(fid, [ "just printed " SOFAfile "_8.png"]);
 
-        graphics_toolkit gnuplot
+        %graphics_toolkit gnuplot
 
         %% ETCHorizontal
 				f=figure;
@@ -117,7 +117,7 @@ switch Obj.GLOBAL_SOFAConventions
 
     case {'GeneralTF'}
 
-        graphics_toolkit gnuplot
+        %graphics_toolkit gnuplot
 
         mylog(fid, [ "case GeneralTF"]);
         % plot magnitude spectrum in the median plane, channel 1
@@ -133,7 +133,7 @@ switch Obj.GLOBAL_SOFAConventions
 
     case 'GeneralFIR'
 
-				graphics_toolkit fltk
+				%graphics_toolkit fltk
 
         mylog(fid, [ "case GeneralFIR"]);
         f=mySOFAplotGeometry(Obj);

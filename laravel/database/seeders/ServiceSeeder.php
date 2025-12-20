@@ -14,18 +14,19 @@ class ServiceSeeder extends Seeder
      */
     public function run(): void
     {
-            Service::create(array(
+      Service::create(array(
                     'name' => 'Octave: HRTF General',
-                    'description' => 'Plot hrtf-related figures: time domain: ETC left/right; frequency domain (lin): magnitude spectrum left/right; frequency domain (log): magnitude spectrum left/right logarithmic; ITD; Geometry.',
-                    'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
+                    'description' => 'Plot HRTF-related figures: Time domain: ETC left/right; Frequency domain (lin): magnitude spectrum left/right; Frequency domain (log): magnitude spectrum left/right logarithmic; ITD; Geometry.',
+                    'exe' => 'sudo -u sonicom /opt/scripts/run-octave-gui.sh',
+										// at dev server: 'sudo -u sonicom /home/sonicom/isf-sonicom-laravel/octave/run-octave-gui.sh'
                     'parameters' => 'HRTFGeneral.m'
                 )
             );
-            Service::create(array(
-                    'name' => 'Octave: ETC horizontal plane',
-                    'description' => 'Plot ETC in the horizontal plane.',
-                    'exe' => 'octave-cli',
-                    'parameters' => 'HRIR1.m'
+ 			Service::create(array(
+                    'name' => 'Octave: BRIR ListenerView',
+                    'description' => 'Plot BRIR with ListenerView as parameter.',
+                    'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
+                    'parameters' => 'BRIRListenerView.m'
                 )
             );
 			Service::create(array(
@@ -36,15 +37,15 @@ class ServiceSeeder extends Seeder
                 )
             );
 			Service::create(array(
-                   'name' => 'Octave: SRIR General',
-                   'description' => 'Plot SRIR General.',
-                    'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
+                   'name' => 'Octave: SRIR Geometry per M',
+                   'description' => 'For each M, plots the geometry of the measurement from four perspectives.',
+                    'exe' => 'sudo -u sonicom /opt/scripts/run-octave-gui.sh',
                    'parameters' => 'SRIRGeneral.m'
                )
             );
 			Service::create(array(
                    'name' => 'Octave: Directivities General',
-                   'description' => 'Plot the directivities as polar plots, and as filled contour plot.',
+                   'description' => 'Plot the geometry and directivity as polar plots per frequency.',
                    'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
                    'parameters' => 'DirectivityGeneral.m'
                )
@@ -76,13 +77,6 @@ class ServiceSeeder extends Seeder
                    'exe' => 'octave-cli',
                    'parameters' => 'Headphones.m'
                )
-            );
-			Service::create(array(
-                    'name' => 'Octave: BRIR ListenerView',
-                    'description' => 'Plot BRIR with ListenerView as parameter.',
-                    'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
-                    'parameters' => 'BRIRListenerView.m'
-                )
             );
     }
 }
