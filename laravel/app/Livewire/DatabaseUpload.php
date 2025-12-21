@@ -48,8 +48,6 @@ class DatabaseUpload extends Component
 
 	public $nFilesExisting = -1; // The number of datafiles which already exist in the database (jw:todo not sure if this works with pending files resulting from filtering)
 
-	public bool $canUpload = false; // set to true, if there are filtered files we can upload jw:todo maybe use nFilesToUpload instead!
-
 	private $debugLevel = 0;
 	private $debugIndent = 0;
 
@@ -253,7 +251,7 @@ class DatabaseUpload extends Component
 		{ 
 			$datasetname = $dataset->name;
 			$datasetdescription = $dataset->description;
-			foreach($dataset->datafiles as $datafile) 
+			foreach($dataset->datafiles as $datafile)
 			{				
 					// save metadata of existing datafiles so we can compare with pendingUploads and know
 					// which ones we actually have to upload!

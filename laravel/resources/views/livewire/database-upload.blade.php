@@ -1,34 +1,43 @@
 <div> {{-- component div:START --}}
 	<div 
 		x-data="{
-				maxDisplayDatasets: 100, // Largest number of Datasets displayed in the table
+			  nFilesExisting: @entangle('nFilesExisting'),
+
+			  nFilesInDir: -1, // Number of files in the local directory. -1: not picked yet.
   			allFiles: [], // All files from the picked local directory
 	  		directory: '', // Root of the local directory  
+				
+				dirMode: 0, // -1: filter not applied yet, 0: flat directory structure, 1: nested directory structure
+				maxDisplayDatasets: 100, // Largest number of Datasets displayed in the table
 				allDatasetNames: [], // 1D Array with dataset names
 				allDatasetDescriptions: [], // 1D Array with dataset descriptions
 				allDatafileNames: [], // 2D Array with datafile names per dataset
+				allDatasetExisting: [], // 1D Array with true if that dataset already exists
+				allDatasetdefIdsExisting: [], // 2D Array with datasetdefIDs of datafiles that exist
 				nDatasetsFound: -1, // Number of datasets found by Apply Filter. -1: Filter not applied yet.
 				selDatasetDescriptions: [], // 1D Array with selected dataset descriptions. 
 				selDatasetNames: [], // Array with selected dataset names. 
 				selDatafileNames: [], // Array with selected datafile names. 
+				selDatasetExisting: [], // 1D Array with true if selected dataset already exists
+				selDatasetdefIdsExisting: [], // 2D Array with datasetdefIDs of selected datafiles that exist
+				
 			  pendingFiles: [], // Array with pending filenames, i.e., files to be uploaded
 			  pendingFilesMetadata: [], // Structure with arrays of pending datafiles, i.e., to be created/updated
-			  nFilesInDir: -1, // Number of files in the local directory. -1: not picked yet.
-			uploading: false,
-			saving: false,
-			nUploaded: 0,
-			progress: 0,
-			progressText: '',
+				
+			  uploading: false,
+			  nUploaded: 0,
+			  progress: 0,
+			  progressText: '',		
+			  status: '',
+			overwriteExisting: @entangle('overwriteExisting'),
+				nDatasetsToUpload: 0,
+				nDatasetsToOverwrite: 0,
+  			nFilesToUpload: 0,
+				nFilesToOverwrite: 0,
+				
 			finished: false,
 			error: false,
 			cancelled: false,
-			status: '',
-				dirMode: 0, // -1: filter not applied yet, 0: flat directory structure, 1: nested directory structure
-			nFilesSelected: 0,
-			canUpload: @entangle('canUpload'),
-			overwriteExisting: @entangle('overwriteExisting'),
-			nFilesToUpload: 0,
-			  nFilesExisting: @entangle('nFilesExisting'),
 		}" 
 		
 		x-init="setTimeout(() => { $wire.calculateExisting(); }, 100)"
@@ -104,14 +113,16 @@
 				</table>
 
 				<div class="read-more-container">
-					<input type="checkbox" id="read-more-toggle" wire:ignore class="read-more-checkbox">
-					<label for="read-more-toggle" class="read-more-label" wire:ignore>
-							<span class="read-more-text" id="skipped" wire:ignore></span>
-							<span class="read-less-text" wire:ignore>Showing only first 40 files. Click to close the list...</span>
-					</label>
-					<div class="read-more-content">
-							<p class="hidden-content" id="skipped-list" wire:ignore></p>
-					</div>
+					<small style="text-align: right;">
+						<input type="checkbox" id="read-more-toggle" wire:ignore class="read-more-checkbox">
+						<label for="read-more-toggle" class="read-more-label" wire:ignore>
+								<span class="read-more-text" id="skipped" wire:ignore></span>
+								<span class="read-less-text" wire:ignore>Showing only first 40 files. Click to close the list...</span>
+						</label>
+						<div class="read-more-content">
+								<p class="hidden-content" id="skipped-list" wire:ignore></p>
+						</div>
+					</small>
 
 					<style>
 						
@@ -127,11 +138,12 @@
 								display: none;
 						}
 						.read-more-label { /* Style the button-like label */
-							//display: block;
+							display: block;
 							cursor: pointer;
 							//color: #007bff;
 							//margin-top: 10px;
 							font-weight: bold;
+							text-align: right;
 						}
 						/* Logic for when the checkbox is checked */
 						.read-more-checkbox:checked ~ .read-more-content .hidden-content { /* When the checkbox is checked, display the hidden content */
@@ -158,13 +170,16 @@
 					</style>
 				</div>
 
-
-				<br>
-				<label>Overwrite existing files?
+				<!--label>Overwrite existing files?
 					<input type="checkbox" x-model="overwriteExisting" @click="$js.toggleOverwriteExisting($data)">
-				</label><br>
-				<p>Files selected for upload: <span x-text="nFilesSelected"></span></p>
-				<p>Files pending upload: <span x-text="nFilesToUpload"></span></p>
+				</label><br-->
+				<small>
+					<p><b>Datasets selected to create/update:</b> <span x-text="nDatasetsToUpload"></span> datasets</p>
+					<p><b>Datasets that will be overwritten:</b> <span x-text="nDatasetsToOverwrite"></span> datasets</p>
+					<p><b>Datafiles selected for upload:</b> <span x-text="nFilesToUpload"></span> files</p>
+					<p><b>Datafiles that will be overwritten:</b> <span x-text="nFilesToOverwrite"> files</span></p>
+				</small>
+				<br>
 				<hr>
 
 
@@ -177,29 +192,31 @@
 						x-text="uploading? 'Uploading...' : 'Start upload'"
 						class="{{ $buttonStyle }}"
 						x-bind:class="nFilesToUpload == 0 | uploading? '{{ $buttonColorDisabled }}' : '{{ $buttonColorEnabled }}'"
-					>
-						Start upload
+						>Start upload
 					</button>
 				</div>
-				<p> Status:  <span x-text="status"></span></p>
-				<p id="nUploaded" wire:ignore></p>
-				<p id="nUploadProgress" wire:ignore></p>
+				<div x-show="uploading">
+					<p> Status:  <span x-text="status"></span></p>
+					<p>Files pending upload: <span x-text="nFilesToUpload"></span></p>
+					<p id="nUploaded" wire:ignore></p>
+					<p id="nUploadProgress" wire:ignore></p>
 
-				<div x-cloak>
-					<div class="bg-gray-100">
-						<x-message show="cancelled" timeout="2000">The upload has been cancelled</x-message>
-						<x-message type="error" show="error">Error: there was an error uploading. Please try again!</x-message>
-						<x-message show="uploading">Uploading to server</x-message>
-					</div>
-				</div>
-				<div>
-					<p>Upload progress: <span x-text="progressText"></span></p>
-					<div class="relative h-2 mt-2 rounded-full bg-base-200">
-						<div
-							x-bind:style="'width: ' + progress + '%;'"
-							class="absolute top-0 left-0 h-full bg-orange-500 rounded-full">
+					<div x-cloak>
+						<div class="bg-gray-100">
+							<x-message show="cancelled" timeout="2000">The upload has been cancelled</x-message>
+							<x-message type="error" show="error">Error: there was an error uploading. Please try again!</x-message>
+							<x-message show="uploading">Uploading to server</x-message>
 						</div>
-				</div>
+					</div>
+					<div>
+						<p>Upload progress: <span x-text="progressText"></span></p>
+						<div class="relative h-2 mt-2 rounded-full bg-base-200">
+							<div
+								x-bind:style="'width: ' + progress + '%;'"
+								class="absolute top-0 left-0 h-full bg-orange-500 rounded-full">
+							</div>
+						</div>
+					</div>
 				<br>
 				<hr>
 
@@ -211,12 +228,22 @@
 
 	@hasrole('admin')
 		<p><small>(Livewire) Status: {{ $status }}</small></p>
-		<p><small>(Alpine) Directory: <span x-text="directory"></span></small></p>
-		<p><small>(Alpine) Mode: <span x-text="dirMode"></span></small></p>
+		<p><small>(Alpine+Livewire) nFilesExisting: <span x-text="nFilesExisting"></span></small></p>
 		<p><small>(Alpine) nFilesInDir: <span x-text="nFilesInDir"></span></small></p>
+		<p><small>(Alpine) Directory: <span x-text="directory"></span></small></p>
+		<p><small>(Alpine) dirMode: <span x-text="dirMode"></span></small></p>
+		<p><small>(Alpine) maxDisplayDatasets: <span x-text="maxDisplayDatasets"></span></small></p>
+		<p><small>(Alpine) nDatasetsFound: <span x-text="nDatasetsFound"></span></small></p>
+		<p><small>(Alpine) uploading: <span x-text="uploading"></span></small></p>
+		<p><small>(Alpine) nUploaded: <span x-text="nUploaded"></span></small></p>
+		<p><small>(Alpine) progress: <span x-text="progress"></span></small></p>
+		<p><small>(Alpine) progressText: <span x-text="progressText"></span></small></p>
+		<p><small>(Alpine) status: <span x-text="status"></span></small></p>
+		<p><small>(Alpine+Livewire) overwriteExisting: <span x-text="overwriteExisting"></span></small></p>
+		<p><small>(Alpine) nDatasetsToUpload: <span x-text="nDatasetsToUpload"></span></small></p>
+		<p><small>(Alpine) nDatasetsToOverwrite: <span x-text="nDatasetsToOverwrite"></span></small></p>
 		<p><small>(Alpine) nFilesToUpload: <span x-text="nFilesToUpload"></span></small></p>
-		<p><small>(Alpine) overwriteExisting: <span x-text="overwriteExisting"></span></small></p>
-		
+		<p><small>(Alpine) nFilesToOverwrite: <span x-text="nFilesToOverwrite"></span></small></p>
 	@endhasrole
 
 @script
@@ -399,6 +426,8 @@
 		let descr_array = []; // array with filtered descriptions
 		let fn_array = []; // 2D array of filtered filenames (outer dim: datasets, inner dim: datafile defs)
 		let dsn_cnt = 0; skipped_cnt = 0; matched_cnt = 0; conflict_cnt = 0;
+		let existingFilesMetadata = $wire.get('existingFilesMetadata');
+		let datasetdefIds = $wire.get('datasetdefIds');
 		for (let i = 0; i < data.allFiles.length; i++)
 		{
 			if (data.dirMode == 1)
@@ -475,12 +504,12 @@
 			// Display analysis summary
 		mode_str=(data.dirMode)?("Nested"):("Flat");
 		str = "" + 
-			"<b>Files matched:</b> " + String(matched_cnt) + " files (includes conflicting)<br>" +
-			"<b>Files conflicting:</b> " + String(conflict_cnt) + " files<br>" +
-			"<b>Files skipped:</b> " + String(skipped_cnt) + " files<br>" +
+			"<b>Matching files:</b> " + String(matched_cnt) + " files (includes conflicting files)<br>" +
+			"<b>Matching but conflicting files:</b> " + String(conflict_cnt) + " files<br>" +
+			"<b>Non-matching files:</b> " + String(skipped_cnt) + " files<br>" +
 			"<b>Datasets matched</b>: " + String(dsn_cnt) + "<br>" + 
 			"<b>Datafiles with assigned files:</b> " + String(fn_cnt_array.reduce((a, b) => a + b)) + "<br>" + 
-			"<b>Datafiles empty:</b> " + String(dsn_cnt * df_array.length - fn_cnt_array.reduce((a, b) => a + b)) + "<br>";
+			"<b>Datafiles remaining empty:</b> " + String(dsn_cnt * df_array.length - fn_cnt_array.reduce((a, b) => a + b)) + "<br>";
 		document.getElementById("analysis-summary").innerHTML = str;
 
 			// Table - Summary header
@@ -492,6 +521,8 @@
 			// Table - Filenames
 		tableBody = document.getElementById('results').getElementsByTagName('tbody')[0];
 		rows_max = (dsn_array.length > data.maxDisplayDatasets) ? data.maxDisplayDatasets : dsn_array.length;
+		allDatasetExisting = [];
+		allDatasetdefIdsExisting = [];
 		for (let i=0; i<rows_max; i++)
 		{
 			newRow = tableBody.insertRow(-1);
@@ -500,24 +531,33 @@
 			cell = newRow.insertCell(-1);
 			cell.textContent = dsn_array[i]; // insert Name to the table
 			cell.title = descr_array[i]; // insert Description as cell title
+			allDatasetExisting[i] = existingFilesMetadata.some((ds) => ds.datasetName === dsn_array[i]); // this dataset Name exists already -> to be overwritten
+			if (allDatasetExisting[i]) cell.classList.add('bg-red-100'); // mark red if needs to be overwritten
+			result = [];
+			for (let k = 0; k < existingFilesMetadata.length; k++) 
+			{
+				if (existingFilesMetadata[k].datasetName === dsn_array[i]) { result.push(existingFilesMetadata[k].datasetdefId); }
+			}
+			allDatasetdefIdsExisting[i]=result; 
 			for (let j=0; j<df_array.length; j++) // for each column
 			{
 				cell = newRow.insertCell(-1);
 				cell.textContent = fn_array[i][j]; // insert fn to the specific cell
-				if (fn_array[i][j]=="<NONE>")
-				{ cell.style.backgroundcolor = "red"; // this does not work, I dont know why...
-				}
+				if(allDatasetdefIdsExisting[i].includes(datasetdefIds[j]))
+					cell.classList.add('bg-red-100');		// mark red if needs to be overwritten
 			}
 		}
 		table = document.getElementById('results');
 		table.style.visibility = "visible"; // show the table
-		document.getElementById("table-hint").innerHTML = "Showing " + (rows_max == dsn_array.length ? "all" : (rows_max + " first")) + " datasets:";
+		document.getElementById("table-hint").innerHTML = "Showing " + (rows_max == dsn_array.length ? "all" : (rows_max + " first")) + " datasets (red: datasets will be updated, datafiles will be overwritten):";
 
 		// save variables in Livewire for upload procedure
 		data.allDatasetNames = dsn_array;
 		data.allDatasetDescriptions = descr_array;
 		data.allDatafileNames = fn_array;
 		data.nDatasetsFound = dsn_array.length;
+		data.allDatasetExisting = allDatasetExisting; // true/false; same size as data.allDatasetNames
+		data.allDatasetdefIdsExisting = allDatasetdefIdsExisting; // datasetdefids; same size as data.allDatafileNames
 		console.timeEnd("Parse files");
 		
 			// select all Datasets in the table, which also calls createPendingfiles
@@ -530,28 +570,20 @@
 	  uploadStart = performance.now();
 		response=confirm("This will start the upload and this might take a long time. Do not leave this page while uploading.\n\nTo cancel the upload, refresh or close the page. ");
 		if(response==false) return;
-		//data = _createPendingFiles(data); // create the list with PendingFiles
+		data = _createPendingFiles(data); // create the list with PendingFiles
 		data.nUploaded = 0;
-		if(data.nFilesToUpload == 0)
-		{
-			debugConsole('All files exist already: no files to upload!');
-		}
-		else
-		{
-			data.error = false;
-			$wire.set('canUpload', false);
-			$wire.set('uploading', true); // set immediately. This is used within the Livewire component
-			data.uploading = true; // use this for input button state (enabled/disabled)
-			setStatus("Upload process started.");
+		data.error = false;
+		$wire.set('uploading', true); // set immediately. This is used within the Livewire component
+		data.uploading = true; // use this for input button state (enabled/disabled)
+		setStatus("Upload process started.");
 
-			let uploads = Object.values($wire.uploads); //jw:todo can delete
-			let offset = uploads.length; //jw:todo can delete
-			// https://fly.io/laravel-bytes/multi-file-upload-livewire/
-			data.pendingFiles.forEach( (file, index) => { uploadQueue.push({ index, file }); } );
-			debugConsole("uploadQueue: ", uploadQueue);
-			debugConsole("uploadQueue.length: ", uploadQueue.length);
-			processQueue();
-		}
+		let uploads = Object.values($wire.uploads); //jw:todo can delete
+		let offset = uploads.length; //jw:todo can delete
+		// https://fly.io/laravel-bytes/multi-file-upload-livewire/
+		data.pendingFiles.forEach( (file, index) => { uploadQueue.push({ index, file }); } );
+		debugConsole("uploadQueue: ", uploadQueue);
+		debugConsole("uploadQueue.length: ", uploadQueue.length);
+		processQueue();
 		setStatus('Leaving doUpload()...');
 	});
 
@@ -608,7 +640,7 @@
 			data.pendingFiles = data.allFiles.filter((file) => { return dirPrefixed.includes(file.webkitRelativePath); });
 		}
 
-		if(data.overwriteExisting == false)
+		/*if(data.overwriteExisting == false) // because of a bug, the files will be overwritten ALWAYS
 		{	// We will *not* overwrite existing files. Hence, we're removing existing files from the pendingFiles list			
 			//
 			// filter pendingFiles again, removing any entries which correspond to existing datafiles
@@ -620,11 +652,13 @@
 					obj1.datasetdefId === obj2.datasetdefId
 				);
 			});
+			console.log(data.pendingFilesMetadata);
 				// filter pendingFiles based on the 'exists' field
 			nonexistentPendingFiles = data.pendingFiles.filter((obj2, index) => {
 				// condition based on array1 at the same index
 				return data.pendingFilesMetadata[index].exists === false;
 			});
+			console.log(data.pendingFilesMetadata);			
 			// filter pendingFilesMetadata based on the 'exists' field
 			nonexistentPendingFilesMetadata = data.pendingFilesMetadata.filter((obj2, index) => {
 				return obj2.exists === false;
@@ -633,12 +667,10 @@
 			// assign nonexistent filtered results
 			data.pendingFiles = nonexistentPendingFiles;
 			data.pendingFilesMetadata = nonexistentPendingFilesMetadata;
-		}
+		}*/
 
 		// update the actual number of files to upload, so Livewire knows how many files to expect.
-		data.nFilesToUpload = data.pendingFiles.length;
-		debugConsole("_pendingFiles: nFilesToUpload: " + data.nFilesToUpload);
-		
+		//data.nFilesToUpload = data.pendingFiles.length;
 		console.timeEnd("createPendingFiles");
 		return(data);
 	}
@@ -665,7 +697,8 @@
 	}
 
 		// Updates the data and table on click of dataset selection
-		//   Creates Alpine variables: selDatasetNames, selDatasetDescriptions, selDatafileNames, canUpload, nFilesSelected
+		//   Creates Alpine variables: selDatasetNames, selDatasetDescriptions, selDatafileNames, 
+		//   Updates Alpine counters: nDatasetsToUpload, nDatasetsToOverwrite, nFilesToUpload, nFilesToOverwrite
 	function _updateSelected(data)
 	{
 		debugConsoleTable("_updateSelected");
@@ -678,9 +711,12 @@
 			let nDatasetdef = $wire.datasetdefIds.length; // number of dataset definitions (i.e., table columns)
 			let fn_cnt_array = new Array(nDatasetdef).fill(0);
 			let dsn_cnt = 0;
-			let fn_selected = []; // 2D array of selected filenames (outer dim: datasets, inner dim: datafile defs)
-			let dsn_selected = [];
-			let descr_selected = [];
+			let selDatafileNames = []; // 2D array of selected filenames (outer dim: datasets, inner dim: datafile defs)
+			let selDatasetNames = [];
+			let selDatasetDescriptions = [];
+			let selDatasetExisting = []; // 1D Array with true if that dataset already exists
+			let selDatasetdefIdsExisting = [];
+			let nFilesToOverwrite = 0;
 			for (let i=0; i<data.nDatasetsFound; i++)
 			{
 				fn = data.allDatafileNames[i];
@@ -691,11 +727,14 @@
 				if(checked) 
 				{  // Dataset selected
 					dsn_cnt++; // count the number of selected datasets
-					dsn_selected[dsn_selected.length] = data.allDatasetNames[i];
-					descr_selected[descr_selected.length] = data.allDatasetDescriptions[i];
+					selDatasetNames[selDatasetNames.length] = data.allDatasetNames[i];
+					selDatasetExisting[selDatasetExisting.length] = data.allDatasetExisting[i];
+					selDatasetDescriptions[selDatasetDescriptions.length] = data.allDatasetDescriptions[i];
 					if(i<rows.length) rows[i].cells[1].textContent = data.allDatasetNames[i]; // update the table
 						// insert selected datafilenames
-					fn_selected[fn_selected.length] = fn;
+					selDatafileNames[selDatafileNames.length] = fn;
+					selDatasetdefIdsExisting[selDatasetdefIdsExisting.length] = data.allDatasetdefIdsExisting[i];
+					nFilesToOverwrite = nFilesToOverwrite + data.allDatasetdefIdsExisting[i].length;
 					for (let col=0; col<fn.length; col++)
 					{	if(fn[col] != null)
 						{
@@ -712,23 +751,23 @@
 			}
 				// Update table summary header
 			headers = document.getElementById('results').getElementsByTagName('th');
-			headers[nDatasetdef+3].textContent = dsn_selected.length; // insert count of Names
+			headers[nDatasetdef+3].textContent = selDatasetNames.length; // insert count of Names
 			for (let j=0; j<nDatasetdef; j++) // for each column
 				headers[nDatasetdef+4+j].textContent = fn_cnt_array[j]; // insert the count of fns
-				// Update Alpine variables
-			const uniqueSet = new Set(fn_selected.flat());
-			data.nFilesSelected= uniqueSet.size; // save the number of unique files to upload			
-			if(data.nFilesSelected-dsn_cnt > 0) 
-				data.canUpload = true; 	
-			else
-				data.canUpload = false;
-			data.selDatasetNames = dsn_selected; // save the selected dataset names
-			data.selDatasetDescriptions = descr_selected; // save the selected descriptons
-			data.selDatafileNames = fn_selected; // save the selected filenames
+				// Update Alpine counters
+			data.nDatasetsToUpload = selDatasetNames.length;
+			data.nDatasetsToOverwrite = count = selDatasetExisting.reduce((acc, val) => (val === true ? acc + 1 : acc), 0);
+			const flatselDFN = new Set(selDatafileNames.flat(Infinity));
+			data.nFilesToUpload = flatselDFN.size; // save the number of unique files to upload			
+			data.nFilesToOverwrite = nFilesToOverwrite; // number of datafiles to be overwitten
+				// Update Alpine arrays
+			data.selDatasetNames = selDatasetNames; // save the selected dataset names
+			data.selDatasetDescriptions = selDatasetDescriptions; // save the selected descriptons
+			data.selDatafileNames = selDatafileNames; // save the selected filenames
+			data.selDatasetExisting = selDatasetExisting;
+			data.selDatasetdefIdsExisting = selDatasetdefIdsExisting;
 			
 			console.timeEnd("_updateSelected");
-				// create list of pending files so we know if there is anything to upload
-			data = _createPendingFiles(data);
 		}
 		return data;
 	}
@@ -761,7 +800,7 @@
 				() => {
 					/* Success handler */
 					data.nUploaded++;
-					setStatus("File #" + (index + 1) + " (" + file.name + ") now successfully uploaded");
+					setStatus("File #" + (index+1) + " (" + file.name + ") now successfully uploaded");
 					data.progressText = data.nUploaded + "/" + data.nFilesToUpload + " files successfully uploaded." + elapsedString;
 					// save each datafile after it has been uploaded
 					debugConsole("Calling saveDatafile(" + index + ")");
@@ -785,23 +824,24 @@
 						// output redirect message and redirect to 'Datasets'
 						$wire.dispatch('status-message', { message: 'You will be redirected to the datasets page' });
 						setTimeout(() => { $wire.call('redirectToDatasets'); }, 3000); // 3 second delay
+						return;
 					}
 					processQueue(); // Process next in queue
 				},
 				(error) => {
 					/* Error handler */
-					setStatus("Error " + index + " (" + error + ")");
+					setStatus("Error " + (index+1) + " (" + error + ")");
 					data.error = true;
 					//jw:tmp maybe don't reset the upload, but carry on? 
 				},
 				(progress) => {
 					/* Progress updates */
-					setStatus("File #" + index + " (" + file.name + ") uploading");
+					setStatus("File #" + (index+1) + " (" + file.name + ") uploading");
 					data.progress = event.detail.progress;
 				},
 				() => {
 					/* cancelled handler */
-					setStatus("Cancelled at file #" + index);
+					setStatus("Cancelled at file #" + (index+1));
 				}
 			);
 		}
