@@ -46,9 +46,9 @@
 
 	<form>
 	
-		<div x-show="nFilesExisting == -1">Stand by while the information about the database is collected...</div>
+		<div x-show="nFilesExisting == -1">Please stand by while we collect the information about your Ecosystem Database...</div>
 		<div x-show="nFilesExisting > -1">
-			<p>We found <b><span x-text="nFilesExisting"></span></b> datafiles already present in your Ecosystem database.</p>	
+			<p>We found <b><span x-text="nFilesExisting"></span></b> datafiles already present in your Ecosystem Database.</p>	
 		
 			<h3>1) Pick a local directory with all your datafiles:</h3>
 			<p>Maximal size per file: 2 GB</p>		
@@ -82,6 +82,12 @@
 					wire:model.blur="descriptionfilter" />
 			<br>
 			<x-button wire:click="$js.doFilter($data)" x-bind:disabled="uploading">Apply filter</x-button>
+			<br>
+			<small>
+				<span x-show="(nFilesExisting+nFilesInDir) > 2000">After clicking on the button, please stand by because filtering so many files might take a while...</span>
+			</small>
+			<br>
+			<hr>
 			
 			<div x-show="nDatasetsFound >= 0">
 				<p>Analysis results:</p>
@@ -546,6 +552,16 @@
 				if(allDatasetdefIdsExisting[i].includes(datasetdefIds[j]))
 					cell.classList.add('bg-red-100');		// mark red if needs to be overwritten
 			}
+		}
+		for (let i=rows_max; i<dsn_array.length; i++)
+		{  
+			allDatasetExisting[i] = existingFilesMetadata.some((ds) => ds.datasetName === dsn_array[i]);
+			result = [];
+			for (let k = 0; k < existingFilesMetadata.length; k++) 
+			{
+				if (existingFilesMetadata[k].datasetName === dsn_array[i]) { result.push(existingFilesMetadata[k].datasetdefId); }
+			}
+			allDatasetdefIdsExisting[i]=result; 
 		}
 		table = document.getElementById('results');
 		table.style.visibility = "visible"; // show the table
