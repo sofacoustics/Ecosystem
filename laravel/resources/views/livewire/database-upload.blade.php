@@ -81,7 +81,8 @@
 				<input class="w-full" type="text" placeholder="Can include <ID>, e.g., description <ID>. Can be empty." id="description_pattern"
 					wire:model.blur="descriptionfilter" />
 			<br>
-			<x-button wire:click="$js.doFilter($data)" x-bind:disabled="uploading">Apply filter</x-button>
+			<x-button wire:click="$js.doFilter($data)" x-bind:disabled="uploading">Apply filter</x-button> 
+				<!-- and show up to <input type="text" x-model="maxDisplayDatasets"/> results in table -->
 			<br>
 			<small>
 				<span x-show="(nFilesExisting+nFilesInDir) > 2000">After clicking on the button, please stand by because filtering so many files might take a while...</span>
@@ -94,6 +95,7 @@
 				<small><p id="analysis-summary" wire:ignore><br></p></small>
 				<br>
 				<hr>
+				
 				<h3>3) Prepare the filtering results for data upload:</h3>
 				<small><p id="table-hint" wire:ignore><br></p></small>
 				<table id="results" wire:ignore class="w-full table-auto border border-slate-399" >
