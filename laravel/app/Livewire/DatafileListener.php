@@ -76,21 +76,13 @@ class DatafileListener extends Component
 		$this->latestLog = ServiceLog::where('datafile_id', $this->datafile->id)->latest()->first();
 		\Log::debug('DatafileListener: datafiletype name = ' . ($this->datafiletype->name ?? 'NULL'));
 
-			// is the widget active?
+		$view = 'livewire.datafiles.generic'; // default view for any datafile
 		if($this->widget)
 		{
 			\Log::debug('DatafileListener: widget id = ' . $this->widget->id . ' widget view = ' . ($this->widget->view ?? 'NULL'));
-			if($this->widget->is_active($this->datafiletype))
-				$view = "livewire.datafiles." . $this->widget->view;
-		}
-		else 
-			$view = 'livewire.datafiles.generic';
-
-		// is the view existing?
-		if (!View::exists($view))
-		{
-			\Log::info('DatafileListener: View not found, fallback to generic');
-			$view = 'livewire.datafiles.generic';
+			if($this->widget->is_active($this->datafiletype)) // if widget available and active then use it
+				if(View::exists("livewire.datafiles." . $this->widget->view)) // if view exist, use it
+					$view = "livewire.datafiles." . $this->widget->view;	
 		}
 
 		$viewData = []; // clear the array which will be passed to the blade
