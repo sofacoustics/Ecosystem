@@ -1,11 +1,19 @@
-%SRIRGeneral - Function to load SOFA files, create and save visualizing 1 figure
-
+%SRIRGeneral - Visualizes geometries
+% This script creates for the first 20 M's four views of the same the geometry of the measurement
+% The filename syntax is 'SOFAfile_DIM_Midx_Mmax=M.png'
+% with
+%   SOFAfile: the filename of the input file
+%   DIM: iso, xz, yz, xy: the four views
+%   Midx: the index of the measurement
+%   M: the total number of measuerements display (limited to 20).
+%
 % #Authorr: Michael Mihocic: First version, loading and plotting a few figures, supporting a few conventions (31.08.2023)
 % #Author: Michael Mihocic: support of SRIRGeometry, SingleRoomMIMOSRIR SOFA files implemented (14.04.2025)
 % #Author: Michael Mihocic: conventions restriction removed (03.06.2025)
 % #Author: Michael Mihocic: file renamed from SRIRGeometry.m to SRIRGeneral.m (03.07.2025)
 % #Author: Michael Mihocic: geometry figures enhanced, several figures and several views stored as png; plotting HRTFs removed (07.07.2025)
 % #Author: Michael Mihocic: logging improved (14.07.2025)
+% #Author: Piotr Majdak: major rework because of problems in plotting the room (25.12.2025).
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -15,8 +23,6 @@
 % See the License for the specific language governing  permissions and limitations under the License.
 
 function SRIRGeneral(SOFAfile)
-% for debug purpose comment function row above, and uncomment this one:
-% SOFAfile= 'hrtf_nh4.sofa';
 
   logfile="SRIRGeneral.log";
   fid = fopen(logfile, "w");
@@ -25,24 +31,22 @@ function SRIRGeneral(SOFAfile)
 
   tic; % timer
   SOFAstart('silent'); % remove this optionally
-  warning('off'); %jw:note disable all warnings
+  warning('off'); % disable all warnings
 
-  %jw:note Check if function called with parameter. If not, use command line parameter^M
+  % Check if function called with parameter. If not, use command line parameter
   if(exist("SOFAfile",'var'))
       if(isempty(SOFAfile))
           disp('The SOFA file name SOFAfile is empty');
       end
   else
       % Use command line parameter for SOFAfile
-      % disp("SOFAfile does not exist");
       disp(argv);
       arg_list = argv();
       fn = arg_list{1};
       disp(fn);
       SOFAfile = fn;
   end
-  %disp(["SOFAfile = " SOFAfile]);
-  delete([SOFAfile '_*.png']);
+  delete([SOFAfile '_*.png']); % delete all previous images
 
   %% Load SOFA file
   Obj=SOFAload(SOFAfile);
