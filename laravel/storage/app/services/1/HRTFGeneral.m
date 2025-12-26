@@ -8,6 +8,7 @@
 % #Author: Michael Mihocic: create csv files with properties (09.07.2025)
 % #Author: Michael Mihocic: support for convention SimpleFreeFieldHRTF added; bug fixed when running in Matlab (18.09.2025)
 % #Author: Michael Mihocic: mySOFAplotHRTF for case 'itdhorizontal' updated to compensate Obj.Data.Delay (27.10.2025)
+% #Author: Piotr Majdak: added path to shared functions, moved the call to SOFA Properties to shared (27.12.2025)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -21,40 +22,41 @@ function HRTFGeneral(SOFAfile, do_print)
 % SOFAfile= 'hrtf_nh4.sofa';
 % "D:\\ISF\\Github\\SONICOM Ecosystem (sofacoustics)\\laravel\\storage\\app\\services\\1"
 
-logfile="HRTFGeneral.log";
-fid = fopen(logfile, "w");
-disp(['Current directory: ' pwd]);
+	addpath('../shared'); % add the path to shared functions
+	logfile="HRTFGeneral.log";
+	fid = fopen(logfile, "w");
+	disp(['Current directory: ' pwd]);
 
-%% Prologue
-close all; % clean-up first
-tic; % timer
-SOFAstart('silent'); 
-warning('off'); %jw:note disable all warnings
+	%% Prologue
+	close all; % clean-up first
+	tic; % timer
+	SOFAstart('silent'); 
+	warning('off'); %jw:note disable all warnings
 
-% Check if function called with parameter. If not, use command line parameter
-if(~exist('SOFAfile','var'))
-		% Use command line parameter for SOFAfile
-	arg_list = argv();
-	fn = arg_list{1};
-	disp(['File to be processed: ' fn]);
-	SOFAfile = fn;
-end
-if(length(SOFAfile)==0)
-	error('The SOFA file name is empty');
-end
+	% Check if function called with parameter. If not, use command line parameter
+	if(~exist('SOFAfile','var'))
+			% Use command line parameter for SOFAfile
+		arg_list = argv();
+		fn = arg_list{1};
+		disp(['File to be processed: ' fn]);
+		SOFAfile = fn;
+	end
+	if(length(SOFAfile)==0)
+		error('The SOFA file name is empty');
+	end
 
-% Check if we need to print figures. Default: yes, print.
-if ~exist('do_print','var'), do_print = true; end
+	% Check if we need to print figures. Default: yes, print.
+	if ~exist('do_print','var'), do_print = true; end
 
-%% Load SOFA file
-Obj=SOFAload(SOFAfile);
+	%% Load SOFA file
+	Obj=SOFAload(SOFAfile);
 
-SaveSOFAproperties(Obj, SOFAfile);
-mylog(fid, ["Successfully saved SOFA details to csv files"]);
-mylog(fid, [ "About to plot case " Obj.GLOBAL_SOFAConventions]);
+	SaveSOFAproperties(Obj, SOFAfile);
+	mylog(fid, ["Successfully saved SOFA details to csv files"]);
+	mylog(fid, [ "About to plot case " Obj.GLOBAL_SOFAConventions]);
 
-%% Plot a few figures
-switch Obj.GLOBAL_SOFAConventions
+	%% Plot a few figures
+	switch Obj.GLOBAL_SOFAConventions
     % differ cases, depending on SOFA conventions
     case { 'SimpleFreeFieldHRIR', 'SimpleFreeFieldHRTF'}
 
@@ -144,14 +146,14 @@ switch Obj.GLOBAL_SOFAConventions
     case 'AnnotatedReceiverAudio'
         % no plan yet for this convention ;-)
 
-end
+	end
 
 
-%% Epilogue: (un)comment if you want to:
-disp('DONE');
-mylog(fid, [ "### DONE ###"]);
-fclose(fid);
-toc; % timer
+	%% Epilogue: (un)comment if you want to:
+	disp('DONE');
+	mylog(fid, [ "### DONE ###"]);
+	fclose(fid);
+	toc; % timer
 
 end
 
@@ -166,9 +168,9 @@ end
 
 function [M,meta,h]=mySOFAplotHRTF(Obj,type,varargin)
 
-isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
-% for backward compatibility (type as position-dependent input parameter)
-if nargin == 3 && ischar(type) && isscalar(varargin{1})
+	isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
+	% for backward compatibility (type as position-dependent input parameter)
+	if nargin == 3 && ischar(type) && isscalar(varargin{1})
     %   varargin = flipud(varargin(:));
     R = varargin{1};
     flags.do_normalization=1;
@@ -192,7 +194,7 @@ if nargin == 3 && ischar(type) && isscalar(varargin{1})
         error('Run this in Octave');
     end
 
-else
+	else
     definput.keyvals.receiver=1;
     definput.keyvals.dir=[0,0];
     definput.keyvals.thr=2;
@@ -215,11 +217,11 @@ else
     noisefloor=kv.floor;
     do_conversion2ir=flags.do_conversion2ir; % force convertion to TF (or not)
 
-end
+	end
 
-meta=[];
+	meta=[];
 
-if do_conversion2ir == 1
+	if do_conversion2ir == 1
     %% Convert data to FIR
     Obj=SOFAconvertConventions(Obj);
     fs=Obj.Data.SamplingRate;
@@ -228,16 +230,16 @@ if do_conversion2ir == 1
     if R > size(Obj.Data.IR,2)
         error(['Choosen receiver out of range. Only ', num2str(size(Obj.Data.IR,2)), ' receivers recorded.'])
     end
-else
+	else
     %% check if receiver selection is possible
     if R > size(Obj.Data.Real,2)
         error(['Choosen receiver out of range. Only ', num2str(size(Obj.Data.Real,2)), ' receivers recorded.'])
     end
-end
+	end
 
 
-%% Convert to spherical if cartesian
-if strcmp(Obj.SourcePosition_Type,'cartesian')
+	%% Convert to spherical if cartesian
+	if strcmp(Obj.SourcePosition_Type,'cartesian')
     % %     Obj2=Obj; % compare to old method (Obj2)
     for ii=1:Obj.API.M
         [Obj.SourcePosition(ii,1),Obj.SourcePosition(ii,2),Obj.SourcePosition(ii,3)]=cart2sph(Obj.SourcePosition(ii,1),Obj.SourcePosition(ii,2),Obj.SourcePosition(ii,3));
@@ -247,10 +249,10 @@ if strcmp(Obj.SourcePosition_Type,'cartesian')
     end
     Obj.SourcePosition_Type='spherical';
     Obj.SourcePosition_Units='degrees,degrees,metre';
-end
+	end
 
-%% Plot according to the type
-switch lower(type)
+	%% Plot according to the type
+	switch lower(type)
     % Energy-time curve (ETC) in the horizontal plane
     case 'etchorizontal'
         Obj=SOFAexpand(Obj,'Data.Delay');
@@ -485,34 +487,34 @@ switch lower(type)
 
     otherwise
         error([type , ' no supported plotting type.'])
-end
+	end
 
 end
 
 function f = mySOFAplotGeometry(Obj0,varargin)
 
-definput.keyvals.index=1:Obj0.API.M;
-definput.keyvals.shorder=Inf;
-definput.keyvals.shm=Inf;
-definput.flags.normalize={'normalize','original'};
-argin=varargin;
-for ii=1:length(argin)
-    if ischar(argin{ii}), argin{ii}=lower(argin{ii}); end
-end
-[flags,kv] = SOFAarghelper({'index','shorder','shm'},definput,argin);
-index = kv.index;
-SHorder=kv.shorder;
-SHm=kv.shm;
-flags.do_normalize = flags.normalize;
+	definput.keyvals.index=1:Obj0.API.M;
+	definput.keyvals.shorder=Inf;
+	definput.keyvals.shm=Inf;
+	definput.flags.normalize={'normalize','original'};
+	argin=varargin;
+	for ii=1:length(argin)
+			if ischar(argin{ii}), argin{ii}=lower(argin{ii}); end
+	end
+	[flags,kv] = SOFAarghelper({'index','shorder','shm'},definput,argin);
+	index = kv.index;
+	SHorder=kv.shorder;
+	SHm=kv.shm;
+	flags.do_normalize = flags.normalize;
 
-if any(index > Obj0.API.M)
-    error(['Index out of range. Only ', num2str(Obj0.API.M), ...
-        ' measurement(s) performed.'])
-elseif any(index < 1)
-    error('Choose index to be >= 1.')
-end
+	if any(index > Obj0.API.M)
+			error(['Index out of range. Only ', num2str(Obj0.API.M), ...
+					' measurement(s) performed.'])
+	elseif any(index < 1)
+			error('Choose index to be >= 1.')
+	end
 
-switch Obj0.GLOBAL_SOFAConventions
+	switch Obj0.GLOBAL_SOFAConventions
     %%
     % case{'AnnotatedReceiverAudio'}
     %     figure;
@@ -934,10 +936,10 @@ switch Obj0.GLOBAL_SOFAConventions
 
     otherwise
         error('This SOFAConventions is not supported for plotting');
-end
+	end
 
 %% formatting figures
-switch Obj0.GLOBAL_SOFAConventions
+	switch Obj0.GLOBAL_SOFAConventions
 
     case{'AnnotatedReceiverAudio'}
         % Add a little bit extra space at the axis
@@ -958,139 +960,17 @@ switch Obj0.GLOBAL_SOFAConventions
         paddingSpace = 0;
         axisLimits([1 3]) = axisLimits([1 3]) - paddingSpace;
         axisLimits([2 4]) = axisLimits([2 4]) + paddingSpace;
-end
+	end
 
-axis(axisLimits);
+	axis(axisLimits);
 
 end
 
 function newangle = mywrapTo180(angle)
-% transfer to range -180:180
-newangle = mod(angle+360, 360);
-if newangle > 180
-    newangle = newangle-360;
-end
+	% transfer to range -180:180
+	newangle = mod(angle+360, 360);
+	if newangle > 180
+			newangle = newangle-360;
+	end
 
 end
-
-
-function SaveSOFAproperties(Obj, SOFAfile)
-%% get dimensions definitions
-% dataDim = {}; % Initialize cell array
-isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
-field_namesDim = fieldnames(Obj.API);
-for i = 1:length(field_namesDim)
-    field_name = field_namesDim{i};
-
-    if ~startsWith(field_name, 'Dimensions')
-        switch field_name
-            case 'R'
-                % description = 'Number of receivers or harmonic coefficients describing receivers';
-                dimR = get_sofa_field(Obj.API, field_name, 'unknown');
-            case 'E'
-                % description = 'Number of emitters or harmonic coefficients describing emitters';
-                dimE = get_sofa_field(Obj.API, field_name, 'unknown');
-            case 'M'
-                % description = 'Number of measurements';
-                dimM = get_sofa_field(Obj.API, field_name, 'unknown');
-            case 'N'
-                % description = 'Number of data samples describing one measurement';
-                dimN = get_sofa_field(Obj.API, field_name, 'unknown');
-            case 'S'
-                % description = 'Number of characters in a string';
-                dimS = get_sofa_field(Obj.API, field_name, 'unknown');
-
-            otherwise
-                % description = '';
-        end
-
-        % if ~isempty(description)
-        %     dataDim{end+1, 1} = [description];
-        %     % data{end+1, 1} = ['Dimension ' description];
-        %     dataDim{end, 2} = get_sofa_field(Obj.API, field_name, 'unknown');
-        % end
-    end
-end
-
-%% Write dimensions data to CSV using Octave's file I/O
-header = {'SOFA Conventions', 'R', 'E', 'M', 'N', 'S'}; % Define header
-dataDim = {[Obj.GLOBAL_SOFAConventions ' ' Obj.GLOBAL_SOFAConventionsVersion], dimR, dimE, dimM, dimN, dimS}; % Define data
-output_filename = [SOFAfile, '_dim.csv']; % Construct output filename
-delimiter = char(9); % Define tabulator as delimiter
-csv_fid = fopen(output_filename, 'w'); % Open file for writing
-if csv_fid < 0
-    error('Cannot open output file for writing: %s', output_filename);
-end
-try
-    % Write header
-    fprintf(csv_fid, '%s%s%s%s%s%s%s%s%s%s%s\n', header{1}, delimiter, header{2}, delimiter, header{3}, delimiter, header{4}, delimiter, header{5}, delimiter, header{6});
-    fprintf(csv_fid, '%s%s%s%s%s%s%s%s%s%s%s\n', dataDim{1}, delimiter, dataDim{2}, delimiter, dataDim{3}, delimiter, dataDim{4}, delimiter, dataDim{5}, delimiter, dataDim{6});
-
-catch ME
-    fclose(csv_fid); % Close file even if error occurs during writing
-    error('Error writing data to CSV file "%s\": %s', output_filename, ME.message);
-end
-fclose(csv_fid); % Close the output file successfully
-disp(['Successfully saved SOFA details to ' output_filename]);
-
-%% Iterate over all fields in the SOFA object
-dataProp = {}; % Initialize cell array
-field_namesProp = fieldnames(Obj);
-for i = 1:length(field_namesProp)
-    field_name = field_namesProp{i};
-    % Check if the field starts with 'GLOBAL_'
-    if startsWith(field_name, 'GLOBAL_')
-        dataProp{end+1, 1} = field_name(8:end);  % extractAfter is not supported in Octave
-        dataProp{end, 2} = get_sofa_field(Obj, field_name, 'unknown');
-    end
-end
-% mylog(log_fid, "Collected GLOBAL data from SOFA file."); end
-
-%% Write properties data to CSV using Octave's file I/O
-header = {'Name', 'Value'}; % Define header
-output_filename = [SOFAfile, '_prop.csv']; % Construct output filename
-% delimiter = char(9); % Define tabulator as delimiter
-csv_fid = fopen(output_filename, 'w'); % Open file for writing
-if csv_fid < 0
-    error('Cannot open output file for writing: %s', output_filename);
-end
-try
-    % Write header
-    fprintf(csv_fid, '%s%s%s\n', header{1}, delimiter, header{2});
-    % Write data rows
-    for i = 1:size(dataProp, 1)
-        % Ensure both elements are strings before writing
-        name_str = dataProp{i, 1};
-        value_str = dataProp{i, 2};
-        if ~ischar(name_str); name_str = num2str(name_str); end % Convert if not char
-        if ~ischar(value_str); value_str = num2str(value_str); end % Convert if not char
-        % Robust CSV quoting and newline removal:
-        name_str = ['"', strrep(strrep(name_str, char(10), ' '), char(13), ' '), '"']; % Quote, replace LF and CR with space
-        value_str = ['"', strrep(strrep(value_str, char(10), ' '), char(13), ' '), '"']; % Quote, replace LF and CR with space
-        fprintf(csv_fid, '%s%s%s\n', name_str, delimiter, value_str);
-    end
-catch ME
-    fclose(csv_fid); % Close file even if error occurs during writing
-    error('Error writing data to CSV file "%s\": %s', output_filename, ME.message);
-end
-fclose(csv_fid); % Close the output file successfully
-disp(['Successfully saved SOFA details to ' output_filename]);
-
-end
-
-
-
-%% Helper function to safely get fields
-function value = get_sofa_field(obj, field_name, default_value)
-
-if isfield(obj, field_name)
-    value = obj.(field_name);
-    % Convert numeric values to string for consistent CSV output
-    if isnumeric(value)
-        value = num2str(value);
-    end
-else
-    value = default_value;
-end
-end
-
