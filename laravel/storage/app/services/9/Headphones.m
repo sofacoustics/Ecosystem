@@ -233,7 +233,8 @@ try
         if ~ischar(value_str); value_str = num2str(value_str); end % Convert if not char
         % Robust CSV quoting and newline removal:
         name_str = ['"', strrep(strrep(name_str, char(10), ' '), char(13), ' '), '"']; % Quote, replace LF and CR with space
-        value_str = ['"', strrep(strrep(value_str, char(10), ' '), char(13), ' '), '"']; % Quote, replace LF and CR with space
+        %value_str = ['"', strrep(strrep(value_str, char(10), ' '), char(13), ' '), '"']; % Quote, replace LF and CR with space
+				value_str = ['"', strrep(value_str, '"', '""'), '"']; % Quote, encapsulate double quotations 
         fprintf(csv_fid, '%s%s%s\n', name_str, delimiter, value_str);
     end
     % if isoctave; fputs(log_fid, ["Data rows written to CSV.\n"]); end

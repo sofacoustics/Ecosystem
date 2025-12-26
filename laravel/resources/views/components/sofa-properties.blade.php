@@ -9,7 +9,7 @@
 			@foreach (array_slice($csvRowsProp, 1) as $row)
 				<tr>
 					@foreach ($row as $cell)
-						<td class="px-2 py-1 border">{{ $cell }}</td>
+						<td class="px-2 py-1 border">{!! nl2br(e($cell)) !!}</td>
 					@endforeach
 				</tr>
 			@endforeach

@@ -128,9 +128,9 @@ class DatafileListener extends Component
 				$viewData['postfixes'] = $postfixes;
 				if($this->counter<1) $this->counter=1;
 					// SOFA properties
-				$sofaAsset = $this->datafile->asset();
-				$viewData['csvRows'] = $this->readCSV($sofaAsset, '.sofa_dim.csv');
-				$viewData['csvRowsProp'] = $this->readCSV($sofaAsset, '.sofa_prop.csv');
+				$sofaFile = $this->datafile->absolutepath();
+				$viewData['csvRows'] = $this->readCSV($sofaFile, '_dim.csv');
+				$viewData['csvRowsProp'] = $this->readCSV($sofaFile, '_prop.csv');
 				break;
 
 				// brir-listenerview
@@ -151,9 +151,9 @@ class DatafileListener extends Component
 				$this->counter_min = 1;
 				$this->counter_max = $Zoommax;
 					// SOFA properties
-				$sofaAsset = $this->datafile->asset();
-				$viewData['csvRows'] = $this->readCSV($sofaAsset, '.sofa_dim.csv');
-				$viewData['csvRowsProp'] = $this->readCSV($sofaAsset, '.sofa_prop.csv');
+				$sofaFile = $this->datafile->absolutepath();
+				$viewData['csvRows'] = $this->readCSV($sofaFile, '_dim.csv');
+				$viewData['csvRowsProp'] = $this->readCSV($sofaFile, '_prop.csv');
 				break;
 			
 				// SOFA PROPERTIES and other SOFA-related viewers
@@ -162,9 +162,9 @@ class DatafileListener extends Component
 			case 'livewire.datafiles.headphones-general':
 			case 'livewire.datafiles.hrtf-general':
 			case 'livewire.datafiles.annotated-receiver': 
-				$sofaAsset = $this->datafile->asset();
-				$viewData['csvRows'] = $this->readCSV($sofaAsset, '.sofa_dim.csv');
-				$viewData['csvRowsProp'] = $this->readCSV($sofaAsset, '.sofa_prop.csv');
+				$sofaFile = $this->datafile->absolutepath();
+				$viewData['csvRows'] = $this->readCSV($sofaFile, '_dim.csv');
+				$viewData['csvRowsProp'] = $this->readCSV($sofaFile, '_prop.csv');
 				break;
 
 				// DIRECTIVITY GENERAL
@@ -193,59 +193,29 @@ class DatafileListener extends Component
 							$this->counter=$freqs[0]; // If 1000 Hz not available, set to the first frequency
 					}
 					// SOFA properties
-				$sofaAsset = $this->datafile->asset();
-				$viewData['csvRows'] = $this->readCSV($sofaAsset, '.sofa_dim.csv');
-				$viewData['csvRowsProp'] = $this->readCSV($sofaAsset, '.sofa_prop.csv');
+				$sofaFile = $this->datafile->absolutepath();
+				$viewData['csvRows'] = $this->readCSV($sofaFile, '_dim.csv');
+				$viewData['csvRowsProp'] = $this->readCSV($sofaFile, '_prop.csv');
 				break;
 		}
 		return view($view, $viewData);
 	}
 	
-	private function readCSV($sofaAsset, $postfix) 
+	private function readCSV($sofaFile, $postfix) 
 	{
-				$urlParts = parse_url($sofaAsset);
-				$sofaPath = $urlParts['path']; // eg. /data/9/57/135/6 sofa-properties.sofa
-				$dir = dirname($sofaPath); // eg. /data/9/57/135
-				$filename = basename($sofaPath, '.sofa'); // eg. 6 sofa-properties
-
-				// ====================
-				// Load 1st CSV: .sofa_dim.csv
-				// ====================
-				$csvFilename = $filename . $postfix; // eg. 6 sofa-properties.sofa_1.csv
-				$csvFilenameEncoded = rawurlencode($csvFilename); 			// Encoding file name
-				$csvPath = $dir . '/' . $csvFilenameEncoded;
-
-					// Logging
-				\Log::debug('DatafileListener: sofaAsset = ' . $sofaAsset);
-				\Log::debug('DatafileListener: sofaPath (no Query) = ' . $sofaPath);
-				\Log::debug('DatafileListener: csvPath (encoded) = ' . $csvPath);
-
-					// Get domain
-				$baseUrl = request()->getSchemeAndHttpHost(); // e.g., https://sonicom-dev.amtoolbox.org
-				$csvUrl = $baseUrl . $csvPath;
-					// load file
-				$csvContent = '';
-				try 
-				{
-					$csvContent = @file_get_contents($csvUrl);
-				} catch (\Exception $e) {
-					\Log::error('DatafileListener: Error loading: ' . $e->getMessage());
-				}
-
-				if ($csvContent === false || $csvContent === null) 
-					$csvContent = '';
-
-					// CSV as array for table
-				$csvRows = [];
-				if ($csvContent !== '') 
-				{
-					$lines = preg_split('/\r\n|\r|\n/', $csvContent);
-					foreach ($lines as $line) 
-					{
-						if (trim($line) !== '') 
-							$csvRows[] = str_getcsv($line, "\t");
-					}
-				}
+			// load file
+		$csvRows = [];
+		try 
+		{
+			$handle = fopen($sofaFile . $postfix, "r");
+			while (($row = fgetcsv($handle, null, chr(9))) !== false) 
+				$csvRows[] = $row;
+			fclose($handle);
+		} 
+		catch (\Exception $e) 
+		{
+			\Log::error('DatafileListener: Error loading: ' . $e->getMessage());
+		}
 		return $csvRows;
 	}
 
