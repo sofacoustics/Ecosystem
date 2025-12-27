@@ -41,14 +41,14 @@ class DatabaseUpload extends Component
 	public array $filtered; // a list of names of the files which fit the filter criteria
 	public array $uploaded; // a list of names of the files which have been uploaded
 
-	public $overwriteExisting = true; // set to true, if existing datafiles should be overwritten.
+	public $overwriteExisting; // set to true, if existing datafiles should be overwritten.
 
 	public $progress;
 	public $uploading;
 
 	public $nFilesExisting = -1; // The number of datafiles which already exist in the database (jw:todo not sure if this works with pending files resulting from filtering)
 
-	private $debugLevel = 0;
+	private $debugLevel = 1;
 	private $debugIndent = 0;
 
 	public $dto = null; // a DataTranfer object containing list of files to upload
@@ -63,7 +63,7 @@ class DatabaseUpload extends Component
 		{
 			$this->datafilenamefilters[$datasetdef->id] = $datasetdef->bulk_upload_filename_filter;
 		}
-		$this->overwriteExisting = session()->get('sonicomEcosystemBulkUploadOverwrite') == 1 ? true : false;
+		$this->overwriteExisting = true; // session()->get('sonicomEcosystemBulkUploadOverwrite') == 1 ? true : false;
 		$this->debug(1, "Mounted");
 	}
 
@@ -189,7 +189,7 @@ class DatabaseUpload extends Component
 
 			if($existing)
 			{
-				$this->debug(1, "Touching datafile to set 'updated_at'");
+				$this->debug(1, "Touching datafile to set updated_at");
 				$datafile->touch(); // touch the file to reset 'updated_at' and trigger DatafileObserver
 			}
 			$directory = $datafile->directory();
