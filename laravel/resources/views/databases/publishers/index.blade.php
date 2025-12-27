@@ -23,13 +23,17 @@
 							<x-button method="GET" action="{{ route('publishers.up', $publisher) }}" class="inline">
 								&uarr;
 							</x-button>
+						@else
+						  &nbsp;
 						@endif
 					</td>
 					<td>
 						@if($loop->index < count($publisherable->publishers)-1)
-						<x-button method="GET" action="{{ route('publishers.down', [$publisher]) }}" class="inline">
-							&darr;
-						</x-button>
+							<x-button method="GET" action="{{ route('publishers.down', [$publisher]) }}" class="inline">
+								&darr;
+							</x-button>
+						@else
+						  &nbsp;
 						@endif
 					</td>
 				@endcan
@@ -47,7 +51,9 @@
 		@endforeach
 		</table>
 	@else
+		<ul class="list-disc list-outside px-5">
 			<li>No publishers defined yet.</li>
+		</ul>
 	@endif
 
 	@can('update', $publisherable)

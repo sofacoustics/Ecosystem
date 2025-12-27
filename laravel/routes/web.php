@@ -95,6 +95,8 @@ Route::get('/databases/{database}/keywords', [KeywordController::class, 'index']
 Route::get('/databases/{database}/keywords/up', [KeywordController::class, 'up'])->name('keywords.up');
 Route::get('/databases/{database}/keywords/down', [KeywordController::class, 'down'])->name('keywords.down');
 Route::get('/databases/{database}/relatedidentifiers', [RelatedIdentifierController::class, 'index'])->name('databases.relatedidentifiers');
+Route::get('/databases/{database}/relatedidentifiers/up', [RelatedIdentifierController::class, 'up'])->name('relatedidentifiers.up');
+Route::get('/databases/{database}/relatedidentifiers/down', [RelatedIdentifierController::class, 'down'])->name('relatedidentifiers.down');
 Route::get('/databases/{database}/update', [DatabaseController::class, 'upload'])->name('databases.upload');
 Route::get('/databases/{database}/download', [DatabaseController::class, 'download'])->name('databases.download');
 Route::get('/databases/{database}/purge', [DatabaseController::class, 'purge'])->name('databases.purge');

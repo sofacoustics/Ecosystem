@@ -45,7 +45,9 @@
 		@endforeach
 		</table>
 	@else
+		<ul class="list-disc list-outside px-5">
 			<li>No rightsholders defined yet.</li>
+		</ul>
 	@endif
 
 

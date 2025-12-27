@@ -46,4 +46,49 @@ class RelatedIdentifierController extends Controller
 		return redirect()->back();
 	}
 
+	public function copyRelatedIdentifier(RelatedIdentifier $A, RelatedIdentifier $B)
+	{
+		$B->relatedidentifierable_id = $A->relatedidentifierable_id;
+		$B->relatedidentifierable_type = $A->relatedidentifierable_type;
+		$B->name = $A->name;
+		$B->relatedidentifiertype = $A->relatedidentifiertype;
+		$B->relationtype = $A->relationtype;
+		$B->created_at = $A->created_at;
+		$B->updated_at = $A->updated_at;
+		return $B;
+	}
+
+	public function up($id)
+	{
+		$relatedidentifierA = RelatedIdentifier::where('id', $id)->get()->first();
+		$relatedidentifierB = RelatedIdentifier::where('relatedidentifierable_id',$relatedidentifierA->relatedidentifierable_id)
+			->where('relatedidentifierable_type',$relatedidentifierA->relatedidentifierable_type)
+			->where('id','<', $id)
+			->get()
+			->last();
+		$temp = new RelatedIdentifier;
+		$temp = $this->copyRelatedIdentifier($relatedidentifierA, $temp); 
+		$relatedidentifierA = $this->copyRelatedIdentifier($relatedidentifierB, $relatedidentifierA);
+		$relatedidentifierB = $this->copyRelatedIdentifier($temp, $relatedidentifierB);
+		$relatedidentifierA->save(); 
+		$relatedidentifierB->save();
+		return redirect()->back();
+	}
+
+	public function down($id)
+	{
+		$relatedidentifierA = RelatedIdentifier::where('id', $id)->get()->first();
+		$relatedidentifierB = RelatedIdentifier::where('relatedidentifierable_id',$relatedidentifierA->relatedidentifierable_id)
+			->where('relatedidentifierable_type',$relatedidentifierA->relatedidentifierable_type)
+			->where('id','>', $id)
+			->get()
+			->first();
+		$temp = new RelatedIdentifier;
+		$temp = $this->copyRelatedIdentifier($relatedidentifierA, $temp); 
+		$relatedidentifierA = $this->copyRelatedIdentifier($relatedidentifierB, $relatedidentifierA);
+		$relatedidentifierB = $this->copyRelatedIdentifier($temp, $relatedidentifierB);
+		$relatedidentifierA->save(); 
+		$relatedidentifierB->save();
+		return redirect()->back();
+	}
 }

@@ -45,7 +45,9 @@
 		@endforeach
 		</table>
 	@else
+		<ul class="list-disc list-outside px-5">	
 			<li>No keywords defined yet.</li>
+		</ul>
 	@endif
 	
 	@can('update', $keywordable)
