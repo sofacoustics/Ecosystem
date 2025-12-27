@@ -135,9 +135,13 @@ Parameters:
 						<li><b>DOI (publication requested)</b>: {{ $database->doi }}
 					@elseif($database->radar_status==4)
 						<li><b>DOI (persistently published)</b>: <a href="https://doi.org/{{ $database->doi }}">{{ $database->doi }}</a>
-						@if ($database->publicationyear != null) 
-							<li><b>DOI Publication Year</b>: {{ $database->publicationyear }}</li>
-						@endif 
+						<li><b>DOI Publication Year</b>: 
+							@if ($database->publicationyear == null || $database->publicationyear == "unknown") 
+								Missing yet!
+							@else
+								{{ $database->publicationyear }}
+							@endif 
+						</li>
 					@endif
 				@else
 					<li><b>DOI</b>: not assigned yet

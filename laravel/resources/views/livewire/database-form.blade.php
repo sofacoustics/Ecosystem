@@ -27,6 +27,19 @@
 		  @error('productionyear') <span class="text-red-500">{{ $message }}</span> @enderror
 		</div>
 
+		@if ($database->doi != null)
+			@hasrole('admin')
+				<div class="mb-4">
+					<label for="publicationyear" class="text-gray-700 mb-2 block font-bold">Publication Year (*):</label>
+					<input wire:model="publicationyear" type="text" id="publicationyear"
+						placeholder="When was the data published? Format: YYYY or &quot;unknown&quot;"
+						class="text-red-500 w-full rounded-lg border px-3 py-2 focus:outline-none"
+						required />
+					@error('publicationyear') <span class="text-red-500">{{ $message }}</span> @enderror
+				</div>
+			@endhasrole
+		@endif
+
 		<div class="mb-4">
 		  <label for="rights" class="text-gray-700 mb-2 block font-bold">Rights (*): </label>
 			<select wire:model.live="controlledrights" required>
