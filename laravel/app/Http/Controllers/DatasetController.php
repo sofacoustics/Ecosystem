@@ -8,6 +8,7 @@ use App\Models\Database;
 use App\Models\Dataset;
 
 use App\Services\DatasetRadarFolderBridge;
+use Illuminate\Support\Facades\Cache;
 
 class DatasetController extends Controller
 {
@@ -26,11 +27,13 @@ class DatasetController extends Controller
 	public function create(Database $database)
 	{
 		$this->authorize('create', $database);
+		Cache::forget('database' . $database->id);
 		return view('datasets.create', ['database' => $database]);
 	}
 
 	public function bulkupload(Database $database)
 	{		// PM: Do we need this function at all???
+	  dd("if you see this, DatasetController::bulkupload has been called");
 		return view('datasets.bulkupload', ['database' => $database]);
 	}
 
@@ -58,6 +61,7 @@ class DatasetController extends Controller
 	 */
 	public function edit(Dataset $dataset)
 	{
+		Cache::forget('database' . $dataset->database->id);
 		return view('datasets.edit', ['dataset' => $dataset]);
 	}
 
@@ -77,6 +81,7 @@ class DatasetController extends Controller
 		$this->authorize('delete', $dataset);
 		$dataset->database->touch();
 		$dataset->delete();
+		Cache::forget('database' . $dataset->database->id);
 		return redirect()->back();
 	}
 

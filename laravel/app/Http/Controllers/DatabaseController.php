@@ -28,6 +28,7 @@ use App\Services\DatabaseRadarDatasetBridge;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Cache;
 
 class DatabaseController extends Controller
 {
@@ -133,6 +134,7 @@ class DatabaseController extends Controller
 	public function edit(Database $database)
 	{
 		$this->authorize($database);
+		Cache::forget('database' . $database->id);
 		return view('databases.edit', [ 'database' => $database ]);
 	}
 
@@ -143,6 +145,7 @@ class DatabaseController extends Controller
 	{
 		$this->authorize($database);
 		$database->update($request->except('_method', '_token', 'submit'));
+		Cache::forget('database' . $database->id);
 		return redirect('databases')->with('success', 'Database successfully updated!');
 	}
 
@@ -158,6 +161,7 @@ class DatabaseController extends Controller
 			$radar->delete();	// Delete the database from RADAR
 		}
 		$database->delete(); // Note that due to onDelete('cascade') in files database, the related files will be deleted too!
+		Cache::forget('database' . $database->id);
 		return redirect()->route('databases.index')->with('success', 'Database deleted successfully');
 	}
 
@@ -196,6 +200,7 @@ class DatabaseController extends Controller
 
 	public function purge(Database $database)
 	{
+		Cache::forget('database' . $database->id);
 		return view('databases.purge', ['database' => $database]);
 	}
 
@@ -338,13 +343,15 @@ class DatabaseController extends Controller
 			}
 			try 
 			{
-				$files = Datafile::join('datasets', 'datafiles.dataset_id', '=', 'datasets.id')
-					->join('databases','datasets.database_id', '=', 'databases.id')
-					->where('databases.id', '=', $database->id)
-					->select('datafiles.*') // Select all order columns
-					->get();
-
-				$fileData = $files->map(function ($file) { // Transform the data into a suitable format.  This is CRUCIAL.
+				$fileData = Cache::rememberForever('database' . $database->id, function() use ($database) 
+				{
+					$files = Datafile::join('datasets', 'datafiles.dataset_id', '=', 'datasets.id')
+						->join('databases','datasets.database_id', '=', 'databases.id')
+						->where('databases.id', '=', $database->id)
+						->select('datafiles.*') // Select all order columns
+						->get();				
+				
+					$fileData = $files->map(function ($file) { // Transform the data into a suitable format.
 						return [
 								'Datafile ID' => $file->id,
 								'Datafile Name' => $file->name,
@@ -356,6 +363,8 @@ class DatabaseController extends Controller
 								'Database ID' => $file->dataset->database->id,
 								'Database Title' => $file->dataset->database->title,
 						];
+					});
+					return $fileData;
 				});
 				// Return the file data as a JSON response.
 				return response()->json([

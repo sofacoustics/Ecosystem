@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreDatasetdefRequest;
 use App\Http\Requests\UpdateDatasetdefRequest;
 use App\Models\Datasetdef;
+use Illuminate\Support\Facades\Cache;
 
 class DatasetdefController extends Controller
 {
@@ -37,8 +38,8 @@ class DatasetdefController extends Controller
 	 */
 	public function edit(Datasetdef $datasetdef)
 	{
-			//
-	return view('datasetdefs.edit', [ 'datasetdef' => $datasetdef]);
+		Cache::forget('database' . $datasetdef->database_id);
+		return view('datasetdefs.edit', [ 'datasetdef' => $datasetdef]);
 	}
 
 	/**
@@ -46,6 +47,7 @@ class DatasetdefController extends Controller
 	 */
 	public function destroy(Datasetdef $datasetdef)
 	{
+		Cache::forget('database' . $datasetdef->database_id);
 		$datasetdef->delete();
 		return redirect()->back();
 	}
@@ -75,6 +77,7 @@ class DatasetdefController extends Controller
 		$new->widget_id = $datasetdef->widget_id > 0 ? $datasetdef->widget_id : null;
 		$new->save();
 		$datasetdef->database->touch(); 
+		Cache::forget('database' . $new->database_id);
 		return redirect()->route('databases.datasetdefs', $datasetdef->database->id);
 	}
 }

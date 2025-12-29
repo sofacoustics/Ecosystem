@@ -9,6 +9,7 @@ use App\Services\DatafileRadarFileBridge;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 
 class DatafileController extends Controller
@@ -35,7 +36,6 @@ class DatafileController extends Controller
 	 */
 	public function create()
 	{
-		//
 	}
 
 	/**
@@ -79,6 +79,7 @@ class DatafileController extends Controller
 		$datafile->dataset->touch();
 		$datafile->dataset->database->touch();
 		$datafile->delete();
+		Cache::forget('database' . $datafile->dataset->database->id);
 		return redirect()->back()->with('status', 'Datafile deleted');
     }
 
