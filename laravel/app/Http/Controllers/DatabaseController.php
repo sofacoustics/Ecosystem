@@ -195,6 +195,7 @@ class DatabaseController extends Controller
 
 	public function upload(Database $database)
 	{
+		Cache::forget('database' . $database->id);
 		return view('databases.upload', ['database' => $database]);
 	}
 
