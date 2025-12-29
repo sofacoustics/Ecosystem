@@ -1,56 +1,35 @@
 <div>
 	<x-servicelog :log="$latestLog"></x-servicelog>
 	<p><x-datafiles-properties :fileSizeInBytes="$fileSizeInBytes" :createdAt="$created_at" :updatedAt="$updated_at"/></p>
+	
+	<div id="imageContainer{{ $datafile->id }}" style="width: 500px; height: 400px; border: 1px solid #ccc; background-color: #FFFFFF !important;">
+		<img id="image{{ $datafile->id }}" src="{{ $datafile->asset() }}" alt="{{ $datafile->name }}" style="display: none;">
+	</div>
 
-	<p>
-        <x-button type="button" onclick="cw{{ $datafile->id }}()">Rotate Clockwise</x-button>
-				<x-button type="button" onclick="acw{{ $datafile->id }}()">Rotate Anticlockwise</x-button>
-				<x-button type="button" onclick="resetbutton{{ $datafile->id }}()">Reset View</x-button>
-  </p>
-	<a href="{{ $datafile->asset() }}" target="_blank">
-		<img id="image{{ $datafile->id }}" class="p-2 " 
-			style="border: 1px solid #ccc; max-width:500px; position: relative;" 
-			onClick="reset(this)" 
-			src="{{ $datafile->asset() }}" 
-		/>
-	</a>
 </div>
 
 <script>
-	var Angle = 0;
-	function cw{{ $datafile->id }}() 
-	{
-		var myImg = document.getElementById("image{{ $datafile->id }}");
-		console.log(myImg.getBoundingClientRect());
-		console.log(myImg.clientHeight);
-		Angle = Angle + 90; 
-		myImg.style.transform = "rotate(" + Angle + "deg)"; 
-		rect = myImg.getBoundingClientRect();
-		x = myImg.clientWidth/2 - rect.width/2;
-		y = myImg.clientHeight/2 - rect.height/2;
-		myImg.style.top = x + "px";
-		myImg.style.left = y + "px";
-	}
-	
-	function acw{{ $datafile->id }}() 
-	{
-		var myImg = document.getElementById("image{{ $datafile->id }}");
-		Angle = Angle - 90;
-		myImg.style.transform = "rotate(" + Angle + "deg)"; 
-		rect = myImg.getBoundingClientRect();
-		x = myImg.clientWidth/2 - rect.width/2;
-		y = myImg.clientHeight/2 - rect.height/2;
-		myImg.style.top = x + "px";
-		myImg.style.left = y + "px";
-	}
-	
- 	function resetbutton{{ $datafile->id }}()
-	{
-		var myImg = document.getElementById("image{{ $datafile->id }}");
-		Angle = 0;
-		myImg.style.transform = "rotate(0deg)"; 
-		myImg.style.top = "0px";
-		myImg.style.left = "0px";
-	}
+	document.addEventListener('DOMContentLoaded', () => {
+		const image{{ $datafile->id }} = document.getElementById('image{{ $datafile->id }}');
+		const viewer{{ $datafile->id }} = new Viewer(image{{ $datafile->id }}, {
+			inline: true,          // Shows inside the container immediately
+			navbar: false,        // Hides the thumbnail bar (not needed for 1 image)
+			title: 3,         // Hides the image title
+			toolbar: {
+				zoomIn: 1,          // 1 = visible
+				zoomOut: 1,
+				oneToOne: 1,
+				reset: 1,
+				rotateLeft: 1,
+				rotateRight: 1,
+				flipHorizontal: false,
+				flipVertical: false,
+				initialCoverage: 1,
+			},
+			viewed() { viewer{{ $datafile->id }}.reset(); },
+			loading: true,
+			movable: true,
+		});
+	});
 	
 </script>
