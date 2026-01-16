@@ -167,6 +167,56 @@ class DatafileListener extends Component
 				$viewData['csvRowsProp'] = $this->readCSV($sofaFile, '_prop.csv');
 				break;
 
+				// HEADPHONES: SELFONE 
+			case 'livewire.datafiles.headphones-selfone':
+					// Effect of R: M=1, E varies
+				$files = glob($fullPath . '_spectrum_M=1_E=*.png');
+				$spectrumEs = [];
+				if(!empty($files))
+				{
+					for ($i=0; $i<count($files); $i++)
+					{
+						preg_match('/_spectrum_M=1_E=\d+\.png/', $files[$i], $match);
+						sscanf($match[0], "_spectrum_M=1_E=%d.png", $f);
+						array_push($spectrumEs,$f);
+					}
+					asort($spectrumEs);
+				}				
+				$viewData['spectrumEs'] = $spectrumEs;
+					// Effect of E: M=1, R varies
+				$files = glob($fullPath . '_spectrum_M=1_R=*.png');
+				$spectrumRs = [];
+				if(!empty($files))
+				{
+					for ($i=0; $i<count($files); $i++)
+					{
+						preg_match('/_spectrum_M=1_R=\d+\.png/', $files[$i], $match);
+						sscanf($match[0], "_spectrum_M=1_R=%d.png", $f);
+						array_push($spectrumRs,$f);
+					}
+					asort($spectrumRs);
+				}				
+				$viewData['spectrumRs'] = $spectrumRs;
+					// Energy distribution of R: M=1, E varies
+				$files = glob($fullPath . '_energy_M=1_E=*.png');
+				$energyEs = [];
+				if(!empty($files))
+				{
+					for ($i=0; $i<count($files); $i++)
+					{
+						preg_match('/_energy_M=1_E=\d+\.png/', $files[$i], $match);
+						sscanf($match[0], "_energy_M=1_E=%d.png", $f);
+						array_push($energyEs,$f);
+					}
+					asort($energyEs);
+				}				
+				$viewData['energyEs'] = $energyEs;				
+					// SOFA properties
+				$sofaFile = $this->datafile->absolutepath();
+				$viewData['csvRows'] = $this->readCSV($sofaFile, '_dim.csv');
+				$viewData['csvRowsProp'] = $this->readCSV($sofaFile, '_prop.csv');
+				break;
+				
 				// DIRECTIVITY GENERAL
 			case 'livewire.datafiles.directivity-general':
 				$files = glob($fullPath . '_amphorizontal_*.png');
