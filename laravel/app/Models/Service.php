@@ -11,6 +11,8 @@ class Service extends Model
 {
 	use HasFactory;
 
+	protected $fillable = ['id','name', 'description', 'exe', 'parameters'];
+	
 	public function logs(): HasMany
 	{
 		return $this->hasMany(ServiceLog::class);
