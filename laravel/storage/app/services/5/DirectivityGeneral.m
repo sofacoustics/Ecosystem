@@ -17,56 +17,44 @@
 
 
 function DirectivityGeneral(SOFAfile)
-% for DEBUG purpose run the following code:
-% DirectivityGeneral('[NEXTCLOUD]\SONICOM\WP5\Ecosystem\Development\Test files\Test Services\5 sofa-directivity-polar.sofa')
 
 	addpath('../shared'); % add the path to shared functions
 	isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
 
 	logfile="DirectivityGeneral.log";
 	fid = fopen(logfile, "w");
-	s = pwd;
-	disp(["pwd = " s]);
 
-	%% Prologue: (un)comment here if you want to:
 	tic; % timer
 	SOFAstart; % remove this optionally
-	warning('off'); %jw:note disable all warnings
+	warning('off'); % disable all warnings
 
-	%jw:note Check if function called with parameter. If not, use command line parameter^M
+  	% Check if function called with parameter. If not, use command line parameter
 	if(exist("SOFAfile"))
-			if(length(SOFAfile)==0)
-					disp('The SOFA file name SOFAfile is empty');
-			end
+    if(length(SOFAfile)==0)
+        disp('The SOFA file name SOFAfile is empty');
+    end
 	else
 			% Use command line parameter for SOFAfile
-			disp(argv);
-			arg_list = argv();
-			fn = arg_list{1};
-			disp(fn);
-			SOFAfile = fn;
+    arg_list = argv();
+    fn = arg_list{1};
+    SOFAfile = fn;
 	end
 
-	%% Load SOFA file
-	Obj=SOFAload(SOFAfile);
+	Obj=SOFAload(SOFAfile); 	% Load SOFA file
 
 	SaveSOFAproperties(Obj, SOFAfile);
-	if isoctave; fputs(fid, ["Successfully saved SOFA details to csv files\n"]); end
+	fputs(fid, ["Successfully saved SOFA details to csv files\n"]);
+	fputs(fid, [ "About to plot\n"]);
 
-	if isoctave; fputs(fid, [ "About to plot\n"]); end
-
-
-	%% PLOT GEOMETRY
+ 	%% PLOT GEOMETRY
 	mySOFAplotGeometry(Obj);
-	if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
+	fputs(fid, [ "just done SOFAplotGeometry\n"]);
 	view(45,30);
 	axis equal
-	if isoctave; fputs(fid, [ "adapted view\n"]); end
-
+	fputs(fid, [ "adapted view\n"]);
 	title([num2str(Obj.API.R) ' Positions']);
-
 	print ('-dpng', "-r600", [SOFAfile '_geometry.png']);
-	if isoctave;  fputs(fid, [ "just printed " SOFAfile "_geometry.png\n"]); end
+	fputs(fid, [ "just printed " SOFAfile "_geometry.png\n"]);
 
 
 	%% POLAR PLOTS
@@ -88,12 +76,8 @@ function DirectivityGeneral(SOFAfile)
     TF = reshape(C, size(Obj.Data.Real,2), size(Obj.Data.Real,3));
 
     freq = double(Obj.N);  % Frequency axis from file
-
-    % @Piotr: I think the problem is that the source position is Obj.SourcePosition
-
     pos = Obj.ReceiverPosition(:,:);
-    % pos = Obj.SourcePosition; ' always 0
-    
+
     mask = abs(pos(:,2)) <= 10; % get indices of azi 0 +/-10 deg
     pos_filtered = pos(mask, :);
     TF_filtered = TF(mask, :);
@@ -103,43 +87,49 @@ function DirectivityGeneral(SOFAfile)
     [theta_sorted, idx] = sort(theta);
 
     for f = freqs
-        [~, idxF] = min(abs(freq - f));
-        mag = 20 * log10(abs(TF_filtered(:, idxF)));
+      [~, idxF] = min(abs(freq - f));
+      if freq(idxF)>1.5*f || freq(idxF)<=0.5*f, continue; end % skip if the found frequency in `freq` would fall into other `freqs`
 
-        figure;
-        if isoctave
-            polar(theta_sorted, (mag(idx)-min(mag))); % sorted data
-        else
-            polarplot(theta_sorted, (mag(idx)-min(mag)));  % sorted data
-        end
+      mag = 20 * log10(abs(TF_filtered(:, idxF)));
+      figure;
+      if prod(isnan(mag(idx)-min(mag)))>0
+          % all entries are NaN, replace by zero and adapt the title
+        polar(theta_sorted, zeros(size(mag(idx)-min(mag))));
+        preTitle = 'No valida data found';
+      else
+        polar(theta_sorted, (mag(idx)-min(mag)));
+        preTitle = 'Magnitudes (in dB)';
+      endif
 
-        fTitle = freq(idxF);
-        if mod(fTitle,1) == 0
-            title(sprintf('Magnitudes (in dB) at %.0f Hz', fTitle));
-        else
-            title(sprintf('Magnitudes (in dB) at %.1f Hz', fTitle));
-        end
-        % title(sprintf('HRTF magnitude at %.1f Hz', freq(idxF)));
+      fTitle = freq(idxF);
+      if mod(fTitle,1) == 0
+        digitTitle = '0';
+      else
+        digitTitle = '1';
+      end
+      if fTitle == f
+        title(sprintf([preTitle ' at %.' digitTitle 'f Hz'], fTitle));
+      else
+        title(sprintf([preTitle ' at nominal %.0f Hz, actual %.' digitTitle 'f Hz'], f, fTitle));
+      end
 
-        set(gcf, 'Name', sprintf('HRTF_%d', round(f)));
-        if isoctave; fputs(fid, [ "renamed figure\n"]); end
+      set(gcf, 'Name', sprintf('HRTF_%d', round(f)));
+      fputs(fid, [ "renamed figure\n"]);
         % Save figure as PNG
-        filename = sprintf('%s_amphorizontal_%d', SOFAfile, round(f));
-        % filename = sprintf('%s_%d', SOFAfile, round(freq(idxF)));
-        % print('-dpng', '-r300', filename);
-        print ('-dpng', "-r600", [filename '.png'])
-        disp(['Saved figure: ' filename]);
-        if isoctave; fputs(fid, [ "just printed " filename ".png\n"]); end
+      filename = sprintf('%s_amphorizontal_%d', SOFAfile, round(f));
+      print ('-dpng', "-r600", [filename '.png'])
+      disp(['Saved figure: ' filename]);
+      fputs(fid, [ "just printed " filename ".png\n"]);
     end
 	else
 			error('No valid data.');
 	end
 
 
-	%% Epilogue: (un)comment if you want to:
+	%% Epilogue
 	disp('DONE');
-	if isoctave; fputs(fid, [ "DONE\n"]); end
-	if isoctave; fclose(fid); end;
+	fputs(fid, [ "DONE\n"]);
+	fclose(fid);
 	toc; % timer
 end
 
