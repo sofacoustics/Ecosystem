@@ -21,9 +21,8 @@
 
 function Selfone(SOFAfile)
 
-	isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
 	addpath('../shared'); % add the path to shared functions
-	logfile="SelfoneIR.log";
+	logfile = "SelfoneIR.log";
 
 	fid = fopen(logfile, "w");
 	s = pwd;
@@ -41,25 +40,25 @@ function Selfone(SOFAfile)
 
 	%jw:note Check if function called with parameter. If not, use command line parameter^M
 	if(exist("SOFAfile"))
-			if(length(SOFAfile)==0)
-					disp('The SOFA file name SOFAfile is empty');
-			end
+        if(length(SOFAfile)==0)
+                disp('The SOFA file name SOFAfile is empty');
+        end
 	else
-			% Use command line parameter for SOFAfile
-			disp(argv);
-			arg_list = argv();
-			fn = arg_list{1};
-			disp(fn);
-			SOFAfile = fn;
+        % Use command line parameter for SOFAfile
+        disp(argv);
+        arg_list = argv();
+        fn = arg_list{1};
+        disp(fn);
+        SOFAfile = fn;
 	end
 
 	%% Load SOFA file
 	Obj=SOFAload(SOFAfile);
 
 	SaveSOFAproperties(Obj, SOFAfile);
-	if isoctave; fputs(fid, ["Successfully saved SOFA details to csv files\n"]); end
+	fputs(fid, ["Successfully saved SOFA details to csv files\n"]);
 
-	if isoctave;  fputs(fid, [ "About to plot\n"]); end
+	fputs(fid, [ "About to plot\n"]);
 
 	%% Plot a few figures
 	switch Obj.GLOBAL_SOFAConventions
@@ -67,154 +66,135 @@ function Selfone(SOFAfile)
 			case 'GeneralFIR-E'
 	graphics_toolkit gnuplot
 
-					%% Freqplots, log
-					if isoctave;  fputs(fid, [ "About to print Frequency plots,log \n"]); end
+    %% Freqplots, log
+    fputs(fid, [ "About to print Frequency plots,log \n"]);
 
-					% Show Effect of M for R={'F3','inear'} and E='12'
+    % Show Effect of M for R={'F3','inear'} and E='12'
 
-					fig = figure('Name',SOFAfile);
-					chosen_m = 1:Obj.API.M;
-					chosen_e = 12;
-					chosen_r = [1 4];
-					mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2);
-					box on;
-					title('IR Magnitude Spectrum, E: 12(13), R: in-ear,4(F3), over all M + averaged')
-					filename=[SOFAfile '_spectrum_E=12_R=1.png'];
-					if isoctave;  fputs(fid, [ "About to save: " filename]); end
+    fig = figure('Name',SOFAfile);
+    chosen_m = 1:Obj.API.M;
+    chosen_e = 12;
+    chosen_r = [1 4];
+    mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2);
+    box on;
+    title('IR Magnitude Spectrum, E: 12(13), R: in-ear,4(F3), over all M + averaged')
+    filename=[SOFAfile '_spectrum_E=12_R=1.png'];
+    fputs(fid, [ "About to save: " filename]);
 
-					if isoctave
-						set(fig, "units", "pixels");
-						set(fig, "position", [100 100 1200 800]);  % [x y width height]
-						h = findall(gcf, "-property", "linewidth");
-						set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
-							print ('-dpng', "-r300","tight", filename);
-					else
-							 exportgraphics(fig, filename, 'BackgroundColor', 'none','Resolution',300)
-					end
-					if isoctave;  fputs(fid, [ "just printed " filename]); end
+    set(fig, "units", "pixels");
+    set(fig, "position", [100 100 1200 800]);  % [x y width height]
+    h = findall(gcf, "-property", "linewidth");
+    set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
+    print ('-dpng', "-r300","tight", filename);
+    fputs(fid, [ "just printed " filename]);
 
-					%close all
+    %close all
 
 
-					% make E, all R plots with thick in-ear for m=1
-					for e=1:Obj.API.E
+    % make E, all R plots with thick in-ear for m=1
+    for e=1:Obj.API.E
 
-					fig = figure('Name',SOFAfile);
-					chosen_m = 1;
-					chosen_e = e;
-					chosen_r = 1:Obj.API.R;
-					mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0);
-					box on;
-					title(['IR Magnitude Spectrum, E: ' num2str(e) ' over all R + in-ear for M: 1'])
-					filename=[SOFAfile '_spectrum_M=1_E=' ...
-							num2str(chosen_e) '.png'];
-					if isoctave;  fputs(fid, [ "About to save: " filename]); end
-					if isoctave
-						set(fig, "units", "pixels");
-						set(fig, "position", [100 100 1200 800]);  % [x y width height]
-						h = findall(gcf, "-property", "linewidth");
-						set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
-							print ('-dpng', "-r300","tight", filename);
-					else
-							 exportgraphics(fig, filename, 'BackgroundColor', 'none','Resolution',300)
-					end
-					if isoctave;  fputs(fid, [ "just printed " filename]); end
-					close all
+        fig = figure('Name',SOFAfile);
+        chosen_m = 1;
+        chosen_e = e;
+        chosen_r = 1:Obj.API.R;
+        mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0);
+        box on;
+        title(['IR Magnitude Spectrum, E: ' num2str(e) ' over all R + in-ear for M: 1'])
+        filename=[SOFAfile '_spectrum_M=1_E=' ...
+                num2str(chosen_e) '.png'];
+        fputs(fid, [ "About to save: " filename]);
+            set(fig, "units", "pixels");
+            set(fig, "position", [100 100 1200 800]);  % [x y width height]
+            h = findall(gcf, "-property", "linewidth");
+            set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
+                print ('-dpng', "-r300","tight", filename);
+        fputs(fid, [ "just printed " filename]);
+        close all
 
-					end
+    end
 
-					% make all E, R plots
-					for r=1:Obj.API.R
+    % make all E, R plots
+    for r=1:Obj.API.R
+        fig = figure('Name',SOFAfile);
+        chosen_m = 1;
+        chosen_e = 1:Obj.API.E;
+        chosen_r = r;
+        mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0);
+        box on;
+        title(['IR Magnitude Spectrum, R: ' num2str(r) ' over all E for M: 1'])
+        filename=[SOFAfile '_spectrum_M=1_R=' ...
+                num2str(chosen_r) '.png'];
+        fputs(fid, [ "About to save: " filename]);
 
-					fig = figure('Name',SOFAfile);
-					chosen_m = 1;
-					chosen_e = 1:Obj.API.E;
-					chosen_r = r;
-					mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0);
-					box on;
-					title(['IR Magnitude Spectrum, R: ' num2str(r) ' over all E for M: 1'])
-					filename=[SOFAfile '_spectrum_M=1_R=' ...
-							num2str(chosen_r) '.png'];
-					if isoctave;  fputs(fid, [ "About to save: " filename]); end
-					if isoctave
-						set(fig, "units", "pixels");
-						set(fig, "position", [100 100 1200 800]);  % [x y width height]
-						h = findall(gcf, "-property", "linewidth");
-						set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
-							print ('-dpng', "-r300","tight", filename);
-					else
-							 exportgraphics(fig, filename, 'BackgroundColor', 'none','Resolution',300)
-					end
-					if isoctave;  fputs(fid, [ "just printed " filename]); end
-					close all
+        set(fig, "units", "pixels");
+        set(fig, "position", [100 100 1200 800]);  % [x y width height]
+        h = findall(gcf, "-property", "linewidth");
+        set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
+            print ('-dpng', "-r300","tight", filename);
 
-					end
+        fputs(fid, [ "just printed " filename]);
+        close all
+    end
 
-					%% Geometry
-					mySOFAplotGeometry(Obj);
-					fig=gcf;
-					if isoctave; fputs(fid, [ "just done SOFAplotGeometry\n"]); end
-					view(0,0);
-					if isoctave; fputs(fid, [ "adapted view\n"]); end
-					%title('Selfone Emitter and Receiver Positions');
+    %% Geometry
+    mySOFAplotGeometry(Obj);
+    fig=gcf;
+    fputs(fid, [ "just done SOFAplotGeometry\n"]);
+    view(0,0);
+    fputs(fid, [ "adapted view\n"]);
+    %title('Selfone Emitter and Receiver Positions');
 
-					if isoctave
-						set(fig, "units", "pixels");
-						set(fig, "position", [100 100 1100 1100]);  % [x y width height]
-						h = findall(gcf, "-property", "linewidth");
-						set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
-						set(gca, "looseinset", [0 0 0 0]);
-						set(gca, "position", [0.13 0.11 0.775 0.815]);
-							print ('-dpng', "-r150","-tight", [SOFAfile '_geometry.png']);
-					else
-							 exportgraphics(gca, [SOFAfile '_geometry.png'], 'BackgroundColor', 'none','Resolution',300)
-					end
-					 close all;
-					if isoctave;  fputs(fid, [ "just printed " SOFAfile "_geometry.png\n"]); end
+    set(fig, "units", "pixels");
+    set(fig, "position", [100 100 1100 1100]);  % [x y width height]
+    h = findall(gcf, "-property", "linewidth");
+    set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
+    set(gca, "looseinset", [0 0 0 0]);
+    set(gca, "position", [0.13 0.11 0.775 0.815]);
+        print ('-dpng', "-r150","-tight", [SOFAfile '_geometry.png']);
+
+    close all;
+    fputs(fid, [ "just printed " SOFAfile "_geometry.png\n"]);
 
 	%% Geometric Energy in dB
-					IREnergy = Obj.Data.IR.^2;
-					IREnergysum = squeeze(sum(IREnergy,3));
-					%IREnergysumdB = 10*log10(IREnergysum./max(IREnergysum,[],"all"));
-					IREnergysumdB = 10*log10(IREnergysum./max(max(max(IREnergysum))));
-					% energy in db, 8x25x20
+    IREnergy = Obj.Data.IR.^2;
+    IREnergysum = squeeze(sum(IREnergy,3));
+    %IREnergysumdB = 10*log10(IREnergysum./max(IREnergysum,[],"all"));
+    IREnergysumdB = 10*log10(IREnergysum./max(max(max(IREnergysum))));
+    % energy in db, 8x25x20
 
-					for chosen_m=1:1
-					for chosen_e=1:Obj.API.E
-					mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e);
-					fig=gcf;
-					if isoctave; fputs(fid, [ "just done SOFAplotGeoEnergy\n"]); end
-					box on;
-					view(0,0);
+    for chosen_m=1:1
+        for chosen_e=1:Obj.API.E
+            mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e);
+            fig=gcf;
+            fputs(fid, [ "just done SOFAplotGeoEnergy\n"]);
+            box on;
+            view(0,0);
 
-					if isoctave; fputs(fid, [ "adapted view\n"]); end
+            fputs(fid, [ "adapted view\n"]);
 
-					title(['Energy distribution across microphones for M=' ...
-							num2str(chosen_m) ' and E=' num2str(chosen_e)]);
-					filename=[SOFAfile '_energy_M=1_E=' num2str(chosen_e) '.png'];
-					if isoctave
-						set(fig, "units", "pixels");
-						set(fig, "position", [100 100 1100 900]);  % [x y width height]
-						h = findall(gcf, "-property", "linewidth");
-						set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
-						set(gca, "looseinset", [0 0 0 0]);
-						set(gca, "position", [0.13 0.11 0.775 0.815]);
-							print ('-dpng', "-r150","-tight", filename);
-					else
-							 exportgraphics(gca, filename, 'BackgroundColor', 'none','Resolution',300)
-					end
-					 close all;
-					if isoctave;  fputs(fid, [ "just printed " filename]); end
+            title(['Energy distribution across microphones for M=' ...
+                    num2str(chosen_m) ' and E=' num2str(chosen_e)]);
+            filename=[SOFAfile '_energy_M=1_E=' num2str(chosen_e) '.png'];
+            set(fig, "units", "pixels");
+            set(fig, "position", [100 100 1100 900]);  % [x y width height]
+            h = findall(gcf, "-property", "linewidth");
+            set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
+            set(gca, "looseinset", [0 0 0 0]);
+            set(gca, "position", [0.13 0.11 0.775 0.815]);
+                print ('-dpng', "-r150","-tight", filename);
+            close all;
 
-					end
-					end
+            fputs(fid, [ "just printed " filename]);
+        end
+    end
 
 	end %switch case, probably unnecessary
 
 
 	%% Epilogue: (un)comment if you want to:
 	disp('DONE');
-	if isoctave;  fputs(fid, [ "\n### DONE ###\n"]); end
+	fputs(fid, [ "\n### DONE ###\n"]);
 	fclose(fid);
 	toc; % timer
 
