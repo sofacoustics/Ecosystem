@@ -128,7 +128,6 @@ function Selfone(SOFAfile)
     fputs(fid, ["Plotting geometry...\n"]);
     mySOFAplotGeometry(Obj);
     fig = gcf;
-    fputs(fid, ["Finished execution of SOFAplotGeometry\n\n"]);
     view(0,0);
 
     set(fig, "units", "pixels");
@@ -141,6 +140,7 @@ function Selfone(SOFAfile)
 
     close all;
     fputs(fid, [ "Printed " SOFAfile "_geometry.png\n"]);
+    fputs(fid, ["Finished execution of SOFAplotGeometry\n\n"]);
 
 	%% Geometric Energy in dB
     IREnergy = Obj.Data.IR.^2;
@@ -154,7 +154,6 @@ function Selfone(SOFAfile)
             fputs(fid, ["Plotting energy distribution...\n"]);
             mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e);
             fig = gcf;
-            fputs(fid, [ "Finished execution of SOFAplotGeoEnergy\n\n"]);
             box on;
             view(0,0);
 
@@ -173,6 +172,7 @@ function Selfone(SOFAfile)
             fputs(fid, [ "Printed " filename "\n"]);
         end
     end
+    fputs(fid, [ "Finished execution of SOFAplotGeoEnergy\n\n"]);
 
 	%% Epilogue: optionally comment 
 	disp('DONE');
