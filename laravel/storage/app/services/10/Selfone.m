@@ -58,13 +58,11 @@ function Selfone(SOFAfile)
 	SaveSOFAproperties(Obj, SOFAfile);
 	fputs(fid, ["Saved SOFA details to csv files\n"]);
 
-	fputs(fid, ["About to plot\n"]);
-
 	%% Plot a few figures
     graphics_toolkit gnuplot
 
     %% Freqplots, log
-    fputs(fid, ["About to print Frequency plots, log \n"]);
+    fputs(fid, ["Preparing plots of magnitude spectrum...\n"]);
 
     % Show Effect of M for R={'F3','inear'} and E='12'
     fig = figure('Name', SOFAfile);
@@ -75,7 +73,6 @@ function Selfone(SOFAfile)
     box on;
     title('IR Magnitude Spectrum, E: 12(13), R: in-ear,4(F3), over all M + averaged')
     filename = [SOFAfile '_spectrum_E=12_R=1.png'];
-    fputs(fid, ["About to save: " filename "\n"]);
 
     set(fig, "units", "pixels");
     set(fig, "position", [100 100 1200 800]);  % [x y width height]
@@ -95,7 +92,6 @@ function Selfone(SOFAfile)
         title(['IR Magnitude Spectrum, E: ' num2str(e) ' over all R + in-ear for M: 1'])
         filename = [SOFAfile '_spectrum_M=1_E=' ...
                     num2str(chosen_e) '.png'];
-        fputs(fid, [ "About to save: " filename "\n"]);
         set(fig, "units", "pixels");
         set(fig, "position", [100 100 1200 800]);  % [x y width height]
         h = findall(gcf, "-property", "linewidth");
@@ -116,7 +112,6 @@ function Selfone(SOFAfile)
         title(['IR Magnitude Spectrum, R: ' num2str(r) ' over all E for M: 1'])
         filename = [SOFAfile '_spectrum_M=1_R=' ...
                     num2str(chosen_r) '.png'];
-        fputs(fid, [ "About to save: " filename "\n"]);
 
         set(fig, "units", "pixels");
         set(fig, "position", [100 100 1200 800]);  % [x y width height]
@@ -131,7 +126,7 @@ function Selfone(SOFAfile)
     %% Geometry
     mySOFAplotGeometry(Obj);
     fig = gcf;
-    fputs(fid, ["Finished SOFAplotGeometry\n\n"]);
+    fputs(fid, ["Finished execution of SOFAplotGeometry\n\n"]);
     view(0,0);
 
     set(fig, "units", "pixels");
@@ -156,7 +151,7 @@ function Selfone(SOFAfile)
         for chosen_e=1:Obj.API.E
             mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e);
             fig = gcf;
-            fputs(fid, [ "Finished SOFAplotGeoEnergy\n\n"]);
+            fputs(fid, [ "Finished execution of SOFAplotGeoEnergy\n\n"]);
             box on;
             view(0,0);
 
