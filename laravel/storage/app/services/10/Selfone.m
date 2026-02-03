@@ -86,7 +86,7 @@ function Selfone(SOFAfile)
     h = findall(gcf, "-property", "linewidth");
     set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
     print ('-dpng', "-r300","tight", filename);
-    fputs(fid, [ "just printed " filename]);
+    fputs(fid, [ "just printed " filename "\n"]);
 
     %close all
 
@@ -109,7 +109,7 @@ function Selfone(SOFAfile)
             h = findall(gcf, "-property", "linewidth");
             set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
                 print ('-dpng', "-r300","tight", filename);
-        fputs(fid, [ "just printed " filename]);
+        fputs(fid, [ "just printed " filename "\n"]);
         close all
 
     end
@@ -133,7 +133,7 @@ function Selfone(SOFAfile)
         set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
             print ('-dpng', "-r300","tight", filename);
 
-        fputs(fid, [ "just printed " filename]);
+        fputs(fid, [ "just printed " filename "\n"]);
         close all
     end
 
@@ -185,7 +185,7 @@ function Selfone(SOFAfile)
                 print ('-dpng', "-r150","-tight", filename);
             close all;
 
-            fputs(fid, [ "just printed " filename]);
+            fputs(fid, [ "just printed " filename "\n"]);
         end
     end
 
