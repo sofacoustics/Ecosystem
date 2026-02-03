@@ -326,7 +326,7 @@ function mySOFAplotIRFreq(Obj,varargin)
 
     if ~isscalar(m)
         hl = legend(legendEntries, legendDescription, 'Location', 'NorthEast');
-        set(hl, 'fontsize', fsize-2, 'Color', [1, 1, 1]);
+        set(hl, 'fontsize', fsize-6, 'Color', [1, 1, 1], 'box', 'on');
     end
 
     set(gca,'XMinorTick','Off')
@@ -345,7 +345,7 @@ function mySOFAplotIRFreq(Obj,varargin)
         line(xl, [yv yv], 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
     end
 
-    xticklabels({'400', '2k', '4k', '6k', '8k', '10k', '12k', '14k', '16k', '18k', '20k', '22k', '24k', '26k', '28k', '30k', '32k', '34k', '36k'})
+    xticklabels({'400', '2k', '4k', '6k', '8k', '10k', '12k', '14k', '16k', '18k', '20k', '22k', '24k', '26k', '28k', '30k', '32k', '34k', '36k', '38k'})
     set(gca, 'fontsize', fsize);
     ylim([-100 -20])
     xlabel('Frequency (Hz)', 'fontsize', fsize);
