@@ -61,17 +61,15 @@ function Selfone(SOFAfile)
 	fputs(fid, [ "About to plot\n"]);
 
 	%% Plot a few figures
-	graphics_toolkit gnuplot
-
     %% Freqplots, log
-    fputs(fid, [ "About to print Frequency plots,log \n"]);
+    fputs(fid, [ "About to print Frequency plots, log \n"]);
 
     % Show Effect of M for R={'F3','inear'} and E='12'
-    fig = figure('Name',SOFAfile);
+    fig = figure('Name', SOFAfile);
     chosen_m = 1:Obj.API.M;
     chosen_e = 12;
     chosen_r = [1 4];
-    mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2);
+    mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2);
     box on;
     title('IR Magnitude Spectrum, E: 12(13), R: in-ear,4(F3), over all M + averaged')
     filename=[SOFAfile '_spectrum_E=12_R=1.png'];
