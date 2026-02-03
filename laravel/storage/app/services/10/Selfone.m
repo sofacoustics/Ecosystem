@@ -62,7 +62,7 @@ function Selfone(SOFAfile)
     graphics_toolkit gnuplot
 
     %% Freqplots, log
-    fputs(fid, ["Preparing plots of magnitude spectrum...\n"]);
+    fputs(fid, ["Plotting magnitude spectra...\n"]);
 
     % Show Effect of M for R={'F3','inear'} and E='12'
     fig = figure('Name', SOFAfile);
@@ -122,8 +122,10 @@ function Selfone(SOFAfile)
         fputs(fid, [ "Printed " filename "\n"]);
         close all
     end
+    fputs(fid, ["Finished execution of SOFAplotIRFreq\n\n"]);
 
     %% Geometry
+    fputs(fid, ["Plotting geometry...\n"]);
     mySOFAplotGeometry(Obj);
     fig = gcf;
     fputs(fid, ["Finished execution of SOFAplotGeometry\n\n"]);
@@ -149,6 +151,7 @@ function Selfone(SOFAfile)
 
     for chosen_m=1:1
         for chosen_e=1:Obj.API.E
+            fputs(fid, ["Plotting energy distribution...\n"]);
             mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e);
             fig = gcf;
             fputs(fid, [ "Finished execution of SOFAplotGeoEnergy\n\n"]);
