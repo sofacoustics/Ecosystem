@@ -61,16 +61,12 @@ function Selfone(SOFAfile)
 	fputs(fid, [ "About to plot\n"]);
 
 	%% Plot a few figures
-	switch Obj.GLOBAL_SOFAConventions
-			% differ cases, depending on SOFA conventions
-			case 'GeneralFIR-E'
 	graphics_toolkit gnuplot
 
     %% Freqplots, log
     fputs(fid, [ "About to print Frequency plots,log \n"]);
 
     % Show Effect of M for R={'F3','inear'} and E='12'
-
     fig = figure('Name',SOFAfile);
     chosen_m = 1:Obj.API.M;
     chosen_e = 12;
