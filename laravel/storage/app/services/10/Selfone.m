@@ -61,6 +61,8 @@ function Selfone(SOFAfile)
 	fputs(fid, [ "About to plot\n"]);
 
 	%% Plot a few figures
+    graphics_toolkit gnuplot
+
     %% Freqplots, log
     fputs(fid, [ "About to print Frequency plots, log \n"]);
 
@@ -69,11 +71,11 @@ function Selfone(SOFAfile)
     chosen_m = 1:Obj.API.M;
     chosen_e = 12;
     chosen_r = [1 4];
-    mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2);
+    mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2);
     box on;
     title('IR Magnitude Spectrum, E: 12(13), R: in-ear,4(F3), over all M + averaged')
     filename=[SOFAfile '_spectrum_E=12_R=1.png'];
-    fputs(fid, [ "About to save: " filename]);
+    fputs(fid, [ "About to save: " filename "\n"]);
 
     set(fig, "units", "pixels");
     set(fig, "position", [100 100 1200 800]);  % [x y width height]
@@ -83,12 +85,12 @@ function Selfone(SOFAfile)
     fputs(fid, [ "just printed " filename "\n"]);
 
     % make E, all R plots with thick in-ear for m=1
-    for e=1:Obj.API.E
-        fig = figure('Name',SOFAfile);
+    for e = 1:Obj.API.E
+        fig = figure('Name', SOFAfile);
         chosen_m = 1;
         chosen_e = e;
         chosen_r = 1:Obj.API.R;
-        mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0);
+        mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0);
         box on;
         title(['IR Magnitude Spectrum, E: ' num2str(e) ' over all R + in-ear for M: 1'])
         filename=[SOFAfile '_spectrum_M=1_E=' ...
@@ -104,7 +106,7 @@ function Selfone(SOFAfile)
     end
 
     % make all E, R plots
-    for r=1:Obj.API.R
+    for r = 1:Obj.API.R
         fig = figure('Name',SOFAfile);
         chosen_m = 1;
         chosen_e = 1:Obj.API.E;
@@ -140,7 +142,7 @@ function Selfone(SOFAfile)
     set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
     set(gca, "looseinset", [0 0 0 0]);
     set(gca, "position", [0.13 0.11 0.775 0.815]);
-        print ('-dpng', "-r150","-tight", [SOFAfile '_geometry.png']);
+    print ('-dpng', "-r150","-tight", [SOFAfile '_geometry.png']);
 
     close all;
     fputs(fid, [ "just printed " SOFAfile "_geometry.png\n"]);
@@ -262,7 +264,7 @@ function mySOFAplotIRFreq(Obj,varargin)
                         black_thickie = M;
                     else
                         if isfirstplot == 1
-                            legendEntries = plot(freq,M,"LineWidth",1);
+                            legendEntries = plot(freq, M, "LineWidth", 1);
                             legendDescription{end+1} = 'Selfone Mics';
                             isfirstplot = 0;
                         else
@@ -272,7 +274,7 @@ function mySOFAplotIRFreq(Obj,varargin)
                 end
 
                 if isscalar(r) && isscalar(m) % were plotting over all emitters
-                        plot(freq,M,"LineWidth",1)
+                        plot(freq, M, "LineWidth", 1)
                 end
 
                 if ~isscalar(m) % were plotting the M effect picture
@@ -284,11 +286,11 @@ function mySOFAplotIRFreq(Obj,varargin)
                         end
                     else
                         if isfirstplot == 1
-                            legendEntries = plot(freq,M,"LineWidth",1);
+                            legendEntries = plot(freq, M, "LineWidth", 1);
                             legendDescription{end+1} = 'individual Measurements';
                             isfirstplot = 0;
                         else
-                            plot(freq,M,"LineWidth",1);
+                            plot(freq, M, "LineWidth", 1);
                         end
                     end
                 end
@@ -297,8 +299,8 @@ function mySOFAplotIRFreq(Obj,varargin)
         end 
     end 
 
-    %xline([400 2000:2000:36000], 'color', [.8 .8 .8]);
-    line([400 2000:2000:36000; 400 2000:2000:36000], repmat(ylim, 1, numel([400 2000:2000:36000])), 'color', [.8 .8 .8]);
+    xticks([400 2000:2000:36000]);
+    grid on;
 
     % plot thickies
     if ~isempty(black_thickie)
