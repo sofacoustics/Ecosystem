@@ -536,7 +536,7 @@ function mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e)
     xlabel(['x (' strrep(Obj.ListenerPosition_Units, 'metre', 'mm') ')']);
     ylabel(['y (' strrep(Obj.ListenerPosition_Units, 'metre', 'mm') ')']);
     zlabel(['z (' strrep(Obj.ListenerPosition_Units, 'metre', 'mm') ')']);
-    clim([-20 0]);
+    caxis([-20 0]);
     cb = colorbar();
     ylabel(cb,'dB re max','FontSize',12,'Rotation',270) % Adds a color scale bar
 
