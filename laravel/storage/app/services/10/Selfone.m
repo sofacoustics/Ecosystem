@@ -185,9 +185,6 @@ function Selfone(SOFAfile)
         end
     end
 
-	end %switch case, probably unnecessary
-
-
 	%% Epilogue: (un)comment if you want to:
 	disp('DONE');
 	fputs(fid, [ "\n### DONE ###\n"]);
