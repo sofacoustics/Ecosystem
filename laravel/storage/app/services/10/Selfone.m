@@ -84,12 +84,8 @@ function Selfone(SOFAfile)
     print ('-dpng', "-r300","tight", filename);
     fputs(fid, [ "just printed " filename "\n"]);
 
-    %close all
-
-
     % make E, all R plots with thick in-ear for m=1
     for e=1:Obj.API.E
-
         fig = figure('Name',SOFAfile);
         chosen_m = 1;
         chosen_e = e;
@@ -107,7 +103,6 @@ function Selfone(SOFAfile)
                 print ('-dpng', "-r300","tight", filename);
         fputs(fid, [ "just printed " filename "\n"]);
         close all
-
     end
 
     % make all E, R plots
@@ -135,7 +130,7 @@ function Selfone(SOFAfile)
 
     %% Geometry
     mySOFAplotGeometry(Obj);
-    fig=gcf;
+    fig = gcf;
     fputs(fid, [ "just done SOFAplotGeometry\n"]);
     view(0,0);
     fputs(fid, [ "adapted view\n"]);
@@ -162,7 +157,7 @@ function Selfone(SOFAfile)
     for chosen_m=1:1
         for chosen_e=1:Obj.API.E
             mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e);
-            fig=gcf;
+            fig = gcf;
             fputs(fid, [ "just done SOFAplotGeoEnergy\n"]);
             box on;
             view(0,0);
@@ -185,7 +180,7 @@ function Selfone(SOFAfile)
         end
     end
 
-	%% Epilogue: (un)comment if you want to:
+	%% Epilogue: optionally comment 
 	disp('DONE');
 	fputs(fid, [ "\n### DONE ###\n"]);
 	fclose(fid);
@@ -193,166 +188,159 @@ function Selfone(SOFAfile)
 
 end
 
-function own_xline(xval, varargin)
-line([xval(:) xval(:)], ylim, varargin{:});
-end
 
 function mySOFAplotIRFreq(Obj,varargin)
 
+    definput.keyvals.chosen_r=1;
+    definput.keyvals.chosen_e=1;
+    definput.keyvals.chosen_m=1;
+    definput.keyvals.average_m=0;
+    definput.flags.normalize={'normalize','original'};
+    argin=varargin;
+    for ii=1:length(argin)
+        if ischar(argin{ii}), argin{ii}=lower(argin{ii}); end
+    end
+    [flags,kv] = SOFAarghelper({'chosen_r','chosen_e','chosen_m','average_m'},definput,argin);
 
-definput.keyvals.chosen_r=1;
-definput.keyvals.chosen_e=1;
-definput.keyvals.chosen_m=1;
-definput.keyvals.average_m=0;
-definput.flags.normalize={'normalize','original'};
-argin=varargin;
-for ii=1:length(argin)
-    if ischar(argin{ii}), argin{ii}=lower(argin{ii}); end
-end
-[flags,kv] = SOFAarghelper({'chosen_r','chosen_e','chosen_m','average_m'},definput,argin);
+    r = kv.chosen_r;
+    e = kv.chosen_e;
+    m = kv.chosen_m;
+    average_m = kv.average_m;
 
-r = kv.chosen_r;
-e = kv.chosen_e;
-m = kv.chosen_m;
-average_m = kv.average_m;
+    flags.do_normalize = flags.normalize;
 
-flags.do_normalize = flags.normalize;
+    r = r(:)';
+    e = e(:)';
+    m = m(:)';
 
-r = r(:)';
-e = e(:)';
-m = m(:)';
+    IR = permute(Obj.Data.IR, [4 2 1 3]); % E,R,M,N is easier
+    selected_data = IR(e,r,m,:);
 
-IR = permute(Obj.Data.IR, [4 2 1 3]); % E,R,M,N is easier
-selected_data = IR(e,r,m,:);
+    n = size(Obj.Data.IR,3);
+    fft_interpolation_factor = 16;
+    fs=Obj.Data.SamplingRate;
+    freq = 0:fs/(n*fft_interpolation_factor):(floor((n*fft_interpolation_factor)/2)-1)*fs/(n*fft_interpolation_factor);
 
-n = size(Obj.Data.IR,3);
-fft_interpolation_factor = 16;
-fs=Obj.Data.SamplingRate;
-freq = 0:fs/(n*fft_interpolation_factor):(floor((n*fft_interpolation_factor)/2)-1)*fs/(n*fft_interpolation_factor);
+    if length(m) > 1 && average_m >= 1
+        % do vector average
+        avg_mat = zeros(length(e),length(r),1,n);
+        for e_idx = 1:length(e)
+            for r_idx = 1:length(r)
+                hM = squeeze(selected_data(e_idx,r_idx,:,:));
+                fft_mat = fft(hM,n,2);
+                fft_mat = sum(fft_mat,1) ./ size(fft_mat,1);
+                avg_mat(e_idx,r_idx,1,:) = ifft(fft_mat,n,2);
+            end
+        end
+        if average_m == 1
+            selected_data = avg_mat;
+            m = 0;
+        else % plot both avg and individual m when 2
+            m = [0 m];
+            selected_data = cat(3,avg_mat,selected_data);
+        end
+    end
 
+    hold on;
 
-if length(m) > 1 && average_m >= 1
-    % do vector average
-    avg_mat = zeros(length(e),length(r),1,n);
+    black_thickie = [];
+    red_thickie = [];
+
+    isfirstplot = 1;
+    legendEntries = [];
+    legendDescription = [];
+
     for e_idx = 1:length(e)
-    for r_idx = 1:length(r)
-        hM = squeeze(selected_data(e_idx,r_idx,:,:));
-        fft_mat = fft(hM,n,2);
-        fft_mat = sum(fft_mat,1) ./ size(fft_mat,1);
-        avg_mat(e_idx,r_idx,1,:) = ifft(fft_mat,n,2);
-    end
-    end
-    if average_m == 1
-        selected_data = avg_mat;
-        m = 0;
-    else % plot both avg and individual m when 2
-        m = [0 m];
-        selected_data = cat(3,avg_mat,selected_data);
-    end
-end
+        for r_idx = 1:length(r)
+            for m_idx = 1:length(m)
 
-hold on;
+                hM=double(squeeze(selected_data(e_idx,r_idx,m_idx,:)));
+                M=(20*log10(abs(fft(hM(:),(n*fft_interpolation_factor))')));
 
-black_thickie = [];
-red_thickie = [];
+                M=M(:,1:floor(size(M,2)/2));  % only positive frequencies
 
-isfirstplot = 1;
-legendEntries = [];
-legendDescription = [];
+                if isscalar(e) && isscalar(m) % were plotting over all receivers
+                    if r_idx == 1
+                        black_thickie = M;
+                    else
+                        if isfirstplot == 1
+                            legendEntries = plot(freq,M,"LineWidth",1);
+                            legendDescription{end+1} = 'Selfone Mics';
+                            isfirstplot = 0;
+                        else
+                            plot(freq,M,"LineWidth",1);
+                        end
+                    end
+                end
 
-for e_idx = 1:length(e)
-for r_idx = 1:length(r)
-for m_idx = 1:length(m)
+                if isscalar(r) && isscalar(m) % were plotting over all emitters
+                        plot(freq,M,"LineWidth",1)
+                end
 
-hM=double(squeeze(selected_data(e_idx,r_idx,m_idx,:)));
-M=(20*log10(abs(fft(hM(:),(n*fft_interpolation_factor))')));
+                if ~isscalar(m) % were plotting the M effect picture
+                    if m_idx == 1
+                        if r_idx == 1
+                            red_thickie = M;
+                        else
+                            black_thickie = M;
+                        end
+                    else
+                        if isfirstplot == 1
+                            legendEntries = plot(freq,M,"LineWidth",1);
+                            legendDescription{end+1} = 'individual Measurements';
+                            isfirstplot = 0;
+                        else
+                            plot(freq,M,"LineWidth",1);
+                        end
+                    end
+                end
 
-M=M(:,1:floor(size(M,2)/2));  % only positive frequencies
+            end 
+        end 
+    end 
 
-if isscalar(e) && isscalar(m) % were plotting over all receivers
-    if r_idx == 1
-        black_thickie = M;
-    else
-        if isfirstplot == 1
-            legendEntries = plot(freq,M,"LineWidth",1);
-            legendDescription{end+1} = 'Selfone Mics';
-            isfirstplot = 0;
+    %xline([400 2000:2000:36000], 'color', [.8 .8 .8]);
+    line([400 2000:2000:36000; 400 2000:2000:36000], repmat(ylim, 1, numel([400 2000:2000:36000])), 'color', [.8 .8 .8]);
+
+    % plot thickies
+    if ~isempty(black_thickie)
+        if isscalar(m)
+            legendEntries(end+1) = plot(freq,black_thickie,"LineWidth",2,'Color',[0,0,0]);
+            legendDescription{end+1} = 'In-Ear Mic';
+            legend(legendEntries,legendDescription,'Location','NorthEast');
         else
-            plot(freq,M,"LineWidth",1);
-        end
-    end
-end
+            legendEntries(end+1) = plot(freq,black_thickie,"LineWidth",2,'Color',[0,0,0]);
+            legendDescription{end+1} = 'averaged Mic F3';
 
-if isscalar(r) && isscalar(m) % were plotting over all emitters
-        plot(freq,M,"LineWidth",1)
-end
-
-if ~isscalar(m) % were plotting the M effect picture
-    if m_idx == 1
-        if r_idx == 1
-            red_thickie = M;
-        else
-            black_thickie = M;
-        end
-    else
-        if isfirstplot == 1
-            legendEntries = plot(freq,M,"LineWidth",1);
-            legendDescription{end+1} = 'individual Measurements';
-            isfirstplot = 0;
-        else
-            plot(freq,M,"LineWidth",1);
         end
     end
 
+    if ~isempty(red_thickie)
+        legendEntries(end+1) = plot(freq,red_thickie,"LineWidth",2,'Color',[1,0,0]);
+        legendDescription{end+1} = 'averaged In-Ear Mic';
+    end
 
-end
-
-
-% set(gca, 'XScale', 'log')
-
-end % m loop end
-end % r loop end
-end % e loop end
-
-%xline([400 2000:2000:36000], 'color', [.8 .8 .8]);
-own_xline([400 2000:2000:36000], 'color', [.8 .8 .8]);
-
-% plot thickies
-if ~isempty(black_thickie)
-    if isscalar(m)
-        legendEntries(end+1) = plot(freq,black_thickie,"LineWidth",2,'Color',[0,0,0]);
-        legendDescription{end+1} = 'In-Ear Mic';
+    if ~isscalar(m)
         legend(legendEntries,legendDescription,'Location','NorthEast');
-    else
-        legendEntries(end+1) = plot(freq,black_thickie,"LineWidth",2,'Color',[0,0,0]);
-        legendDescription{end+1} = 'averaged Mic F3';
-
     end
+
+    set(gca,'XMinorTick','Off')
+    xlim([400 36000])
+    xtickangle(45)
+    xticks([400 2000:2000:36000]);
+
+    xticklabels({'400','2k','4k','6k','8k','10k','12k','14k','16k','18k','20k','22k','24k','26k','28k','30k','32k','34k','36k'})
+    ylim([-100 -20])
+    xlabel('Frequency (Hz)');
+    ylabel("|fft(IR)| (dB)")
+
+    hold off;
+
 end
-if ~isempty(red_thickie)
-    legendEntries(end+1) = plot(freq,red_thickie,"LineWidth",2,'Color',[1,0,0]);
-    legendDescription{end+1} = 'averaged In-Ear Mic';
-end
-
-if ~isscalar(m)
-    legend(legendEntries,legendDescription,'Location','NorthEast');
-end
-
-set(gca,'XMinorTick','Off')
-xlim([400 36000])
-xtickangle(45)
-xticks([400 2000:2000:36000]);
-
-xticklabels({'400','2k','4k','6k','8k','10k','12k','14k','16k','18k','20k','22k','24k','26k','28k','30k','32k','34k','36k'})
-ylim([-100 -20])
-xlabel('Frequency (Hz)');
-ylabel("|fft(IR)| (dB)")
-
-hold off;
-end % function end
 
 
 function mySOFAplotGeometry(Obj)
+
     figure; hold on;
 
     legendEntries = [];
@@ -388,8 +376,8 @@ function mySOFAplotGeometry(Obj)
     % Plot EmitterPositions
 
     % plot Emitters
-    legendEntries(end+1) = plot3(EP(1,1), EP(1,2), EP(1,3),'b+','MarkerSize',8);
-    text(EP(1,1)+labeloffset, EP(1,2), EP(1,3), [num2str(1) '(' Obj.EmitterLabel{1} ')']);
+    legendEntries(end+1) = plot3(EP(1,1), EP(1,2), EP(1,3), 'b+', 'MarkerSize', 8);
+    text(EP(1,1) + labeloffset, EP(1,2), EP(1,3), [num2str(1) '(' Obj.EmitterLabel{1} ')']);
 
     for ii=2:size(EP,1)
         linepoint = [0 0 0; EP(ii,:)];
@@ -397,8 +385,8 @@ function mySOFAplotGeometry(Obj)
     end
 
     for ii=2:size(EP,1)
-        plot3(EP(ii,1), EP(ii,2), EP(ii,3),'b+','MarkerSize',8);
-        text(EP(ii,1)+labeloffset, EP(ii,2), EP(ii,3),[num2str(ii) '(' Obj.EmitterLabel{ii} ')']);
+        plot3(EP(ii,1), EP(ii,2), EP(ii,3), 'b+', 'MarkerSize', 8);
+        text(EP(ii,1) + labeloffset, EP(ii,2), EP(ii,3), [num2str(ii) '(' Obj.EmitterLabel{ii} ')']);
     end
 
 
@@ -431,48 +419,41 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e)
+
     figure; hold on;
 
     legendEntries = [];
     % title(sprintf('%s, %s',Obj.GLOBAL_SOFAConventions,Obj.GLOBAL_RoomType));
 
-    % ReceiverPosition and
-    % EmitterPosition
-
-
-    RP = SOFAconvertCoordinates(Obj.ReceiverPosition(:,:),Obj.ReceiverPosition_Type,'cartesian');
-
-    EP = SOFAconvertCoordinates(Obj.EmitterPosition(:,:),Obj.EmitterPosition_Type,'cartesian');
+    % ReceiverPosition and  EmitterPosition
+    RP = SOFAconvertCoordinates(Obj.ReceiverPosition(:,:), Obj.ReceiverPosition_Type, 'cartesian');
+    EP = SOFAconvertCoordinates(Obj.EmitterPosition(:,:), Obj.EmitterPosition_Type, 'cartesian');
 
     view(0,0);
 
     %for plotting text offset to the center
     labeloffset = 2;
 
-
-
-
     % plot Active Emitter
     legendEntries(end+1) = plot3(EP(chosen_e,1), EP(chosen_e,2), EP(chosen_e,3), ...
-        'b+','MarkerSize',8, 'LineWidth', 2);
+        'b+', 'MarkerSize', 8, 'LineWidth', 2);
          plot3(EP(chosen_e,1), EP(chosen_e,2), EP(chosen_e,3), ...
-        'b+','MarkerSize',20, 'LineWidth', 2);
+        'b+', 'MarkerSize', 20, 'LineWidth', 2);
     point = [EP(chosen_e,3) -EP(chosen_e,1)]; point = point/norm(point);
     text(EP(chosen_e,1)+labeloffset*point(1),EP(chosen_e,2), EP(chosen_e,3)+labeloffset*point(2), ...
         [num2str(chosen_e) '(' Obj.EmitterLabel{chosen_e} ')'], ...
         'FontSize', 9, 'HorizontalAlignment','center', 'VerticalAlignment','middle');
     % faintly plot the others
     for ii=1:size(EP,1)
-        plot3(EP(ii,1), EP(ii,2), EP(ii,3),'+','MarkerSize',8,'Color',[0.6, 0.6, 0.6]);
+        plot3(EP(ii,1), EP(ii,2), EP(ii,3), '+', 'MarkerSize', 8, 'Color', [0.6, 0.6, 0.6]);
     end
-
 
     for ii=2:size(RP,1)
         r = sqrt(RP(ii,1)*RP(ii,1)+RP(ii,3)*RP(ii,3));
         linepoint = [0 36 0; RP(ii,1) 36 RP(ii,3)];
         theta = linspace(0, 2*pi, 200);
         circle = [r * cos(theta)'  36*ones(200,1)  r * sin(theta)'];
-        plot3(circle(:,1), circle(:,2), circle(:,3), 'b-', 'LineWidth', 0.2,'color', [0.1 0 0]+0.75);
+        plot3(circle(:,1), circle(:,2), circle(:,3), 'b-', 'LineWidth', 0.2, 'color', [0.1 0 0]+0.75);
         plot3(linepoint(:,1),linepoint(:,2),linepoint(:,3), 'LineWidth', 0.7, 'color', [0.1 0 0]+0.7);
     end
 
@@ -480,9 +461,10 @@ function mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e)
     labeloffset=4.0;
 
     legendEntries(end+1) =plot3(0, 40, 0, ...
-        'ko','MarkerSize',8, 'LineWidth', 2);% dirty hack for a black legend point, but meh..
+        'ko', 'MarkerSize', 8, 'LineWidth', 2);% dirty hack for a black legend point, but meh..
     scatter3(RP(2:end,1), RP(2:end,2), RP(2:end,3), 10000, ...
         IREnergysumdB(chosen_m,2:end,chosen_e), 'filled');
+
     for ii=2:size(RP,1)
         point = [RP(ii,3) -RP(ii,1)]; point = point/norm(point);
         textangle = atan2d(point(2),point(1));
@@ -509,11 +491,9 @@ function mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e)
             [num2str(1) '(' Obj.ReceiverLabel{1} ')'], ...
             'FontSize', 9, 'HorizontalAlignment','center', 'VerticalAlignment','middle');
 
-
     colormap hot; % Optional: Change the color scheme (e.g., 'parula', 'turbo', 'hot')
 
     %create legend
-
     legendDescription = {'Active Emitter E(Label)'};
 
     %legendDescription{end+1} ='SourcePosition';
@@ -545,20 +525,6 @@ function mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e)
     % axisLimits([1 3]) = axisLimits([1 3]) - paddingSpace;
     % axisLimits([2 4]) = axisLimits([2 4]) + paddingSpace;
     axisLimits = [-33 33 -10 42 -33 33];
-
-
     axis(axisLimits);
 
 end
-
-
-
-function newangle = mywrapTo180(angle)
-% transfer to range -180:180
-newangle = mod(angle+360, 360);
-if newangle > 180
-    newangle = newangle-360;
-end
-
-end
-
