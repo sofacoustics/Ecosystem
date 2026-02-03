@@ -95,7 +95,7 @@ function Selfone(SOFAfile)
         title(['IR Magnitude Spectrum, E: ' num2str(e) ' over all R + in-ear for M: 1'])
         filename=[SOFAfile '_spectrum_M=1_E=' ...
                 num2str(chosen_e) '.png'];
-        fputs(fid, [ "About to save: " filename]);
+        fputs(fid, [ "About to save: " filename "\n"]);
             set(fig, "units", "pixels");
             set(fig, "position", [100 100 1200 800]);  % [x y width height]
             h = findall(gcf, "-property", "linewidth");
@@ -116,7 +116,7 @@ function Selfone(SOFAfile)
         title(['IR Magnitude Spectrum, R: ' num2str(r) ' over all E for M: 1'])
         filename=[SOFAfile '_spectrum_M=1_R=' ...
                 num2str(chosen_r) '.png'];
-        fputs(fid, [ "About to save: " filename]);
+        fputs(fid, [ "About to save: " filename "\n"]);
 
         set(fig, "units", "pixels");
         set(fig, "position", [100 100 1200 800]);  % [x y width height]
