@@ -56,7 +56,7 @@ function Selfone(SOFAfile)
 	Obj=SOFAload(SOFAfile);
 
 	SaveSOFAproperties(Obj, SOFAfile);
-	fputs(fid, ["Saved SOFA details to csv files\n"]);
+	fputs(fid, ["Saved SOFA details to csv files\n\n"]);
 
 	%% Plot a few figures
     graphics_toolkit gnuplot
@@ -149,9 +149,9 @@ function Selfone(SOFAfile)
     IREnergysumdB = 10*log10(IREnergysum./max(max(max(IREnergysum))));
     % energy in db, 8x25x20
 
+    fputs(fid, ["Plotting energy distribution...\n"]);
     for chosen_m=1:1
         for chosen_e=1:Obj.API.E
-            fputs(fid, ["Plotting energy distribution...\n"]);
             mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e);
             fig = gcf;
             box on;
@@ -176,7 +176,7 @@ function Selfone(SOFAfile)
 
 	%% Epilogue: optionally comment 
 	disp('DONE');
-	fputs(fid, [ "\n### DONE ###\n"]);
+	fputs(fid, [ "### DONE ###\n"]);
 	fclose(fid);
 	toc; % timer
 
