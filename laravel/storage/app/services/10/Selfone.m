@@ -61,8 +61,8 @@ function Selfone(SOFAfile)
 	%% Select graphics toolkit
     graphics_toolkit gnuplot
 
-    %% Freqplots, log
-    fputs(fid, ["Plotting magnitude spectra...\n"]);
+    %% Plot magnitude spectrum
+    fputs(fid, ["Plotting magnitude spectrum...\n"]);
 
     % Effect of M: R={'F3','in-ear'} and E='12'
     fig = figure('Name', SOFAfile);
@@ -75,11 +75,11 @@ function Selfone(SOFAfile)
     filename = [SOFAfile '_spectrum_E=12_R=1.png'];
 
     set(fig, "units", "pixels");
-    set(fig, "position", [100 100 1200 800]);  % [x y width height]
+    set(fig, "position", [100 100 1800 800]);  % [x y width height]
     h = findall(gcf, "-property", "linewidth");
     set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
     print ('-dpng', "-r300","tight", filename);
-    fputs(fid, [ "Printed " filename "\n"]);
+    fputs(fid, [ "Printed " filename "\n\n"]);
 
     % Effect of R: M=1, E varies
     for e = 1:Obj.API.E
@@ -93,7 +93,7 @@ function Selfone(SOFAfile)
         filename = [SOFAfile '_spectrum_M=1_E=' ...
                     num2str(chosen_e) '.png'];
         set(fig, "units", "pixels");
-        set(fig, "position", [100 100 1200 800]);  % [x y width height]
+        set(fig, "position", [100 100 1600 800]);  % [x y width height]
         h = findall(gcf, "-property", "linewidth");
         set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
         print('-dpng', "-r300", "tight", filename);
@@ -116,7 +116,7 @@ function Selfone(SOFAfile)
                     num2str(chosen_r) '.png'];
 
         set(fig, "units", "pixels");
-        set(fig, "position", [100 100 1200 800]);  % [x y width height]
+        set(fig, "position", [100 100 1400 800]);  % [x y width height]
         h = findall(gcf, "-property", "linewidth");
         set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
         print('-dpng', "-r300","tight", filename);
@@ -185,9 +185,9 @@ function Selfone(SOFAfile)
 end
 
 
-function mySOFAplotIRFreq(Obj,varargin)
+function mySOFAplotIRFreq(Obj, varargin)
 
-    fsize = 20;
+    fsize = 22;
 
     definput.keyvals.chosen_r = 1;
     definput.keyvals.chosen_e = 1;
@@ -200,7 +200,7 @@ function mySOFAplotIRFreq(Obj,varargin)
            argin{ii} = lower(argin{ii}); 
         end
     end
-    [flags, kv] = SOFAarghelper({'chosen_r','chosen_e','chosen_m','average_m'}, definput, argin);
+    [flags, kv] = SOFAarghelper({'chosen_r', 'chosen_e', 'chosen_m', 'average_m'}, definput, argin);
 
     r = kv.chosen_r;
     e = kv.chosen_e;
@@ -265,10 +265,16 @@ function mySOFAplotIRFreq(Obj,varargin)
 
     % xticklabels({'400', '2k', '4k', '6k', '8k', '10k', '12k', '14k', '16k', '18k', '20k', '22k', '24k', '26k', '28k', '30k', '32k', '34k', '36k', '38k'})
     xticklabels({'400', '5k', '10k', '15k', '20k', '25k', '30k', '35k', '40k'});
-    set(gca, 'fontsize', fsize);
 
-    xlabel('Frequency (Hz)', 'fontsize', fsize);
-    ylabel("Magnitude (dB)", 'fontsize', fsize);
+    if ~isscalar(r) || (isscalar(e) && numel(r)==2)   
+        set(gca, 'fontsize', fsize+1);
+        xlabel('Frequency (Hz)', 'fontsize', fsize+1);
+        ylabel("Magnitude (dB)", 'fontsize', fsize+1);
+    else
+        set(gca, 'fontsize', fsize);
+        xlabel('Frequency (Hz)', 'fontsize', fsize);
+        ylabel("Magnitude (dB)", 'fontsize', fsize);
+    end
 
     black_thickie = [];
     red_thickie = [];
@@ -330,12 +336,12 @@ function mySOFAplotIRFreq(Obj,varargin)
     if ~isempty(black_thickie)
         if isscalar(m)
             legendEntries(end+1) = plot(freq, black_thickie, "LineWidth", 2, 'Color', [0, 0, 0]);
-            legendDescription{end+1} = 'In-Ear IRs';
-            hl = legend(legendEntries, legendDescription, 'Location', 'NorthEast');
-            set(hl, 'fontsize', fsize-2, 'Color', [0, 0, 0]);
+            legendDescription{end+1} = 'In-Ear IR';
+            hl = legend(legendEntries, legendDescription, 'Location', 'Eastoutside');
+            set(hl, 'fontsize', fsize, 'box', 'on');
         else
             legendEntries(end+1) = plot(freq, black_thickie, "LineWidth", 2, 'Color', [0, 0, 0]);
-            legendDescription{end+1} = 'Averaged SIRs: 4(F3)';
+            legendDescription{end+1} = 'Averaged SIRs: Mic. 4(F3)';
         end
     end
 
@@ -345,8 +351,8 @@ function mySOFAplotIRFreq(Obj,varargin)
     end
 
     if ~isscalar(m)
-        hl = legend(legendEntries, legendDescription, 'Location', 'NorthEast');
-        set(hl, 'fontsize', fsize-6, 'box', 'on');
+        hl = legend(legendEntries, legendDescription, 'Location', 'Eastoutside');
+        set(hl, 'fontsize', fsize, 'box', 'on');
     end
 
     hold off;
@@ -401,8 +407,8 @@ function mySOFAplotGeometry(Obj)
     % create legend
     legendDescription = {'Receivers R(Label)'};
     legendDescription{end+1} = 'Emitters E(Label)';
-    hl = legend(legendEntries, legendDescription, 'Location', 'NorthEast');
-    set(hl, 'fontsize', fsize-2, 'box', 'on');
+    hl = legend(legendEntries, legendDescription, 'Location', 'Eastoutside');
+    set(hl, 'fontsize', fsize, 'box', 'on');
 
     xlabel(['x (' strrep(Obj.ListenerPosition_Units, 'metre', 'mm') ')'], 'fontsize', fsize);
     ylabel(['y (' strrep(Obj.ListenerPosition_Units, 'metre', 'mm') ')'], 'fontsize', fsize);
@@ -509,7 +515,7 @@ function mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e)
     %  end
     legendDescription{end+1} = 'Energy at Microphones';
 
-    legend(legendEntries, legendDescription, 'Location', 'NorthEast');
+    legend(legendEntries, legendDescription, 'Location', 'Eastoutside');
     % legend(legendEntries,legendDescription,'Location','NorthEastOutside');
     xlabel(['x (' strrep(Obj.ListenerPosition_Units, 'metre', 'mm') ')']);
     ylabel(['y (' strrep(Obj.ListenerPosition_Units, 'metre', 'mm') ')']);
