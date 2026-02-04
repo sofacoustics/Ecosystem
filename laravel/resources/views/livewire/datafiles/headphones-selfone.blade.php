@@ -35,7 +35,7 @@
 						</select>
 					</td>
 					<td class="text-center align-middle">
-						<x-img class="p-2" :asset="$datafile->asset('',1).'_spectrum_M=1_E='.$counterE.'.png'" />
+						<x-img class="p-2" :asset="$datafile->asset('',1).'_spectrum_M=1_E='.$counterE.'_linX.png'" />
 					</td>
 				</tr>
 			</tbody>
@@ -60,7 +60,7 @@
 						</select>
 					</td>
 					<td class="text-center align-middle">
-						<x-img class="p-2" :asset="$datafile->asset('',1).'_spectrum_M=1_R='.$counterR.'.png'" />
+						<x-img class="p-2" :asset="$datafile->asset('',1).'_spectrum_M=1_R='.$counterR.'_linX.png'" />
 					</td>
 				</tr>
 			</tbody>
@@ -76,7 +76,7 @@
 		<tbody>
 			<tr class="py-2 border">
 				<td class="text-center align-middle">
-					<x-img :asset="$datafile->asset('_spectrum_E=12_R=1.png')"/>
+					<x-img :asset="$datafile->asset('_spectrum_E=12_R=1_linX.png')"/>
 				</td>
 			</tr>
 		</tbody>

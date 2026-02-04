@@ -71,14 +71,31 @@ function Selfone(SOFAfile)
     chosen_r = [1 4];
     mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2);
     box on;
-    filename = [SOFAfile '_spectrum_E=12_R=1.png'];
+    filename = [SOFAfile '_spectrum_E=12_R=1_linX.png'];
 
     set(fig, "units", "pixels");
     set(fig, "position", [100 100 1800 800]);  % [x y width height]
     h = findall(gcf, "-property", "linewidth");
     set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
     print ('-dpng', "-r300","tight", filename);
+    fputs(fid, [ "Printed " filename "\n"]);
+
+    % remove old vertical lines
+    delete(findall(gca, 'Type', 'line', 'Color', [0.5 0.5 0.5]));
+    set(gca, 'XScale', 'log');
+    xgridvals = [400, 1000, 2000, 4000, 6000, 10000, 20000, 40000];
+    xticks(xgridvals);
+    xlabels = {'400', '1k', '2k', '4k', '6k', '10k', '20k', '40k'};
+    xticklabels(xlabels);
+    yl = ylim;
+    for xv = xgridvals
+        line([xv xv], yl, 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
+    end
+    filename = [SOFAfile '_spectrum_E=12_R=1_logX.png'];
+    print ('-dpng', "-r300", "tight", filename);
     fputs(fid, [ "Printed " filename "\n\n"]);
+
+    close all
 
     % Effect of R: M=1, E varies
     for e = 1:Obj.API.E
@@ -89,13 +106,28 @@ function Selfone(SOFAfile)
         mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0);
         box on;
         filename = [SOFAfile '_spectrum_M=1_E=' ...
-                    num2str(chosen_e) '.png'];
+                    num2str(chosen_e) '_linX.png'];
         set(fig, "units", "pixels");
         set(fig, "position", [100 100 1600 800]);  % [x y width height]
         h = findall(gcf, "-property", "linewidth");
         set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
         print('-dpng', "-r300", "tight", filename);
         fputs(fid, [ "Printed " filename "\n"]);
+
+        set(gca, 'XScale', 'log');
+        xgridvals = [400, 1000, 2000, 4000, 6000, 10000, 20000, 40000];
+        xticks(xgridvals);
+        xlabels = {'400', '1k', '2k', '4k', '6k', '10k', '20k', '40k'};
+        xticklabels(xlabels);
+        yl = ylim;
+        for xv = xgridvals
+            line([xv xv], yl, 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
+        end
+        filename = [SOFAfile '_spectrum_M=1_E=' ...
+                    num2str(chosen_e) '_logX.png'];
+        print('-dpng', "-r300", "tight", filename);
+        fputs(fid, [ "Printed " filename "\n"]);
+
         close all
     end
 
@@ -110,15 +142,29 @@ function Selfone(SOFAfile)
         mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0);
         box on;
         filename = [SOFAfile '_spectrum_M=1_R=' ...
-                    num2str(chosen_r) '.png'];
+                    num2str(chosen_r) '_linX.png'];
 
         set(fig, "units", "pixels");
         set(fig, "position", [100 100 1400 800]);  % [x y width height]
         h = findall(gcf, "-property", "linewidth");
         set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
         print('-dpng', "-r300","tight", filename);
-
         fputs(fid, [ "Printed " filename "\n"]);
+
+        set(gca, 'XScale', 'log');
+        xgridvals = [400, 1000, 2000, 4000, 6000, 10000, 20000, 40000];
+        xticks(xgridvals);
+        xlabels = {'400', '1k', '2k', '4k', '6k', '10k', '20k', '40k'};
+        xticklabels(xlabels);
+        yl = ylim;
+        for xv = xgridvals
+            line([xv xv], yl, 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
+        end
+        filename = [SOFAfile '_spectrum_M=1_R=' ...
+                    num2str(chosen_r) '_logX.png'];
+        print('-dpng', "-r300", "tight", filename);
+        fputs(fid, [ "Printed " filename "\n"]);
+
         close all
     end
     fputs(fid, ["Finished execution of SOFAplotIRFreq.\n\n"]);
@@ -145,7 +191,7 @@ function Selfone(SOFAfile)
             set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
             set(gca, "looseinset", [0 0 0 0]);
             set(gca, "position", [0.13 0.11 0.775 0.815]);
-                print('-dpng', "-r150", "-tight", filename);
+            print('-dpng', "-r150", "-tight", filename);
             close all;
 
             fputs(fid, [ "Printed " filename "\n"]);
@@ -166,9 +212,8 @@ function Selfone(SOFAfile)
     set(gca, "looseinset", [0 0 0 0]);
     set(gca, "position", [0.13 0.11 0.775 0.815]);
     print('-dpng', "-r150","-tight", [SOFAfile '_geometry.png']);
-
-    close all;
     fputs(fid, [ "Printed " SOFAfile "_geometry.png\n"]);
+    close all;
     fputs(fid, ["Finished execution of SOFAplotGeometry.\n\n"]);
 
 	%% Epilogue: optionally comment 

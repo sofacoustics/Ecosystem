@@ -172,14 +172,14 @@ class DatafileListener extends Component
 				// HEADPHONES: SELFONE 
 			case 'livewire.datafiles.headphones-selfone':
 					// Effect of R: M=1, E varies
-				$files = glob($fullPath . '_spectrum_M=1_E=*.png');
+				$files = glob($fullPath . '_spectrum_M=1_E=*_linX.png');
 				$spectrumEs = [];
 				if(!empty($files))
 				{
 					for ($i=0; $i<count($files); $i++)
 					{
-						preg_match('/_spectrum_M=1_E=\d+\.png/', $files[$i], $match);
-						sscanf($match[0], "_spectrum_M=1_E=%d.png", $f);
+						preg_match('/_spectrum_M=1_E=\d+_linX\.png/', $files[$i], $match);
+						sscanf($match[0], "_spectrum_M=1_E=%d_linX.png", $f);
 						array_push($spectrumEs,$f);
 					}
 					asort($spectrumEs);
@@ -191,14 +191,14 @@ class DatafileListener extends Component
 						$this->counterE=1;
 					}				
 					// Effect of E: M=1, R varies
-				$files = glob($fullPath . '_spectrum_M=1_R=*.png');
+				$files = glob($fullPath . '_spectrum_M=1_R=*_linX.png');
 				$spectrumRs = [];
 				if(!empty($files))
 				{
 					for ($i=0; $i<count($files); $i++)
 					{
-						preg_match('/_spectrum_M=1_R=\d+\.png/', $files[$i], $match);
-						sscanf($match[0], "_spectrum_M=1_R=%d.png", $f);
+						preg_match('/_spectrum_M=1_R=\d+_linX\.png/', $files[$i], $match);
+						sscanf($match[0], "_spectrum_M=1_R=%d_linX.png", $f);
 						array_push($spectrumRs,$f);
 					}
 					asort($spectrumRs);
