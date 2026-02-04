@@ -71,7 +71,6 @@ function Selfone(SOFAfile)
     chosen_r = [1 4];
     mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2);
     box on;
-    title('IR Magnitude Spectrum, E: 12(13), R: in-ear,4(F3), over all M + averaged')
     filename = [SOFAfile '_spectrum_E=12_R=1.png'];
 
     set(fig, "units", "pixels");
@@ -89,7 +88,6 @@ function Selfone(SOFAfile)
         chosen_r = 1:Obj.API.R;
         mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0);
         box on;
-        title(['IR Magnitude Spectrum, E: ' num2str(e) ' over all R + in-ear for M: 1'])
         filename = [SOFAfile '_spectrum_M=1_E=' ...
                     num2str(chosen_e) '.png'];
         set(fig, "units", "pixels");
@@ -111,7 +109,6 @@ function Selfone(SOFAfile)
         chosen_r = r;
         mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0);
         box on;
-        title(['IR Magnitude Spectrum, R: ' num2str(r) ' over all E for M: 1'])
         filename = [SOFAfile '_spectrum_M=1_R=' ...
                     num2str(chosen_r) '.png'];
 
@@ -141,8 +138,6 @@ function Selfone(SOFAfile)
             box on;
             view(0,0);
 
-            title(['Energy distribution across microphones for M=' ...
-                    num2str(chosen_m) ' and E=' num2str(chosen_e)]);
             filename = [SOFAfile '_energy_M=1_E=' num2str(chosen_e) '.png'];
             set(fig, "units", "pixels");
             set(fig, "position", [100 100 1100 900]);  % [x y width height]
@@ -365,7 +360,6 @@ function mySOFAplotGeometry(Obj)
     figure; hold on;
 
     legendEntries = [];
-    % title(sprintf('%s, %s',Obj.GLOBAL_SOFAConventions,Obj.GLOBAL_RoomType));
 
     % Get  ReceiverPosition and EmitterPosition
     RP = SOFAconvertCoordinates(Obj.ReceiverPosition(:,:), Obj.ReceiverPosition_Type, 'cartesian');
@@ -434,7 +428,6 @@ function mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e)
     figure; hold on;
 
     legendEntries = [];
-    % title(sprintf('%s, %s',Obj.GLOBAL_SOFAConventions,Obj.GLOBAL_RoomType));
 
     % ReceiverPosition and  EmitterPosition
     RP = SOFAconvertCoordinates(Obj.ReceiverPosition(:,:), Obj.ReceiverPosition_Type, 'cartesian');
