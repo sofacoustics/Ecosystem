@@ -64,7 +64,7 @@ function Selfone(SOFAfile)
     %% Freqplots, log
     fputs(fid, ["Plotting magnitude spectra...\n"]);
 
-    % Show Effect of M for R={'F3','inear'} and E='12'
+    % Effect of M: R={'F3','in-ear'} and E='12'
     fig = figure('Name', SOFAfile);
     chosen_m = 1:Obj.API.M;
     chosen_e = 12;
@@ -81,7 +81,7 @@ function Selfone(SOFAfile)
     print ('-dpng', "-r300","tight", filename);
     fputs(fid, [ "Printed " filename "\n"]);
 
-    % make E, all R plots with thick in-ear for m=1
+    % Effect of R: M=1, E varies
     for e = 1:Obj.API.E
         fig = figure('Name', SOFAfile);
         chosen_m = 1;
@@ -101,7 +101,9 @@ function Selfone(SOFAfile)
         close all
     end
 
-    % make all E, R plots
+    fputs(fid, "\n");
+
+    % Effect of E: M=1, R varies
     for r = 1:Obj.API.R
         fig = figure('Name',SOFAfile);
         chosen_m = 1;
@@ -124,25 +126,7 @@ function Selfone(SOFAfile)
     end
     fputs(fid, ["Finished execution of SOFAplotIRFreq.\n\n"]);
 
-    %% Geometry
-    fputs(fid, ["Plotting geometry...\n"]);
-    mySOFAplotGeometry(Obj);
-    fig = gcf;
-    view(0,0);
-
-    set(fig, "units", "pixels");
-    set(fig, "position", [100 100 1100 1100]);  % [x y width height]
-    h = findall(gcf, "-property", "linewidth");
-    set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
-    set(gca, "looseinset", [0 0 0 0]);
-    set(gca, "position", [0.13 0.11 0.775 0.815]);
-    print('-dpng', "-r150","-tight", [SOFAfile '_geometry.png']);
-
-    close all;
-    fputs(fid, [ "Printed " SOFAfile "_geometry.png\n"]);
-    fputs(fid, ["Finished execution of SOFAplotGeometry.\n\n"]);
-
-	%% Geometric Energy in dB
+	%% Energy, Effect of R: M=1, E varies
     IREnergy = Obj.Data.IR.^2;
     IREnergysum = squeeze(sum(IREnergy, 3));
     %IREnergysumdB = 10*log10(IREnergysum./max(IREnergysum,[],"all"));
@@ -173,6 +157,24 @@ function Selfone(SOFAfile)
         end
     end
     fputs(fid, [ "Finished execution of SOFAplotGeoEnergy.\n\n"]);
+
+    %% Geometry
+    fputs(fid, ["Plotting geometry...\n"]);
+    mySOFAplotGeometry(Obj);
+    fig = gcf;
+    view(0,0);
+
+    set(fig, "units", "pixels");
+    set(fig, "position", [100 100 1100 1100]);  % [x y width height]
+    h = findall(gcf, "-property", "linewidth");
+    set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
+    set(gca, "looseinset", [0 0 0 0]);
+    set(gca, "position", [0.13 0.11 0.775 0.815]);
+    print('-dpng', "-r150","-tight", [SOFAfile '_geometry.png']);
+
+    close all;
+    fputs(fid, [ "Printed " SOFAfile "_geometry.png\n"]);
+    fputs(fid, ["Finished execution of SOFAplotGeometry.\n\n"]);
 
 	%% Epilogue: optionally comment 
 	disp('DONE');
@@ -238,14 +240,16 @@ function mySOFAplotIRFreq(Obj,varargin)
         end
     end
 
-    hold on;
-
     set(gca, 'XMinorTick', 'Off')
     set(gca, 'YMinorTick', 'Off')
 
-    xlim([400 38000])
+    hold on;
+
+    xlim([400 40000])
+    ylim([-100 -20])
+
     % xgridvals = [400 2000:2000:38000];
-    xgridvals = [400 5000:5000:38000];
+    xgridvals = [400 5000:5000:40000];
     xticks(xgridvals);
     yl = ylim;
     for xv = xgridvals
@@ -260,9 +264,8 @@ function mySOFAplotIRFreq(Obj,varargin)
     end
 
     % xticklabels({'400', '2k', '4k', '6k', '8k', '10k', '12k', '14k', '16k', '18k', '20k', '22k', '24k', '26k', '28k', '30k', '32k', '34k', '36k', '38k'})
-    xticklabels({'400', '5k', '10k', '15k', '20k', '25k', '30k', '35k', '38k'});
+    xticklabels({'400', '5k', '10k', '15k', '20k', '25k', '30k', '35k', '40k'});
     set(gca, 'fontsize', fsize);
-    ylim([-100 -20])
 
     xlabel('Frequency (Hz)', 'fontsize', fsize);
     ylabel("Magnitude (dB)", 'fontsize', fsize);
@@ -283,13 +286,13 @@ function mySOFAplotIRFreq(Obj,varargin)
 
                 M = M(:, 1:floor(size(M, 2)/2));  % only positive frequencies
 
-                if isscalar(e) && isscalar(m) % were plotting over all receivers
+                if isscalar(e) && isscalar(m) % plotting over all receivers
                     if r_idx == 1
                         black_thickie = M;
                     else
                         if isfirstplot == 1
                             legendEntries = plot(freq, M, "LineWidth", 1);
-                            legendDescription{end+1} = 'Selfone';
+                            legendDescription{end+1} = 'SIRs';
                             isfirstplot = 0;
                         else
                             plot(freq, M, "LineWidth", 1);
@@ -297,11 +300,11 @@ function mySOFAplotIRFreq(Obj,varargin)
                     end
                 end
 
-                if isscalar(r) && isscalar(m) % were plotting over all emitters
+                if isscalar(r) && isscalar(m) % plotting over all emitters
                         plot(freq, M, "LineWidth", 1)
                 end
 
-                if ~isscalar(m) % were plotting the M effect picture
+                if ~isscalar(m) % plotting the effect of M
                     if m_idx == 1
                         if r_idx == 1
                             red_thickie = M;
@@ -311,7 +314,7 @@ function mySOFAplotIRFreq(Obj,varargin)
                     else
                         if isfirstplot == 1
                             legendEntries = plot(freq, M, "LineWidth", 1);
-                            legendDescription{end+1} = 'individual Measurements';
+                            legendDescription{end+1} = 'Individual Measurements';
                             isfirstplot = 0;
                         else
                             plot(freq, M, "LineWidth", 1);
@@ -323,27 +326,27 @@ function mySOFAplotIRFreq(Obj,varargin)
         end 
     end 
 
-    % plot thickies
+    % plot thick lines
     if ~isempty(black_thickie)
         if isscalar(m)
             legendEntries(end+1) = plot(freq, black_thickie, "LineWidth", 2, 'Color', [0, 0, 0]);
-            legendDescription{end+1} = 'In-Ear';
+            legendDescription{end+1} = 'In-Ear IRs';
             hl = legend(legendEntries, legendDescription, 'Location', 'NorthEast');
             set(hl, 'fontsize', fsize-2, 'Color', [0, 0, 0]);
         else
-            legendEntries(end+1) = plot(freq, black_thickie, "LineWidth", 2, 'Color', [1, 1, 1]);
-            legendDescription{end+1} = 'Mic F3';
+            legendEntries(end+1) = plot(freq, black_thickie, "LineWidth", 2, 'Color', [0, 0, 0]);
+            legendDescription{end+1} = 'Averaged SIRs: 4(F3)';
         end
     end
 
     if ~isempty(red_thickie)
         legendEntries(end+1) = plot(freq, red_thickie, "LineWidth", 2, 'Color', [1, 0, 0]);
-        legendDescription{end+1} = 'In-Ear (averaged)';
+        legendDescription{end+1} = 'Averaged In-Ear IRs';
     end
 
     if ~isscalar(m)
         hl = legend(legendEntries, legendDescription, 'Location', 'NorthEast');
-        set(hl, 'fontsize', fsize-6, 'Color', [1, 1, 1], 'box', 'on');
+        set(hl, 'fontsize', fsize-6, 'box', 'on');
     end
 
     hold off;
@@ -398,17 +401,13 @@ function mySOFAplotGeometry(Obj)
     % create legend
     legendDescription = {'Receivers R(Label)'};
     legendDescription{end+1} = 'Emitters E(Label)';
-
     hl = legend(legendEntries, legendDescription, 'Location', 'NorthEast');
-    set(hl, 'fontsize', fsize-2, 'Color', [1, 1, 1]);
+    set(hl, 'fontsize', fsize-2, 'box', 'on');
 
     xlabel(['x (' strrep(Obj.ListenerPosition_Units, 'metre', 'mm') ')'], 'fontsize', fsize);
     ylabel(['y (' strrep(Obj.ListenerPosition_Units, 'metre', 'mm') ')'], 'fontsize', fsize);
     zlabel(['z (' strrep(Obj.ListenerPosition_Units, 'metre', 'mm') ')'], 'fontsize', fsize);
 
-    % formatting figures
-
-    % Set fixed aspect ratio
     axis equal;
     % Add a little bit extra space at the axis
     % axisLimits = axis();
@@ -510,14 +509,14 @@ function mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e)
     %  end
     legendDescription{end+1} = 'Energy at Microphones';
 
-    legend(legendEntries,legendDescription,'Location','NorthEast');
+    legend(legendEntries, legendDescription, 'Location', 'NorthEast');
     % legend(legendEntries,legendDescription,'Location','NorthEastOutside');
     xlabel(['x (' strrep(Obj.ListenerPosition_Units, 'metre', 'mm') ')']);
     ylabel(['y (' strrep(Obj.ListenerPosition_Units, 'metre', 'mm') ')']);
     zlabel(['z (' strrep(Obj.ListenerPosition_Units, 'metre', 'mm') ')']);
     caxis([-20 0]);
     cb = colorbar();
-    ylabel(cb,'dB re max','FontSize',12,'Rotation',270) % Adds a color scale bar
+    ylabel(cb,'dB re max', 'FontSize', 12, 'Rotation', 270) % Adds a color scale bar
 
 
     % formatting figures
