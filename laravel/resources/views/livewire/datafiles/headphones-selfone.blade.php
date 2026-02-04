@@ -71,6 +71,19 @@
 
 	<table class="min-w-full border border-gray-300 rounded">
 		<thead>
+			<th class="bg-gray-100">Spectrum, Effect of M: R=[1(in-ear), 4(F3)], E=12(13)</th>
+		</thead>
+		<tbody>
+			<tr class="py-2 border">
+				<td class="text-center align-middle">
+					<x-img :asset="$datafile->asset('_spectrum_E=12_R=1.png')"/>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table class="min-w-full border border-gray-300 rounded">
+		<thead>
 			<th class="bg-gray-100 max-w-1/6">E</th>
 			<th class="bg-gray-100">Energy, Effect of R: M=1, E varies</th>
 		</thead>
