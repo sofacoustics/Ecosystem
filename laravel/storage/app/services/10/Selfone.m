@@ -41,7 +41,7 @@ function Selfone(SOFAfile)
 	%jw:note Check if function called with parameter. If not, use command line parameter^M
 	if(exist("SOFAfile"))
         if(length(SOFAfile)==0)
-                disp('The SOFA file name SOFAfile is empty');
+            disp('The SOFA file name SOFAfile is empty');
         end
 	else
         % Use command line parameter for SOFAfile
@@ -53,12 +53,12 @@ function Selfone(SOFAfile)
 	end
 
 	%% Load SOFA file
-	Obj=SOFAload(SOFAfile);
+	Obj = SOFAload(SOFAfile);
 
 	SaveSOFAproperties(Obj, SOFAfile);
-	fputs(fid, ["Saved SOFA details to csv files\n\n"]);
+	fputs(fid, ["Saved SOFA details to csv files.\n\n"]);
 
-	%% Plot a few figures
+	%% Select graphics toolkit
     graphics_toolkit gnuplot
 
     %% Freqplots, log
@@ -96,7 +96,7 @@ function Selfone(SOFAfile)
         set(fig, "position", [100 100 1200 800]);  % [x y width height]
         h = findall(gcf, "-property", "linewidth");
         set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
-        print('-dpng', "-r300","tight", filename);
+        print('-dpng', "-r300", "tight", filename);
         fputs(fid, [ "Printed " filename "\n"]);
         close all
     end
@@ -122,7 +122,7 @@ function Selfone(SOFAfile)
         fputs(fid, [ "Printed " filename "\n"]);
         close all
     end
-    fputs(fid, ["Finished execution of SOFAplotIRFreq\n\n"]);
+    fputs(fid, ["Finished execution of SOFAplotIRFreq.\n\n"]);
 
     %% Geometry
     fputs(fid, ["Plotting geometry...\n"]);
@@ -140,11 +140,11 @@ function Selfone(SOFAfile)
 
     close all;
     fputs(fid, [ "Printed " SOFAfile "_geometry.png\n"]);
-    fputs(fid, ["Finished execution of SOFAplotGeometry\n\n"]);
+    fputs(fid, ["Finished execution of SOFAplotGeometry.\n\n"]);
 
 	%% Geometric Energy in dB
     IREnergy = Obj.Data.IR.^2;
-    IREnergysum = squeeze(sum(IREnergy,3));
+    IREnergysum = squeeze(sum(IREnergy, 3));
     %IREnergysumdB = 10*log10(IREnergysum./max(IREnergysum,[],"all"));
     IREnergysumdB = 10*log10(IREnergysum./max(max(max(IREnergysum))));
     % energy in db, 8x25x20
@@ -172,7 +172,7 @@ function Selfone(SOFAfile)
             fputs(fid, [ "Printed " filename "\n"]);
         end
     end
-    fputs(fid, [ "Finished execution of SOFAplotGeoEnergy\n\n"]);
+    fputs(fid, [ "Finished execution of SOFAplotGeoEnergy.\n\n"]);
 
 	%% Epilogue: optionally comment 
 	disp('DONE');
@@ -187,16 +187,18 @@ function mySOFAplotIRFreq(Obj,varargin)
 
     fsize = 20;
 
-    definput.keyvals.chosen_r=1;
-    definput.keyvals.chosen_e=1;
-    definput.keyvals.chosen_m=1;
-    definput.keyvals.average_m=0;
+    definput.keyvals.chosen_r = 1;
+    definput.keyvals.chosen_e = 1;
+    definput.keyvals.chosen_m = 1;
+    definput.keyvals.average_m = 0;
     definput.flags.normalize={'normalize','original'};
-    argin=varargin;
-    for ii=1:length(argin)
-        if ischar(argin{ii}), argin{ii}=lower(argin{ii}); end
+    argin = varargin;
+    for ii = 1:length(argin)
+        if ischar(argin{ii})
+           argin{ii} = lower(argin{ii}); 
+        end
     end
-    [flags,kv] = SOFAarghelper({'chosen_r','chosen_e','chosen_m','average_m'},definput,argin);
+    [flags, kv] = SOFAarghelper({'chosen_r','chosen_e','chosen_m','average_m'}, definput, argin);
 
     r = kv.chosen_r;
     e = kv.chosen_e;
@@ -209,23 +211,22 @@ function mySOFAplotIRFreq(Obj,varargin)
     e = e(:)';
     m = m(:)';
 
-    IR = permute(Obj.Data.IR, [4 2 1 3]); % E,R,M,N is easier
-    selected_data = IR(e,r,m,:);
+    IR = permute(Obj.Data.IR, [4 2 1 3]); % E, R, M, N is easier
+    selected_data = IR(e, r, m, :);
 
-    n = size(Obj.Data.IR,3);
+    n = size(Obj.Data.IR, 3);
     fft_interpolation_factor = 16;
     fs = Obj.Data.SamplingRate;
-    freq = 0:fs/(n*fft_interpolation_factor):(floor((n*fft_interpolation_factor)/2)-1)*fs/(n*fft_interpolation_factor);
+    freq = 0:fs/(n*fft_interpolation_factor):(floor((n*fft_interpolation_factor)/2)-1) * fs/(n*fft_interpolation_factor);
 
     if length(m) > 1 && average_m >= 1
-        % do vector average
-        avg_mat = zeros(length(e),length(r),1,n);
+        avg_mat = zeros(length(e), length(r), 1, n);
         for e_idx = 1:length(e)
             for r_idx = 1:length(r)
-                hM = squeeze(selected_data(e_idx,r_idx,:,:));
-                fft_mat = fft(hM,n,2);
-                fft_mat = sum(fft_mat,1) ./ size(fft_mat,1);
-                avg_mat(e_idx,r_idx,1,:) = ifft(fft_mat,n,2);
+                hM = squeeze(selected_data(e_idx, r_idx, :, :));
+                fft_mat = fft(hM, n, 2);
+                fft_mat = sum(fft_mat, 1) ./ size(fft_mat, 1);
+                avg_mat(e_idx,r_idx, 1, :) = ifft(fft_mat, n, 2);
             end
         end
         if average_m == 1
@@ -233,11 +234,38 @@ function mySOFAplotIRFreq(Obj,varargin)
             m = 0;
         else % plot both avg and individual m when 2
             m = [0 m];
-            selected_data = cat(3,avg_mat,selected_data);
+            selected_data = cat(3, avg_mat, selected_data);
         end
     end
 
     hold on;
+
+    set(gca, 'XMinorTick', 'Off')
+    set(gca, 'YMinorTick', 'Off')
+
+    xlim([400 38000])
+    % xgridvals = [400 2000:2000:38000];
+    xgridvals = [400 5000:5000:38000];
+    xticks(xgridvals);
+    yl = ylim;
+    for xv = xgridvals
+        line([xv xv], yl, 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
+    end
+
+    ygridvals = -100:20:-20;
+    yticks(ygridvals);
+    xl = xlim;
+    for yv = ygridvals
+        line(xl, [yv yv], 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
+    end
+
+    % xticklabels({'400', '2k', '4k', '6k', '8k', '10k', '12k', '14k', '16k', '18k', '20k', '22k', '24k', '26k', '28k', '30k', '32k', '34k', '36k', '38k'})
+    xticklabels({'400', '5k', '10k', '15k', '20k', '25k', '30k', '35k', '38k'});
+    set(gca, 'fontsize', fsize);
+    ylim([-100 -20])
+
+    xlabel('Frequency (Hz)', 'fontsize', fsize);
+    ylabel("Magnitude (dB)", 'fontsize', fsize);
 
     black_thickie = [];
     red_thickie = [];
@@ -250,10 +278,10 @@ function mySOFAplotIRFreq(Obj,varargin)
         for r_idx = 1:length(r)
             for m_idx = 1:length(m)
 
-                hM = double(squeeze(selected_data(e_idx,r_idx,m_idx,:)));
-                M = (20*log10(abs(fft(hM(:),(n*fft_interpolation_factor))')));
+                hM = double(squeeze(selected_data(e_idx, r_idx, m_idx, :)));
+                M = (20*log10(abs(fft(hM(:), (n*fft_interpolation_factor))')));
 
-                M = M(:,1:floor(size(M,2)/2));  % only positive frequencies
+                M = M(:, 1:floor(size(M, 2)/2));  % only positive frequencies
 
                 if isscalar(e) && isscalar(m) % were plotting over all receivers
                     if r_idx == 1
@@ -261,7 +289,7 @@ function mySOFAplotIRFreq(Obj,varargin)
                     else
                         if isfirstplot == 1
                             legendEntries = plot(freq, M, "LineWidth", 1);
-                            legendDescription{end+1} = 'Selfone Mics';
+                            legendDescription{end+1} = 'Selfone';
                             isfirstplot = 0;
                         else
                             plot(freq, M, "LineWidth", 1);
@@ -295,64 +323,28 @@ function mySOFAplotIRFreq(Obj,varargin)
         end 
     end 
 
-    xgridvals = [400 2000:2000:38000];
-    xticks(xgridvals);
-    yl = ylim;
-    for xv = xgridvals
-        line([xv xv], yl, 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
-    end
-
-    ygridvals = -100:20:-20;
-    yticks(ygridvals);
-    xl = xlim;
-    for yv = ygridvals
-        line(xl, [yv yv], 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
-    end
-
     % plot thickies
     if ~isempty(black_thickie)
         if isscalar(m)
-            legendEntries(end+1) = plot(freq, black_thickie, "LineWidth", 2, 'Color', [0,0,0]);
-            legendDescription{end+1} = 'In-Ear Mic';
+            legendEntries(end+1) = plot(freq, black_thickie, "LineWidth", 2, 'Color', [0, 0, 0]);
+            legendDescription{end+1} = 'In-Ear';
             hl = legend(legendEntries, legendDescription, 'Location', 'NorthEast');
-            set(hl, 'fontsize', fsize-2, 'Color', [0,0,0]);
+            set(hl, 'fontsize', fsize-2, 'Color', [0, 0, 0]);
         else
             legendEntries(end+1) = plot(freq, black_thickie, "LineWidth", 2, 'Color', [1, 1, 1]);
-            legendDescription{end+1} = 'averaged Mic F3';
+            legendDescription{end+1} = 'Mic F3';
         end
     end
 
     if ~isempty(red_thickie)
-        legendEntries(end+1) = plot(freq, red_thickie, "LineWidth", 2, 'Color', [1,0,0]);
-        legendDescription{end+1} = 'averaged In-Ear Mic';
+        legendEntries(end+1) = plot(freq, red_thickie, "LineWidth", 2, 'Color', [1, 0, 0]);
+        legendDescription{end+1} = 'In-Ear (averaged)';
     end
 
     if ~isscalar(m)
         hl = legend(legendEntries, legendDescription, 'Location', 'NorthEast');
         set(hl, 'fontsize', fsize-6, 'Color', [1, 1, 1], 'box', 'on');
     end
-
-    set(gca,'XMinorTick','Off')
-    xlim([400 38000])
-    xgridvals = [400 2000:2000:38000];
-    xticks(xgridvals);
-    yl = ylim;
-    for xv = xgridvals
-        line([xv xv], yl, 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
-    end
-
-    ygridvals = -100:20:-20;
-    yticks(ygridvals);
-    xl = xlim;
-    for yv = ygridvals
-        line(xl, [yv yv], 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
-    end
-
-    xticklabels({'400', '2k', '4k', '6k', '8k', '10k', '12k', '14k', '16k', '18k', '20k', '22k', '24k', '26k', '28k', '30k', '32k', '34k', '36k', '38k'})
-    set(gca, 'fontsize', fsize);
-    ylim([-100 -20])
-    xlabel('Frequency (Hz)', 'fontsize', fsize);
-    ylabel("Magnitude (dB)", 'fontsize', fsize);
 
     hold off;
 
