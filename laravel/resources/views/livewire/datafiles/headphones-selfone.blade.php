@@ -28,14 +28,14 @@
 			<tbody>
 				<tr class="py-2 border">
 					<td class="px-6 py-4 whitespace-normal text-center align-middle">
-						<select wire:model.live="counter" class="text-gray-700 mb-2 font-bold" title="Emitter index">
+						<select wire:model.live="counterE" class="text-gray-700 mb-2 font-bold" title="Emitter index">
 							@foreach($spectrumEs as $E)
 								<option value="{{$E}}">{{$E}}</option>
 							@endforeach
 						</select>
 					</td>
 					<td class="text-center align-middle">
-						<x-img class="p-2" :asset="$datafile->asset('',1).'_spectrum_M=1_E='.$counter.'.png'" />
+						<x-img class="p-2" :asset="$datafile->asset('',1).'_spectrum_M=1_E='.$counterE.'.png'" />
 					</td>
 				</tr>
 			</tbody>
@@ -53,14 +53,14 @@
 			<tbody>
 				<tr class="py-2 border">
 					<td class="px-6 py-4 whitespace-normal text-center align-middle">
-						<select wire:model.live="counter" class="text-gray-700 mb-2 font-bold" title="Receiver index">
+						<select wire:model.live="counterR" class="text-gray-700 mb-2 font-bold" title="Receiver index">
 							@foreach($spectrumRs as $R)
 								<option value="{{$R}}">{{$R}}</option>
 							@endforeach
 						</select>
 					</td>
 					<td class="text-center align-middle">
-						<x-img class="p-2" :asset="$datafile->asset('',1).'_spectrum_M=1_R='.$counter.'.png'" />
+						<x-img class="p-2" :asset="$datafile->asset('',1).'_spectrum_M=1_R='.$counterR.'.png'" />
 					</td>
 				</tr>
 			</tbody>

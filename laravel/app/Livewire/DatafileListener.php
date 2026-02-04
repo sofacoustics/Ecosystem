@@ -30,6 +30,8 @@ class DatafileListener extends Component
 	public $counter = 0;
 	public $counter_max = 1; 
 	public $counter_min = 0;
+	public $counterE = 0;
+	public $counterR = 0;
 	public $isExpanded = false; // for boxes to be expanded
 
 	/* Disabled to resolve the problem of disappearance of other widgets on any notification. 
@@ -184,9 +186,9 @@ class DatafileListener extends Component
 				}
 				$viewData['spectrumEs'] = $spectrumEs;
 				if($spectrumEs)
-					if($this->counter==0)
+					if($this->counterE==0)
 					{
-						$this->counter=1;
+						$this->counterE=1;
 					}				
 					// Effect of E: M=1, R varies
 				$files = glob($fullPath . '_spectrum_M=1_R=*.png');
@@ -203,9 +205,9 @@ class DatafileListener extends Component
 				}				
 				$viewData['spectrumRs'] = $spectrumRs;
 				if($spectrumRs)
-					if($this->counter==0)
+					if($this->counterR==0)
 					{
-						$this->counter=1;
+						$this->counterR=1;
 					}	
 					// Energy distribution of R: M=1, E varies
 				$files = glob($fullPath . '_energy_M=1_E=*.png');
