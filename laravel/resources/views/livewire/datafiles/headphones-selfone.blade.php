@@ -34,8 +34,8 @@
 						</td>
 						<td class="px-6 py-4 whitespace-normal text-center align-middle">
 							<select wire:model.live="selectorES" class="text-gray-700 mb-2 font-bold" title="Emitter index">
-								@foreach($spectrumRs as $R)
-									<option value="{{$R}}">{{$R}}</option>
+								@foreach($spectrumEs as $E)
+									<option value="{{$E}}">{{$E}}</option>
 								@endforeach
 							</select>
 						</td>	
@@ -48,8 +48,8 @@
 						</td>
 						<td class="px-6 py-4 whitespace-normal text-center align-middle">
 							<select wire:model.live="selectorES" class="text-gray-700 mb-2 font-bold" title="Emitter index">
-								@foreach($spectrumRs as $R)
-									<option value="{{$R}}">{{$R}}</option>
+								@foreach($spectrumEs as $E)
+									<option value="{{$E}}">{{$E}}</option>
 								@endforeach
 							</select>
 						</td>	
