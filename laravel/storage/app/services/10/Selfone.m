@@ -69,10 +69,8 @@ function Selfone(SOFAfile)
     chosen_m = 1:Obj.API.M;
     chosen_e = 12;
     chosen_r = [1 4];
-    mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2);
-    box on;
+    mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2, 'xscale', 'lin');
     filename = [SOFAfile '_spectrum_E=12_R=1_linX.png'];
-
     set(fig, "units", "pixels");
     set(fig, "position", [100 100 1800 800]);  % [x y width height]
     h = findall(gcf, "-property", "linewidth");
@@ -80,20 +78,15 @@ function Selfone(SOFAfile)
     print ('-dpng', "-r300","tight", filename);
     fputs(fid, [ "Printed " filename "\n"]);
 
-    % remove old vertical lines
-    delete(findall(gca, 'Type', 'line', 'Color', [0.5 0.5 0.5]));
-    set(gca, 'XScale', 'log');
-    xgridvals = [400, 1000, 2000, 4000, 6000, 10000, 20000, 40000];
-    xticks(xgridvals);
-    xlabels = {'400', '1k', '2k', '4k', '6k', '10k', '20k', '40k'};
-    xticklabels(xlabels);
-    yl = ylim;
-    for xv = xgridvals
-        line([xv xv], yl, 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
-    end
+    fig = figure('Name', SOFAfile);
+    mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2, 'xscale', 'log');
     filename = [SOFAfile '_spectrum_E=12_R=1_logX.png'];
-    print ('-dpng', "-r300", "tight", filename);
-    fputs(fid, [ "Printed " filename "\n\n"]);
+    set(fig, "units", "pixels");
+    set(fig, "position", [100 100 1800 800]);  % [x y width height]
+    h = findall(gcf, "-property", "linewidth");
+    set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
+    print ('-dpng', "-r300","tight", filename);
+    fputs(fid, [ "Printed " filename "\n"]);
 
     close all
 
@@ -103,8 +96,7 @@ function Selfone(SOFAfile)
         chosen_m = 1;
         chosen_e = e;
         chosen_r = 1:Obj.API.R;
-        mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0);
-        box on;
+        mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'lin');
         filename = [SOFAfile '_spectrum_M=1_E=' ...
                     num2str(chosen_e) '_linX.png'];
         set(fig, "units", "pixels");
@@ -114,17 +106,14 @@ function Selfone(SOFAfile)
         print('-dpng', "-r300", "tight", filename);
         fputs(fid, [ "Printed " filename "\n"]);
 
-        set(gca, 'XScale', 'log');
-        xgridvals = [400, 1000, 2000, 4000, 6000, 10000, 20000, 40000];
-        xticks(xgridvals);
-        xlabels = {'400', '1k', '2k', '4k', '6k', '10k', '20k', '40k'};
-        xticklabels(xlabels);
-        yl = ylim;
-        for xv = xgridvals
-            line([xv xv], yl, 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
-        end
+        fig = figure('Name', SOFAfile);
+        mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'log');
         filename = [SOFAfile '_spectrum_M=1_E=' ...
                     num2str(chosen_e) '_logX.png'];
+        set(fig, "units", "pixels");
+        set(fig, "position", [100 100 1600 800]);  % [x y width height]
+        h = findall(gcf, "-property", "linewidth");
+        set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
         print('-dpng', "-r300", "tight", filename);
         fputs(fid, [ "Printed " filename "\n"]);
 
@@ -135,12 +124,11 @@ function Selfone(SOFAfile)
 
     % Effect of E: M=1, R varies
     for r = 1:Obj.API.R
-        fig = figure('Name',SOFAfile);
+        fig = figure('Name', SOFAfile);
         chosen_m = 1;
         chosen_e = 1:Obj.API.E;
         chosen_r = r;
-        mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0);
-        box on;
+        mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'lin');
         filename = [SOFAfile '_spectrum_M=1_R=' ...
                     num2str(chosen_r) '_linX.png'];
 
@@ -151,19 +139,16 @@ function Selfone(SOFAfile)
         print('-dpng', "-r300","tight", filename);
         fputs(fid, [ "Printed " filename "\n"]);
 
-        set(gca, 'XScale', 'log');
-        xgridvals = [400, 1000, 2000, 4000, 6000, 10000, 20000, 40000];
-        xticks(xgridvals);
-        xlabels = {'400', '1k', '2k', '4k', '6k', '10k', '20k', '40k'};
-        xticklabels(xlabels);
-        yl = ylim;
-        for xv = xgridvals
-            line([xv xv], yl, 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
-        end
+        fig = figure('Name', SOFAfile);
+        mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'log');
         filename = [SOFAfile '_spectrum_M=1_R=' ...
                     num2str(chosen_r) '_logX.png'];
+        set(fig, "units", "pixels");
+        set(fig, "position", [100 100 1400 800]);  % [x y width height]
+        h = findall(gcf, "-property", "linewidth");
+        set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
         print('-dpng', "-r300", "tight", filename);
-        fputs(fid, [ "Printed " filename "\n"]);
+        fputs(fid, [ "Printed " filename "\n\n"]);
 
         close all
     end
@@ -181,7 +166,6 @@ function Selfone(SOFAfile)
         for chosen_e=1:Obj.API.E
             mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e);
             fig = gcf;
-            box on;
             view(0,0);
 
             filename = [SOFAfile '_energy_M=1_E=' num2str(chosen_e) '.png'];
@@ -233,6 +217,7 @@ function mySOFAplotIRFreq(Obj, varargin)
     definput.keyvals.chosen_e = 1;
     definput.keyvals.chosen_m = 1;
     definput.keyvals.average_m = 0;
+    definput.keyvals.xscale = 'lin';
     definput.flags.normalize={'normalize','original'};
     argin = varargin;
     for ii = 1:length(argin)
@@ -240,7 +225,7 @@ function mySOFAplotIRFreq(Obj, varargin)
            argin{ii} = lower(argin{ii}); 
         end
     end
-    [flags, kv] = SOFAarghelper({'chosen_r', 'chosen_e', 'chosen_m', 'average_m'}, definput, argin);
+    [flags, kv] = SOFAarghelper({'chosen_r', 'chosen_e', 'chosen_m', 'average_m', 'xscale'}, definput, argin);
 
     r = kv.chosen_r;
     e = kv.chosen_e;
@@ -248,6 +233,7 @@ function mySOFAplotIRFreq(Obj, varargin)
     average_m = kv.average_m;
 
     flags.do_normalize = flags.normalize;
+    xscale = kv.xscale;
 
     r = r(:)';
     e = e(:)';
@@ -283,28 +269,35 @@ function mySOFAplotIRFreq(Obj, varargin)
     set(gca, 'XMinorTick', 'Off')
     set(gca, 'YMinorTick', 'Off')
 
+    box on;
     hold on;
 
     xlim([400 40000])
     ylim([-100 -20])
 
-    % xgridvals = [400 2000:2000:38000];
-    xgridvals = [400 5000:5000:40000];
-    xticks(xgridvals);
-    yl = ylim;
-    for xv = xgridvals
-        line([xv xv], yl, 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
+    if strcmp(xscale, 'lin')
+        xgridvals = [400 5000:5000:40000];
+        xticklabels({'400', '5k', '10k', '15k', '20k', '25k', '30k', '35k', '40k'});
+    elseif strcmp(xscale, 'log')
+        xgridvals = [400, 1000, 2000, 4000, 6000, 10000, 20000, 40000];
+        xticklabels({'400', '1k', '2k', '4k', '6k', '10k', '20k', '40k'});
+        set(gca, 'xscale', 'log');
     end
+
+    xticks(xgridvals);
 
     ygridvals = -100:20:-20;
     yticks(ygridvals);
+
     xl = xlim;
     for yv = ygridvals
         line(xl, [yv yv], 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
     end
 
-    % xticklabels({'400', '2k', '4k', '6k', '8k', '10k', '12k', '14k', '16k', '18k', '20k', '22k', '24k', '26k', '28k', '30k', '32k', '34k', '36k', '38k'})
-    xticklabels({'400', '5k', '10k', '15k', '20k', '25k', '30k', '35k', '40k'});
+    yl = ylim;
+    for xv = xgridvals
+        line([xv xv], yl, 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
+    end
 
     if ~isscalar(r) || (isscalar(e) && numel(r)==2)   
         set(gca, 'fontsize', fsize+1);
@@ -462,7 +455,6 @@ function mySOFAplotGeometry(Obj)
     % axisLimits([2 4]) = axisLimits([2 4]) + paddingSpace;
     axisLimits = [-33 33 -10 42 -33 33];
     axis(axisLimits);
-
     box on;
 
 end
@@ -541,6 +533,7 @@ function mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e)
             'FontSize', 9, 'HorizontalAlignment','center', 'VerticalAlignment','middle');
 
     colormap hot; % Optional: Change the color scheme (e.g., 'parula', 'turbo', 'hot')
+    box on;
 
     %create legend
     legendDescription = {'Active Emitter E(Label)'};
