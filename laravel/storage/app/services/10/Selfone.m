@@ -391,8 +391,8 @@ end
 
 function mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e)
 
-    figure; hold on;
-
+    figure; 
+    
     legendEntries = [];
 
     % ReceiverPosition and  EmitterPosition
@@ -401,6 +401,9 @@ function mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e)
 
     %for plotting text offset to the center
     labeloffset = 2;
+    fsize = 22;
+
+    hold on;
 
     % plot Active Emitter
     legendEntries(end+1) = plot3(EP(chosen_e,1), EP(chosen_e,2), EP(chosen_e,3), ...
