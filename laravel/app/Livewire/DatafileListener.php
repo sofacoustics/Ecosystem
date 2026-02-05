@@ -30,8 +30,9 @@ class DatafileListener extends Component
 	public $counter = 0;
 	public $counter_max = 1; 
 	public $counter_min = 0;
-	public $counterE = 0;
-	public $counterR = 0;
+	public $selectorES = 1; // selected Emitter index for Spectrum plots
+	public $selectorEE = 1; // selected Emitter index for Energy plots
+	public $selectorRS = 1; // selected Receiver index for Spectrum plots
 	public $isExpanded = false; // for boxes to be expanded
 
 	/* Disabled to resolve the problem of disappearance of other widgets on any notification. 
@@ -185,11 +186,7 @@ class DatafileListener extends Component
 					asort($spectrumEs);
 				}
 				$viewData['spectrumEs'] = $spectrumEs;
-				if($spectrumEs)
-					if($this->counterE==0)
-					{
-						$this->counterE=1;
-					}				
+				if($spectrumEs)	
 					// Effect of E: M=1, R varies
 				$files = glob($fullPath . '_spectrum_M=1_R=*_linX.png');
 				$spectrumRs = [];
@@ -205,10 +202,6 @@ class DatafileListener extends Component
 				}				
 				$viewData['spectrumRs'] = $spectrumRs;
 				if($spectrumRs)
-					if($this->counterR==0)
-					{
-						$this->counterR=1;
-					}	
 					// Energy distribution of R: M=1, E varies
 				$files = glob($fullPath . '_energy_M=1_E=*.png');
 				$energyEs = [];
@@ -224,10 +217,6 @@ class DatafileListener extends Component
 				}				
 				$viewData['energyEs'] = $energyEs;				
 				if($energyEs)
-					if($this->counter==0)
-					{
-						$this->counter=1;
-					}	
 					// SOFA properties
 				$sofaFile = $this->datafile->absolutepath();
 				$viewData['csvRows'] = $this->readCSV($sofaFile, '_dim.csv');
