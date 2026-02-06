@@ -568,12 +568,13 @@ function mySOFAplotGeometry(Obj)
     for ii=1:size(EP,1)
         linepoint = [0 0 0; EP(ii,:)];
         plot3(linepoint(:,1), linepoint(:,2), linepoint(:,3), ...
-                'LineWidth', 0.7, 'color', [0.1 0 0]+0.7);
+                'LineWidth', 0.7, 'color', color_grey);
     end
 
     for ii=1:size(EP,1)
         plot3(EP(ii,1), EP(ii,2), EP(ii,3), 'b+', 'MarkerSize', msize);
-        text(EP(ii,1)+labeloffset_x, EP(ii,2), EP(ii,3)+labeloffset_z, [num2str(ii) '(' Obj.EmitterLabel{ii} ')'], 'fontsize', fsize-2);
+        text(EP(ii,1)+labeloffset_x, EP(ii,2), EP(ii,3)+labeloffset_z, ...
+            [num2str(ii) '(' Obj.EmitterLabel{ii} ')'], 'fontsize', fsize-2);
     end
 
     % create legend
