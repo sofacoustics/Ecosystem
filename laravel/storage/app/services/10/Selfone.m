@@ -164,17 +164,16 @@ function Selfone(SOFAfile)
     fputs(fid, ["Plotting energy distribution...\n"]);
     for chosen_m=1:1
         for chosen_e=1:Obj.API.E
-            mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e);
+            mySOFAplotGeoEnergy(Obj, IREnergysumdB, chosen_m, chosen_e);
             fig = gcf;
             view(0,0);
 
             filename = [SOFAfile '_energy_M=1_E=' num2str(chosen_e) '.png'];
             set(fig, "units", "pixels");
-            set(fig, "position", [100 100 1100 900]);  % [x y width height]
+            set(fig, "position", [0 0  1080 700]);  % [x y width height]
             h = findall(gcf, "-property", "linewidth");
-            set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
-            set(gca, "looseinset", [0 0 0 0]);
-            set(gca, "position", [0.13 0.11 0.775 0.815]);
+            set(h, {"linewidth"}, num2cell(8 * cell2mat(get(h, "linewidth"))));
+            set(gca, "position", [0.15 0.02 0.63 1]);
             print('-dpng', "-r150", "-tight", filename);
             fputs(fid, [ "Printed " filename "\n"]);
             close all;
@@ -206,8 +205,6 @@ end
 
 
 function mySOFAplotIRFreq(Obj, varargin)
-
-    fsize = 24;
 
     definput.keyvals.chosen_r = 1;
     definput.keyvals.chosen_e = 1;
@@ -262,6 +259,9 @@ function mySOFAplotIRFreq(Obj, varargin)
         end
     end
 
+    fsize = 24;
+    color_grey = [0.7 0.7 0.7];
+
     set(gca, 'XMinorTick', 'Off')
     set(gca, 'YMinorTick', 'Off')
 
@@ -307,6 +307,7 @@ function mySOFAplotIRFreq(Obj, varargin)
 
     black_thickie = [];
     red_thickie = [];
+    color_grey = [0.7 0.7 0.7];
 
     isfirstplot = 1;
     legendEntries = [];
@@ -389,101 +390,133 @@ function mySOFAplotIRFreq(Obj, varargin)
 end
 
 
-function mySOFAplotGeoEnergy(Obj,IREnergysumdB,chosen_m,chosen_e)
+function mySOFAplotGeoEnergy(Obj, IREnergysumdB, chosen_m, chosen_e)
+
+    % TODO: add SOFAarghelper for chosen_m, chosen_e, see mySOFAplotIRFreq
 
     figure; 
     
-    legendEntries = [];
-
     % ReceiverPosition and  EmitterPosition
     RP = SOFAconvertCoordinates(Obj.ReceiverPosition(:,:), Obj.ReceiverPosition_Type, 'cartesian');
     EP = SOFAconvertCoordinates(Obj.EmitterPosition(:,:), Obj.EmitterPosition_Type, 'cartesian');
 
     %for plotting text offset to the center
     labeloffset = 2;
-    fsize = 22;
+    fsize = 18;
+    msize = 12;
+    dotsize = 6000;
+    color_grey = [0.7 0.7 0.7];
+
+    labeloffset_x = -3.5;
+    labeloffset_z = -2;
 
     hold on;
 
-    % plot Active Emitter
-    legendEntries(end+1) = plot3(EP(chosen_e,1), EP(chosen_e,2), EP(chosen_e,3), ...
-        'b+', 'MarkerSize', 8, 'LineWidth', 2);
-         plot3(EP(chosen_e,1), EP(chosen_e,2), EP(chosen_e,3), ...
-        'b+', 'MarkerSize', 20, 'LineWidth', 2);
-    point = [EP(chosen_e,3) -EP(chosen_e,1)]; point = point/norm(point);
-    text(EP(chosen_e,1)+labeloffset*point(1),EP(chosen_e,2), EP(chosen_e,3)+labeloffset*point(2), ...
-        [num2str(chosen_e) '(' Obj.EmitterLabel{chosen_e} ')'], ...
-        'FontSize', 9, 'HorizontalAlignment','center', 'VerticalAlignment','middle');
-    
-    % faintly plot the others
-    for ii=1:size(EP,1)
-        plot3(EP(ii,1), EP(ii,2), EP(ii,3), '+', 'MarkerSize', 8, 'Color', [0.6, 0.6, 0.6]);
+    % Plot grid
+    for ii=2:size(RP,1)
+        r = sqrt(RP(ii, 1)*RP(ii, 1)+RP(ii, 3)*RP(ii, 3));
+        linepoint = [0, 36, 0; RP(ii, 1), 36, RP(ii, 3)];
+        theta = linspace(0, 2*pi, 200);
+        circle = [r*cos(theta)', 36*ones(200,1), r*sin(theta)'];
+        plot3(circle(:, 1), circle(:, 2), circle(:, 3), 'b-', ...
+                'LineWidth', 0.2, 'color', color_grey);
+        plot3(linepoint(:, 1), linepoint(:, 2), linepoint(:, 3), ...
+                'LineWidth', 0.7, 'color', color_grey);
     end
 
-    for ii=2:size(RP,1)
-        r = sqrt(RP(ii,1)*RP(ii,1)+RP(ii,3)*RP(ii,3));
-        linepoint = [0 36 0; RP(ii,1) 36 RP(ii,3)];
-        theta = linspace(0, 2*pi, 200);
-        circle = [r * cos(theta)'  36*ones(200,1)  r * sin(theta)'];
-        plot3(circle(:,1), circle(:,2), circle(:,3), 'b-', 'LineWidth', 0.2, 'color', [0.1 0 0]+0.75);
-        plot3(linepoint(:,1),linepoint(:,2),linepoint(:,3), 'LineWidth', 0.7, 'color', [0.1 0 0]+0.7);
+    % Plot emitters
+    % Inactive emitters
+    legendEntries = [];
+    legendEntries(end+1) = plot3(NaN, NaN, NaN, '+', ...
+        'MarkerSize', msize, 'Color', color_grey);
+    for ii=1:size(EP,1)
+        plot3(EP(ii, 1), EP(ii, 2), EP(ii, 3), '+', ...
+            'MarkerSize', msize, 'Color', color_grey);
     end
+
+    % Active emitter
+    legendEntries(end+1) = plot3(NaN, NaN, NaN, ...
+        'b+', 'MarkerSize', msize+4, 'LineWidth', 2);
+    plot3(EP(chosen_e, 1), EP(chosen_e, 2), EP(chosen_e, 3), ...
+        'b+', 'MarkerSize', msize+4, 'LineWidth', 2);
+    text(EP(chosen_e, 1)+labeloffset_x, EP(chosen_e, 2), EP(chosen_e, 3)+labeloffset_z, ...
+        [num2str(chosen_e) '(' Obj.EmitterLabel{chosen_e} ')'], 'fontsize', fsize-2, 'color', 'b');
 
     axis equal;
     view(0, 0);
 
-    %for plotting receiver text offset to the center
-    labeloffset=4.0;
-
-    legendEntries(end+1) =plot3(0, 40, 0, ...
-        'ko', 'MarkerSize', 8, 'LineWidth', 2);
-    scatter3(RP(2:end,1), RP(2:end,2), RP(2:end,3), 10000, ...
-        IREnergysumdB(chosen_m,2:end,chosen_e), 'filled');
-
-    for ii=2:size(RP,1)
-        point = [RP(ii,3) -RP(ii,1)]; point = point/norm(point);
-        textangle = atan2d(point(2),point(1));
-        if abs(textangle) > -1 && abs(textangle) < 1
-            point = point*1.2;
-        end
-        if abs(textangle) > 179 && abs(textangle) < 181
-            point = point*1.1;
-        end
-        if abs(textangle) > 89 && abs(textangle) < 91
-            point = point*0.9;
-        end
-        if abs(textangle) < -89 && abs(textangle) > -91
-            point = point*0.9;
-        end
-        text(RP(ii,1)+labeloffset*point(1), RP(ii,2), RP(ii,3)+labeloffset*point(2), ...
-            [num2str(ii) '(' Obj.ReceiverLabel{ii} ')'], ...
-            'FontSize', 9, 'HorizontalAlignment','center', 'VerticalAlignment','middle');
+    legendEntries(end+2) = scatter3(NaN, NaN, NaN, ...
+        dotsize, IREnergysumdB(chosen_m, 2, chosen_e), 'filled');
+    scatter3(RP(2:end, 1), RP(2:end, 2), RP(2:end, 3), dotsize, ...
+        IREnergysumdB(chosen_m, 2:end, chosen_e), 'filled');
+   
+    % Plot energy at receiver positions
+    % In-ear microphone
+    scatter3(RP(1, 1), RP(1, 2), RP(1, 3), dotsize*14, ...
+        IREnergysumdB(chosen_m, 1, chosen_e), 'filled');
+    
+    % Use white label if energy is larger than -15 dB
+    if IREnergysumdB(chosen_m, 1, chosen_e) >= -15
+        text(RP(1, 1), RP(1, 2), RP(1, 3), ...
+                [num2str(1) '(' Obj.ReceiverLabel{1} ')'], ...
+                'Color', 'w', ...
+                'FontSize', fsize-2, 'HorizontalAlignment', 'center', ...
+                'VerticalAlignment', 'middle');
+    else
+        text(RP(1, 1), RP(1, 2), RP(1, 3), ...
+                [num2str(1) '(' Obj.ReceiverLabel{1} ')'], ...
+                'Color', 'k', ...
+                'FontSize', fsize-2, 'HorizontalAlignment', 'center', ...
+                'VerticalAlignment', 'middle');
     end
 
-    scatter3(RP(1,1), RP(1,2), RP(1,3), 90000, ...
-        IREnergysumdB(chosen_m,1,chosen_e), 'filled');
-    text(RP(1,1), RP(1,2), RP(1,3), ...
-            [num2str(1) '(' Obj.ReceiverLabel{1} ')'], ...
-            'FontSize', 9, 'HorizontalAlignment','center', 'VerticalAlignment','middle');
+    % Selfone receivers
+    for ii=2:size(RP,1)  
+        if ii==9 || ii==21
+            text(RP(ii,1)+labeloffset_x, RP(ii,2), RP(ii,3)-labeloffset_z, ...
+                [num2str(ii) '(' Obj.ReceiverLabel{ii} ')'], 'fontsize', fsize-2);
+        else
+            text(RP(ii,1)+labeloffset_x, RP(ii,2), RP(ii,3)+labeloffset_z, ...
+                [num2str(ii) '(' Obj.ReceiverLabel{ii} ')'], 'fontsize', fsize-2);
+        end
+    end
 
-    colormap hot; % Optional: Change the color scheme (e.g., 'parula', 'turbo', 'hot')
+    hot_map = hot;
+    inverted_hot = flipud(hot_map);    
+    colormap(inverted_hot); % Optional: Change the color scheme (e.g., 'parula', 'turbo', 'hot')
+
     box on;
 
-    %create legend
-    legendDescription = {'Active Emitter E(Label)'};
-    legendDescription{end+1} = 'Energy at Microphones';
-    legend(legendEntries, legendDescription, 'Location', 'Southoutside', 'box', 'on');
+    % %create legend (positioning not working well in Octave)
+    % legendDescription = {'Inactive emitter', ...
+    %     'Active emitter: E(Label)', ...
+    %     'Energy at Receivers: R(Label)'};
+    % hl = legend(legendEntries, legendDescription, ...
+    %         'Location', 'Eastoutside', 'box', 'off', 'fontsize', fsize);
 
-    xlabel('x (mm)')
-    ylabel('y (mm)');
-    zlabel('z (mm)');
+    % legendDescription = {'Active emitter: E(Label)'};
+    % hl = legend(legendEntries(2), legendDescription, ...
+    %         'Location', 'North', 'box', 'off', 'fontsize', fsize);
+
+    offset_x = -15;
+    offset_z = -9;
+
+    % xlabel
+    text(mean(xlim), 0, min(zlim)+offset_x, 'x (mm)', ...
+        'HorizontalAlignment', 'center', 'fontsize', fsize);
+    
+    % zlabel
+    text(min(xlim)+offset_z, 0, mean(zlim), 'z (mm)', ...
+        'Rotation', 90, 'HorizontalAlignment', 'center', 'fontsize', fsize);
 
     axisLimits = [-33 33 -10 42 -33 33];
     axis(axisLimits);
+    set(gca, 'fontsize', fsize);
 
-    caxis([-20 0]);
     cb = colorbar();
-    ylabel(cb,'dB re max', 'FontSize', fsize, 'Rotation', 270) % Adds a color scale bar
+    caxis([-30 0]);
+    set(cb, 'FontSize', fsize, 'Location', 'east');
+    ylabel(cb, 'Energy re global maximum (dB)', 'FontSize', fsize, 'Rotation', 270);
 
 end
 
@@ -501,6 +534,7 @@ function mySOFAplotGeometry(Obj)
     labeloffset_z = -2;
     fsize = 13;
     msize = 10;
+    color_grey = [0.7 0.7 0.7];
 
     hold on;
 
@@ -512,8 +546,8 @@ function mySOFAplotGeometry(Obj)
         r = sqrt(RP(ii,1)*RP(ii,1) + RP(ii,3)*RP(ii,3));
         theta = linspace(0, 2*pi, 200);
         circle = [r*cos(theta)', 36*ones(200,1), r*sin(theta)'];
-        plot3(circle(:,1), circle(:,2), circle(:,3), 'b-', 'LineWidth', 0.35,'color', [0.7 0.7 0.7]);
-        plot3(linepoint(:,1), linepoint(:,2), linepoint(:,3), 'LineWidth', 0.35, 'color', [0.7 0.7 0.7]);
+        plot3(circle(:,1), circle(:,2), circle(:,3), 'b-', 'LineWidth', 0.35,'color', color_grey);
+        plot3(linepoint(:,1), linepoint(:,2), linepoint(:,3), 'LineWidth', 0.35, 'color', color_grey);
     end
 
     for ii=1:size(RP,1)
@@ -530,7 +564,6 @@ function mySOFAplotGeometry(Obj)
                 [num2str(ii) '(' Obj.ReceiverLabel{ii} ')'], 'fontsize', fsize-2);
         end
     end
-    
 
     % Plot EmitterPositions
     legendEntries(end+1) = plot3(EP(1,1), EP(1,2), EP(1,3), 'b+', 'MarkerSize', msize);
@@ -538,7 +571,8 @@ function mySOFAplotGeometry(Obj)
 
     for ii=1:size(EP,1)
         linepoint = [0 0 0; EP(ii,:)];
-        plot3(linepoint(:,1), linepoint(:,2), linepoint(:,3), 'LineWidth', 0.35, 'color', [0.7 0.7 0.7]);
+        plot3(linepoint(:,1), linepoint(:,2), linepoint(:,3), ...
+                'LineWidth', 0.7, 'color', [0.1 0 0]+0.7);
     end
 
     for ii=1:size(EP,1)
