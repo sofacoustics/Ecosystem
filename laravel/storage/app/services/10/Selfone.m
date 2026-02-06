@@ -367,7 +367,7 @@ function mySOFAplotIRFreq(Obj, varargin)
             legendEntries(end+1) = plot(freq, black_thickie, "LineWidth", 2, 'Color', [0, 0, 0]);
             legendDescription{end+1} = 'In-Ear IR';
             hl = legend(legendEntries, legendDescription, 'Location', 'Eastoutside');
-            set(hl, 'fontsize', fsize, 'box', 'on');
+            set(hl, 'fontsize', fsize, 'box', 'off');
         else
             legendEntries(end+1) = plot(freq, black_thickie, "LineWidth", 2, 'Color', [0, 0, 0]);
             legendDescription{end+1} = 'Averaged SIRs: Mic. 4(F3)';
@@ -381,7 +381,7 @@ function mySOFAplotIRFreq(Obj, varargin)
 
     if ~isscalar(m)
         hl = legend(legendEntries, legendDescription, 'Location', 'Eastoutside');
-        set(hl, 'fontsize', fsize, 'box', 'on');
+        set(hl, 'fontsize', fsize, 'box', 'off');
     end
 
     hold off;
