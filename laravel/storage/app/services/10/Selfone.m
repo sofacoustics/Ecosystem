@@ -56,6 +56,7 @@ function Selfone(SOFAfile)
 	Obj = SOFAload(SOFAfile);
 
 	SaveSOFAproperties(Obj, SOFAfile);
+    fputs(fid, ["Processing " SOFAfile "\n"]);
 	fputs(fid, ["Saved SOFA details to csv files.\n\n"]);
 
 	%% Select graphics toolkit
@@ -195,7 +196,7 @@ function Selfone(SOFAfile)
 
 	%% Epilogue
 	disp('DONE');
-	fputs(fid, [ "### DONE ###\n"]);
+	fputs(fid, [ "### DONE ###\n\n\n"]);
 	fclose(fid);
 	toc; % timer
 
