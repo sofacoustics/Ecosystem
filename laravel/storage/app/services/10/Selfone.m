@@ -157,9 +157,7 @@ function Selfone(SOFAfile)
 	%% Energy, Effect of R: M=1, E varies
     IREnergy = Obj.Data.IR.^2;
     IREnergysum = squeeze(sum(IREnergy, 3));
-    %IREnergysumdB = 10*log10(IREnergysum./max(IREnergysum,[],"all"));
-    IREnergysumdB = 10*log10(IREnergysum./max(max(max(IREnergysum))));
-    % energy in db, 8x25x20
+    IREnergysumdB = 10*log10(IREnergysum/max(IREnergysum(:)));
 
     fputs(fid, ["Plotting energy distribution...\n"]);
     for chosen_m=1:1
