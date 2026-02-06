@@ -390,8 +390,6 @@ end
 
 function mySOFAplotGeoEnergy(Obj, IREnergysumdB, chosen_m, chosen_e)
 
-    % TODO: add SOFAarghelper for chosen_m, chosen_e, see mySOFAplotIRFreq
-
     figure; 
     
     % ReceiverPosition and  EmitterPosition
@@ -424,17 +422,17 @@ function mySOFAplotGeoEnergy(Obj, IREnergysumdB, chosen_m, chosen_e)
 
     % Plot emitters
     % Inactive emitters
-    legendEntries = [];
-    legendEntries(end+1) = plot3(NaN, NaN, NaN, '+', ...
-        'MarkerSize', msize, 'Color', color_grey);
+    % legendEntries = [];
+    % legendEntries(end+1) = plot3(NaN, NaN, NaN, '+', ...
+    %     'MarkerSize', msize, 'Color', color_grey);
     for ii=1:size(EP,1)
         plot3(EP(ii, 1), EP(ii, 2), EP(ii, 3), '+', ...
             'MarkerSize', msize, 'Color', color_grey);
     end
 
     % Active emitter
-    legendEntries(end+1) = plot3(NaN, NaN, NaN, ...
-        'b+', 'MarkerSize', msize+4, 'LineWidth', 2);
+    % legendEntries(end+1) = plot3(NaN, NaN, NaN, ...
+    %     'b+', 'MarkerSize', msize+4, 'LineWidth', 2);
     plot3(EP(chosen_e, 1), EP(chosen_e, 2), EP(chosen_e, 3), ...
         'b+', 'MarkerSize', msize+4, 'LineWidth', 2);
     text(EP(chosen_e, 1)+labeloffset_x, EP(chosen_e, 2), EP(chosen_e, 3)+labeloffset_z, ...
@@ -443,8 +441,8 @@ function mySOFAplotGeoEnergy(Obj, IREnergysumdB, chosen_m, chosen_e)
     axis equal;
     view(0, 0);
 
-    legendEntries(end+2) = scatter3(NaN, NaN, NaN, ...
-        dotsize, IREnergysumdB(chosen_m, 2, chosen_e), 'filled');
+    % legendEntries(end+2) = scatter3(NaN, NaN, NaN, ...
+    %     dotsize, IREnergysumdB(chosen_m, 2, chosen_e), 'filled');
     scatter3(RP(2:end, 1), RP(2:end, 2), RP(2:end, 3), dotsize, ...
         IREnergysumdB(chosen_m, 2:end, chosen_e), 'filled');
    
