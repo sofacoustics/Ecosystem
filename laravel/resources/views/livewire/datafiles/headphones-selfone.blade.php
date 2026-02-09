@@ -149,7 +149,7 @@
 		@if($energyEs)
 			<tbody>
 				<tr class="py-2 border">
-					<td class="px-6 py-4 whitespace-normal"><b>Coordinates:</b> Cartesian<br><b>Note:</b> Sums of squared IRs at receivers (coloured dots) when one emitter is active (blue cross).<br> 
+					<td class="px-6 py-4 whitespace-normal"><b>Note:</b> Sums of squared IRs at receivers (coloured dots) when one emitter is active (blue cross). Position of in-ear microphone unknown.<br> 
 					</td>
 					<td class="px-6 py-4 whitespace-normal text-center align-middle">
 						<select wire:model.live="selectorEE" class="text-gray-700 mb-2 font-bold" title="Emitter index">
@@ -175,7 +175,7 @@
 		</thead>
 		<tbody>
 			<tr class="py-2 border">
-				<td class="px-6 py-4 whitespace-normal"><b>Coordinates:</b> Cartesian<br><b>Note:</b> Position of in-ear microphone unknown.<br> 
+				<td class="px-6 py-4 whitespace-normal"><b>Note:</b> Position of in-ear microphone unknown.<br> 
 				</td>
 				<td class="text-center align-middle">
 					<x-img :asset="$datafile->asset('_geometry.png')"/>
