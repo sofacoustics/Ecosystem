@@ -569,7 +569,7 @@ function mySOFAplotGeometry(Obj)
     for ii=1:size(EP,1)
         linepoint = [0 0 0; EP(ii,:)];
         plot3(linepoint(:,1), linepoint(:,2), linepoint(:,3), ...
-                'LineWidth', 0.7, 'color', color_grey);
+                'LineWidth', 0.2, 'color', color_grey);
     end
 
     for ii=1:size(EP,1)
