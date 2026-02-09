@@ -418,7 +418,7 @@ function mySOFAplotGeoEnergy(Obj, IREnergysumdB, chosen_m, chosen_e)
         plot3(circle(:, 1), circle(:, 2), circle(:, 3), 'b-', ...
                 'LineWidth', 0.2, 'color', color_grey);
         plot3(linepoint(:, 1), linepoint(:, 2), linepoint(:, 3), ...
-                'LineWidth', 0.7, 'color', color_grey);
+                'LineWidth', 0.2, 'color', color_grey);
     end
 
     % Plot emitters
@@ -543,8 +543,8 @@ function mySOFAplotGeometry(Obj)
         r = sqrt(RP(ii,1)*RP(ii,1) + RP(ii,3)*RP(ii,3));
         theta = linspace(0, 2*pi, 200);
         circle = [r*cos(theta)', 36*ones(200,1), r*sin(theta)'];
-        plot3(circle(:,1), circle(:,2), circle(:,3), 'b-', 'LineWidth', 0.35,'color', color_grey);
-        plot3(linepoint(:,1), linepoint(:,2), linepoint(:,3), 'LineWidth', 0.35, 'color', color_grey);
+        plot3(circle(:,1), circle(:,2), circle(:,3), 'b-', 'LineWidth', 0.2,'color', color_grey);
+        plot3(linepoint(:,1), linepoint(:,2), linepoint(:,3), 'LineWidth', 0.2, 'color', color_grey);
     end
 
     for ii=1:size(RP,1)
