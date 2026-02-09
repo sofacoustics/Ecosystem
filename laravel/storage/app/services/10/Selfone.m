@@ -410,15 +410,27 @@ function mySOFAplotGeoEnergy(Obj, IREnergysumdB, chosen_m, chosen_e)
     hold on;
 
     % Plot grid
-    for ii=2:size(RP,1)
-        r = sqrt(RP(ii, 1)*RP(ii, 1)+RP(ii, 3)*RP(ii, 3));
-        linepoint = [0, 36, 0; RP(ii, 1), 36, RP(ii, 3)];
+    for r = [10, 20, 30]
         theta = linspace(0, 2*pi, 200);
         circle = [r*cos(theta)', 36*ones(200,1), r*sin(theta)'];
-        plot3(circle(:, 1), circle(:, 2), circle(:, 3), 'b-', ...
+        plot3(circle(:,1), circle(:,2), circle(:,3), 'b-', ...
                 'LineWidth', 0.2, 'color', color_grey);
+    end
+
+    for ii=2:size(RP,1)
+        r = sqrt(RP(ii, 1)*RP(ii, 1)+RP(ii, 3)*RP(ii, 3));
+        linepoint = [0 36 0; RP(ii, 1) 36 RP(ii, 3)];
+        norm_linepoint = norm(linepoint(2, :)-linepoint(1, :));
+        linepoint = linepoint/norm_linepoint*30;        
         plot3(linepoint(:, 1), linepoint(:, 2), linepoint(:, 3), ...
                 'LineWidth', 0.2, 'color', color_grey);
+    end
+
+    for ii=1:size(EP,1)
+        linepoint = [0 36 0; EP(ii, 1) 36 EP(ii, 3)];
+        norm_linepoint = norm(linepoint(2, :)-linepoint(1, :));
+        linepoint = linepoint/norm_linepoint*30;
+        plot3(linepoint(:, 1), linepoint(:, 2), linepoint(:, 3), 'LineWidth', 0.2, 'color', color_grey);
     end
 
     % Plot emitters
@@ -538,13 +550,19 @@ function mySOFAplotGeometry(Obj)
     % Plot ReceiverPositon (only for the first ListenerPosition)
     legendEntries = [];
     legendEntries(end+1) = plot3(RP(1, 1), RP(1, 2), RP(1, 3), 'r*', 'MarkerSize', msize);
-    for ii=2:size(RP,1)
-        linepoint = [0 36 0; RP(ii,1) 36 RP(ii,3)];
-        r = sqrt(RP(ii,1)*RP(ii,1) + RP(ii,3)*RP(ii,3));
+
+    for r = [10, 20, 30]
         theta = linspace(0, 2*pi, 200);
         circle = [r*cos(theta)', 36*ones(200,1), r*sin(theta)'];
-        plot3(circle(:,1), circle(:,2), circle(:,3), 'b-', 'LineWidth', 0.2,'color', color_grey);
-        plot3(linepoint(:,1), linepoint(:,2), linepoint(:,3), 'LineWidth', 0.2, 'color', color_grey);
+        plot3(circle(:,1), circle(:,2), circle(:,3), 'b-', ...
+                'LineWidth', 0.2, 'color', color_grey);
+    end
+
+    for ii=2:size(RP, 1)
+        linepoint = [0 36 0; RP(ii, 1) 36 RP(ii, 3)];
+        norm_linepoint = norm(linepoint(2, :)-linepoint(1, :));
+        linepoint = linepoint/norm_linepoint*30;
+        plot3(linepoint(:, 1), linepoint(:, 2), linepoint(:, 3), 'LineWidth', 0.2, 'color', color_grey);
     end
 
     for ii=1:size(RP,1)
@@ -566,10 +584,11 @@ function mySOFAplotGeometry(Obj)
     legendEntries(end+1) = plot3(EP(1,1), EP(1,2), EP(1,3), 'b+', 'MarkerSize', msize);
     text(EP(1,1)+labeloffset_x, EP(1,2), EP(1,3)+labeloffset_z, [num2str(1) '(' Obj.EmitterLabel{1} ')'], 'fontsize', fsize-2);
 
-    for ii=1:size(EP,1)
-        linepoint = [0 0 0; EP(ii,:)];
-        plot3(linepoint(:,1), linepoint(:,2), linepoint(:,3), ...
-                'LineWidth', 0.2, 'color', color_grey);
+    for ii=1:size(EP, 1)
+        linepoint = [0 36 0; EP(ii,1) 36 EP(ii,3)];
+        norm_linepoint = norm(linepoint(2,:)-linepoint(1,:));
+        linepoint = linepoint/norm_linepoint*30;
+        plot3(linepoint(:,1), linepoint(:,2), linepoint(:,3), 'LineWidth', 0.2, 'color', color_grey);
     end
 
     for ii=1:size(EP,1)
