@@ -505,17 +505,13 @@ function mySOFAplotGeoEnergy(Obj, IREnergysumdB, chosen_m, chosen_e)
     % hl = legend(legendEntries(2), legendDescription, ...
     %         'Location', 'North', 'box', 'off', 'fontsize', fsize);
 
-    offset_x = -15;
-    offset_z = -9;
-
-    text(mean(xlim), 0, min(zlim)+offset_x, 'x (mm)', ...
-        'HorizontalAlignment', 'center', 'fontsize', fsize);
-    text(min(xlim)+offset_z, 0, mean(zlim), 'z (mm)', ...
-        'Rotation', 90, 'HorizontalAlignment', 'center', 'fontsize', fsize);
-
     axisLimits = [-33 33 -10 42 -33 33];
     axis(axisLimits);
     set(gca, 'fontsize', fsize);
+
+    offset = -10;
+    text(mean(xlim), 0, min(zlim)+offset, 'x (mm)', 'HorizontalAlignment', 'center', 'fontsize', fsize);
+    text(min(xlim)+offset, 0, mean(zlim), 'z (mm)', 'Rotation', 90, 'HorizontalAlignment', 'center', 'fontsize', fsize);
 
     cb = colorbar();
     caxis([-30 0]);
@@ -599,12 +595,9 @@ function mySOFAplotGeometry(Obj)
             'Location', 'Northeastoutside', ...
             'box', 'on');
     set(hl, 'fontsize', fsize, 'box', 'off');
-    offset = -10;
 
-    % xlabel
+    offset = -10;
     text(mean(xlim), 0, min(zlim)+offset, 'x (mm)', 'HorizontalAlignment', 'center', 'fontsize', fsize);
-    
-    % zlabel
     text(min(xlim)+offset, 0, mean(zlim), 'z (mm)', 'Rotation', 90, 'HorizontalAlignment', 'center', 'fontsize', fsize);
 
     view(0, 0);
