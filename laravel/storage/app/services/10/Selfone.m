@@ -210,7 +210,6 @@ function mySOFAplotIRFreq(Obj, varargin)
     definput.keyvals.chosen_m = 1;
     definput.keyvals.average_m = 0;
     definput.keyvals.xscale = 'lin';
-    definput.flags.normalize={'normalize','original'};
     argin = varargin;
     for ii = 1:length(argin)
         if ischar(argin{ii})
@@ -224,7 +223,6 @@ function mySOFAplotIRFreq(Obj, varargin)
     m = kv.chosen_m;
     average_m = kv.average_m;
 
-    flags.do_normalize = flags.normalize;
     xscale = kv.xscale;
 
     r = r(:)';
@@ -510,11 +508,8 @@ function mySOFAplotGeoEnergy(Obj, IREnergysumdB, chosen_m, chosen_e)
     offset_x = -15;
     offset_z = -9;
 
-    % xlabel
     text(mean(xlim), 0, min(zlim)+offset_x, 'x (mm)', ...
         'HorizontalAlignment', 'center', 'fontsize', fsize);
-    
-    % zlabel
     text(min(xlim)+offset_z, 0, mean(zlim), 'z (mm)', ...
         'Rotation', 90, 'HorizontalAlignment', 'center', 'fontsize', fsize);
 
