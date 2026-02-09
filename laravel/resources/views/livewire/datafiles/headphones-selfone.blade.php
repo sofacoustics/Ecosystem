@@ -142,12 +142,15 @@
 
 	<table class="min-w-full border border-gray-300 rounded">
 		<thead>
+			<th class="bg-gray-100 max-w-1/6"></th>
 			<th class="bg-gray-100 max-w-1/6">E</th>
 			<th class="bg-gray-100">Energy, Effect of R: M=1, E varies</th>
 		</thead>
 		@if($energyEs)
 			<tbody>
 				<tr class="py-2 border">
+					<td class="px-6 py-4 whitespace-normal"><b>Coordinates:</b> Cartesian<br><b>Note:</b> Squared IRs at receivers (coloured dots) when one emitter is active (blue cross).<br> 
+					</td>
 					<td class="px-6 py-4 whitespace-normal text-center align-middle">
 						<select wire:model.live="selectorEE" class="text-gray-700 mb-2 font-bold" title="Emitter index">
 							@foreach($energyEs as $E)
@@ -167,10 +170,13 @@
 
 	<table class="min-w-full border border-gray-300 rounded">
 		<thead>
+			<th class="bg-gray-100 max-w-1/6"></th>
 			<th class="bg-gray-100">Geometry</th>
 		</thead>
 		<tbody>
 			<tr class="py-2 border">
+				<td class="px-6 py-4 whitespace-normal"><b>Coordinates:</b> Cartesian<br><b>Note:</b> Position of in-ear microphone unknown.<br> 
+				</td>
 				<td class="text-center align-middle">
 					<x-img :asset="$datafile->asset('_geometry.png')"/>
 				</td>
