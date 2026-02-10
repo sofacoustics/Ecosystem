@@ -60,7 +60,7 @@ function Selfone(SOFAfile)
 	fputs(fid, ["Saved SOFA details to csv files.\n\n"]);
 
 	%% Select graphics toolkit
-    graphics_toolkit gnuplot
+    graphics_toolkit qt
 
     %% Plot magnitude spectrum
     fputs(fid, ["Plotting magnitude spectrum...\n"]);
@@ -73,9 +73,9 @@ function Selfone(SOFAfile)
     mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2, 'xscale', 'lin');
     filename = [SOFAfile '_spectrum_E=12_R=1_linX.png'];
     set(fig, "units", "pixels");
-    set(fig, "position", [100 100 1800 800]);  % [x y width height]
+    set(fig, "position", [100 100 1600 800]);  % [x y width height]
     h = findall(gcf, "-property", "linewidth");
-    set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
+    set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
     print ('-dpng', "-r300","tight", filename);
     fputs(fid, [ "Printed " filename "\n"]);
     close all
@@ -84,9 +84,9 @@ function Selfone(SOFAfile)
     mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2, 'xscale', 'log');
     filename = [SOFAfile '_spectrum_E=12_R=1_logX.png'];
     set(fig, "units", "pixels");
-    set(fig, "position", [100 100 1800 800]);  % [x y width height]
+    set(fig, "position", [100 100 1600 800]);  % [x y width height]
     h = findall(gcf, "-property", "linewidth");
-    set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
+    set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
     print ('-dpng', "-r300","tight", filename);
     fputs(fid, [ "Printed " filename "\n\n"]);
     close all
@@ -103,7 +103,7 @@ function Selfone(SOFAfile)
         set(fig, "units", "pixels");
         set(fig, "position", [100 100 1600 800]);  % [x y width height]
         h = findall(gcf, "-property", "linewidth");
-        set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
+        set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
         print('-dpng', "-r300", "tight", filename);
         fputs(fid, [ "Printed " filename "\n"]);
         close all
@@ -115,7 +115,7 @@ function Selfone(SOFAfile)
         set(fig, "units", "pixels");
         set(fig, "position", [100 100 1600 800]);  % [x y width height]
         h = findall(gcf, "-property", "linewidth");
-        set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
+        set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
         print('-dpng', "-r300", "tight", filename);
         fputs(fid, [ "Printed " filename "\n"]);
         close all
@@ -134,9 +134,9 @@ function Selfone(SOFAfile)
                     num2str(chosen_r) '_linX.png'];
 
         set(fig, "units", "pixels");
-        set(fig, "position", [100 100 1400 800]);  % [x y width height]
+        set(fig, "position", [100 100 1600 800]);  % [x y width height]
         h = findall(gcf, "-property", "linewidth");
-        set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
+        set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
         print('-dpng', "-r300","tight", filename);
         fputs(fid, [ "Printed " filename "\n"]);
         close all
@@ -146,9 +146,9 @@ function Selfone(SOFAfile)
         filename = [SOFAfile '_spectrum_M=1_R=' ...
                     num2str(chosen_r) '_logX.png'];
         set(fig, "units", "pixels");
-        set(fig, "position", [100 100 1400 800]);  % [x y width height]
+        set(fig, "position", [100 100 1600 800]);  % [x y width height]
         h = findall(gcf, "-property", "linewidth");
-        set(h, {"linewidth"}, num2cell(4 * cell2mat(get(h, "linewidth"))));
+        set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
         print('-dpng', "-r300", "tight", filename);
         fputs(fid, [ "Printed " filename "\n"]);
         close all
@@ -156,6 +156,7 @@ function Selfone(SOFAfile)
     fputs(fid, ["Finished execution of SOFAplotIRFreq.\n\n"]);
 
 	%% Energy, Effect of R: M=1, E varies
+    graphics_toolkit gnuplot
     IREnergy = Obj.Data.IR.^2;
     IREnergysum = squeeze(sum(IREnergy, 3));
     IREnergysumdB = 10*log10(IREnergysum/max(IREnergysum(:)));
@@ -181,14 +182,15 @@ function Selfone(SOFAfile)
     fputs(fid, [ "Finished execution of SOFAplotGeoEnergy.\n\n"]);
 
     %% Geometry
+    graphics_toolkit qt
     fputs(fid, ["Plotting geometry...\n"]);
     mySOFAplotGeometry(Obj);
     fig = gcf;
     set(fig, "units", "pixels");
-    set(fig, "position", [0 0  900 540]);  % [x y width height]
+    set(fig, "position", [100 100 1500 1000]);  % [x y width height]
     h = findall(gcf, "-property", "linewidth");
-    set(h, {"linewidth"}, num2cell(8 * cell2mat(get(h, "linewidth"))));
-    set(gca, "position", [0.05 0.055 0.63 1]);
+    set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
+    set(gca, "position", [0 0.055 0.63 1]);
     print('-dpng', "-r150","-tight", [SOFAfile '_geometry.png']);
     fputs(fid, [ "Printed " SOFAfile "_geometry.png\n"]);
     fputs(fid, ["Finished execution of SOFAplotGeometry.\n\n"]);
@@ -256,7 +258,7 @@ function mySOFAplotIRFreq(Obj, varargin)
         end
     end
 
-    fsize = 24;
+    fsize = 26;
     color_grey = [0.7 0.7 0.7];
 
     set(gca, 'XMinorTick', 'Off')
@@ -292,15 +294,9 @@ function mySOFAplotIRFreq(Obj, varargin)
         line([xv xv], yl, 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
     end
 
-    if ~isscalar(r) || (isscalar(e) && numel(r)==2)   
-        set(gca, 'fontsize', fsize+1);
-        xlabel('Frequency (Hz)', 'fontsize', fsize+1);
-        ylabel("Magnitude (dB)", 'fontsize', fsize+1);
-    else
-        set(gca, 'fontsize', fsize);
-        xlabel('Frequency (Hz)', 'fontsize', fsize);
-        ylabel("Magnitude (dB)", 'fontsize', fsize);
-    end
+    set(gca, 'fontsize', fsize);
+    xlabel('Frequency (Hz)', 'fontsize', fsize);
+    ylabel("Magnitude (dB)", 'fontsize', fsize);
 
     black_thickie = [];
     red_thickie = [];
@@ -364,8 +360,8 @@ function mySOFAplotIRFreq(Obj, varargin)
         if isscalar(m)
             legendEntries(end+1) = plot(freq, black_thickie, "LineWidth", 2, 'Color', [0, 0, 0]);
             legendDescription{end+1} = 'In-Ear IR';
-            hl = legend(legendEntries, legendDescription, 'Location', 'Eastoutside');
-            set(hl, 'fontsize', fsize, 'box', 'off');
+            hl = legend(legendEntries, legendDescription, 'Location', 'South');
+            set(hl, 'fontsize', fsize, 'box', 'on');
         else
             legendEntries(end+1) = plot(freq, black_thickie, "LineWidth", 2, 'Color', [0, 0, 0]);
             legendDescription{end+1} = 'Averaged SIRs: Mic. 4(F3)';
@@ -378,8 +374,8 @@ function mySOFAplotIRFreq(Obj, varargin)
     end
 
     if ~isscalar(m)
-        hl = legend(legendEntries, legendDescription, 'Location', 'Eastoutside');
-        set(hl, 'fontsize', fsize, 'box', 'off');
+        hl = legend(legendEntries, legendDescription, 'Location', 'South');
+        set(hl, 'fontsize', fsize, 'box', 'on');
     end
 
     hold off;
@@ -389,7 +385,7 @@ end
 
 function mySOFAplotGeoEnergy(Obj, IREnergysumdB, chosen_m, chosen_e)
 
-    figure; 
+     figure; 
     
     % ReceiverPosition and  EmitterPosition
     RP = SOFAconvertCoordinates(Obj.ReceiverPosition(:,:), Obj.ReceiverPosition_Type, 'cartesian');
@@ -532,8 +528,8 @@ function mySOFAplotGeometry(Obj)
 
     labeloffset_x = -2.5;
     labeloffset_z = -2;
-    fsize = 13;
-    msize = 10;
+    fsize = 22;
+    msize = 18;
     color_grey = [0.7 0.7 0.7];
 
     hold on;
@@ -560,20 +556,20 @@ function mySOFAplotGeometry(Obj)
         plot3(RP(ii,1), RP(ii,2), RP(ii,3), 'r*', 'MarkerSize', msize);
         
         if ii==1
-            text(RP(ii,1)-3*labeloffset_x, RP(ii,2), RP(ii,3)+1.2*labeloffset_z, ...
-                [num2str(ii) '(' Obj.ReceiverLabel{ii} ')'], 'fontsize', fsize-2, 'HorizontalAlignment', 'right');
+            text(RP(ii,1)-2.5*labeloffset_x, RP(ii,2), RP(ii,3)+1.2*labeloffset_z, ...
+                [num2str(ii) '(' Obj.ReceiverLabel{ii} ')'], 'fontsize', fsize, 'HorizontalAlignment', 'right');
         elseif ii==9 || ii==21
             text(RP(ii,1)+labeloffset_x, RP(ii,2), RP(ii,3)-labeloffset_z, ...
-                [num2str(ii) '(' Obj.ReceiverLabel{ii} ')'], 'fontsize', fsize-2);
+                [num2str(ii) '(' Obj.ReceiverLabel{ii} ')'], 'fontsize', fsize);
         else
             text(RP(ii,1)+labeloffset_x, RP(ii,2), RP(ii,3)+labeloffset_z, ...
-                [num2str(ii) '(' Obj.ReceiverLabel{ii} ')'], 'fontsize', fsize-2);
+                [num2str(ii) '(' Obj.ReceiverLabel{ii} ')'], 'fontsize', fsize);
         end
     end
 
     % Plot EmitterPositions
     legendEntries(end+1) = plot3(EP(1,1), EP(1,2), EP(1,3), 'b+', 'MarkerSize', msize);
-    text(EP(1,1)+labeloffset_x, EP(1,2), EP(1,3)+labeloffset_z, [num2str(1) '(' Obj.EmitterLabel{1} ')'], 'fontsize', fsize-2);
+    text(EP(1,1)+labeloffset_x, EP(1,2), EP(1,3)+labeloffset_z, [num2str(1) '(' Obj.EmitterLabel{1} ')'], 'fontsize', fsize);
 
     for ii=1:size(EP, 1)
         linepoint = [0 36 0; EP(ii,1) 36 EP(ii,3)];
@@ -585,20 +581,19 @@ function mySOFAplotGeometry(Obj)
     for ii=1:size(EP,1)
         plot3(EP(ii,1), EP(ii,2), EP(ii,3), 'b+', 'MarkerSize', msize);
         text(EP(ii,1)+labeloffset_x, EP(ii,2), EP(ii,3)+labeloffset_z, ...
-            [num2str(ii) '(' Obj.EmitterLabel{ii} ')'], 'fontsize', fsize-2);
+            [num2str(ii) '(' Obj.EmitterLabel{ii} ')'], 'fontsize', fsize);
     end
 
     % create legend
     legendDescription = {'Receivers: R(Label)'};
     legendDescription(end+1) = {'Emitters: E(Label)'};
     hl = legend(legendEntries, legendDescription, ...
-            'Location', 'Northeastoutside', ...
+            'Location', 'Northeast', ...
             'box', 'on');
-    set(hl, 'fontsize', fsize, 'box', 'off');
+    set(hl, 'fontsize', fsize, 'box', 'on');
 
-    offset = -10;
-    text(mean(xlim), 0, min(zlim)+offset, 'x (mm)', 'HorizontalAlignment', 'center', 'fontsize', fsize);
-    text(min(xlim)+offset, 0, mean(zlim), 'z (mm)', 'Rotation', 90, 'HorizontalAlignment', 'center', 'fontsize', fsize);
+    xlabel('x (mm)', 'HorizontalAlignment', 'center', 'fontsize', fsize);
+    zlabel('z (mm)', 'HorizontalAlignment', 'center', 'fontsize', fsize);
 
     view(0, 0);
     axis equal;
