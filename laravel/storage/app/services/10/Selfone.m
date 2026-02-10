@@ -59,9 +59,6 @@ function Selfone(SOFAfile)
     fputs(fid, ["Processing " SOFAfile "\n"]);
 	fputs(fid, ["Saved SOFA details to csv files.\n\n"]);
 
-	%% Select graphics toolkit
-    graphics_toolkit qt
-
     %% Plot magnitude spectrum
     fputs(fid, ["Plotting magnitude spectrum...\n"]);
 
@@ -155,9 +152,11 @@ function Selfone(SOFAfile)
     end
     fputs(fid, ["Finished execution of SOFAplotIRFreq.\n\n"]);
 
+    %% Change graphics toolkit
+    graphics_toolkit gnuplot;
+    
 	%% Energy, Effect of R: M=1, E varies
-    graphics_toolkit gnuplot
-    IREnergy = Obj.Data.IR.^2;
+	IREnergy = Obj.Data.IR.^2;
     IREnergysum = squeeze(sum(IREnergy, 3));
     IREnergysumdB = 10*log10(IREnergysum/max(IREnergysum(:)));
 
@@ -181,8 +180,10 @@ function Selfone(SOFAfile)
     end
     fputs(fid, [ "Finished execution of SOFAplotGeoEnergy.\n\n"]);
 
+    %% Change graphics toolkit
+    graphics_toolkit qt;
+
     %% Geometry
-    graphics_toolkit qt
     fputs(fid, ["Plotting geometry...\n"]);
     mySOFAplotGeometry(Obj);
     fig = gcf;
