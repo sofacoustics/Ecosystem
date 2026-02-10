@@ -26,10 +26,10 @@
 			<th class="bg-gray-100">Spectrum, Effect of R: M=1, E varies</th>
 		</thead>
 		@if($spectrumEs)
-					<tbody>
+			<tbody>
 				<tr class="py-2 border">
 					@if($counter)
-						<td class="px-6 py-4 whitespace-normal"><b>Domain:</b> Amplitude spectral<br><b>Note:</b> Original IRs of length N=256 samples were zero-padded to 16*N samples.<br><b>Frequency axis:</b> Logarithmic<br> 
+						<td class="px-6 py-4 whitespace-normal"><b>Domain:</b> Amplitude spectral<br><b>Frequency axis:</b> Logarithmic<br> 
 							<small><button wire:click="minus" class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">Change axis</button></small>
 						</td>
 						<td class="px-6 py-4 whitespace-normal text-center align-middle">
@@ -43,7 +43,7 @@
 							<x-img class="p-2" :asset="$datafile->asset('',1).'_spectrum_M=1_E='.$selectorES.'_logX.png'" />
 						</td>
 					@else
-						<td class="px-6 py-4 whitespace-normal"><b>Domain:</b> Amplitude spectral<br><b>Note:</b> Original IRs of length N=256 samples were zero-padded to 16*N samples.<br><b>Frequency axis:</b> Linear<br> 
+						<td class="px-6 py-4 whitespace-normal"><b>Domain:</b> Amplitude spectral<br><b>Frequency axis:</b> Linear<br> 
 							<small><button wire:click="plus" class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">Change axis</button></small>
 						</td>
 						<td class="px-6 py-4 whitespace-normal text-center align-middle">
@@ -59,6 +59,12 @@
 					@endif
 				</tr>
 			</tbody>
+			<tr>
+				<td colspan="3" class="px-6 py-4 whitespace-normal"><b>Note:</b> For improved presentation, the spectra shown were 16 times oversampled.<br> 
+			</td>
+		</tr>
+			
+
 		@else
 			<tbody><tr><td>No plots found</td></tr></tbody>
 		@endif
@@ -74,7 +80,7 @@
 			<tbody>
 				<tr class="py-2 border">
 					@if($counter)
-						<td class="px-6 py-4 whitespace-normal"><b>Domain:</b> Amplitude spectral<br><b>Note:</b> Original IRs of length N=256 samples were zero-padded to 16*N samples.<br><b>Frequency axis:</b> Logarithmic<br> 
+						<td class="px-6 py-4 whitespace-normal"><b>Domain:</b> Amplitude spectral<br><b>Frequency axis:</b> Logarithmic<br> 
 							<small><button wire:click="minus" class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">Change axis</button></small>
 						</td>
 						<td class="px-6 py-4 whitespace-normal text-center align-middle">
@@ -88,7 +94,7 @@
 							<x-img class="p-2" :asset="$datafile->asset('',1).'_spectrum_M=1_R='.$selectorRS.'_logX.png'" />
 						</td>
 					@else
-						<td class="px-6 py-4 whitespace-normal"><b>Domain:</b> Amplitude spectral<br><b>Note:</b> Original IRs of length N=256 samples were zero-padded to 16*N samples.<br><b>Frequency axis:</b> Linear<br> 
+						<td class="px-6 py-4 whitespace-normal"><b>Domain:</b> Amplitude spectral<br><b>Frequency axis:</b> Linear<br> 
 							<small><button wire:click="plus" class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">Change axis</button></small>
 						</td>
 						<td class="px-6 py-4 whitespace-normal text-center align-middle">
@@ -103,6 +109,9 @@
 						</td>
 					@endif
 				</tr>
+				<tr>
+					<td colspan="3" class="px-6 py-4 whitespace-normal"><b>Note:</b> For improved presentation, the spectra shown were 16 times oversampled.<br> 
+				</td>
 			</tbody>
 		@else
 			<tbody><tr><td>No plot found</td></tr></tbody>
@@ -118,7 +127,7 @@
 		<tbody>
 			<tr class="py-2 border">
 				@if($counter)
-					<td class="px-6 py-4 whitespace-normal"><b>Domain:</b> Amplitude spectral<br><b>Note:</b> Original IRs of length N=256 samples were zero-padded to 16*N samples.<br><b>Frequency axis:</b> Logarithmic<br> 
+					<td class="px-6 py-4 whitespace-normal"><b>Domain:</b> Amplitude spectral<br><b>Frequency axis:</b> Logarithmic<br> 
 						<small><button wire:click="minus" class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">Change axis</button></small>
 					</td>
 					<td class="px-6 py-4 whitespace-normal text-center align-middle">
@@ -127,7 +136,7 @@
 						<x-img :asset="$datafile->asset('_spectrum_E=12_R=1_logX.png')"/>
 					</td>
 				@else
-					<td class="px-6 py-4 whitespace-normal"><b>Domain:</b> Amplitude spectral<br><b>Note:</b> Original IRs of length N=256 samples were zero-padded to 16*N samples.<br><b>Frequency axis:</b> Linear<br> 
+					<td class="px-6 py-4 whitespace-normal"><b>Domain:</b> Amplitude spectral<br><b>Frequency axis:</b> Linear<br> 
 						<small><button wire:click="plus" class="bg-blue-500 hover:bg-blue-700 rounded px-4 py-2 font-bold text-white">Change axis</button></small>
 					</td>
 					<td class="px-6 py-4 whitespace-normal text-center align-middle">
@@ -137,20 +146,20 @@
 					</td>
 				@endif
 			</tr>
+			<tr>
+				<td colspan="3" class="px-6 py-4 whitespace-normal"><b>Note:</b> For improved presentation, the spectra shown were 16 times oversampled.<br> 
+			</td>
 		</tbody>
 	</table>
 
 	<table class="min-w-full border border-gray-300 rounded">
 		<thead>
-			<th class="bg-gray-100 max-w-1/6"></th>
 			<th class="bg-gray-100 max-w-1/6">E</th>
 			<th class="bg-gray-100">Energy, Effect of R: M=1, E varies</th>
 		</thead>
 		@if($energyEs)
 			<tbody>
 				<tr class="py-2 border">
-					<td class="px-6 py-4 whitespace-normal"><b>Note:</b> Sums of squared IRs at receivers (coloured dots) when one emitter is active (blue cross). Position of in-ear microphone unknown.<br> 
-					</td>
 					<td class="px-6 py-4 whitespace-normal text-center align-middle">
 						<select wire:model.live="selectorEE" class="text-gray-700 mb-2 font-bold" title="Emitter index">
 							@foreach($energyEs as $E)
@@ -163,6 +172,9 @@
 					</td>
 				</tr>
 			</tbody>
+			<tr>
+				<td colspan="2" class="px-6 py-4 whitespace-normal"><b>Note:</b> Sums of squared IRs at receivers (coloured dots) when one emitter is active (blue cross). Position of the in-ear microphone unknown.<br> 
+			</td>
 		@else
 			<tbody><tr><td>No plots found</td></tr></tbody>
 		@endif
@@ -170,17 +182,17 @@
 
 	<table class="min-w-full border border-gray-300 rounded">
 		<thead>
-			<th class="bg-gray-100 max-w-1/6"></th>
 			<th class="bg-gray-100">Geometry</th>
 		</thead>
 		<tbody>
 			<tr class="py-2 border">
-				<td class="px-6 py-4 whitespace-normal"><b>Note:</b> Position of in-ear microphone unknown.<br> 
-				</td>
 				<td class="text-center align-middle">
 					<x-img :asset="$datafile->asset('_geometry.png')"/>
 				</td>
 			</tr>
 		</tbody>
+		<tr>
+			<td colspan="1" class="px-6 py-4 whitespace-normal"><b>Note:</b> Position of the in-ear microphone unknown.<br> 
+		</td>
 	</table>
 </div>
