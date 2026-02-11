@@ -524,7 +524,6 @@ function mySOFAplotGeometry(Obj)
     
     % Get ReceiverPosition and EmitterPosition
     RP = SOFAconvertCoordinates(Obj.ReceiverPosition(:,:), Obj.ReceiverPosition_Type, 'cartesian');
-    RP(1, :) = [-28, 0, -28];
     EP = SOFAconvertCoordinates(Obj.EmitterPosition(:,:), Obj.EmitterPosition_Type, 'cartesian');
 
     labeloffset_x = -2.5;
@@ -556,16 +555,14 @@ function mySOFAplotGeometry(Obj)
     for ii=1:size(RP,1)
         plot3(RP(ii,1), RP(ii,2), RP(ii,3), 'r*', 'MarkerSize', msize);
         
-        if ii==1
-            text(RP(ii,1)-2.5*labeloffset_x, RP(ii,2), RP(ii,3)+1.2*labeloffset_z, ...
-                [num2str(ii) '(' Obj.ReceiverLabel{ii} ')'], 'fontsize', fsize, 'HorizontalAlignment', 'right');
-        elseif ii==9 || ii==21
+        if ii==9 || ii==21
             text(RP(ii,1)+labeloffset_x, RP(ii,2), RP(ii,3)-labeloffset_z, ...
                 [num2str(ii) '(' Obj.ReceiverLabel{ii} ')'], 'fontsize', fsize);
         else
             text(RP(ii,1)+labeloffset_x, RP(ii,2), RP(ii,3)+labeloffset_z, ...
                 [num2str(ii) '(' Obj.ReceiverLabel{ii} ')'], 'fontsize', fsize);
         end
+
     end
 
     % Plot EmitterPositions
