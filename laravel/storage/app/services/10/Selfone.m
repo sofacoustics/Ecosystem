@@ -316,11 +316,21 @@ function mySOFAplotIRFreq(Obj, varargin)
 
                 M = M(:, 1:floor(size(M, 2)/2));  % only positive frequencies
 
+                if isscalar(m) && isscalar(r) % legend for effect of R
+                    if r(r_idx)==1
+                        legendEntries = plot(freq, M, "LineWidth", 1);
+                        legendDescription{end+1} = 'In-Ear IRs';
+                    else
+                        legendEntries = plot(freq, M, "LineWidth", 1);
+                        legendDescription{end+1} = 'SIRs';
+                    end
+                end
+
                 if isscalar(e) && isscalar(m) % plotting over all receivers
                     if r_idx == 1
                         black_thickie = M;
                     else
-                        if isfirstplot == 1
+                        if isfirstplot
                             legendEntries = plot(freq, M, "LineWidth", 1);
                             legendDescription{end+1} = 'SIRs';
                             isfirstplot = 0;
@@ -331,7 +341,7 @@ function mySOFAplotIRFreq(Obj, varargin)
                 end
 
                 if isscalar(r) && isscalar(m) % plotting over all emitters
-                        plot(freq, M, "LineWidth", 1)
+                    plot(freq, M, "LineWidth", 1)
                 end
 
                 if ~isscalar(m) % plotting the effect of M
@@ -342,7 +352,7 @@ function mySOFAplotIRFreq(Obj, varargin)
                             black_thickie = M;
                         end
                     else
-                        if isfirstplot == 1
+                        if isfirstplot
                             legendEntries = plot(freq, M, "LineWidth", 1);
                             legendDescription{end+1} = 'Individual Measurements';
                             isfirstplot = 0;
@@ -375,6 +385,11 @@ function mySOFAplotIRFreq(Obj, varargin)
     end
 
     if ~isscalar(m)
+        hl = legend(legendEntries, legendDescription, 'Location', 'South');
+        set(hl, 'fontsize', fsize, 'box', 'on');
+    end
+
+    if isscalar(m) && isscalar(r)
         hl = legend(legendEntries, legendDescription, 'Location', 'South');
         set(hl, 'fontsize', fsize, 'box', 'on');
     end
