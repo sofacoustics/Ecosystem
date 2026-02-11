@@ -173,7 +173,7 @@
 				</tr>
 			</tbody>
 			<tr>
-				<td colspan="2" class="px-6 py-4 whitespace-normal"><b>Note:</b> Sums of squared IRs at receivers (coloured dots) when one emitter is active (blue cross). The position of the in-ear microphone is indicative only as the exact placement has not been recorded.<br> 
+				<td colspan="2" class="px-6 py-4 whitespace-normal"><b>Note:</b> Sums of squared IRs at receivers (coloured dots) when one emitter is active (blue cross). The position of the in-ear microphone is indicative only as the actual position has not been recorded.<br> 
 			</td>
 		@else
 			<tbody><tr><td>No plots found</td></tr></tbody>
@@ -192,7 +192,7 @@
 			</tr>
 		</tbody>
 		<tr>
-			<td colspan="1" class="px-6 py-4 whitespace-normal"><b>Note:</b> The position of the in-ear microphone is indicative only as the exact placement has not been recorded.<br> 
+			<td colspan="1" class="px-6 py-4 whitespace-normal"><b>Note:</b> The position of the in-ear microphone is indicative only as the actual position has not been recorded.<br> 
 		</td>
 	</table>
 </div>
