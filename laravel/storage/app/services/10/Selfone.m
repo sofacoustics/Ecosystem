@@ -511,7 +511,7 @@ function mySOFAplotGeoEnergy(Obj, IREnergysumdB, chosen_m, chosen_e)
     text(min(xlim)+offset, 0, mean(zlim), 'z (mm)', 'Rotation', 90, 'HorizontalAlignment', 'center', 'fontsize', fsize);
 
     cb = colorbar();
-    caxis([-30 0]);
+    caxis([-20 0]);
     set(cb, 'FontSize', fsize, 'Location', 'east');
     ylabel(cb, 'Energy re global maximum (dB)', 'FontSize', fsize, 'Rotation', 270);
 
