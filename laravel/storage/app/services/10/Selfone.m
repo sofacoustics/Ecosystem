@@ -316,16 +316,6 @@ function mySOFAplotIRFreq(Obj, varargin)
 
                 M = M(:, 1:floor(size(M, 2)/2));  % only positive frequencies
 
-                if isscalar(m) && isscalar(r) % legend for effect of R
-                    if r(r_idx)==1
-                        legendEntries = plot(freq, M, "LineWidth", 1);
-                        legendDescription{end+1} = 'In-Ear IRs';
-                    else
-                        legendEntries = plot(freq, M, "LineWidth", 1);
-                        legendDescription{end+1} = 'SIRs';
-                    end
-                end
-
                 if isscalar(e) && isscalar(m) % plotting over all receivers
                     if r_idx == 1
                         black_thickie = M;
@@ -342,6 +332,44 @@ function mySOFAplotIRFreq(Obj, varargin)
 
                 if isscalar(r) && isscalar(m) % plotting over all emitters
                     plot(freq, M, "LineWidth", 1)
+                end
+
+                if isscalar(m) && isscalar(r) % legend box for effect of R
+                    xl = xlim;
+                    yl = ylim;
+                    patch_h = (yl(2)-yl(1))*0.1;
+                    if strcmp(xscale, 'lin')
+                        x_center = mean(xl);
+                    elseif strcmp(xscale, 'log')
+                        x_center = 4000;
+                    end
+                    y_pos = -94;
+
+                    if r(r_idx)==1
+                        if strcmp(xscale, 'lin')
+                            patch_w = (xl(2)-xl(1))*0.15;
+                            rectangle('Position', [x_center-patch_w/2, y_pos-patch_h/2, patch_w, patch_h], ...
+                                    'FaceColor', [1 1 1], 'EdgeColor', [0 0 0]);
+                        else
+                            patch_w = (xl(2)-xl(1))*0.07;
+                            rectangle('Position', [x_center-patch_w/2+250, y_pos-patch_h/2, patch_w, patch_h], ...
+                                    'FaceColor', [1 1 1], 'EdgeColor', [0 0 0]);
+                        end
+                        text(x_center, y_pos, 'In-Ear IRs', 'FontSize', fsize-4, 'Color', [0 0 0], ...
+                            'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', 'fontsize', fsize);
+                    else
+                        if strcmp(xscale, 'lin')
+                            patch_w = (xl(2)-xl(1))*0.1;
+                            rectangle('Position', [x_center-patch_w/2, y_pos-patch_h/2, patch_w, patch_h], ...
+                                'FaceColor', [1 1 1], 'EdgeColor', [0 0 0]);
+                        else
+                            patch_w = (xl(2)-xl(1))*0.045;
+                            rectangle('Position', [x_center-patch_w/2+70, y_pos-patch_h/2, patch_w, patch_h], ...
+                                'FaceColor', [1 1 1], 'EdgeColor', [0 0 0]);
+                        end
+                        text(x_center, y_pos, 'SIRs', 'FontSize', fsize-4, 'Color', [0 0 0], ...
+                            'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', 'fontsize', fsize);
+                    end
                 end
 
                 if ~isscalar(m) % plotting the effect of M
@@ -385,11 +413,6 @@ function mySOFAplotIRFreq(Obj, varargin)
     end
 
     if ~isscalar(m)
-        hl = legend(legendEntries, legendDescription, 'Location', 'South');
-        set(hl, 'fontsize', fsize, 'box', 'on');
-    end
-
-    if isscalar(m) && isscalar(r)
         hl = legend(legendEntries, legendDescription, 'Location', 'South');
         set(hl, 'fontsize', fsize, 'box', 'on');
     end
