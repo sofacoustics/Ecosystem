@@ -188,10 +188,10 @@ function Selfone(SOFAfile)
     mySOFAplotGeometry(Obj);
     fig = gcf;
     set(fig, "units", "pixels");
-    set(fig, "position", [100 100 1500 1000]);  % [x y width height]
+    set(fig, "position", [100 100 1500 1100]);  % [x y width height]
     h = findall(gcf, "-property", "linewidth");
     set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
-    set(gca, "position", [0 0.055 0.63 1]);
+    set(gca, "position", [0.075 0.025 0.63 1]);
     print('-dpng', "-r150","-tight", [SOFAfile '_geometry.png']);
     fputs(fid, [ "Printed " SOFAfile "_geometry.png\n"]);
     fputs(fid, ["Finished execution of SOFAplotGeometry.\n\n"]);
@@ -566,7 +566,7 @@ function mySOFAplotGeometry(Obj)
 
     labeloffset_x = -2.5;
     labeloffset_z = -2;
-    fsize = 22;
+    fsize = 24;
     msize = 18;
     color_grey = [0.7 0.7 0.7];
 
@@ -625,8 +625,11 @@ function mySOFAplotGeometry(Obj)
     legendDescription(end+1) = {'Emitters: E(Label)'};
     hl = legend(legendEntries, legendDescription, ...
             'Location', 'Northeast', ...
-            'box', 'on');
-    set(hl, 'fontsize', fsize, 'box', 'on');
+            'box', 'on', 'fontsize', fsize);
+    hl_pos = get(hl, 'Position');
+    set(hl, 'box', 'off', ...
+        'Position', [hl_pos(1)+0.15 hl_pos(2)+0.09 hl_pos(3) hl_pos(4)]);
+
 
     xlabel('x (mm)', 'HorizontalAlignment', 'center', 'fontsize', fsize);
     zlabel('z (mm)', 'HorizontalAlignment', 'center', 'fontsize', fsize);
