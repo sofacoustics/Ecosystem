@@ -39,8 +39,8 @@ function Selfone(SOFAfile)
 	warning('off'); %jw:note disable all warnings
 
 	%jw:note Check if function called with parameter. If not, use command line parameter^M
-	if(exist("SOFAfile"))
-        if(length(SOFAfile)==0)
+	if exist("SOFAfile", "var")
+        if length(SOFAfile)==0
             disp('The SOFA file name SOFAfile is empty');
         end
 	else
@@ -214,11 +214,13 @@ function mySOFAplotIRFreq(Obj, varargin)
     definput.keyvals.average_m = 0;
     definput.keyvals.xscale = 'lin';
     argin = varargin;
+
     for ii = 1:length(argin)
         if ischar(argin{ii})
            argin{ii} = lower(argin{ii}); 
         end
     end
+    
     [flags, kv] = SOFAarghelper({'chosen_r', 'chosen_e', 'chosen_m', 'average_m', 'xscale'}, definput, argin);
 
     r = kv.chosen_r;
@@ -240,8 +242,10 @@ function mySOFAplotIRFreq(Obj, varargin)
     fs = Obj.Data.SamplingRate;
     freq = 0:fs/(n*fft_interpolation_factor):(floor((n*fft_interpolation_factor)/2)-1) * fs/(n*fft_interpolation_factor);
 
-    if length(m) > 1 && average_m >= 1
+    if length(m)>1 && average_m>=1
+
         avg_mat = zeros(length(e), length(r), 1, n);
+
         for e_idx = 1:length(e)
             for r_idx = 1:length(r)
                 hM = squeeze(selected_data(e_idx, r_idx, :, :));
@@ -250,13 +254,15 @@ function mySOFAplotIRFreq(Obj, varargin)
                 avg_mat(e_idx,r_idx, 1, :) = ifft(fft_mat, n, 2);
             end
         end
-        if average_m == 1
+
+        if average_m==1
             selected_data = avg_mat;
             m = 0;
         else % plot both avg and individual m when 2
             m = [0 m];
             selected_data = cat(3, avg_mat, selected_data);
         end
+
     end
 
     fsize = 26;
@@ -317,7 +323,7 @@ function mySOFAplotIRFreq(Obj, varargin)
                 M = M(:, 1:floor(size(M, 2)/2));  % only positive frequencies
 
                 if isscalar(e) && isscalar(m) % plotting over all receivers
-                    if r_idx == 1
+                    if r_idx==1
                         black_thickie = M;
                     else
                         if isfirstplot
@@ -373,8 +379,8 @@ function mySOFAplotIRFreq(Obj, varargin)
                 end
 
                 if ~isscalar(m) % plotting the effect of M
-                    if m_idx == 1
-                        if r_idx == 1
+                    if m_idx==1
+                        if r_idx==1
                             red_thickie = M;
                         else
                             black_thickie = M;
@@ -424,7 +430,7 @@ end
 
 function mySOFAplotGeoEnergy(Obj, IREnergysumdB, chosen_m, chosen_e)
 
-     figure; 
+    figure; 
     
     % ReceiverPosition and  EmitterPosition
     RP = SOFAconvertCoordinates(Obj.ReceiverPosition(:,:), Obj.ReceiverPosition_Type, 'cartesian');
@@ -436,7 +442,6 @@ function mySOFAplotGeoEnergy(Obj, IREnergysumdB, chosen_m, chosen_e)
     msize = 12;
     dotsize = 6000;
     color_grey = [0.7 0.7 0.7];
-
     labeloffset_x = -3.5;
     labeloffset_z = -2;
 
