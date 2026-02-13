@@ -60,8 +60,29 @@ class DatasetdefPolicy
 	 */
 	public function delete(User $user, Datasetdef $datasetdef, Database $database): bool
 	{
+		$nDatafiles = count($datasetdef->datafiles);
+			// If datafiles using this datasetdef exist, this definition cannot be deleted
+		if($nDatafiles > 0)
+			return false;
+			// Admin can delete, if no datasets yet
+		if(auth()->user()->hasRole('admin'))
+			return true; 
+			// User can only delete datasets from their database and if persistent publication not requested yet
+		if($user->id == $datasetdef->database->user_id && $database->radar_status < 2)
+			return true;
+		else
+			return false;
+	}
+
+	/**
+	 * Determine whether the user can move (up/down) the datasetdef
+	 *
+	 * User can only move the datasetdef if there are not datafiles which use it!
+	 */
+	public function move(User $user, Datasetdef $datasetdef, Database $database): bool
+	{
 		$nDatasets = count($datasetdef->database->datasets);
-			// If datasets exist, definitions cannot be deleted
+			// If datasets exist, definitions cannot be moved
 		if($nDatasets > 0)
 			return false;
 			// Admin can delete, if no datasets yet
