@@ -23,44 +23,36 @@ function Selfone(SOFAfile)
 
 	addpath('../shared'); % add the path to shared functions
 	logfile = "SelfoneIR.log";
-
 	fid = fopen(logfile, "w");
-	s = pwd;
-	disp(["pwd = " s]);
+	disp(['Current directory: ' pwd]);
 
-	%% Prologue: (un)comment here if you want to:
+	%% Prologue
 	close all; % clean-up first
 	tic; % timer
-	SOFAstart; % remove this optionally
-	% warning('off','SOFA:upgrade');
-	% warning('off','SOFA:load');
-	% warning('off','SOFA:save');
-	% warning('off','SOFA:save:API');
-	warning('off'); %jw:note disable all warnings
+	SOFAstart('silent'); 
+	warning('off'); 
 
-	%jw:note Check if function called with parameter. If not, use command line parameter^M
-	if exist("SOFAfile", "var")
-        if length(SOFAfile)==0
-            disp('The SOFA file name SOFAfile is empty');
-        end
-	else
-        % Use command line parameter for SOFAfile
-        disp(argv);
-        arg_list = argv();
-        fn = arg_list{1};
-        disp(fn);
-        SOFAfile = fn;
+	% Check if function called with parameter. If not, use command line parameter
+	if(~exist('SOFAfile','var'))
+			% Use command line parameter for SOFAfile
+		arg_list = argv();
+		fn = arg_list{1};
+		disp(['File to be processed: ' fn]);
+		SOFAfile = fn;
+	end
+	if(length(SOFAfile)==0)
+		error('The SOFA file name is empty');
 	end
 
 	%% Load SOFA file
 	Obj = SOFAload(SOFAfile);
 
 	SaveSOFAproperties(Obj, SOFAfile);
-    fputs(fid, ["Processing " SOFAfile "\n"]);
+  fputs(fid, ["Processing " SOFAfile "\n"]);
 	fputs(fid, ["Saved SOFA details to csv files.\n\n"]);
 
     %% Plot magnitude spectrum
-    fputs(fid, ["Plotting magnitude spectrum...\n"]);
+    fputs(fid, ["Plotting magnitude spectra...\n"]);
 
     % Effect of M: R={'F3','in-ear'} and E='12'
     fig = figure('Name', SOFAfile);
@@ -75,7 +67,7 @@ function Selfone(SOFAfile)
     set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
     print ('-dpng', "-r300","tight", filename);
     fputs(fid, [ "Printed " filename "\n"]);
-    close all
+    close all;
 
     fig = figure('Name', SOFAfile);
     mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2, 'xscale', 'log');
@@ -86,7 +78,8 @@ function Selfone(SOFAfile)
     set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
     print ('-dpng', "-r300","tight", filename);
     fputs(fid, [ "Printed " filename "\n\n"]);
-    close all
+    close all;
+		disp("Successfully plotted magnitude spectra, effect of M.");
 
     % Effect of R: M=1, E varies
     for e = 1:Obj.API.E
@@ -103,7 +96,7 @@ function Selfone(SOFAfile)
         set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
         print('-dpng', "-r300", "tight", filename);
         fputs(fid, [ "Printed " filename "\n"]);
-        close all
+        close all;
 
         fig = figure('Name', SOFAfile);
         mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'log');
@@ -115,10 +108,11 @@ function Selfone(SOFAfile)
         set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
         print('-dpng', "-r300", "tight", filename);
         fputs(fid, [ "Printed " filename "\n"]);
-        close all
+        close all;
     end
 
     fputs(fid, "\n");
+		disp("Successfully plotted magnitude spectra, effect of R.");
 
     % Effect of E: M=1, R varies
     for r = 1:Obj.API.R
@@ -136,7 +130,7 @@ function Selfone(SOFAfile)
         set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
         print('-dpng', "-r300","tight", filename);
         fputs(fid, [ "Printed " filename "\n"]);
-        close all
+        close all;
 
         fig = figure('Name', SOFAfile);
         mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'log');
@@ -148,15 +142,16 @@ function Selfone(SOFAfile)
         set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
         print('-dpng', "-r300", "tight", filename);
         fputs(fid, [ "Printed " filename "\n"]);
-        close all
+        close all;
     end
     fputs(fid, ["Finished execution of SOFAplotIRFreq.\n\n"]);
+		disp("Successfully plotted magnitude spectra, effect of E.");
 
     %% Change graphics toolkit
     graphics_toolkit gnuplot;
     
-	%% Energy, Effect of R: M=1, E varies
-	IREnergy = Obj.Data.IR.^2;
+		%% Energy, Effect of R: M=1, E varies
+		IREnergy = Obj.Data.IR.^2;
     IREnergysum = squeeze(sum(IREnergy, 3));
     IREnergysumdB = 10*log10(IREnergysum/max(IREnergysum(:)));
 
@@ -179,6 +174,7 @@ function Selfone(SOFAfile)
         end
     end
     fputs(fid, [ "Finished execution of SOFAplotGeoEnergy.\n\n"]);
+		disp("Successfully plotted energy distributions.");
 
     %% Change graphics toolkit
     graphics_toolkit qt;
@@ -196,12 +192,13 @@ function Selfone(SOFAfile)
     fputs(fid, [ "Printed " SOFAfile "_geometry.png\n"]);
     fputs(fid, ["Finished execution of SOFAplotGeometry.\n\n"]);
     close all;
+		disp("Successfully plotted geometry.");
 
 	%% Epilogue
-	disp('DONE');
 	fputs(fid, [ "### DONE ###\n\n\n"]);
 	fclose(fid);
-	toc; % timer
+	T=toc; % timer
+	disp(['DONE after ' num2str(T) ' seconds; exiting...']);
 
 end
 
