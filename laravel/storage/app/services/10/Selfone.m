@@ -47,153 +47,148 @@ function Selfone(SOFAfile)
 	%% Load SOFA file
 	Obj = SOFAload(SOFAfile);
 
-	SaveSOFAproperties(Obj, SOFAfile);
   fputs(fid, ["Processing " SOFAfile "\n"]);
+	SaveSOFAproperties(Obj, SOFAfile);
 	fputs(fid, ["Saved SOFA details to csv files.\n\n"]);
+	disp(['Successfully saved SOFA properties after ' num2str(toc) ' seconds']);
+	
+	%% Plot magnitude spectrum
+	fputs(fid, ["Plotting magnitude spectra...\n"]);
 
-    %% Plot magnitude spectrum
-    fputs(fid, ["Plotting magnitude spectra...\n"]);
+	%% Effect of M: R={'F3','in-ear'} and E='12'
+	fig = figure('Name', SOFAfile);
+	chosen_m = 1:Obj.API.M;
+	chosen_e = 12;
+	chosen_r = [1 4];
+	mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2, 'xscale', 'lin');
+	filename = [SOFAfile '_spectrum_E=12_R=1_linX.png'];
+	set(fig, "units", "pixels");
+	set(fig, "position", [100 100 1600 800]);  % [x y width height]
+	h = findall(gcf, "-property", "linewidth");
+	set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
+	print ('-dpng', "-r300","tight", filename);
+	fputs(fid, [ "Printed " filename "\n"]);
+	close all;
 
-    % Effect of M: R={'F3','in-ear'} and E='12'
-    fig = figure('Name', SOFAfile);
-    chosen_m = 1:Obj.API.M;
-    chosen_e = 12;
-    chosen_r = [1 4];
-    mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2, 'xscale', 'lin');
-    filename = [SOFAfile '_spectrum_E=12_R=1_linX.png'];
-    set(fig, "units", "pixels");
-    set(fig, "position", [100 100 1600 800]);  % [x y width height]
-    h = findall(gcf, "-property", "linewidth");
-    set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
-    print ('-dpng', "-r300","tight", filename);
-    fputs(fid, [ "Printed " filename "\n"]);
-    close all;
+	fig = figure('Name', SOFAfile);
+	mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2, 'xscale', 'log');
+	filename = [SOFAfile '_spectrum_E=12_R=1_logX.png'];
+	set(fig, "units", "pixels");
+	set(fig, "position", [100 100 1600 800]);  % [x y width height]
+	h = findall(gcf, "-property", "linewidth");
+	set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
+	print ('-dpng', "-r300","tight", filename);
+	fputs(fid, [ "Printed " filename "\n\n"]);
+	close all;
+	disp(['Successfully plotted magnitude spectra, effect of M, after ' num2str(toc) ' seconds']);
 
-    fig = figure('Name', SOFAfile);
-    mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2, 'xscale', 'log');
-    filename = [SOFAfile '_spectrum_E=12_R=1_logX.png'];
-    set(fig, "units", "pixels");
-    set(fig, "position", [100 100 1600 800]);  % [x y width height]
-    h = findall(gcf, "-property", "linewidth");
-    set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
-    print ('-dpng', "-r300","tight", filename);
-    fputs(fid, [ "Printed " filename "\n\n"]);
-    close all;
-		disp("Successfully plotted magnitude spectra, effect of M.");
+	%% Effect of R: M=1, E varies
+	for e = 1:Obj.API.E
+		fig = figure('Name', SOFAfile);
+		chosen_m = 1;
+		chosen_e = e;
+		chosen_r = 1:Obj.API.R;
+		mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'lin');
+		filename = [SOFAfile '_spectrum_M=1_E=' ...
+								num2str(chosen_e) '_linX.png'];
+		set(fig, "units", "pixels");
+		set(fig, "position", [100 100 1600 800]);  % [x y width height]
+		h = findall(gcf, "-property", "linewidth");
+		set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
+		print('-dpng', "-r300", "tight", filename);
+		fputs(fid, [ "Printed " filename "\n"]);
+		close all;
 
-    % Effect of R: M=1, E varies
-    for e = 1:Obj.API.E
-        fig = figure('Name', SOFAfile);
-        chosen_m = 1;
-        chosen_e = e;
-        chosen_r = 1:Obj.API.R;
-        mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'lin');
-        filename = [SOFAfile '_spectrum_M=1_E=' ...
-                    num2str(chosen_e) '_linX.png'];
-        set(fig, "units", "pixels");
-        set(fig, "position", [100 100 1600 800]);  % [x y width height]
-        h = findall(gcf, "-property", "linewidth");
-        set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
-        print('-dpng', "-r300", "tight", filename);
-        fputs(fid, [ "Printed " filename "\n"]);
-        close all;
+		fig = figure('Name', SOFAfile);
+		mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'log');
+		filename = [SOFAfile '_spectrum_M=1_E=' ...
+								num2str(chosen_e) '_logX.png'];
+		set(fig, "units", "pixels");
+		set(fig, "position", [100 100 1600 800]);  % [x y width height]
+		h = findall(gcf, "-property", "linewidth");
+		set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
+		print('-dpng', "-r300", "tight", filename);
+		fputs(fid, [ "Printed " filename "\n"]);
+		close all;
+	end
+	fputs(fid, "\n");
+	disp(['Successfully plotted magnitude spectra, effect of R, after ' num2str(toc) ' seconds']);
 
-        fig = figure('Name', SOFAfile);
-        mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'log');
-        filename = [SOFAfile '_spectrum_M=1_E=' ...
-                    num2str(chosen_e) '_logX.png'];
-        set(fig, "units", "pixels");
-        set(fig, "position", [100 100 1600 800]);  % [x y width height]
-        h = findall(gcf, "-property", "linewidth");
-        set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
-        print('-dpng', "-r300", "tight", filename);
-        fputs(fid, [ "Printed " filename "\n"]);
-        close all;
-    end
+	%% Effect of E: M=1, R varies
+	for r = 1:Obj.API.R
+			fig = figure('Name', SOFAfile);
+			chosen_m = 1;
+			chosen_e = 1:Obj.API.E;
+			chosen_r = r;
+			mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'lin');
+			filename = [SOFAfile '_spectrum_M=1_R=' ...
+									num2str(chosen_r) '_linX.png'];
 
-    fputs(fid, "\n");
-		disp("Successfully plotted magnitude spectra, effect of R.");
+			set(fig, "units", "pixels");
+			set(fig, "position", [100 100 1600 800]);  % [x y width height]
+			h = findall(gcf, "-property", "linewidth");
+			set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
+			print('-dpng', "-r300","tight", filename);
+			fputs(fid, [ "Printed " filename "\n"]);
+			close all;
 
-    % Effect of E: M=1, R varies
-    for r = 1:Obj.API.R
-        fig = figure('Name', SOFAfile);
-        chosen_m = 1;
-        chosen_e = 1:Obj.API.E;
-        chosen_r = r;
-        mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'lin');
-        filename = [SOFAfile '_spectrum_M=1_R=' ...
-                    num2str(chosen_r) '_linX.png'];
+			fig = figure('Name', SOFAfile);
+			mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'log');
+			filename = [SOFAfile '_spectrum_M=1_R=' ...
+									num2str(chosen_r) '_logX.png'];
+			set(fig, "units", "pixels");
+			set(fig, "position", [100 100 1600 800]);  % [x y width height]
+			h = findall(gcf, "-property", "linewidth");
+			set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
+			print('-dpng', "-r300", "tight", filename);
+			fputs(fid, [ "Printed " filename "\n"]);
+			close all;
+	end
+	fputs(fid, ["Finished execution of SOFAplotIRFreq.\n\n"]);
+	disp(['Successfully plotted magnitude spectra, effect of E, after ' num2str(toc) ' seconds']);
 
-        set(fig, "units", "pixels");
-        set(fig, "position", [100 100 1600 800]);  % [x y width height]
-        h = findall(gcf, "-property", "linewidth");
-        set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
-        print('-dpng', "-r300","tight", filename);
-        fputs(fid, [ "Printed " filename "\n"]);
-        close all;
+	%% Geometry
+	fputs(fid, ["Plotting geometry...\n"]);
+	mySOFAplotGeometry(Obj);
+	fig = gcf;
+	set(fig, "units", "pixels");
+	set(fig, "position", [100 100 1500 1100]);  % [x y width height]
+	h = findall(gcf, "-property", "linewidth");
+	set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
+	set(gca, "position", [0.075 0.025 0.63 1]);
+	print('-dpng', "-r150","-tight", [SOFAfile '_geometry.png']);
+	fputs(fid, [ "Printed " SOFAfile "_geometry.png\n"]);
+	fputs(fid, ["Finished execution of SOFAplotGeometry.\n\n"]);
+	close all;
+	disp(['Successfully plotted geometry, after ' num2str(toc) ' seconds']);
 
-        fig = figure('Name', SOFAfile);
-        mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'log');
-        filename = [SOFAfile '_spectrum_M=1_R=' ...
-                    num2str(chosen_r) '_logX.png'];
-        set(fig, "units", "pixels");
-        set(fig, "position", [100 100 1600 800]);  % [x y width height]
-        h = findall(gcf, "-property", "linewidth");
-        set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
-        print('-dpng', "-r300", "tight", filename);
-        fputs(fid, [ "Printed " filename "\n"]);
-        close all;
-    end
-    fputs(fid, ["Finished execution of SOFAplotIRFreq.\n\n"]);
-		disp("Successfully plotted magnitude spectra, effect of E.");
 
-    %% Change graphics toolkit
-    graphics_toolkit gnuplot;
+	%% Energy, Effect of R: M=1, E varies
+	graphics_toolkit gnuplot; 	% Change graphics toolkit
+	IREnergy = Obj.Data.IR.^2;
+	IREnergysum = squeeze(sum(IREnergy, 3));
+	IREnergysumdB = 10*log10(IREnergysum/max(IREnergysum(:)));
+	fputs(fid, ["Plotting energy distribution...\n"]);
+	for chosen_m=1:1
+			for chosen_e=1:Obj.API.E
+					mySOFAplotGeoEnergy(Obj, IREnergysumdB, chosen_m, chosen_e);
+					fig = gcf;
+					view(0,0);
+
+					filename = [SOFAfile '_energy_M=1_E=' num2str(chosen_e) '.png'];
+					set(fig, "units", "pixels");
+					set(fig, "position", [0 0  1080 700]);  % [x y width height]
+					h = findall(gcf, "-property", "linewidth");
+					set(h, {"linewidth"}, num2cell(8 * cell2mat(get(h, "linewidth"))));
+					set(gca, "position", [0.15 0.02 0.63 1]);
+					print('-dpng', "-r150", "-tight", filename);
+					fputs(fid, [ "Printed " filename "\n"]);
+					close all;
+			end
+	end
+	fputs(fid, [ "Finished execution of SOFAplotGeoEnergy.\n\n"]);
+	disp(['Successfully plotted energy distributions, after ' num2str(toc) ' seconds']);
     
-		%% Energy, Effect of R: M=1, E varies
-		IREnergy = Obj.Data.IR.^2;
-    IREnergysum = squeeze(sum(IREnergy, 3));
-    IREnergysumdB = 10*log10(IREnergysum/max(IREnergysum(:)));
-
-    fputs(fid, ["Plotting energy distribution...\n"]);
-    for chosen_m=1:1
-        for chosen_e=1:Obj.API.E
-            mySOFAplotGeoEnergy(Obj, IREnergysumdB, chosen_m, chosen_e);
-            fig = gcf;
-            view(0,0);
-
-            filename = [SOFAfile '_energy_M=1_E=' num2str(chosen_e) '.png'];
-            set(fig, "units", "pixels");
-            set(fig, "position", [0 0  1080 700]);  % [x y width height]
-            h = findall(gcf, "-property", "linewidth");
-            set(h, {"linewidth"}, num2cell(8 * cell2mat(get(h, "linewidth"))));
-            set(gca, "position", [0.15 0.02 0.63 1]);
-            print('-dpng', "-r150", "-tight", filename);
-            fputs(fid, [ "Printed " filename "\n"]);
-            close all;
-        end
-    end
-    fputs(fid, [ "Finished execution of SOFAplotGeoEnergy.\n\n"]);
-		disp("Successfully plotted energy distributions.");
-
-    %% Change graphics toolkit
-    graphics_toolkit qt;
-
-    %% Geometry
-    fputs(fid, ["Plotting geometry...\n"]);
-    mySOFAplotGeometry(Obj);
-    fig = gcf;
-    set(fig, "units", "pixels");
-    set(fig, "position", [100 100 1500 1100]);  % [x y width height]
-    h = findall(gcf, "-property", "linewidth");
-    set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
-    set(gca, "position", [0.075 0.025 0.63 1]);
-    print('-dpng', "-r150","-tight", [SOFAfile '_geometry.png']);
-    fputs(fid, [ "Printed " SOFAfile "_geometry.png\n"]);
-    fputs(fid, ["Finished execution of SOFAplotGeometry.\n\n"]);
-    close all;
-		disp("Successfully plotted geometry.");
-
 	%% Epilogue
 	fputs(fid, [ "### DONE ###\n\n\n"]);
 	fclose(fid);

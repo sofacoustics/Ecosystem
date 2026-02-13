@@ -31,7 +31,7 @@ class Service implements ShouldQueue
 {
 	use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-	public $timeout = 680; // default Job timeout
+	public $timeout = 3600; // This timeout (in s) is independent of the timeout set in the services table and must be larger than any of those! 
 
 	private ServiceModel $service;
 
@@ -68,7 +68,7 @@ class Service implements ShouldQueue
 		//
 		////////////////////////////////////////////////////////////////////////////////
 		// This 'timeout' appears to be independent of the Process timeout and needs to be high enough
-		// Setting $this->timeout in __construct happens when the job is queued.
+		// Setting $this->timeout in __construct happens when the job is queued and is independent of this setting here. 
 		// Setting it here will pull the value from the database when the job actually runs.
 		$this->timeout = $this->service->timeout + 10;
 		$widget_id=$this->widget->id;
@@ -104,7 +104,7 @@ class Service implements ShouldQueue
 		$process = new Process($args, null,$envvars);
 		$process->setWorkingDirectory($directory);
 		$process->setTimeout($this->service->timeout); // use class timeout (set from service column)
-		//$process->setIdleTimeout(60); // create time out if the process does not produce any output within 60 seconds. But: this terminated running and processing Octave services. Thus, we can't use this.
+		//$process->setIdleTimeout(60); // Time out if the process does not produce any output within 60 seconds. But this terminated running and processing Octave services, thus, we can't use this.
 
 		$process->start();
 
@@ -176,6 +176,7 @@ class Service implements ShouldQueue
 			$duration = microtime(true) - $start;
 			$this->datafile->last_service_error_code = $exitCode;
 			$this->datafile->save();
+			app('log')->channel('services_stack')->debug("datafile saved");
 			// add to service log table
 			$serviceLog->exit_code	= $exitCode;
 			$serviceLog->exit_code_text = $exitCodeText;
@@ -196,7 +197,9 @@ class Service implements ShouldQueue
 				$log .= "  process finished successfully after $duration seconds (exitCode: " . $exitCode . ")\n";
 			else
 				$log .= "  process failed after $duration seconds (exitCode: " . $exitCode . ")\n";
+			app('log')->channel('services_stack')->debug("before dispatch");
 			DatafileProcessed::dispatch($this->datafile->id);
+			app('log')->channel('services_stack')->debug("after dispatch");
 			if($exitCode!=0)
 				app('log')->channel('services_stack')->warning("Process $pid info:\n$log"); // log all in one go so it doesn't get interspersed with other log messages
 			else
