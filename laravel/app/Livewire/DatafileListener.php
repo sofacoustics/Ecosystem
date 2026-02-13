@@ -186,7 +186,6 @@ class DatafileListener extends Component
 					asort($spectrumEs);
 				}
 				$viewData['spectrumEs'] = $spectrumEs;
-				if($spectrumEs)	
 					// Effect of E: M=1, R varies
 				$files = glob($fullPath . '_spectrum_M=1_R=*_linX.png');
 				$spectrumRs = [];
@@ -201,7 +200,6 @@ class DatafileListener extends Component
 					asort($spectrumRs);
 				}				
 				$viewData['spectrumRs'] = $spectrumRs;
-				if($spectrumRs)
 					// Energy distribution of R: M=1, E varies
 				$files = glob($fullPath . '_energy_M=1_E=*.png');
 				$energyEs = [];
@@ -216,7 +214,6 @@ class DatafileListener extends Component
 					asort($energyEs);
 				}				
 				$viewData['energyEs'] = $energyEs;				
-				if($energyEs)
 					// SOFA properties
 				$sofaFile = $this->datafile->absolutepath();
 				$viewData['csvRows'] = $this->readCSV($sofaFile, '_dim.csv');

@@ -26,6 +26,7 @@ return new class extends Migration
 					'description' => 'Plot energy distribution, amplitude spectra, and the geometry of the Selfone measurements.',
 					'exe' => 'sudo -u sonicom /opt/scripts/run-octave-gui.sh',
 					'parameters' => 'Selfone.m', 
+					'timeout' => '600',
 				));
 			}
 				// Add the Selfone Widget
