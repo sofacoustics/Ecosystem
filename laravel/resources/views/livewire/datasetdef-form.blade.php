@@ -34,11 +34,13 @@
 
 		<div class="block">
 			<label class="{{ $labelClass }}" for="datafiletype">Type:</label>
-			@if(count($database->datasets))
-				<select class="{{ $selectClass }}" id="datafiletype" wire:model.live="datafiletype_id" disabled title="The type cannot be modified because of existing Datasets.">
-			@else
-				<select class="{{ $selectClass }}" id="datafiletype" wire:model.live="datafiletype_id" >
-			@endif 
+			<select class="{{ $selectClass }}" id="datafiletype" wire:model.live="datafiletype_id" 
+			@if($datasetdef)
+				@if(count($datasetdef->datafiles))
+					disabled title="The type cannot be modified because of existing Datafiles."
+				@endif 
+			@endif
+			>
 				<option value="" disabled>Select a datafile type</option>
 				@foreach ($datafiletypes as $datafiletype)
 					<option value="{{ $datafiletype->id }}">{{ $datafiletype->name }}</option>
@@ -54,11 +56,13 @@
 		<br>
 		<div>
 			<label class="{{ $labelClass }}" for="widget">Widget:</label>
-			@if(count($database->datasets))
-				<select class="{{ $selectClass }}" id="widget" wire:model.live="widget_id" disabled title="The widget cannot be modified because of existing Datasets.">
-			@else
-				<select class="{{ $selectClass }}" id="widget" wire:model.live="widget_id">
+			<select class="{{ $selectClass }}" id="widget" wire:model.live="widget_id" 
+			@if($datasetdef)
+				@if(count($datasetdef->datafiles))
+					disabled title="The widget cannot be modified because of existing Datafiles."
+				@endif
 			@endif
+			>
 				@foreach ($widgets as $widget)
 					@if($widget->id == $widget_id)
 						<option value="{{ $widget->id }}" wire:key="{{ $widget->id }}" selected>{{ $widget->name }}</option>
