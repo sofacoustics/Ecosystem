@@ -5,7 +5,7 @@
 
   <progress id="progress{{ $datafile->id }}" value="0" max="1" class="w-full bg-gray-200 h-4 rounded-full transition-all duration-500"></progress>
 	
-	<div id="stl_cont{{ $datafile->id }}" style="width:500px;height:500px;margin:0 auto; text-align:left;"></div>
+	<div id="stl_cont{{ $datafile->id }}" style="margin: 0 auto; width: 500px; height: 400px; text-align:left;"></div>
 
 	<script>
 	

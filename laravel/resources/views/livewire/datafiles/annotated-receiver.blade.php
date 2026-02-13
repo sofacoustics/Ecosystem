@@ -19,7 +19,7 @@
 	<hr>
 	<p></p>
 		
-	<div class="flex flex-row">
+	<div class="flex flex-row" style="margin: 0 auto; width: 500px;">
 		<a href="{{ $datafile->asset('_1.png') }}" target="_blank">
 			<x-img class="p-2" :asset="$datafile->asset('_1.png')" />
 		</a>

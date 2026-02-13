@@ -1,6 +1,7 @@
 <div>
 	<x-servicelog :log="$latestLog"></x-servicelog>
 	<p><x-datafiles-properties :fileSizeInBytes="$fileSizeInBytes" :createdAt="$created_at" :updatedAt="$updated_at"/></p>
+	
 	<b>SOFA Properties:</b>
 	<x-sofa-dimensions :csvRows="$csvRows"/>
 	

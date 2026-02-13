@@ -3,7 +3,7 @@
 	<p><x-datafiles-properties :fileSizeInBytes="$fileSizeInBytes" :createdAt="$created_at" :updatedAt="$updated_at"/></p>
 
 	<script src="/js/stl_viewer/stl_viewer.min.js"></script>
-	<div id="stl_cont{{ $datafile->id }}" style="width:500px;height:500px;margin:0 auto; text-align:left;"></div>
+	<div id="stl_cont{{ $datafile->id }}" style="margin: 0 auto; width: 500px; height:500px; text-align:left;"></div>
 	
 	<script>
 		var stl_viewer{{ $datafile->id }}=new StlViewer

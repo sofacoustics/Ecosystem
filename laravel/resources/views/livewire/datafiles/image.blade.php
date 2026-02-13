@@ -1,8 +1,7 @@
 <div>
-	<x-servicelog :log="$latestLog"></x-servicelog>
 	<p><x-datafiles-properties :fileSizeInBytes="$fileSizeInBytes" :createdAt="$created_at" :updatedAt="$updated_at"/></p>
 	
-	<div id="imageContainer{{ $datafile->id }}" style="width: 500px; height: 400px; border: 1px solid #ccc; background-color: #FFFFFF !important;">
+	<div id="imageContainer{{ $datafile->id }}" style="margin: 0 auto; width: 500px; height: 400px; background-color: #FFFFFF !important;">
 		<img id="image{{ $datafile->id }}" src="{{ $datafile->asset() }}" alt="{{ $datafile->name }}" style="display: none;">
 	</div>
 
