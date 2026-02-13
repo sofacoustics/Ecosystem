@@ -658,37 +658,7 @@
 			data.pendingFiles = data.allFiles.filter((file) => { return dirPrefixed.includes(file.webkitRelativePath); });
 		}
 
-		/*if(data.overwriteExisting == false) // because of a bug, the files will be overwritten ALWAYS
-		{	// We will *not* overwrite existing files. Hence, we're removing existing files from the pendingFiles list			
-			//
-			// filter pendingFiles again, removing any entries which correspond to existing datafiles
-			//
-				// first add 'exists' field and set to true if datafile already exists
-			data.pendingFilesMetadata.forEach(obj1 => {
-				obj1.exists = existingFilesMetadata.some(obj2 =>
-					obj1.datasetName === obj2.datasetName &&
-					obj1.datasetdefId === obj2.datasetdefId
-				);
-			});
-			console.log(data.pendingFilesMetadata);
-				// filter pendingFiles based on the 'exists' field
-			nonexistentPendingFiles = data.pendingFiles.filter((obj2, index) => {
-				// condition based on array1 at the same index
-				return data.pendingFilesMetadata[index].exists === false;
-			});
-			console.log(data.pendingFilesMetadata);			
-			// filter pendingFilesMetadata based on the 'exists' field
-			nonexistentPendingFilesMetadata = data.pendingFilesMetadata.filter((obj2, index) => {
-				return obj2.exists === false;
-			});
-
-			// assign nonexistent filtered results
-			data.pendingFiles = nonexistentPendingFiles;
-			data.pendingFilesMetadata = nonexistentPendingFilesMetadata;
-		}*/
-
 		// update the actual number of files to upload, so Livewire knows how many files to expect.
-		//data.nFilesToUpload = data.pendingFiles.length;
 		console.timeEnd("createPendingFiles");
 		return(data);
 	}
@@ -726,7 +696,8 @@
 		if (data.nDatasetsFound > 0)
 		{
 			console.time("_updateSelected");
-			let nDatasetdef = $wire.datasetdefIds.length; // number of dataset definitions (i.e., table columns)
+			let DatasetdefIds = $wire.datasetdefIds; // dataset definitions
+			let nDatasetdef = DatasetdefIds.length; // number of dataset definitions (i.e., table columns)
 			let fn_cnt_array = new Array(nDatasetdef).fill(0);
 			let dsn_cnt = 0;
 			let selDatafileNames = []; // 2D array of selected filenames (outer dim: datasets, inner dim: datafile defs)
@@ -735,6 +706,7 @@
 			let selDatasetExisting = []; // 1D Array with true if that dataset already exists
 			let selDatasetdefIdsExisting = [];
 			let nFilesToOverwrite = 0;
+			//console.log("DatasetdefIds",DatasetdefIds); // all dataset def ids
 			for (let i=0; i<data.nDatasetsFound; i++)
 			{
 				fn = data.allDatafileNames[i];
@@ -752,12 +724,25 @@
 						// insert selected datafilenames
 					selDatafileNames[selDatafileNames.length] = fn;
 					selDatasetdefIdsExisting[selDatasetdefIdsExisting.length] = data.allDatasetdefIdsExisting[i];
-					nFilesToOverwrite = nFilesToOverwrite + data.allDatasetdefIdsExisting[i].length;
 					for (let col=0; col<fn.length; col++)
-					{	if(fn[col] != null)
+					{	
+						if(fn[col] != null)
 						{
 							if(i<rows.length) rows[i].cells[col+2].textContent = fn[col];
 							fn_cnt_array[col]++; // count the number of datafiles in the corresponding datafiledef
+							if(data.allDatasetdefIdsExisting[i].includes(DatasetdefIds[col])) // that file exists, overwrite? 
+							{
+								nFilesToOverwrite++; // count the total number of files to be overwritten
+								//console.log("   this file will overwrite: ", i, col, fn[col]);
+							}
+							else
+							{
+								//console.log("   this file will be new: ", i, col, fn[col]);
+							}
+						}
+						else
+						{
+							//console.log("nothing to upload for ", i, col);
 						}
 					}
 				}
