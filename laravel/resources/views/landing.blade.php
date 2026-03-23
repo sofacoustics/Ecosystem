@@ -1,40 +1,64 @@
 <x-app-layout>
 	<x-slot name="header">
-			<h2 class="font-semibold text-xl text-gray-800 leading-tight">
+			<h2 class="font-semibold text-xl text-gray-800 leading-tight text-center align-middle">
 				Welcome to the SONICOM Ecosystem
 			</h2>
-			A repository dedicated to spatial hearing and binaural audio!
+			<div class="text-center align-middle">
+				A repository dedicated to spatial hearing and binaural audio!
+			</div>
 	</x-slot>
 	
-	<h3 id="latestTool"><b>Latest Tool:</b> <a href="{{ route('tools.show', $tool->id) }}">{{ $tool->title }} ({{ $tool->productionyear }})</a></h3>
-	<ul class="list-disc list-outside px-5 inline-block">
-		<li><b>Subtitle:</b> {{ $tool->additionaltitle }}
-		<li><b>Modified at:</b> {{ $tool->updated_at }} (GMT)
-		<li><a href="{{ route('tools.show', $tool->id) }}">More details...</a>
-	</ul>
+	<p class="text-center align-middle">
+		The SONICOM Ecosystem provides an interactive repository for spatial auditory data closely linked with tools for binaural rendering and auditory modeling. 
+		Its content is open access, citable via fixed URLs and DOIs. It also provides an interface for machineable download of partial data, reinforcing the idea of reproducible research. 
+		Its commenting functionality enables researchers and end users to easily provide feedback. Its capability to provide relations between databases, tools, and external resources, renders it a true <b>Ecosystem</b> for the spatial-hearing community.
+		<a href="/about">More information...</a>
+	</p>
+	<br>
+	<table class="w-full border">
+		<tbody>
+			<tr class="py-2 max-w-1/3">
+				<td class="border-r border-gray-300 p-2 text-center align-middle">
+					<x-button class="inline" method="GET" action="{{ route('databases.index') }}">Browse databases</x-button>
+				</td>
+				<td class="text-center align-middle">
+					<x-button class="inline" method="GET" action="{{ route('tools.index') }}">Browse tools</x-button>
+				</td>
+			</tr>
+			<tr>
+				<td class="border-r border-gray-300 px-6 py-2 text-center align-middle">
+					Database is a collection of data stored in a structured way. A database consists of datasets, all of which have the same structure given by the dataset definition.
+				</td>
+				<td class="text-center align-middle px-6 py-2">
+					Tools are files which do not need the structure of a database. They can be of the category software, model, text, physical object, or something else. 
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="border-r border-gray-300 p-2 text-center align-middle">
+					Latest database: <a href="{{ route('databases.show', $database->id) }}"><b>{{ $database->title }} ({{ $database->productionyear }})</b></a>
+				</td>
+				<td class="text-center align-middle">
+					Latest tool: <a href="{{ route('tools.show', $tool->id) }}"><b>{{ $tool->title }} ({{ $tool->productionyear }})</b></a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 	
-	<hr>
-
-	<h3 id="latestDatabase"><b>Most recent Database:</b> <a href="{{ route('databases.show', $database->id) }}">{{ $database->title }} ({{ $database->productionyear }})</a></h3>
-	<ul class="list-disc list-outside px-5 inline-block">
-		<li><b>Subtitle:</b> {{ $database->additionaltitle }}
-		<li><b>Modified at:</b> {{ $database->updated_at }} (GMT)
-		<li><a href="{{ route('databases.show', $database->id) }}">More details...</a>
-	</ul>
+	<br>
 	
-	<hr>
-
-    @if($datafile)
-			<h3 id="latestDatafile"><b>Latest Datafile:</b> <a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a></h3>
-			<ul class="list-disc list-outside px-5 inline-block">
-					<li><b>Database:</b> <a href="{{ route('databases.show', $datafile->dataset->database->id) }}">{{ $datafile->dataset->database->title }}</a>
-					<li><b>Dataset:</b> <a href="{{ route('datasets.show', $datafile->dataset->id) }}">{{ $datafile->dataset->name }}</a>
-					<li><b>Datafile Type:</b> {{ $datafile->datasetdef->name }} ({{ $datafile->datasetdef->datafiletype->name }})
-					<li><b>Modified at:</b> {{ $datafile->updated_at }} (GMT)
-			</ul>
-			<div wire:key="{{ $datafile->id }}">
-					<livewire:DatafileListener :datafile="$datafile" :key="$datafile->id" />
-			</div>
-    @endif
+	@if($datafile)
+		<p>
+			<b>Most-recently contributed datafile: <a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a></b>
+		</p>
+		<ul class="list-disc list-outside px-5 inline-block">
+			<li>Belongs to the database: <b><a href="{{ route('databases.show', $datafile->dataset->database->id) }}">
+				{{ $datafile->dataset->database->title }}  ({{ $database->productionyear }})</b></a>
+			<li>Belongs to the dataset: <b><a href="{{ route('datasets.show', $datafile->dataset->id) }}">{{ $datafile->dataset->name }}</b></a>
+		</ul>
+		<div wire:key="{{ $datafile->id }}">
+				<livewire:DatafileListener :datafile="$datafile" :key="$datafile->id" />
+		</div>
+	@endif
 
 </x-app-layout>
