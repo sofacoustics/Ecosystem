@@ -21,10 +21,10 @@ class MenuItemSeeder extends Seeder
             'id' => '2', 'title' => 'Tools', 'url' => '/tools', 'authenticated' => 0, ]);
 
         MenuItem::create([
-            'id' => '3', 'title' => 'Scenarios', 'route' => 'scenarios', 'authenticated' => 0, ]);
+            'id' => '3', 'title' => 'Scenarios', 'route' => 'scenarios', 'authenticated' => 0, 'parent_id' => 1]); // parent_id=1 renders invisible
 
         MenuItem::create([
-            'id' => '4', 'title' => 'Challenges', 'route' => 'challenges', 'authenticated' => 0, ]);
+            'id' => '4', 'title' => 'Challenges', 'route' => 'challenges', 'authenticated' => 0, 'parent_id' => 1]); // parent_id=1 renders invisible
 
         MenuItem::create([
             'id' => '5', 'title' => 'About', 'route' => 'about', 'authenticated' => 0, ]);
