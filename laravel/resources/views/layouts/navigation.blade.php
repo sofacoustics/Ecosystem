@@ -77,9 +77,9 @@
 			</x-dropdown>
 		</div>
 		@else
-			<a href="{{ route('login') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Log in</a>
+			<a href="{{ route('login') }}" class="block mt-4 text-sm lg:inline-block lg:mt-0 text-black-200 hover:text-black-300 mr-4">Log in</a>
 			@if (Route::has('register'))
-				<a href="{{ route('register') }}" class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Register</a>
+				<a href="{{ route('register') }}" class="block mt-4 text-sm lg:inline-block lg:mt-0 text-black-200 hover:text-black-300 mr-4">Register</a>
 			@endif
 		@endauth
 	</div>
