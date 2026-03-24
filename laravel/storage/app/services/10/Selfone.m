@@ -426,7 +426,9 @@ function mySOFAplotGeoEnergy(Obj, IREnergysumdB, chosen_m, chosen_e)
     
     % ReceiverPosition and  EmitterPosition
     RP = SOFAconvertCoordinates(Obj.ReceiverPosition(:,:), Obj.ReceiverPosition_Type, 'cartesian');
+    RP = RP*1000;
     EP = SOFAconvertCoordinates(Obj.EmitterPosition(:,:), Obj.EmitterPosition_Type, 'cartesian');
+    EP = EP*1000;
 
     %for plotting text offset to the center
     labeloffset = 2;
@@ -559,7 +561,9 @@ function mySOFAplotGeometry(Obj)
     
     % Get ReceiverPosition and EmitterPosition
     RP = SOFAconvertCoordinates(Obj.ReceiverPosition(:,:), Obj.ReceiverPosition_Type, 'cartesian');
+    RP = RP*1000;
     EP = SOFAconvertCoordinates(Obj.EmitterPosition(:,:), Obj.EmitterPosition_Type, 'cartesian');
+    EP = EP*1000;
 
     labeloffset_x = -2.5;
     labeloffset_z = -2;
