@@ -10,7 +10,7 @@
 	
 	<p class="text-center align-middle">
 		The SONICOM Ecosystem provides an interactive repository for spatial auditory data closely integrated with tools for binaural rendering and auditory modeling.
-		Its content is open access, citable via persistent URLs and DOIs. It also provides a programatic interface for downloading data subsets, reinforcing the idea of reproducible research.
+		Its contents are open access and can be cited via persistent URLs and DOIs. It also provides a programmatic interface for downloading data subsets, reinforcing the idea of reproducible research.
 		Its commenting functionality enables researchers and end users to provide feedback easily. The connection of databases with tools and external resources renders it a true <b>Ecosystem</b> for the spatial-hearing community.
 		<a href="/about">More information...</a>
 	</p>
@@ -27,7 +27,7 @@
 			</tr>
 			<tr>
 				<td class="border-r border-gray-300 px-6 py-2 text-center align-middle">
-					A database is a collection of data stored in a structured way. A database consists of datasets, all of which have the same structure given by the dataset definition.
+					A database is a collection of data stored in a structured way. A database consists of datasets, all of which have the same structure as specified in the dataset definition.
 				</td>
 				<td class="text-center align-middle px-6 py-2">
 					Tools are files which do not need the structure of a database. They can be of the category software, model, text, physical object, or something else. 
