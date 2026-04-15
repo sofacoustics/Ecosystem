@@ -8,7 +8,7 @@
 			</div>
 	</x-slot>
 	
-	<p class="text-center align-middle max-w-[900px]">
+	<p class="text-center align-middle max-w-[900px] mx-auto">
 		The SONICOM Ecosystem provides an interactive repository for spatial auditory data closely integrated with tools for binaural rendering and auditory modeling.
 		Its content is open access and can be cited via persistent URLs and DOIs. It also provides a programmatic interface for downloading data subsets, reinforcing the idea of reproducible research.
 		Its commenting functionality enables researchers and end users to provide feedback easily. The connection of databases with tools and external resources renders it a true <b>Ecosystem</b> for the spatial-hearing community.

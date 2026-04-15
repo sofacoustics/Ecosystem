@@ -2066,10 +2066,7 @@ table.MsoTableGrid
  </o:shapelayout></xml><![endif]-->
 </head>
 
-<body lang=DE-AT link=blue vlink="#954F72" style='tab-interval:35.4pt;
-word-wrap:break-word'>
-
-<div class=WordSection1>
+<body lang=DE-AT link=blue vlink="#954F72" style="max-width: 900px; margin-left: auto; margin-right: auto; padding: 0 20px; width: 100%; box-sizing: border-box;">
 
 <p class=MsoTitle><span lang=EN-US>Terms of Use</span></p>
 
@@ -3289,8 +3286,6 @@ lang=EN-US style='mso-ansi-language:EN-US'> <span style='mso-tab-count:1'>   
 the protection of natural persons with regard to the processing of personal
 data and on the free movement of such data, and repealing Directive 95/46/EC
 (General Data Protection Regulation).<o:p></o:p></span></p>
-
-</div>
 
 </div>
 
