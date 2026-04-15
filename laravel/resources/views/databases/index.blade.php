@@ -3,11 +3,15 @@
 		<h2 class="font-semibold text-xl text-gray-800 leading-tight">
 			The SONICOM Ecosystem contains {{ @count($allDatabases) }} databases
 		</h2>
+		A database is a collection of data stored in a structured way. A database consists of datasets, all of which have the same structure specified by the dataset definition.
+		<br>
 		@role('admin')
-			<p><b>Accessible Databases:</b> All databases.</p>
+			<b>Accessible Databases:</b> All databases.<br>
 		@else
 			@auth
-				<p><b>Accessible Databases:</b> Visible databases or uploaded by you.</p>
+				<b>Accessible Databases:</b> Visible or your databases.<br>
+			@else
+				<b>Accessible Databases:</b> Public databases only.<br>
 			@endauth
 		@endrole
 		@can('create', \App\Models\Database::class)

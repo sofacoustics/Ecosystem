@@ -3,6 +3,8 @@
 		<h2 class="font-semibold text-xl text-gray-800 leading-tight">
 			The SONICOM Ecosystem contains {{ @count($allTools) }} tools
 		</h2>
+		Tools are files which do not need the structure of a database. They can be of the category software, model, text, physical object, or something else.
+		<br>
 		@can('create', \App\Models\Tool::class)
 			<x-button method="GET" action="{{ route('tools.create') }}" class="inline">
 				Add a New Tool
