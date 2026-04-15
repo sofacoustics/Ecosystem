@@ -8,7 +8,7 @@
 			</div>
 	</x-slot>
 	
-	<p class="text-center align-middle">
+	<p class="text-center align-middle max-w-[900px]">
 		The SONICOM Ecosystem provides an interactive repository for spatial auditory data closely integrated with tools for binaural rendering and auditory modeling.
 		Its content is open access and can be cited via persistent URLs and DOIs. It also provides a programmatic interface for downloading data subsets, reinforcing the idea of reproducible research.
 		Its commenting functionality enables researchers and end users to provide feedback easily. The connection of databases with tools and external resources renders it a true <b>Ecosystem</b> for the spatial-hearing community.
@@ -46,6 +46,16 @@
 	</table>
 
 	<br>
+	
+	<div id="funding" style="display: flex; align-items: center; justify-content: center; gap: 20px; padding: 10px 0; max-width: 900px; margin-left: auto; margin-right: auto;">
+		<a href="https://www.oeaw.ac.at/en" target="_blank"><img src="images/oeaw-logo.png" alt="ÖAW logo" style="height: 60px; width: auto; flex-shrink: 0;"></img></a>
+		<p style="margin: 0; text-align: center; flex: 1;">
+			The SONICOM Ecosystem is funded by the <a href="https://www.oeaw.ac.at/en" target="_blank">Austrian Academy of Sciences</a> and has received funding from the European Union’s Horizon 2020 research and innovation programme (grant agreement <a href="https://doi.org/10.3030/101017743" target="_blank">#101017743</a>).
+		</p>
+		<a href="https://commission.europa.eu/index_en" target="_blank"><img src="images/eu-flag.png" alt="EU logo" style="height: 60px; width: auto; flex-shrink: 0;"></img></a>
+	</div>
+	
+	<br><hr><br>
 	
 	@if($datafile)
 		<p>
