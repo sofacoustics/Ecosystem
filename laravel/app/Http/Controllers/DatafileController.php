@@ -49,10 +49,9 @@ class DatafileController extends Controller
 	/**
 	 * Display the specified resource.
 	 */
-	public function show($id)
+	public function show(Datafile $datafile)
 	{
-		$datafile = \App\Models\Datafile::where('id', $id)->first();
-		return view('datafiles.show', ['datafile' => $datafile]);
+		return view('datafiles.show', compact('datafile'));
 	}
 
 	/**
