@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Test;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -20,38 +20,38 @@ class SubjectAreaSeeder extends Seeder
 		$databases = Database::get(); // get all databases
 		foreach($databases as $database)
 		{
-			SubjectArea::create(array(
+			SubjectArea::create([
 				'subjectareaable_id' => $database->id,
 				'subjectareaable_type' => 'App\Models\Database',
 				'controlledSubjectAreaIndex' => (\App\Models\Metadataschema::where('name', 'subjectArea')->where('value', 'LIFE_SCIENCE')->first()->id), // Life science
 				'additionalSubjectArea' => null,
-				));
+			]);
 
-			SubjectArea::create(array(
+			SubjectArea::create([
 				'subjectareaable_id' => $database->id,
 				'subjectareaable_type' => 'App\Models\Database',
 				'controlledSubjectAreaIndex' => (\App\Models\Metadataschema::where('name', 'subjectArea')->where('value', 'OTHER')->first()->id), // Other
 				'additionalSubjectArea' => 'SONICOM Ecosystem',
-				));
+			]);
 		}
 
-			// Insert two subject areas for each tool
+		// Insert two subject areas for each tool
 		$tools = Tool::get(); // get all tools
 		foreach($tools as $tool)
 		{
-			SubjectArea::create(array(
+			SubjectArea::create([
 				'subjectareaable_id' => $tool->id,
 				'subjectareaable_type' => 'App\Models\Tool',
 				'controlledSubjectAreaIndex' => (\App\Models\Metadataschema::where('name', 'subjectArea')->where('value', 'LIFE_SCIENCE')->first()->id), // Life science
 				'additionalSubjectArea' => null,
-				));
+			]);
 
-			SubjectArea::create(array(
+			SubjectArea::create([
 				'subjectareaable_id' => $tool->id,
 				'subjectareaable_type' => 'App\Models\Tool',
 				'controlledSubjectAreaIndex' => (\App\Models\Metadataschema::where('name', 'subjectArea')->where('value', 'OTHER')->first()->id), // Other
 				'additionalSubjectArea' => 'SONICOM Ecosystem',
-				));
+			]);
 		}
 
 	}

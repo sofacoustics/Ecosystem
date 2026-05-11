@@ -19,25 +19,36 @@ class RolesAndPermissionsSeeder extends Seeder
         // Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        $permission = Permission::create(['name' => 'add datafiletypes']);
-        $permission = Permission::create(['name' => 'add datasetdefs']);
-        $permission = Permission::create(['name' => 'add databases']);
-        $permission = Permission::create(['name' => 'add widget']);
-        $permission = Permission::create(['name' => 'edit widget']);
+		$permissions = [
+			'add datafiletypes',
+			'add datasetdefs',
+			'add databases',
+			'add widget',
+			'edit widget',
+		];
+		// ensure permissions exist
+		foreach($permissions as $perm) {
+			Permission::firstOrCreate(['name' => $perm]);
+		}
 
-        $contributor = Role::create(['name' => 'contributor']);
+        $contributor = Role::firstOrCreate(['name' => 'contributor']);
+
         $contributor->givePermissionTo('add databases');
         $contributor->givePermissionTo('add datasetdefs');
         $contributor->givePermissionTo('add datafiletypes');
         $contributor->givePermissionTo('add widget');
         $contributor->givePermissionTo('edit widget');
-        $curator = Role::create(['name' => 'curator']);
+
+        $curator = Role::firstOrCreate(['name' => 'curator']);
+
         $curator->givePermissionTo('add databases');
         $curator->givePermissionTo('add datasetdefs');
         $curator->givePermissionTo('add datafiletypes');
         $curator->givePermissionTo('add widget');
         $curator->givePermissionTo('edit widget');
-        $admin = Role::create(['name' => 'admin']);
+
+        $admin = Role::firstOrCreate(['name' => 'admin']);
+
 		$admin->givePermissionTo(Permission::all());
-    }
+	}
 }

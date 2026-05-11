@@ -1,27 +1,29 @@
 <?php
 
-namespace Database\Seeders;
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\Service;
 
 return new class extends Migration
 {
     /**
      * Run the migrations.
      */
-     public function up(): void
+    public function up(): void
     {
-        $seeder = new ServiceSeeder_2025_12_20_223347();
-        $seeder->run();
+        Schema::table('widgets', function (Blueprint $table) {
+			// add 'key' field - not *yet* unique
+			$table->string('key')->nullable()->after('id');
+        });
     }
-		
+
     /**
      * Reverse the migrations.
      */
     public function down(): void
-    {     
+    {
+        Schema::table('widgets', function (Blueprint $table) {
+			$table->dropColumn('key');
+        });
     }
 };

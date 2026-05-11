@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('services', function (Blueprint $table) {
-            $table->id();
+			$table->id(); // primary key for DB performance and relationships
             $table->string('name'); // displayed in GUI
             $table->string('description'); // displayed in GUI
             $table->string('exe'); // exe to run e.g. octave-cli

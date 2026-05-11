@@ -14,20 +14,13 @@ class MenuItemSeeder extends Seeder
     public function run(): void
     {
 
-        MenuItem::create([
-            'id' => '1', 'title' => 'Databases', 'url' => '/databases', 'authenticated' => 0, ]);
-
-        MenuItem::create([
-            'id' => '2', 'title' => 'Tools', 'url' => '/tools', 'authenticated' => 0, ]);
-
-        MenuItem::create([
-            'id' => '3', 'title' => 'Scenarios', 'route' => 'scenarios', 'authenticated' => 0, 'parent_id' => 1]); // parent_id=1 renders invisible
-
-        MenuItem::create([
-            'id' => '4', 'title' => 'Challenges', 'route' => 'challenges', 'authenticated' => 0, 'parent_id' => 1]); // parent_id=1 renders invisible
-
-        MenuItem::create([
-            'id' => '5', 'title' => 'About', 'route' => 'about', 'authenticated' => 0, ]);
+		// the 'updateOrCreate' function looks for a record matching the first parameter's pairs ('title' here)
+		// and updates it, if it exists, or creates it otherwise.
+		MenuItem::updateOrCreate([ 'key' => 'databases' ], [ 'title' => 'Databases' ], [ 'url' => '/databases', 'authenticated' => 0, ]);
+		MenuItem::updateOrCreate([ 'key' => 'tools' ], [ 'title' => 'Tools' ], [ 'url' => '/tools', 'authenticated' => 0, ]);
+		MenuItem::updateOrCreate([ 'key' => 'scenarios' ], [ 'title' => 'Scenarios' ], [ 'route' => 'scenarios', 'authenticated' => 0, 'parent_id' => 1]); // parent_id=1 renders invisible
+		MenuItem::updateOrCreate([ 'key' => 'challenges' ], [ 'title' => 'Challenges' ], [ 'route' => 'challenges', 'authenticated' => 0, 'parent_id' => 1]); // parent_id=1 renders invisible
+        MenuItem::updateOrCreate([ 'key' => 'about' ], [ 'title' => 'About' ], [ 'route' => 'about', 'authenticated' => 0, ]);
 
         /*
         MenuItem::create([
