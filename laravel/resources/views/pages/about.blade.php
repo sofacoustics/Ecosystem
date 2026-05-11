@@ -26,7 +26,7 @@
 		</p>
 		<ul class="list-disc list-outside px-5">
 			<li><b><a href="https://www.oeaw.ac.at/en/ari/our-team/majdak-piotr">Piotr Majdak</a>:</b> Project lead, Development, Programming
-			<li><b><a href="https://www.oeaw.ac.at/en/ari/our-team/stuefer-jonathan">Jonnathan Stuefer</a>:</b> Main programming, IT management
+			<li><b><a href="https://www.oeaw.ac.at/en/ari/our-team/stuefer-jonathan">Jonathan Stuefer</a>:</b> Main programming, IT management
 			<li><b><a href="https://www.oeaw.ac.at/en/ari/our-team/mihocic-michael">Michael Mihocic</a>:</b> Widgets, Testing, Data management
 		</ul>
 		<p class="max-w-prose">
