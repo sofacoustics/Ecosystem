@@ -3,10 +3,12 @@
 
 	<script src="/js/stl_viewer/stl_viewer.min.js"></script>
 
-  <progress id="progress{{ $datafile->id }}" value="0" max="1" class="w-full bg-gray-200 h-4 rounded-full transition-all duration-500"></progress>
-	
-	<div id="stl_cont{{ $datafile->id }}" style="margin: 0 auto; width: 500px; height: 400px; text-align:left;"></div>
-
+	@if (substr($datafile->name, -4) === '.ply') 
+		<p>PLY visualisation is currently not supported.</p>
+	@else
+		<progress id="progress{{ $datafile->id }}" value="0" max="1" class="w-full bg-gray-200 h-4 rounded-full transition-all duration-500"></progress>
+		<div id="stl_cont{{ $datafile->id }}" style="margin: 0 auto; width: 500px; height: 400px; text-align:left;"></div>
+	@endif
 	<script>
 	
 		function stl_progress{{ $datafile->id }}(load_status, load_session)
