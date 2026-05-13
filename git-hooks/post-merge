@@ -55,6 +55,12 @@ echo "Running ./artisan storage:unlink && ./artisan storage:link"
 echo "Running 'npm install and npm run build'"
 npm install && npm run build
 
+if [ -f /usr/local/bin/laravel-fix-perms ] ; then
+	echo "Setting www-data ACLs with /usr/local/bin/laravel-fix-perms"
+	echo "Running 'sudo /usr/local/bin/laravel-fix-perms $(realpath ../laravel)'"
+	sudo /usr/local/bin/laravel-fix-perms $(realpath ../laravel)
+fi
+
 echo "Restarting all queues with 'sudo supervisorctl restart all'"
 sudo supervisorctl restart all
 
