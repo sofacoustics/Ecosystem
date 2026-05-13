@@ -25,11 +25,18 @@ DEPLOY_USER="sonicom"
 
 echo "Converging permissions at: $PROJECT_PATH"
 
-# Apply permissions (Generic commands)
+# 1. Broad brush: Let www-data see the project structure
 setfacl -R -m u:$WWW_USER:rX "$PROJECT_PATH"
+# 2. Specific: Ensure public/build is ALWAYS readable
+if [ -d "$PROJECT_PATH/public" ]; then
+    setfacl -R -m u:$WWW_USER:rX "$PROJECT_PATH/public"
+    # Set default so new builds inherit the permission
+	setfacl -Rd -m u:$WWW_USER:rX "$PROJECT_PATH/public"
+fi
 if [ -d "$PROJECT_PATH/vendor" ]; then
     setfacl -R -m u:$WWW_USER:rx "$PROJECT_PATH/vendor"
 fi
+# 3. Specific: Ensure storage/cache are writable
 if [ -d "$PROJECT_PATH/storage" ]; then
     setfacl -R -m u:$WWW_USER:rwx,u:$DEPLOY_USER:rwx "$PROJECT_PATH/storage" "$PROJECT_PATH/bootstrap/cache"
     setfacl -Rd -m u:$WWW_USER:rwx,u:$DEPLOY_USER:rwx "$PROJECT_PATH/storage" "$PROJECT_PATH/bootstrap/cache"
