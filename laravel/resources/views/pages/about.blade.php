@@ -25,9 +25,9 @@
 			The SONICOM Ecosystem is developed and maintained at the <a href="https://www.oeaw.ac.at/en/ari/">Acoustics Research Institute</a> of the <a href="https://www.oeaw.ac.at/en/">Austrian Academy of Sciences</a>:
 		</p>
 		<ul class="list-disc list-outside px-5">
-			<li><b><a href="https://www.oeaw.ac.at/en/ari/our-team/majdak-piotr">Piotr Majdak</a>:</b> Project lead, Development, Programming
-			<li><b><a href="https://www.oeaw.ac.at/en/ari/our-team/stuefer-jonathan">Jonathan Stuefer</a>:</b> Main programming, IT management
-			<li><b><a href="https://www.oeaw.ac.at/en/ari/our-team/mihocic-michael">Michael Mihocic</a>:</b> Widgets, Testing, Data management
+			<li><b><a href="https://www.oeaw.ac.at/en/ari/team/our-team/majdak-piotr">Piotr Majdak</a>:</b> Project lead, Development, Programming
+			<li><b><a href="https://www.oeaw.ac.at/en/ari/team/our-team/stuefer-jonathan">Jonathan Stuefer</a>:</b> Main programming, IT management
+			<li><b><a href="https://www.oeaw.ac.at/en/ari/team/our-team/mihocic-michael">Michael Mihocic</a>:</b> Widgets, Testing, Data management
 		</ul>
 		<p class="max-w-prose">
 			The SONICOM Ecosystem uses the <a href="https://datathek.oeaw.ac.at">ÖAW Datathek</a> as a backend. The ÖAW Datathek is maintained and supported by the <a href="https://verlag.oeaw.ac.at/en/press/contact/c-40">Austrian Academy of Sciences Press</a> with <b>Herwig Stöger</b> as the contact person.
