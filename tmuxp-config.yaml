@@ -10,7 +10,7 @@ windows:
   - window_name: logs 
     layout: even-vertical
     suppress_history: false
-    start_directory: "laravel/storage/logs"
+    start_directory: "${SONICOM_GIT_ROOT}/laravel/storage/logs"
     panes:
       - "tail -F laravel.log"
       - "tail -F reverb.log"
@@ -42,7 +42,7 @@ windows:
         - tmux select-pane -T public -t storage.0
         - cd laravel/storage/app/public
   - window_name: artisan 
-    start_directory: "laravel"
+    start_directory: "${SONICOM_GIT_ROOT}/laravel"
     layout: even-vertical
     suppress_history: false
     panes:
@@ -56,20 +56,20 @@ windows:
         - tmux select-pane -T octave -t octave.0
   - window_name: vi
     layout: even-vertical
-    start_directory: laravel
+    start_directory: "${SONICOM_GIT_ROOT}/laravel"
     panes:
       - shell_command:
         - tmux select-pane -T vi -t vi.0
   - window_name: queue
     layout: even-vertical
-    start_directory: "laravel"
+    start_directory: "${SONICOM_GIT_ROOT}/laravel"
     panes:
       - shell_command:
         - ./artisan queue:monitor default
   - window_name: log-details 
     layout: even-vertical
     suppress_history: false
-    start_directory: "laravel/storage/logs"
+    start_directory: "${SONICOM_GIT_ROOT}/laravel/storage/logs"
     panes:
       - "tail -F laravel-error.log"
       - "tail -F laravel-warning.log"
