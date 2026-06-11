@@ -45,7 +45,7 @@ class DatabaseForm extends Component
 		'descriptionmethods' => 'max:5000',
 		'descriptionremarks' => 'max:5000',
 		'additionaltitle' => 'max:255',
-		'additionalrights' => 'max:255',
+		'additionalrights' => 'max:5000',
 	];
 
 	protected $messages = [
@@ -56,7 +56,7 @@ class DatabaseForm extends Component
 		'descriptionmethods.max' => 'The methods can be only up to 5000 characters.',
 		'descriptionremarks.max' => 'The technical remarks can be only up to 5000 characters.',
 		'additionaltitle.max' => 'The subtitle can be only up to 255 characters.',
-		'additionalrights.max' => 'The custom license name can be only up to 255 characters.',
+		'additionalrights.max' => 'The custom license name can be only up to 5000 characters.',
 	];
 
 	public function mount($database = null)

@@ -53,6 +53,7 @@
 				placeholder="If the license is 'Other', provide a clear name for your license here. Note: 'Other' licenses are not recommended..."
 				class="text-gray-700 w-full rounded-lg border px-3 py-2 focus:outline-none"/>
 			@endif
+		  @error('additionalrights') <span class="text-red-500">{{ $message }}</span> @enderror
 		</div>
 		
 		<div class="mb-4">
