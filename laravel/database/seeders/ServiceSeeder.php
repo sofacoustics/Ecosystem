@@ -9,10 +9,10 @@ use App\Models\Service;
 
 class ServiceSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+	/**
+	 * Run the database seeds.
+	 */
+	public function run(): void
 	{
 		// prepare services using unique 'key', so this seeder is idempotent
 		// if you want to change the 'services' table, then create a migration,
@@ -24,8 +24,9 @@ class ServiceSeeder extends Seeder
 				'name' => 'Octave: HRTF General',
 				'description' => 'Plot HRTF-related figures: Time domain: ETC left/right; Frequency domain (lin): magnitude spectrum left/right; Frequency domain (log): magnitude spectrum left/right logarithmic; ITD; Geometry.',
 				'exe' => 'sudo -u sonicom /opt/scripts/run-octave-gui.sh',
-									// at dev server: 'sudo -u sonicom /home/sonicom/isf-sonicom-laravel/octave/run-octave-gui.sh'
-				'parameters' => 'HRTFGeneral.m'
+				// at dev server: 'sudo -u sonicom /home/sonicom/isf-sonicom-laravel/octave/run-octave-gui.sh'
+				'parameters' => 'HRTFGeneral.m',
+				'timeout' => '900'
 			],
 			// 2
 			[
@@ -34,8 +35,8 @@ class ServiceSeeder extends Seeder
 				'name' => 'Octave: BRIR ListenerView',
 				'description' => 'Plot BRIR with ListenerView as parameter.',
 				'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
-				'parameters' => 'BRIRListenerView.m'
-
+				'parameters' => 'BRIRListenerView.m',
+				'timeout' => '300'
 			],
 			// 3
 			[
@@ -43,7 +44,8 @@ class ServiceSeeder extends Seeder
 				'name' => 'Octave: BRIR General',
 				'description' => 'Plot BRIR General.',
 				'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
-				'parameters' => 'BRIRGeneral.m'
+				'parameters' => 'BRIRGeneral.m',
+				'timeout' => '300'
 			],
 			// 4
 			[
@@ -51,7 +53,8 @@ class ServiceSeeder extends Seeder
 				'name' => 'Octave: SRIR General',
 				'description' => 'Plot SRIR General.',
 				'exe' => 'sudo -u sonicom /opt/scripts/run-octave-gui.sh',
-				'parameters' => 'SRIRGeneral.m'
+				'parameters' => 'SRIRGeneral.m',
+				'timeout' => '300'
 			],
 			// 5
 			[
@@ -59,7 +62,8 @@ class ServiceSeeder extends Seeder
 				'name' => 'Octave: Directivities General',
 				'description' => 'Plot the geometry and directivity as polar plots per frequency.',
 				'exe' => 'sudo -u sonicom /opt/scripts/run-octave-gui.sh',
-				'parameters' => 'DirectivityGeneral.m'
+				'parameters' => 'DirectivityGeneral.m',
+				'timeout' => '300'
 			],
 			// 6
 			[
@@ -67,7 +71,8 @@ class ServiceSeeder extends Seeder
 				'name' => 'Octave: SOFA Properties',
 				'description' => 'Show SOFA Properties.',
 				'exe' => 'sudo -u sonicom /opt/scripts/run-octave-gui.sh',
-				'parameters' => 'SofaProperties.m'
+				'parameters' => 'SofaProperties.m',
+				'timeout' => '300'
 			],
 			// 7
 			[
@@ -75,7 +80,8 @@ class ServiceSeeder extends Seeder
 				'name' => 'Blender: Render PPM',
 				'description' => 'Render PPM if BezierPPM, show CSV file properties otherwise.',
 				'exe' => '/var/www/.local/bin/uv',
-				'parameters' => 'run CSVppm.py --input'
+				'parameters' => 'run CSVppm.py --input',
+				'timeout' => '300'
 			],
 			// 8
 			[
@@ -83,7 +89,8 @@ class ServiceSeeder extends Seeder
 				'name' => 'Octave: AnnotatedReceiver',
 				'description' => 'Plot the progress of receivers.',
 				'exe' => 'sudo -u sonicom /opt/scripts/run-octave-gui.sh',
-				'parameters' => 'AnnotatedReceiver.m'
+				'parameters' => 'AnnotatedReceiver.m',
+				'timeout' => '300'
 			],
 			// 9
 			[
@@ -91,7 +98,8 @@ class ServiceSeeder extends Seeder
 				'name' => 'Octave: Headphones',
 				'description' => 'Plot spectra of headphones.',
 				'exe' => 'sudo -u sonicom /opt/scripts/run-octave-gui.sh',
-				'parameters' => 'Headphones.m'
+				'parameters' => 'Headphones.m',
+				'timeout' => '300'
 			],
 			// 10
 			[
@@ -100,7 +108,7 @@ class ServiceSeeder extends Seeder
 				'description' => 'Plot energy distribution, amplitude spectra, and the geometry of the Selfone measurements.',
 				'exe' => 'sudo -u sonicom /opt/scripts/run-octave-gui.sh',
 				'parameters' => 'Selfone.m',
-				'timeout' => '600',
+				'timeout' => '900',
 			],
 		];
 
@@ -110,71 +118,5 @@ class ServiceSeeder extends Seeder
 		}
 
 		return;
-
-
-      Service::create(array(
-                    'name' => 'Octave: HRTF General',
-                    'description' => 'Plot HRTF-related figures: Time domain: ETC left/right; Frequency domain (lin): magnitude spectrum left/right; Frequency domain (log): magnitude spectrum left/right logarithmic; ITD; Geometry.',
-                    'exe' => 'sudo -u sonicom /opt/scripts/run-octave-gui.sh',
-										// at dev server: 'sudo -u sonicom /home/sonicom/isf-sonicom-laravel/octave/run-octave-gui.sh'
-                    'parameters' => 'HRTFGeneral.m'
-                )
-            );
- 			Service::create(array(
-                    'name' => 'Octave: BRIR ListenerView',
-                    'description' => 'Plot BRIR with ListenerView as parameter.',
-                    'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
-                    'parameters' => 'BRIRListenerView.m'
-                )
-            );
-			Service::create(array(
-                    'name' => 'Octave: BRIR General',
-                    'description' => 'Plot BRIR General.',
-                    'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
-                    'parameters' => 'BRIRGeneral.m'
-                )
-            );
-			Service::create(array(
-                   'name' => 'Octave: SRIR Geometry per M',
-                   'description' => 'For each M, plots the geometry of the measurement from four perspectives.',
-                    'exe' => 'sudo -u sonicom /opt/scripts/run-octave-gui.sh',
-                   'parameters' => 'SRIRGeneral.m'
-               )
-            );
-			Service::create(array(
-                   'name' => 'Octave: Directivities General',
-                   'description' => 'Plot the geometry and directivity as polar plots per frequency.',
-                   'exe' => 'XDG_CACHE_HOME=/run/user/33/sonicom-xdg-cache-home XDG_RUNTIME_DIR=/run/user/33 xvfb-run -a octave-cli',
-                   'parameters' => 'DirectivityGeneral.m'
-               )
-            );
-			Service::create(array(
-                   'name' => 'Octave: SOFA Properties',
-                   'description' => 'Show SOFA Properties.',
-                   'exe' => 'octave-cli',
-                   'parameters' => 'SofaProperties.m'
-               )
-            );
-			Service::create(array(
-                   'name' => 'Blender: Render PPM',
-                   'description' => 'Render PPM if BezierPPM, show CSV file properties otherwise.',
-                   'exe' => '/var/www/.local/bin/uv',
-                   'parameters' => 'run CSVppm.py --input'
-               )
-            );
-			Service::create(array(
-                   'name' => 'Octave: AnnotatedReceiver',
-                   'description' => 'Plot the progress of receivers.',
-                   'exe' => 'octave-cli',
-                   'parameters' => 'AnnotatedReceiver.m'
-               )
-            );
-			Service::create(array(
-                   'name' => 'Octave: Headphones',
-                   'description' => 'Plot spectra of headphones.',
-                   'exe' => 'octave-cli',
-                   'parameters' => 'Headphones.m'
-               )
-            );
-    }
+	}
 }
