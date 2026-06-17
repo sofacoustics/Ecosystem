@@ -3,6 +3,7 @@
 namespace Tests\Feature\Auth;
 
 use App\Providers\RouteServiceProvider;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -18,15 +19,19 @@ class RegistrationTest extends TestCase
     }
 
     public function test_new_users_can_register(): void
-    {
+		{
+				$email = 'test@example.com';
         $response = $this->post('/register', [
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => "$email",
             'password' => 'password',
-            'password_confirmation' => 'password',
-        ]);
+						'password_confirmation' => 'password',
+						'terms' => 1,
+				]);
+
+				$newUser = User::where('email', "$email")->firstOrFail();
 
         $this->assertAuthenticated();
-        $response->assertRedirect(RouteServiceProvider::HOME);
+        $response->assertRedirect("/profile?user=$newUser->id");
     }
 }
