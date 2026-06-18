@@ -10,6 +10,7 @@
 % #Author: Michael Mihocic: mySOFAplotHRTF for case 'itdhorizontal' updated to compensate Obj.Data.Delay (27.10.2025)
 % #Author: Piotr Majdak: added path to shared functions, moved the call to SOFA Properties to shared (27.12.2025)
 % #Author: Michael Mihocic: title added to median plane log figures; ignoring mylog function on Matlab (16.06.2026)
+% #Author: Michael Mihocic: supporting 'SimpleFreeFieldSOS' data type (data is converted to FIR); added robustness for non-integer length values after conversion (18.06.2026)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -59,12 +60,13 @@ mylog(fid, [ "About to plot case " Obj.GLOBAL_SOFAConventions]);
 %% Plot a few figures
 switch Obj.GLOBAL_SOFAConventions
   % differ cases, depending on SOFA conventions
-  case { 'SimpleFreeFieldHRIR', 'SimpleFreeFieldHRTF'}
+  case { 'SimpleFreeFieldHRIR', 'SimpleFreeFieldHRTF', 'SimpleFreeFieldSOS'}
 
     %graphics_toolkit fltk
 
+
     %% ITD
-    f=figure;
+  	f=figure;
     mySOFAplotHRTF(Obj,'itdhorizontal');
     mylog(fid, [ "plotted " SOFAfile "_7.png"]);
     myprint(do_print, [SOFAfile '_7.png']);
@@ -78,7 +80,6 @@ switch Obj.GLOBAL_SOFAConventions
     title([num2str(Obj.API.M) ' Positions']);
     myprint(do_print, [SOFAfile '_8.png']);
     mylog(fid, [ "just printed " SOFAfile "_8.png"]);
-
     %graphics_toolkit gnuplot
 
     %% ETCHorizontal
@@ -427,14 +428,14 @@ switch lower(type)
           lengths(dir, ch) = N_samples + abs(d);
         end
       end
-      final_length = max(lengths(:)); % All signals will be padded to this length
+      final_length = ceil(max(lengths(:))); % All signals will be padded to this length % prevent non-integer values (occured in SOS data type)
 
       % Preallocate output
       IR_delayed = zeros(N_directions, N_channels, final_length);
 
       for dir = 1:N_directions
         for ch = 1:N_channels
-          d = Delay(dir, ch);
+          d = ceil(Delay(dir, ch)); % prevent non-integer values (occured in SOS data type)
           sig = squeeze(IR(dir, ch, :)); % (N_samples x 1)
           if d >= 0
             sig_delayed = [zeros(d,1); sig];
@@ -510,6 +511,27 @@ index = kv.index;
 SHorder=kv.shorder;
 SHm=kv.shm;
 flags.do_normalize = flags.normalize;
+
+if exist('OCTAVE_VERSION','builtin')
+  % We're in Octave
+  % mylog(fid, [ "Plot: Octave detected"]);
+  if ismember(lower(Obj0.GLOBAL_SOFAConventions),{'freefielddirectivitytf','generaltf','simplefreefieldhrtf'})
+    % In Octave 'contains' is not available, thus, the list has to be extended manually
+    do_conversion2ir = 0;
+  else
+    do_conversion2ir = 1;
+  end
+else
+  error('Run this in Octave');
+end
+
+% meta=[];
+
+if do_conversion2ir == 1 % eg. for SOS data
+  %% Convert data to FIR
+  Obj0=SOFAconvertConventions(Obj0);
+  % fs=Obj0.Data.SamplingRate;
+end
 
 if any(index > Obj0.API.M)
   error(['Index out of range. Only ', num2str(Obj0.API.M), ...

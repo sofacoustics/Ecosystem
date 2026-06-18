@@ -2,6 +2,7 @@
 %
 % #Author: Michael Mihocic: initial implementation in every Octave service (1.7.2025)
 % #Author: Piotr Majdak: added path to shared functions, moved the call to SOFA Properties to shared (27.12.2025)
+% #Author: Michael Mihocic: improving robustness: setting dimS to '' if not defined (18.06.2026)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -13,6 +14,7 @@ function SaveSOFAproperties(Obj, SOFAfile)
 	disp('Creating CSV Files with SOFA properties...');
 	isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
 	field_namesDim = fieldnames(Obj.API);
+  dimS = ''; % improve robustness, in case dimS is not defined
 	for i = 1:length(field_namesDim)
 		field_name = field_namesDim{i};
 
