@@ -20,6 +20,7 @@
 				<x-th>Description</x-th>
 				@role('admin')
 					<x-th>ID</x-th>
+					<x-th title="You can rerun this service for *all* datafiles using this dataset definition">Rerun service</x-th>
 				@endrole
 			</tr>
 		</thead>
@@ -70,6 +71,7 @@
 				<x-td>{{ $datasetdef->description }}</x-td>
 				@role('admin') 
 					<x-td>{{ $datasetdef->datafiletype->id }}</x-td>
+					<x-td><x-button method="GET" action="{{ route('datasetdefs.rerun', [$datasetdef]) }}" class="inline">Rerun service</x-button></x-td>
 				@endrole
 			</tr>
 		@endforeach

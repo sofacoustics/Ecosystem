@@ -80,4 +80,10 @@ class DatasetdefController extends Controller
 		Cache::forget('database' . $new->database_id);
 		return redirect()->route('databases.datasetdefs', $datasetdef->database->id);
 	}
+
+	public function rerunService(Datasetdef $datasetdef)
+	{
+		// rerun service for all datafiles using whis datasetdef
+		$datasetdef->rerunService();
+	}
 }
