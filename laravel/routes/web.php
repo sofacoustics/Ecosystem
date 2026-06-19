@@ -119,6 +119,7 @@ Route::post('/datafiles/{datafile}/touch', [DatafileController::class, 'touch'])
 // DATASETDEFS
 Route::resource('datasetdefs', DatasetdefController::class);
 Route::get('datasetdefs/{datasetdef}/duplicate', [DatasetdefController::class, 'duplicate'])->name('datasetdefs.duplicate');
+Route::get('datasetdefs/{datasetdef}/rerun', [DatasetdefController::class, 'rerunService'])->name('datasetdefs.rerun')->middleware('auth', 'role:admin');
 
 // CREATORS
 Route::resource('creators', CreatorController::class);

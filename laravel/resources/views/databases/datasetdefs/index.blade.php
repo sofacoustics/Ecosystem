@@ -7,19 +7,20 @@
 		<table class="table-auto border border-slate-399">
 		<thead class="bg-gray-50">
 			<tr>
-				<th class="border p-2">#</th>
+				<x-th>#</x-th>
 				@if($edits)
-					<th class="border p-2" colspan="5">Commands</th>
+					<x-th colspan="5">Commands</x-th>
 				@else
-					<th class="border p-2" colspan="5"></th>
+					<x-th colspan="5"></x-th>
 				@endif
-				<th class="border p-2">Name</th>
-				<th class="border p-2">Type</th>
-				<th class="border p-2">Widget</th>
-				<th class="border p-2"># Datafiles</th>
-				<th class="border p-2">Description</th>
+				<x-th>Name</x-th>
+				<x-th>Type</x-th>
+				<x-th>Widget</x-th>
+				<x-th># Datafiles</x-th>
+				<x-th>Description</x-th>
 				@role('admin')
-					<th class="border p-2">ID</th>
+					<x-th>ID</x-th>
+					<x-th title="You can rerun this service for *all* datafiles using this dataset definition">Rerun service</x-th>
 				@endrole
 			</tr>
 		</thead>
@@ -63,19 +64,14 @@
 				@else
 					<td></td>
 				@endcan
-				<td class="px-6 py-4 whitespace-nowrap">{{ $datasetdef->name }}</td>
-				<td class="px-6 py-4 whitespace-nowrap">{{ $datasetdef->datafiletype->name }}</td>
-				<td class="px-6 py-4 whitespace-nowrap">
-					@if($datasetdef->widget)
-						{{ $datasetdef->widget->name }}
-					@else
-						No widget
-					@endif
-				</td>
-				<td class="px-6 py-4 whitespace-nowrap">{{ count($datasetdef->datafiles) }}</td>
-				<td class="px-6 py-4 whitespace-nowrap">{{ $datasetdef->description }}</td>
+				<x-td>{{ $datasetdef->name }}</x-td>
+				<x-td>{{ $datasetdef->datafiletype->name }}</x-td>
+				<x-td>{{ $datasetdef->widget->name ?? 'No widget' }}</x-td>
+				<x-td>{{ count($datasetdef->datafiles) }}</x-td>
+				<x-td>{{ $datasetdef->description }}</x-td>
 				@role('admin') 
-					<td class="px-6 py-4 whitespace-nowrap">{{ $datasetdef->datafiletype->id }}</td>
+					<x-td>{{ $datasetdef->datafiletype->id }}</x-td>
+					<x-td><x-button method="GET" action="{{ route('datasetdefs.rerun', [$datasetdef]) }}" class="inline">Rerun service</x-button></x-td>
 				@endrole
 			</tr>
 		@endforeach
