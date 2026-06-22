@@ -85,5 +85,11 @@
 			@include('layouts.footer')
 		</div>
 		@livewireScripts
+		{{--         
+			This creates a named "stack" called 'scripts'.
+			This is the perfect place for page-specific JavaScript.
+			It's at the end of the body for faster page rendering.
+		--}}
+		@stack('scripts')
 	</body>
 </html>
