@@ -19,10 +19,29 @@ class DatafilePolicy
 
 	/**
 	 * Determine whether the user can view the model.
+	 *
+	 * Note that '?User $user', means that guest access can also be handled
+	 * by this policy. The default is 'User $user', which throws an exception
+	 * before this 'view' function is called.
 	 */
-	public function view(User $user, Datafile $datafile): bool
+	public function view(?User $user, Datafile $datafile): Response
 	{
-		return true;
+		// If the database is visible, then all users, including guests can view the datafile
+		if ($datafile->dataset->database->visible)
+		{
+			$access = true;
+		}
+		else if($user !== null)
+		{
+			// only the owner and admins can see it if it is not set to 'visible'
+			if(auth()->user()->hasRole('admin'))
+				$access = true;
+			else
+				$access = ($user->id == $datafile->dataset->database->user_id); // allow owner to see hidden datafiles
+		}
+		return $access ?? false
+			? Response::allow()
+			: Response::deny('You may not access this datafile!');
 	}
 
 	/**

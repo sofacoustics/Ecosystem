@@ -51,6 +51,7 @@ class DatafileController extends Controller
 	 */
 	public function show(Datafile $datafile)
 	{
+		$this->authorize('view', $datafile);
 		return view('datafiles.show', compact('datafile'));
 	}
 
