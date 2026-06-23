@@ -453,5 +453,5 @@ We've got into the situation that running db:refresh --seed does not work. This 
 1) Move static data (data that we specify, rather than the user) to its own seeder and move test data to its own seeder, which will refuse to run on a production sites. 
 2) Add 'key' column to static tables datafiletypes, services and widgets. This is a unique string that can be use for updateOrCreate or upsert commands instead of primary keys. This not only makes things easier to read, but it means that if, primary keys get out of sync, the correct rows are still changed.?
 
-Going forward: If you make changes to a table which require changes to the seeded data, then put those changes in the seeder, not in the migration file. If you need to modify existing values in tables which are user generated, then do so in a migration on any rows that exist at the time of the migration. Run migrations with `./artisan migrate` and the static seeders with `./artisan db:seed
+Going forward: If you make changes to a table which require changes to the seeded data, then put those changes in the seeder, not in the migration file. If you need to modify existing values in tables which are user generated, then do so in a migration on any rows that exist at the time of the migration. Run migrations with `./artisan migrate` and the static seeders with `./artisan db:seed --class StaticSeeder
 
