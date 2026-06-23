@@ -134,6 +134,14 @@ class WidgetSeeder extends Seeder
 				'view' => 'headphones-selfone',
 				'service_id' => Service::where('key', 'octave-selfone')->first()->id,
 			],
+			// 16
+			[
+				'key' => 'csv-table',
+				'name' => 'CSV Table',
+				'description' => 'Display CSV data as a table',
+				'view' => 'csv-table',
+			],
+
 		];
 
 		foreach ($widgets as $widget) {

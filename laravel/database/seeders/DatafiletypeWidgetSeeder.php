@@ -60,6 +60,7 @@ class DatafiletypeWidgetSeeder extends Seeder
 		$datafiletype->widgets()->sync([
 			Widget::where('key', 'properties')->first()->id => ['is_active' => 1],
 			Widget::where('key', 'geometry-bezierppm')->first()->id => ['is_active' => 1],
+			Widget::where('key', 'csv-table')->first()->id => ['is_active' => 1],
 		]);
 		$datafiletype = Datafiletype::where('key', 'human-and-alike-image')->first();
 		$datafiletype->widgets()->sync([
@@ -107,6 +108,7 @@ class DatafiletypeWidgetSeeder extends Seeder
 		$datafiletype = Datafiletype::where('key', 'non-spatial-table-csv')->first();
 		$datafiletype->widgets()->sync([
 			Widget::where('key', 'properties')->first()->id => ['is_active' => 1],
+			Widget::where('key', 'csv-table')->first()->id => ['is_active' => 1],
 		]);
 		$datafiletype = Datafiletype::where('key', 'other-any-type')->first();
 		$datafiletype->widgets()->sync([

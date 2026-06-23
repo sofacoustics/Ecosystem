@@ -17,6 +17,12 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 
+use League\Csv\Reader;
+use League\Csv\Statement;
+use Illuminate\Pagination\LengthAwarePaginator;
+
+use Livewire\WithPagination;
+use App\Traits\ParsesCsv; // used for csv-table widget
 
 class DatafileListener extends Component
 {
@@ -34,6 +40,10 @@ class DatafileListener extends Component
 	public $selectorEE = 1; // selected Emitter index for Energy plots
 	public $selectorRS = 1; // selected Receiver index for Spectrum plots
 	public $isExpanded = false; // for boxes to be expanded
+
+	// for csv-table widget
+	use WithPagination;
+	use ParsesCsv;
 
 	/* Disabled to resolve the problem of disappearance of other widgets on any notification. 
 	/*protected $listeners = [
@@ -249,6 +259,12 @@ class DatafileListener extends Component
 				$sofaFile = $this->datafile->absolutepath();
 				$viewData['csvRows'] = $this->readCSV($sofaFile, '_dim.csv');
 				$viewData['csvRowsProp'] = $this->readCSV($sofaFile, '_prop.csv');
+				break;
+			case 'livewire.datafiles.csv-table':
+				$csvData = $this->getCsvPaginator($this->datafile->absolutepath());
+				$viewData['headers'] = $csvData['headers'];
+				$viewData['rows'] = $csvData['rows'];
+				$viewData['url'] = $this->datafile->url();
 				break;
 		}
 		return view($view, $viewData);
