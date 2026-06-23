@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo "Running 'post-merge' hook"
+echo "Running 'laravel-automation.sh'"
 
 # Get the current branch name
 branch_name=$(git branch | grep "*" | sed "s/\* //")
@@ -25,6 +25,14 @@ if echo "$changed_files" | grep -qE '^laravel/database/migrations/.*\.php'; then
 else
 	echo "No new migrations found. Skipping migration step."
 fi
+# Check for static seeder modifications
+if echo "$changed_files" | grep -qE '^laravel/database/seeders/Static/.*\.php'; then
+	echo "Modified static seeders found. Running database static seeders..."
+	php artisan db:seed --class StaticSeeders
+else
+	echo "No static seeder updates found. Skipping seeder step."
+fi
+
 # Check for changes in config files
 if echo "$changed_files" | grep -qE '^laravel/config/.*\.php'; then
 	echo "Config changes detected. Recaching config..."
