@@ -26,7 +26,7 @@ else
 	echo "No new migrations found. Skipping migration step."
 fi
 # Check for static seeder modifications
-if echo "$changed_files" | grep -qE '^laravel/database/seeders/Static/.*\.php'; then
+if echo "$changed_files" | grep -qE '^laravel/database/seeders/Static(/.*)?\.php'; then
 	echo "Modified static seeders found. Running database static seeders..."
 	php artisan db:seed --class StaticSeeders
 else
@@ -65,8 +65,8 @@ fi
 echo "Running ./artisan storage:unlink && ./artisan storage:link"
 ./artisan storage:unlink && ./artisan storage:link
 
-echo "Running 'npm install and npm run build'"
-npm install && npm run build
+echo "Running 'npm ci and npm run build'"
+npm ci && npm run build
 
 if [ -f /usr/local/bin/laravel-fix-perms ] ; then
 	echo "Setting www-data ACLs with /usr/local/bin/laravel-fix-perms"
