@@ -127,13 +127,9 @@ And the default .launch Listen for debug
 
 ### git hooks
 
-#### post-merge
+Run `git config core.hooksPath git-hooks` to tell git to use our 'git-hooks' directory rather than look for hooks in .git/hooks. This means we can add new hooks without having to create soft-links on the servers.
 
-If you are pulling from master/origin you should link the post-merge hook into the .git/hooks director with:
-
-    cd .git/hooks && ln -s ../../git-hooks/post-merge post-merge
-
-This will do the stuff necessary to update your local code, e.g. run composer install, ./artisan migrate, etc. See the file for details 'git-hooks/post-merge'
+The hooks do the stuff necessary to update your local code, e.g. run composer install, ./artisan migrate, etc. See the file 'git-hooks/laravel-automation.sh' for details.
 
 ## Place to push stuff when testing git deployment
 
