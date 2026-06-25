@@ -28,7 +28,7 @@ fi
 # Check for static seeder modifications
 if echo "$changed_files" | grep -qE '^laravel/database/seeders/Static(/.*)?\.php'; then
 	echo "Modified static seeders found. Running database static seeders..."
-	php artisan db:seed --class StaticSeeders
+	php artisan db:seed --class StaticSeeder
 else
 	echo "No static seeder updates found. Skipping seeder step."
 fi
