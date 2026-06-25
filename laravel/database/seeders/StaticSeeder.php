@@ -26,13 +26,13 @@ class StaticSeeder extends Seeder
 		//
 		$this->call(
 			[
-				RolesAndPermissionsSeeder::class,
-				MenuItemSeeder::class,
-				MetadataschemaSeeder::class,
-				ServiceSeeder::class,
-				WidgetSeeder::class,
-				DatafiletypeSeeder::class,
-				DatafiletypeWidgetSeeder::class,
+				\Database\Seeders\Static\RolesAndPermissionsSeeder::class,
+				\Database\Seeders\Static\MenuItemSeeder::class,
+				\Database\Seeders\Static\MetadataschemaSeeder::class,
+				\Database\Seeders\Static\ServiceSeeder::class,
+				\Database\Seeders\Static\WidgetSeeder::class,
+				\Database\Seeders\Static\DatafiletypeSeeder::class,
+				\Database\Seeders\Static\DatafiletypeWidgetSeeder::class,
 			]
 		);
     }
