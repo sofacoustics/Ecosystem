@@ -11,6 +11,7 @@
 % #Author: Michael Mihocic: create csv files with properties (09.07.2025)
 % #Author: Michael Mihocic: support for convention SimpleFreeFieldHRTF added; bug fixed when running in Matlab (18.09.2025)
 % #Author: Michael Mihocic: mySOFAplotHRTF for case 'itdhorizontal' updated to compensate Obj.Data.Delay (27.10.2025)
+% #Author: Michael Mihocic: energy figures adapted to be plotted in qt (instead of gnuplot) (22.07.2026)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -21,626 +22,674 @@
 
 function Selfone(SOFAfile)
 
-	addpath('../shared'); % add the path to shared functions
-	logfile = "SelfoneIR.log";
-	fid = fopen(logfile, "w");
-	disp(['Current directory: ' pwd]);
+addpath('../shared'); % add the path to shared functions
+logfile = "SelfoneIR.log";
+fid = fopen(logfile, "w");
+disp(['Current directory: ' pwd]);
 
-	%% Prologue
-	close all; % clean-up first
-	tic; % timer
-	SOFAstart('silent'); 
-	warning('off'); 
+%% Prologue
+close all; % clean-up first
+tic; % timer
+SOFAstart('silent');
+warning('off');
 
-	% Check if function called with parameter. If not, use command line parameter
-	if(~exist('SOFAfile','var'))
-			% Use command line parameter for SOFAfile
-		arg_list = argv();
-		fn = arg_list{1};
-		disp(['File to be processed: ' fn]);
-		SOFAfile = fn;
-	end
-	if(length(SOFAfile)==0)
-		error('The SOFA file name is empty');
-	end
+% Check if function called with parameter. If not, use command line parameter
+if(~exist('SOFAfile','var'))
+  % Use command line parameter for SOFAfile
+  arg_list = argv();
+  fn = arg_list{1};
+  disp(['File to be processed: ' fn]);
+  SOFAfile = fn;
+end
+if(length(SOFAfile)==0)
+  error('The SOFA file name is empty');
+end
 
-	%% Load SOFA file
-	Obj = SOFAload(SOFAfile);
+%% Load SOFA file
+Obj = SOFAload(SOFAfile);
 
-  fputs(fid, ["Processing " SOFAfile "\n"]);
-	SaveSOFAproperties(Obj, SOFAfile);
-	fputs(fid, ["Saved SOFA details to csv files.\n\n"]);
-	disp(['Successfully saved SOFA properties after ' num2str(toc) ' seconds']);
-	
-	%% Plot magnitude spectrum
-	fputs(fid, ["Plotting magnitude spectra...\n"]);
+fputs(fid, ["Processing " SOFAfile "\n"]);
+SaveSOFAproperties(Obj, SOFAfile);
+fputs(fid, ["Saved SOFA details to csv files.\n\n"]);
+disp(['Successfully saved SOFA properties after ' num2str(toc) ' seconds']);
 
-	%% Effect of M: R={'F3','in-ear'} and E='12'
-	fig = figure('Name', SOFAfile);
-	chosen_m = 1:Obj.API.M;
-	chosen_e = 12;
-	chosen_r = [1 4];
-	mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2, 'xscale', 'lin');
-	filename = [SOFAfile '_spectrum_E=12_R=1_linX.png'];
-	set(fig, "units", "pixels");
-	set(fig, "position", [100 100 1600 800]);  % [x y width height]
-	h = findall(gcf, "-property", "linewidth");
-	set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
-	print ('-dpng', "-r300","tight", filename);
-	fputs(fid, [ "Printed " filename "\n"]);
-	close all;
+%% Plot magnitude spectrum
+fputs(fid, ["Plotting magnitude spectra...\n"]);
 
-	fig = figure('Name', SOFAfile);
-	mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2, 'xscale', 'log');
-	filename = [SOFAfile '_spectrum_E=12_R=1_logX.png'];
-	set(fig, "units", "pixels");
-	set(fig, "position", [100 100 1600 800]);  % [x y width height]
-	h = findall(gcf, "-property", "linewidth");
-	set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
-	print ('-dpng', "-r300","tight", filename);
-	fputs(fid, [ "Printed " filename "\n\n"]);
-	close all;
-	disp(['Successfully plotted magnitude spectra, effect of M, after ' num2str(toc) ' seconds']);
+%% Effect of M: R={'F3','in-ear'} and E='12'
+fig = figure('Name', SOFAfile);
+chosen_m = 1:Obj.API.M;
+chosen_e = 12;
+chosen_r = [1 4];
+mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2, 'xscale', 'lin');
+filename = [SOFAfile '_spectrum_E=12_R=1_linX.png'];
+set(fig, "units", "pixels");
+set(fig, "position", [100 100 1600 800]);  % [x y width height]
+h = findall(gcf, "-property", "linewidth");
+set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
+print ('-dpng', "-r300","tight", filename);
+fputs(fid, [ "Printed " filename "\n"]);
+close all;
 
-	%% Effect of R: M=1, E varies
-	for e = 1:Obj.API.E
-		fig = figure('Name', SOFAfile);
-		chosen_m = 1;
-		chosen_e = e;
-		chosen_r = 1:Obj.API.R;
-		mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'lin');
-		filename = [SOFAfile '_spectrum_M=1_E=' ...
-								num2str(chosen_e) '_linX.png'];
-		set(fig, "units", "pixels");
-		set(fig, "position", [100 100 1600 800]);  % [x y width height]
-		h = findall(gcf, "-property", "linewidth");
-		set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
-		print('-dpng', "-r300", "tight", filename);
-		fputs(fid, [ "Printed " filename "\n"]);
-		close all;
+fig = figure('Name', SOFAfile);
+mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 2, 'xscale', 'log');
+filename = [SOFAfile '_spectrum_E=12_R=1_logX.png'];
+set(fig, "units", "pixels");
+set(fig, "position", [100 100 1600 800]);  % [x y width height]
+h = findall(gcf, "-property", "linewidth");
+set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
+print ('-dpng', "-r300","tight", filename);
+fputs(fid, [ "Printed " filename "\n\n"]);
+close all;
+disp(['Successfully plotted magnitude spectra, effect of M, after ' num2str(toc) ' seconds']);
 
-		fig = figure('Name', SOFAfile);
-		mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'log');
-		filename = [SOFAfile '_spectrum_M=1_E=' ...
-								num2str(chosen_e) '_logX.png'];
-		set(fig, "units", "pixels");
-		set(fig, "position", [100 100 1600 800]);  % [x y width height]
-		h = findall(gcf, "-property", "linewidth");
-		set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
-		print('-dpng', "-r300", "tight", filename);
-		fputs(fid, [ "Printed " filename "\n"]);
-		close all;
-	end
-	fputs(fid, "\n");
-	disp(['Successfully plotted magnitude spectra, effect of R, after ' num2str(toc) ' seconds']);
+%% Effect of R: M=1, E varies
+for e = 1:Obj.API.E
+  fig = figure('Name', SOFAfile);
+  chosen_m = 1;
+  chosen_e = e;
+  chosen_r = 1:Obj.API.R;
+  mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'lin');
+  filename = [SOFAfile '_spectrum_M=1_E=' ...
+    num2str(chosen_e) '_linX.png'];
+  set(fig, "units", "pixels");
+  set(fig, "position", [100 100 1600 800]);  % [x y width height]
+  h = findall(gcf, "-property", "linewidth");
+  set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
+  print('-dpng', "-r300", "tight", filename);
+  fputs(fid, [ "Printed " filename "\n"]);
+  close all;
 
-	%% Effect of E: M=1, R varies
-	for r = 1:Obj.API.R
-			fig = figure('Name', SOFAfile);
-			chosen_m = 1;
-			chosen_e = 1:Obj.API.E;
-			chosen_r = r;
-			mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'lin');
-			filename = [SOFAfile '_spectrum_M=1_R=' ...
-									num2str(chosen_r) '_linX.png'];
+  fig = figure('Name', SOFAfile);
+  mySOFAplotIRFreq(Obj, 'chosen_m', chosen_m, 'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'log');
+  filename = [SOFAfile '_spectrum_M=1_E=' ...
+    num2str(chosen_e) '_logX.png'];
+  set(fig, "units", "pixels");
+  set(fig, "position", [100 100 1600 800]);  % [x y width height]
+  h = findall(gcf, "-property", "linewidth");
+  set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
+  print('-dpng', "-r300", "tight", filename);
+  fputs(fid, [ "Printed " filename "\n"]);
+  close all;
+end
+fputs(fid, "\n");
+disp(['Successfully plotted magnitude spectra, effect of R, after ' num2str(toc) ' seconds']);
 
-			set(fig, "units", "pixels");
-			set(fig, "position", [100 100 1600 800]);  % [x y width height]
-			h = findall(gcf, "-property", "linewidth");
-			set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
-			print('-dpng', "-r300","tight", filename);
-			fputs(fid, [ "Printed " filename "\n"]);
-			close all;
+%% Effect of E: M=1, R varies
+for r = 1:Obj.API.R
+  fig = figure('Name', SOFAfile);
+  chosen_m = 1;
+  chosen_e = 1:Obj.API.E;
+  chosen_r = r;
+  mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'lin');
+  filename = [SOFAfile '_spectrum_M=1_R=' ...
+    num2str(chosen_r) '_linX.png'];
 
-			fig = figure('Name', SOFAfile);
-			mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'log');
-			filename = [SOFAfile '_spectrum_M=1_R=' ...
-									num2str(chosen_r) '_logX.png'];
-			set(fig, "units", "pixels");
-			set(fig, "position", [100 100 1600 800]);  % [x y width height]
-			h = findall(gcf, "-property", "linewidth");
-			set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
-			print('-dpng', "-r300", "tight", filename);
-			fputs(fid, [ "Printed " filename "\n"]);
-			close all;
-	end
-	fputs(fid, ["Finished execution of SOFAplotIRFreq.\n\n"]);
-	disp(['Successfully plotted magnitude spectra, effect of E, after ' num2str(toc) ' seconds']);
+  set(fig, "units", "pixels");
+  set(fig, "position", [100 100 1600 800]);  % [x y width height]
+  h = findall(gcf, "-property", "linewidth");
+  set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
+  print('-dpng', "-r300","tight", filename);
+  fputs(fid, [ "Printed " filename "\n"]);
+  close all;
 
-	%% Geometry
-	fputs(fid, ["Plotting geometry...\n"]);
-	mySOFAplotGeometry(Obj);
-	fig = gcf;
-	set(fig, "units", "pixels");
-	set(fig, "position", [100 100 1500 1100]);  % [x y width height]
-	h = findall(gcf, "-property", "linewidth");
-	set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
-	set(gca, "position", [0.075 0.025 0.63 1]);
-	print('-dpng', "-r150","-tight", [SOFAfile '_geometry.png']);
-	fputs(fid, [ "Printed " SOFAfile "_geometry.png\n"]);
-	fputs(fid, ["Finished execution of SOFAplotGeometry.\n\n"]);
-	close all;
-	disp(['Successfully plotted geometry, after ' num2str(toc) ' seconds']);
+  fig = figure('Name', SOFAfile);
+  mySOFAplotIRFreq(Obj,'chosen_m', chosen_m,'chosen_e', chosen_e, 'chosen_r', chosen_r, 'average_m', 0, 'xscale', 'log');
+  filename = [SOFAfile '_spectrum_M=1_R=' ...
+    num2str(chosen_r) '_logX.png'];
+  set(fig, "units", "pixels");
+  set(fig, "position", [100 100 1600 800]);  % [x y width height]
+  h = findall(gcf, "-property", "linewidth");
+  set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
+  print('-dpng', "-r300", "tight", filename);
+  fputs(fid, [ "Printed " filename "\n"]);
+  close all;
+end
+fputs(fid, ["Finished execution of SOFAplotIRFreq.\n\n"]);
+disp(['Successfully plotted magnitude spectra, effect of E, after ' num2str(toc) ' seconds']);
+
+%% Geometry
+fputs(fid, ["Plotting geometry...\n"]);
+mySOFAplotGeometry(Obj);
+fig = gcf;
+set(fig, "units", "pixels");
+set(fig, "position", [100 100 1500 1100]);  % [x y width height]
+h = findall(gcf, "-property", "linewidth");
+set(h, {"linewidth"}, num2cell(2*cell2mat(get(h, "linewidth"))));
+set(gca, "position", [0.075 0.025 0.63 1]);
+print('-dpng', "-r150","-tight", [SOFAfile '_geometry.png']);
+fputs(fid, [ "Printed " SOFAfile "_geometry.png\n"]);
+fputs(fid, ["Finished execution of SOFAplotGeometry.\n\n"]);
+close all;
+disp(['Successfully plotted geometry, after ' num2str(toc) ' seconds']);
 
 
-	%% Energy, Effect of R: M=1, E varies
-	graphics_toolkit gnuplot; 	% Change graphics toolkit
-	IREnergy = Obj.Data.IR.^2;
-	IREnergysum = squeeze(sum(IREnergy, 3));
-	IREnergysumdB = 10*log10(IREnergysum/max(IREnergysum(:)));
-	fputs(fid, ["Plotting energy distribution...\n"]);
-	for chosen_m=1:1
-			for chosen_e=1:Obj.API.E
-					mySOFAplotGeoEnergy(Obj, IREnergysumdB, chosen_m, chosen_e);
-					fig = gcf;
-					view(0,0);
+%% Energy, Effect of R: M=1, E varies
+% graphics_toolkit("qt");
+IREnergy = Obj.Data.IR.^2;
+IREnergysum = squeeze(sum(IREnergy, 3));
+IREnergysumdB = 10*log10(IREnergysum/max(IREnergysum(:)));
+fputs(fid, ["Plotting energy distribution...\n"]);
+close all;
+for chosen_m = 1:1
+  for chosen_e = 1:Obj.API.E
 
-					filename = [SOFAfile '_energy_M=1_E=' num2str(chosen_e) '.png'];
-					set(fig, "units", "pixels");
-					set(fig, "position", [0 0  1080 700]);  % [x y width height]
-					h = findall(gcf, "-property", "linewidth");
-					set(h, {"linewidth"}, num2cell(8 * cell2mat(get(h, "linewidth"))));
-					set(gca, "position", [0.15 0.02 0.63 1]);
-					print('-dpng', "-r150", "-tight", filename);
-					fputs(fid, [ "Printed " filename "\n"]);
-					close all;
-			end
-	end
-	fputs(fid, [ "Finished execution of SOFAplotGeoEnergy.\n\n"]);
-	disp(['Successfully plotted energy distributions, after ' num2str(toc) ' seconds']);
-    
-	%% Epilogue
-	fputs(fid, [ "### DONE ###\n\n\n"]);
-	fclose(fid);
-	T=toc; % timer
-	disp(['DONE after ' num2str(T) ' seconds; exiting...']);
+    fig = figure("visible", "on");
+    set(fig, ...
+      "units", "pixels", ...
+      "position", [50 50 1080 700], ...
+      "paperunits", "inches", ...
+      "paperposition", [0 0 10.8 7.0], ...
+      "papersize", [10.8 7.0], ...
+      "paperpositionmode", "manual", ...
+      "inverthardcopy", "off", ...
+      "color", [1 1 1]);
+
+    [ax, cb] = mySOFAplotGeoEnergy2D(Obj, IREnergysumdB, chosen_m, chosen_e);
+
+    set(ax, ...
+      "units", "normalized", ...
+      "position", [0.10 0.10 0.62 0.82], ...
+      "linewidth", 1.5, ...
+      "fontsize", 18);
+
+    set(cb, ...
+      "units", "normalized", ...
+      "position", [0.78 0.13 0.035 0.72], ...
+      "fontsize", 18, ...
+      "linewidth", 1.0);
+
+    drawnow("expose");
+
+    filename = [SOFAfile '_energy_M=1_E=' num2str(chosen_e) '.png'];
+    print(fig, filename, "-dpng", "-r150");
+
+    fputs(fid, [ "Printed " filename "\n"]);
+    close all;
+  end
+end
+fputs(fid, [ "Finished execution of SOFAplotGeoEnergy.\n\n"]);
+disp(['Successfully plotted energy distributions, after ' num2str(toc) ' seconds']);
+
+%% Epilogue
+fputs(fid, [ "### DONE ###\n\n\n"]);
+fclose(fid);
+T=toc; % timer
+disp(['DONE after ' num2str(T) ' seconds; exiting...']);
 
 end
 
 
 function mySOFAplotIRFreq(Obj, varargin)
 
-    definput.keyvals.chosen_r = 1;
-    definput.keyvals.chosen_e = 1;
-    definput.keyvals.chosen_m = 1;
-    definput.keyvals.average_m = 0;
-    definput.keyvals.xscale = 'lin';
-    argin = varargin;
+definput.keyvals.chosen_r = 1;
+definput.keyvals.chosen_e = 1;
+definput.keyvals.chosen_m = 1;
+definput.keyvals.average_m = 0;
+definput.keyvals.xscale = 'lin';
+argin = varargin;
 
-    for ii = 1:length(argin)
-        if ischar(argin{ii})
-           argin{ii} = lower(argin{ii}); 
-        end
+for ii = 1:length(argin)
+  if ischar(argin{ii})
+    argin{ii} = lower(argin{ii});
+  end
+end
+
+[flags, kv] = SOFAarghelper({'chosen_r', 'chosen_e', 'chosen_m', 'average_m', 'xscale'}, definput, argin);
+
+r = kv.chosen_r;
+e = kv.chosen_e;
+m = kv.chosen_m;
+average_m = kv.average_m;
+
+xscale = kv.xscale;
+
+r = r(:)';
+e = e(:)';
+m = m(:)';
+
+IR = permute(Obj.Data.IR, [4 2 1 3]); % E, R, M, N is easier
+selected_data = IR(e, r, m, :);
+
+n = size(Obj.Data.IR, 3);
+fft_interpolation_factor = 16;
+fs = Obj.Data.SamplingRate;
+freq = 0:fs/(n*fft_interpolation_factor):(floor((n*fft_interpolation_factor)/2)-1) * fs/(n*fft_interpolation_factor);
+
+if length(m)>1 && average_m>=1
+
+  avg_mat = zeros(length(e), length(r), 1, n);
+
+  for e_idx = 1:length(e)
+    for r_idx = 1:length(r)
+      hM = squeeze(selected_data(e_idx, r_idx, :, :));
+      fft_mat = fft(hM, n, 2);
+      fft_mat = sum(fft_mat, 1) ./ size(fft_mat, 1);
+      avg_mat(e_idx,r_idx, 1, :) = ifft(fft_mat, n, 2);
     end
-    
-    [flags, kv] = SOFAarghelper({'chosen_r', 'chosen_e', 'chosen_m', 'average_m', 'xscale'}, definput, argin);
+  end
 
-    r = kv.chosen_r;
-    e = kv.chosen_e;
-    m = kv.chosen_m;
-    average_m = kv.average_m;
+  if average_m==1
+    selected_data = avg_mat;
+    m = 0;
+  else % plot both avg and individual m when 2
+    m = [0 m];
+    selected_data = cat(3, avg_mat, selected_data);
+  end
 
-    xscale = kv.xscale;
+end
 
-    r = r(:)';
-    e = e(:)';
-    m = m(:)';
+fsize = 26;
+color_grey = [0.7 0.7 0.7];
 
-    IR = permute(Obj.Data.IR, [4 2 1 3]); % E, R, M, N is easier
-    selected_data = IR(e, r, m, :);
+set(gca, 'XMinorTick', 'Off')
+set(gca, 'YMinorTick', 'Off')
 
-    n = size(Obj.Data.IR, 3);
-    fft_interpolation_factor = 16;
-    fs = Obj.Data.SamplingRate;
-    freq = 0:fs/(n*fft_interpolation_factor):(floor((n*fft_interpolation_factor)/2)-1) * fs/(n*fft_interpolation_factor);
+box on;
+hold on;
 
-    if length(m)>1 && average_m>=1
+xlim([400 40000])
+ylim([-100 -20])
 
-        avg_mat = zeros(length(e), length(r), 1, n);
+if strcmp(xscale, 'lin')
+  xgridvals = [400 5000:5000:40000];
+  xticklabels({'400', '5k', '10k', '15k', '20k', '25k', '30k', '35k', '40k'});
+elseif strcmp(xscale, 'log')
+  xgridvals = [400, 1000, 2000, 4000, 6000, 10000, 20000, 40000];
+  xticklabels({'400', '1k', '2k', '4k', '6k', '10k', '20k', '40k'});
+  set(gca, 'xscale', 'log');
+end
 
-        for e_idx = 1:length(e)
-            for r_idx = 1:length(r)
-                hM = squeeze(selected_data(e_idx, r_idx, :, :));
-                fft_mat = fft(hM, n, 2);
-                fft_mat = sum(fft_mat, 1) ./ size(fft_mat, 1);
-                avg_mat(e_idx,r_idx, 1, :) = ifft(fft_mat, n, 2);
-            end
-        end
+xticks(xgridvals);
 
-        if average_m==1
-            selected_data = avg_mat;
-            m = 0;
-        else % plot both avg and individual m when 2
-            m = [0 m];
-            selected_data = cat(3, avg_mat, selected_data);
-        end
+ygridvals = -100:20:-20;
+yticks(ygridvals);
 
-    end
+xl = xlim;
+for yv = ygridvals
+  line(xl, [yv yv], 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
+end
 
-    fsize = 26;
-    color_grey = [0.7 0.7 0.7];
+yl = ylim;
+for xv = xgridvals
+  line([xv xv], yl, 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
+end
 
-    set(gca, 'XMinorTick', 'Off')
-    set(gca, 'YMinorTick', 'Off')
+set(gca, 'fontsize', fsize);
+xlabel('Frequency (Hz)', 'fontsize', fsize);
+ylabel("Magnitude (dB)", 'fontsize', fsize);
 
-    box on;
-    hold on;
+black_thickie = [];
+red_thickie = [];
+color_grey = [0.7 0.7 0.7];
 
-    xlim([400 40000])
-    ylim([-100 -20])
+isfirstplot = 1;
+legendEntries = [];
+legendDescription = [];
 
-    if strcmp(xscale, 'lin')
-        xgridvals = [400 5000:5000:40000];
-        xticklabels({'400', '5k', '10k', '15k', '20k', '25k', '30k', '35k', '40k'});
-    elseif strcmp(xscale, 'log')
-        xgridvals = [400, 1000, 2000, 4000, 6000, 10000, 20000, 40000];
-        xticklabels({'400', '1k', '2k', '4k', '6k', '10k', '20k', '40k'});
-        set(gca, 'xscale', 'log');
-    end
+for e_idx = 1:length(e)
+  for r_idx = 1:length(r)
+    for m_idx = 1:length(m)
 
-    xticks(xgridvals);
+      hM = double(squeeze(selected_data(e_idx, r_idx, m_idx, :)));
+      M = (20*log10(abs(fft(hM(:), (n*fft_interpolation_factor))')));
 
-    ygridvals = -100:20:-20;
-    yticks(ygridvals);
+      M = M(:, 1:floor(size(M, 2)/2));  % only positive frequencies
 
-    xl = xlim;
-    for yv = ygridvals
-        line(xl, [yv yv], 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
-    end
-
-    yl = ylim;
-    for xv = xgridvals
-        line([xv xv], yl, 'color', [0.5 0.5 0.5], 'linestyle', '-', 'linewidth', 0.5);
-    end
-
-    set(gca, 'fontsize', fsize);
-    xlabel('Frequency (Hz)', 'fontsize', fsize);
-    ylabel("Magnitude (dB)", 'fontsize', fsize);
-
-    black_thickie = [];
-    red_thickie = [];
-    color_grey = [0.7 0.7 0.7];
-
-    isfirstplot = 1;
-    legendEntries = [];
-    legendDescription = [];
-
-    for e_idx = 1:length(e)
-        for r_idx = 1:length(r)
-            for m_idx = 1:length(m)
-
-                hM = double(squeeze(selected_data(e_idx, r_idx, m_idx, :)));
-                M = (20*log10(abs(fft(hM(:), (n*fft_interpolation_factor))')));
-
-                M = M(:, 1:floor(size(M, 2)/2));  % only positive frequencies
-
-                if isscalar(e) && isscalar(m) % plotting over all receivers
-                    if r_idx==1
-                        black_thickie = M;
-                    else
-                        if isfirstplot
-                            legendEntries = plot(freq, M, "LineWidth", 1);
-                            legendDescription{end+1} = 'SIRs';
-                            isfirstplot = 0;
-                        else
-                            plot(freq, M, "LineWidth", 1);
-                        end
-                    end
-                end
-
-                if isscalar(r) && isscalar(m) % plotting over all emitters
-                    plot(freq, M, "LineWidth", 1)
-                end
-
-                if isscalar(m) && isscalar(r) % legend box for effect of R
-                    xl = xlim;
-                    yl = ylim;
-                    patch_h = (yl(2)-yl(1))*0.1;
-                    if strcmp(xscale, 'lin')
-                        x_center = mean(xl);
-                    elseif strcmp(xscale, 'log')
-                        x_center = 4000;
-                    end
-                    y_pos = -94;
-
-                    if r(r_idx)==1
-                        if strcmp(xscale, 'lin')
-                            patch_w = (xl(2)-xl(1))*0.15;
-                            rectangle('Position', [x_center-patch_w/2, y_pos-patch_h/2, patch_w, patch_h], ...
-                                    'FaceColor', [1 1 1], 'EdgeColor', [0 0 0]);
-                        else
-                            patch_w = (xl(2)-xl(1))*0.07;
-                            rectangle('Position', [x_center-patch_w/2+250, y_pos-patch_h/2, patch_w, patch_h], ...
-                                    'FaceColor', [1 1 1], 'EdgeColor', [0 0 0]);
-                        end
-                        text(x_center, y_pos, 'In-Ear IRs', 'FontSize', fsize-4, 'Color', [0 0 0], ...
-                            'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', 'fontsize', fsize);
-                    else
-                        if strcmp(xscale, 'lin')
-                            patch_w = (xl(2)-xl(1))*0.1;
-                            rectangle('Position', [x_center-patch_w/2, y_pos-patch_h/2, patch_w, patch_h], ...
-                                'FaceColor', [1 1 1], 'EdgeColor', [0 0 0]);
-                        else
-                            patch_w = (xl(2)-xl(1))*0.045;
-                            rectangle('Position', [x_center-patch_w/2+70, y_pos-patch_h/2, patch_w, patch_h], ...
-                                'FaceColor', [1 1 1], 'EdgeColor', [0 0 0]);
-                        end
-                        text(x_center, y_pos, 'SIRs', 'FontSize', fsize-4, 'Color', [0 0 0], ...
-                            'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', 'fontsize', fsize);
-                    end
-                end
-
-                if ~isscalar(m) % plotting the effect of M
-                    if m_idx==1
-                        if r_idx==1
-                            red_thickie = M;
-                        else
-                            black_thickie = M;
-                        end
-                    else
-                        if isfirstplot
-                            legendEntries = plot(freq, M, "LineWidth", 1);
-                            legendDescription{end+1} = 'Individual Measurements';
-                            isfirstplot = 0;
-                        else
-                            plot(freq, M, "LineWidth", 1);
-                        end
-                    end
-                end
-
-            end 
-        end 
-    end 
-
-    % plot thick lines
-    if ~isempty(black_thickie)
-        if isscalar(m)
-            legendEntries(end+1) = plot(freq, black_thickie, "LineWidth", 2, 'Color', [0, 0, 0]);
-            legendDescription{end+1} = 'In-Ear IR';
-            hl = legend(legendEntries, legendDescription, 'Location', 'South');
-            set(hl, 'fontsize', fsize, 'box', 'on');
+      if isscalar(e) && isscalar(m) % plotting over all receivers
+        if r_idx==1
+          black_thickie = M;
         else
-            legendEntries(end+1) = plot(freq, black_thickie, "LineWidth", 2, 'Color', [0, 0, 0]);
-            legendDescription{end+1} = 'Averaged SIRs: Mic. 4(F3)';
+          if isfirstplot
+            legendEntries = plot(freq, M, "LineWidth", 1);
+            legendDescription{end+1} = 'SIRs';
+            isfirstplot = 0;
+          else
+            plot(freq, M, "LineWidth", 1);
+          end
         end
-    end
+      end
 
-    if ~isempty(red_thickie)
-        legendEntries(end+1) = plot(freq, red_thickie, "LineWidth", 2, 'Color', [1, 0, 0]);
-        legendDescription{end+1} = 'Averaged In-Ear IRs';
-    end
+      if isscalar(r) && isscalar(m) % plotting over all emitters
+        plot(freq, M, "LineWidth", 1)
+      end
 
-    if ~isscalar(m)
-        hl = legend(legendEntries, legendDescription, 'Location', 'South');
-        set(hl, 'fontsize', fsize, 'box', 'on');
-    end
+      if isscalar(m) && isscalar(r) % legend box for effect of R
+        xl = xlim;
+        yl = ylim;
+        patch_h = (yl(2)-yl(1))*0.1;
+        if strcmp(xscale, 'lin')
+          x_center = mean(xl);
+        elseif strcmp(xscale, 'log')
+          x_center = 4000;
+        end
+        y_pos = -94;
 
-    hold off;
+        if r(r_idx)==1
+          if strcmp(xscale, 'lin')
+            patch_w = (xl(2)-xl(1))*0.15;
+            rectangle('Position', [x_center-patch_w/2, y_pos-patch_h/2, patch_w, patch_h], ...
+              'FaceColor', [1 1 1], 'EdgeColor', [0 0 0]);
+          else
+            patch_w = (xl(2)-xl(1))*0.07;
+            rectangle('Position', [x_center-patch_w/2+250, y_pos-patch_h/2, patch_w, patch_h], ...
+              'FaceColor', [1 1 1], 'EdgeColor', [0 0 0]);
+          end
+          text(x_center, y_pos, 'In-Ear IRs', 'FontSize', fsize-4, 'Color', [0 0 0], ...
+            'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', 'fontsize', fsize);
+        else
+          if strcmp(xscale, 'lin')
+            patch_w = (xl(2)-xl(1))*0.1;
+            rectangle('Position', [x_center-patch_w/2, y_pos-patch_h/2, patch_w, patch_h], ...
+              'FaceColor', [1 1 1], 'EdgeColor', [0 0 0]);
+          else
+            patch_w = (xl(2)-xl(1))*0.045;
+            rectangle('Position', [x_center-patch_w/2+70, y_pos-patch_h/2, patch_w, patch_h], ...
+              'FaceColor', [1 1 1], 'EdgeColor', [0 0 0]);
+          end
+          text(x_center, y_pos, 'SIRs', 'FontSize', fsize-4, 'Color', [0 0 0], ...
+            'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', 'fontsize', fsize);
+        end
+      end
+
+      if ~isscalar(m) % plotting the effect of M
+        if m_idx==1
+          if r_idx==1
+            red_thickie = M;
+          else
+            black_thickie = M;
+          end
+        else
+          if isfirstplot
+            legendEntries = plot(freq, M, "LineWidth", 1);
+            legendDescription{end+1} = 'Individual Measurements';
+            isfirstplot = 0;
+          else
+            plot(freq, M, "LineWidth", 1);
+          end
+        end
+      end
+
+    end
+  end
+end
+
+% plot thick lines
+if ~isempty(black_thickie)
+  if isscalar(m)
+    legendEntries(end+1) = plot(freq, black_thickie, "LineWidth", 2, 'Color', [0, 0, 0]);
+    legendDescription{end+1} = 'In-Ear IR';
+    hl = legend(legendEntries, legendDescription, 'Location', 'South');
+    set(hl, 'fontsize', fsize, 'box', 'on');
+  else
+    legendEntries(end+1) = plot(freq, black_thickie, "LineWidth", 2, 'Color', [0, 0, 0]);
+    legendDescription{end+1} = 'Averaged SIRs: Mic. 4(F3)';
+  end
+end
+
+if ~isempty(red_thickie)
+  legendEntries(end+1) = plot(freq, red_thickie, "LineWidth", 2, 'Color', [1, 0, 0]);
+  legendDescription{end+1} = 'Averaged In-Ear IRs';
+end
+
+if ~isscalar(m)
+  hl = legend(legendEntries, legendDescription, 'Location', 'South');
+  set(hl, 'fontsize', fsize, 'box', 'on');
+end
+
+hold off;
 
 end
 
 
-function mySOFAplotGeoEnergy(Obj, IREnergysumdB, chosen_m, chosen_e)
+function [ax, cb] = mySOFAplotGeoEnergy2D(Obj, IREnergysumdB, chosen_m, chosen_e)
 
-    figure; 
-    
-    % ReceiverPosition and  EmitterPosition
-    RP = SOFAconvertCoordinates(Obj.ReceiverPosition(:,:), Obj.ReceiverPosition_Type, 'cartesian');
-    RP = RP*1000;
-    EP = SOFAconvertCoordinates(Obj.EmitterPosition(:,:), Obj.EmitterPosition_Type, 'cartesian');
-    EP = EP*1000;
+% figure;
+fig = gcf();
+ax = axes("parent", fig);
+hold(ax, "on");
 
-    %for plotting text offset to the center
-    labeloffset = 2;
-    fsize = 18;
-    msize = 12;
-    dotsize = 6000;
-    color_grey = [0.7 0.7 0.7];
-    labeloffset_x = -3.5;
-    labeloffset_z = -2;
+% ReceiverPosition and EmitterPosition -> cartesian, in mm
+RP = SOFAconvertCoordinates(Obj.ReceiverPosition(:,:), ...
+  Obj.ReceiverPosition_Type, "cartesian");
+RP = RP * 1000;
 
-    hold on;
+EP = SOFAconvertCoordinates(Obj.EmitterPosition(:,:), ...
+  Obj.EmitterPosition_Type, "cartesian");
+EP = EP * 1000;
 
-    % Plot grid
-    for r = [10, 20, 30]
-        theta = linspace(0, 2*pi, 200);
-        circle = [r*cos(theta)', 36*ones(200,1), r*sin(theta)'];
-        plot3(circle(:,1), circle(:,2), circle(:,3), 'b-', ...
-                'LineWidth', 0.2, 'color', color_grey);
-    end
+% We plot front view in x/z only
+RPx = RP(:,1);
+RPz = RP(:,3);
 
-    for ii=2:size(RP,1)
-        r = sqrt(RP(ii, 1)*RP(ii, 1)+RP(ii, 3)*RP(ii, 3));
-        linepoint = [0 36 0; RP(ii, 1) 36 RP(ii, 3)];
-        norm_linepoint = norm(linepoint(2, :)-linepoint(1, :));
-        linepoint = linepoint/norm_linepoint*30;        
-        plot3(linepoint(:, 1), linepoint(:, 2), linepoint(:, 3), ...
-                'LineWidth', 0.2, 'color', color_grey);
-    end
+EPx = EP(:,1);
+EPz = EP(:,3);
 
-    for ii=1:size(EP,1)
-        linepoint = [0 36 0; EP(ii, 1) 36 EP(ii, 3)];
-        norm_linepoint = norm(linepoint(2, :)-linepoint(1, :));
-        linepoint = linepoint/norm_linepoint*30;
-        plot3(linepoint(:, 1), linepoint(:, 2), linepoint(:, 3), 'LineWidth', 0.2, 'color', color_grey);
-    end
+fsize = 18;
+msize = 12;
+dotsize = 1000;
+center_dotsize = dotsize * 12;
 
-    % Plot emitters
-    % Inactive emitters
-    % legendEntries = [];
-    % legendEntries(end+1) = plot3(NaN, NaN, NaN, '+', ...
-    %     'MarkerSize', msize, 'Color', color_grey);
-    for ii=1:size(EP,1)
-        plot3(EP(ii, 1), EP(ii, 2), EP(ii, 3), '+', ...
-            'MarkerSize', msize, 'Color', color_grey);
-    end
+color_grey = [0.7 0.7 0.7];
+labeloffset_x = -3.5;
+labeloffset_z = -2;
 
-    % Active emitter
-    % legendEntries(end+1) = plot3(NaN, NaN, NaN, ...
-    %     'b+', 'MarkerSize', msize+4, 'LineWidth', 2);
-    plot3(EP(chosen_e, 1), EP(chosen_e, 2), EP(chosen_e, 3), ...
-        'b+', 'MarkerSize', msize+4, 'LineWidth', 2);
-    text(EP(chosen_e, 1)+labeloffset_x, EP(chosen_e, 2), EP(chosen_e, 3)+labeloffset_z, ...
-        [num2str(chosen_e) '(' Obj.EmitterLabel{chosen_e} ')'], 'fontsize', fsize-2, 'color', 'b');
-
-    axis equal;
-    view(0, 0);
-
-    % legendEntries(end+2) = scatter3(NaN, NaN, NaN, ...
-    %     dotsize, IREnergysumdB(chosen_m, 2, chosen_e), 'filled');
-    scatter3(RP(2:end, 1), RP(2:end, 2), RP(2:end, 3), dotsize, ...
-        IREnergysumdB(chosen_m, 2:end, chosen_e), 'filled');
-   
-    % Plot energy at receiver positions
-    % In-ear microphone
-    scatter3(RP(1, 1), RP(1, 2), RP(1, 3), dotsize*14, ...
-        IREnergysumdB(chosen_m, 1, chosen_e), 'filled');
-    
-    % Use white label if energy is larger than -15 dB
-    if IREnergysumdB(chosen_m, 1, chosen_e) >= -15
-        text(RP(1, 1), RP(1, 2), RP(1, 3), ...
-                [num2str(1) '(' Obj.ReceiverLabel{1} ')'], ...
-                'Color', 'w', ...
-                'FontSize', fsize-2, 'HorizontalAlignment', 'center', ...
-                'VerticalAlignment', 'middle');
-    else
-        text(RP(1, 1), RP(1, 2), RP(1, 3), ...
-                [num2str(1) '(' Obj.ReceiverLabel{1} ')'], ...
-                'Color', 'k', ...
-                'FontSize', fsize-2, 'HorizontalAlignment', 'center', ...
-                'VerticalAlignment', 'middle');
-    end
-
-    % Selfone receivers
-    for ii=2:size(RP,1)  
-        if ii==9 || ii==21
-            text(RP(ii,1)+labeloffset_x, RP(ii,2), RP(ii,3)-labeloffset_z, ...
-                [num2str(ii) '(' Obj.ReceiverLabel{ii} ')'], 'fontsize', fsize-2);
-        else
-            text(RP(ii,1)+labeloffset_x, RP(ii,2), RP(ii,3)+labeloffset_z, ...
-                [num2str(ii) '(' Obj.ReceiverLabel{ii} ')'], 'fontsize', fsize-2);
-        end
-    end
-
-    hot_map = hot;
-    inverted_hot = flipud(hot_map);    
-    colormap(inverted_hot); % Optional: Change the color scheme (e.g., 'parula', 'turbo', 'hot')
-
-    box on;
-
-    % %create legend (positioning not working well in Octave)
-    % legendDescription = {'Inactive emitter', ...
-    %     'Active emitter: E(Label)', ...
-    %     'Energy at Receivers: R(Label)'};
-    % hl = legend(legendEntries, legendDescription, ...
-    %         'Location', 'Eastoutside', 'box', 'off', 'fontsize', fsize);
-
-    % legendDescription = {'Active emitter: E(Label)'};
-    % hl = legend(legendEntries(2), legendDescription, ...
-    %         'Location', 'North', 'box', 'off', 'fontsize', fsize);
-
-    axisLimits = [-33 33 -10 42 -33 33];
-    axis(axisLimits);
-    set(gca, 'fontsize', fsize);
-
-    offset = -10;
-    text(mean(xlim), 0, min(zlim)+offset, 'x (mm)', 'HorizontalAlignment', 'center', 'fontsize', fsize);
-    text(min(xlim)+offset, 0, mean(zlim), 'z (mm)', 'Rotation', 90, 'HorizontalAlignment', 'center', 'fontsize', fsize);
-
-    cb = colorbar();
-    caxis([-30 0]);
-    set(cb, 'FontSize', fsize, 'Location', 'east');
-    ylabel(cb, 'Energy re global maximum (dB)', 'FontSize', fsize, 'Rotation', 270);
-
+% Grid circles
+for r = [10, 20, 30]
+  theta = linspace(0, 2*pi, 200);
+  xc = r * cos(theta);
+  zc = r * sin(theta);
+  plot(ax, xc, zc, "-", "linewidth", 0.5, "color", color_grey);
 end
 
+% Receiver radial lines
+for ii = 2:size(RP,1)
+  vec = [RPx(ii), RPz(ii)];
+  nvec = norm(vec);
+  if (nvec > 0)
+    vec = vec / nvec * 30;
+    plot(ax, [0 vec(1)], [0 vec(2)], ...
+      "linewidth", 0.5, "color", color_grey);
+  end
+end
+
+% Emitter radial lines
+for ii = 1:size(EP,1)
+  vec = [EPx(ii), EPz(ii)];
+  nvec = norm(vec);
+  if (nvec > 0)
+    vec = vec / nvec * 30;
+    plot(ax, [0 vec(1)], [0 vec(2)], ...
+      "linewidth", 0.5, "color", color_grey);
+  end
+end
+
+% Inactive emitters
+for ii = 1:size(EP,1)
+  plot(ax, EPx(ii), EPz(ii), "+", ...
+    "markersize", msize, ...
+    "color", color_grey, ...
+    "linewidth", 1.0);
+end
+
+% % Active emitter
+% plot(ax, EPx(chosen_e), EPz(chosen_e), "b+", ...
+%   "markersize", msize + 4, ...
+%   "linewidth", 2);
+%
+% text(ax, EPx(chosen_e) + labeloffset_x, EPz(chosen_e) + labeloffset_z, ...
+%   [num2str(chosen_e) "(" Obj.EmitterLabel{chosen_e} ")"], ...
+%   "fontsize", fsize - 2, ...
+%   "color", "b", ...
+%   "horizontalalignment", "left", ...
+%   "verticalalignment", "middle");
+
+% Receiver energy circles
+scatter(ax, RPx(2:end), RPz(2:end), dotsize, ...
+  IREnergysumdB(chosen_m, 2:end, chosen_e), "filled");
+
+% In-ear microphone (center / special receiver)
+scatter(ax, RPx(1), RPz(1), center_dotsize, ...
+  IREnergysumdB(chosen_m, 1, chosen_e), "filled");
+
+% Active emitter last
+active_labeloffset_x = -2.8;
+active_labeloffset_z = 0.0;
+
+plot(ax, EPx(chosen_e), EPz(chosen_e), "b+", ...
+  "markersize", msize + 6, ...
+  "linewidth", 2.5);
+
+text(ax, EPx(chosen_e) + active_labeloffset_x, EPz(chosen_e) + active_labeloffset_z, ...
+  [num2str(chosen_e) "(" Obj.EmitterLabel{chosen_e} ")"], ...
+  "fontsize", fsize - 2, ...
+  "fontweight", "bold", ...
+  "color", "b", ...
+  "horizontalalignment", "right", ...
+  "verticalalignment", "middle");
+
+
+txtcolor = "k";
+if (IREnergysumdB(chosen_m, 1, chosen_e) >= -15)
+  txtcolor = "w";
+end
+
+text(ax, RPx(1), RPz(1), ...
+  [num2str(1) "(" Obj.ReceiverLabel{1} ")"], ...
+  "color", txtcolor, ...
+  "fontsize", fsize - 2, ...
+  "horizontalalignment", "center", ...
+  "verticalalignment", "middle");
+
+% Receiver labels
+for ii = 2:size(RP,1)
+  if (ii == 9 || ii == 21)
+    text(ax, RPx(ii) + labeloffset_x, RPz(ii) - labeloffset_z, ...
+      [num2str(ii) "(" Obj.ReceiverLabel{ii} ")"], ...
+      "fontsize", fsize - 2, ...
+      "horizontalalignment", "left", ...
+      "verticalalignment", "middle");
+  else
+    text(ax, RPx(ii) + labeloffset_x, RPz(ii) + labeloffset_z, ...
+      [num2str(ii) "(" Obj.ReceiverLabel{ii} ")"], ...
+      "fontsize", fsize - 2, ...
+      "horizontalalignment", "left", ...
+      "verticalalignment", "middle");
+  end
+end
+
+% Colormap / axes / colorbar
+colormap(ax, flipud(hot(64)));
+caxis(ax, [-30 0]);
+
+axis(ax, [-33 33 -33 33]);
+axis(ax, "equal");
+box(ax, "on");
+
+set(ax, ...
+  "fontsize", fsize, ...
+  "linewidth", 1.5, ...
+  "layer", "top", ...
+  "ydir", "normal");
+
+xlabel(ax, "x (mm)");
+ylabel(ax, "z (mm)");
+
+cb = colorbar(ax);
+yl = ylabel(cb, "Energy re global maximum (dB)", "fontsize", fsize);
+drawnow();
+yl_pos = get(yl, "position");
+set(yl, "position", [yl_pos(1) + 3.2, yl_pos(2), yl_pos(3)]);
+
+
+end
 
 function mySOFAplotGeometry(Obj)
 
-    figure; 
-    
-    % Get ReceiverPosition and EmitterPosition
-    RP = SOFAconvertCoordinates(Obj.ReceiverPosition(:,:), Obj.ReceiverPosition_Type, 'cartesian');
-    RP = RP*1000;
-    EP = SOFAconvertCoordinates(Obj.EmitterPosition(:,:), Obj.EmitterPosition_Type, 'cartesian');
-    EP = EP*1000;
+figure;
 
-    labeloffset_x = -2.5;
-    labeloffset_z = -2;
-    fsize = 24;
-    msize = 18;
-    color_grey = [0.7 0.7 0.7];
+% Get ReceiverPosition and EmitterPosition
+RP = SOFAconvertCoordinates(Obj.ReceiverPosition(:,:), Obj.ReceiverPosition_Type, 'cartesian');
+RP = RP*1000;
+EP = SOFAconvertCoordinates(Obj.EmitterPosition(:,:), Obj.EmitterPosition_Type, 'cartesian');
+EP = EP*1000;
 
-    hold on;
+labeloffset_x = -2.5;
+labeloffset_z = -2;
+fsize = 24;
+msize = 18;
+color_grey = [0.7 0.7 0.7];
 
-    % Plot ReceiverPositon (only for the first ListenerPosition)
-    legendEntries = [];
-    legendEntries(end+1) = plot3(RP(1, 1), RP(1, 2), RP(1, 3), 'r*', 'MarkerSize', msize);
+hold on;
 
-    for r = [10, 20, 30]
-        theta = linspace(0, 2*pi, 200);
-        circle = [r*cos(theta)', 36*ones(200,1), r*sin(theta)'];
-        plot3(circle(:,1), circle(:,2), circle(:,3), 'b-', ...
-                'LineWidth', 0.2, 'color', color_grey);
-    end
+% Plot ReceiverPositon (only for the first ListenerPosition)
+legendEntries = [];
+legendEntries(end+1) = plot3(RP(1, 1), RP(1, 2), RP(1, 3), 'r*', 'MarkerSize', msize);
 
-    for ii=2:size(RP, 1)
-        linepoint = [0 36 0; RP(ii, 1) 36 RP(ii, 3)];
-        norm_linepoint = norm(linepoint(2, :)-linepoint(1, :));
-        linepoint = linepoint/norm_linepoint*30;
-        plot3(linepoint(:, 1), linepoint(:, 2), linepoint(:, 3), 'LineWidth', 0.2, 'color', color_grey);
-    end
+for r = [10, 20, 30]
+  theta = linspace(0, 2*pi, 200);
+  circle = [r*cos(theta)', 36*ones(200,1), r*sin(theta)'];
+  plot3(circle(:,1), circle(:,2), circle(:,3), 'b-', ...
+    'LineWidth', 0.2, 'color', color_grey);
+end
 
-    for ii=1:size(RP,1)
-        plot3(RP(ii,1), RP(ii,2), RP(ii,3), 'r*', 'MarkerSize', msize);
-        
-        if ii==9 || ii==21
-            text(RP(ii,1)+labeloffset_x, RP(ii,2), RP(ii,3)-labeloffset_z, ...
-                [num2str(ii) '(' Obj.ReceiverLabel{ii} ')'], 'fontsize', fsize);
-        else
-            text(RP(ii,1)+labeloffset_x, RP(ii,2), RP(ii,3)+labeloffset_z, ...
-                [num2str(ii) '(' Obj.ReceiverLabel{ii} ')'], 'fontsize', fsize);
-        end
+for ii=2:size(RP, 1)
+  linepoint = [0 36 0; RP(ii, 1) 36 RP(ii, 3)];
+  norm_linepoint = norm(linepoint(2, :)-linepoint(1, :));
+  linepoint = linepoint/norm_linepoint*30;
+  plot3(linepoint(:, 1), linepoint(:, 2), linepoint(:, 3), 'LineWidth', 0.2, 'color', color_grey);
+end
 
-    end
+for ii=1:size(RP,1)
+  plot3(RP(ii,1), RP(ii,2), RP(ii,3), 'r*', 'MarkerSize', msize);
 
-    % Plot EmitterPositions
-    legendEntries(end+1) = plot3(EP(1,1), EP(1,2), EP(1,3), 'b+', 'MarkerSize', msize);
-    text(EP(1,1)+labeloffset_x, EP(1,2), EP(1,3)+labeloffset_z, [num2str(1) '(' Obj.EmitterLabel{1} ')'], 'fontsize', fsize);
+  if ii==9 || ii==21
+    text(RP(ii,1)+labeloffset_x, RP(ii,2), RP(ii,3)-labeloffset_z, ...
+      [num2str(ii) '(' Obj.ReceiverLabel{ii} ')'], 'fontsize', fsize);
+  else
+    text(RP(ii,1)+labeloffset_x, RP(ii,2), RP(ii,3)+labeloffset_z, ...
+      [num2str(ii) '(' Obj.ReceiverLabel{ii} ')'], 'fontsize', fsize);
+  end
 
-    for ii=1:size(EP, 1)
-        linepoint = [0 36 0; EP(ii,1) 36 EP(ii,3)];
-        norm_linepoint = norm(linepoint(2,:)-linepoint(1,:));
-        linepoint = linepoint/norm_linepoint*30;
-        plot3(linepoint(:,1), linepoint(:,2), linepoint(:,3), 'LineWidth', 0.2, 'color', color_grey);
-    end
+end
 
-    for ii=1:size(EP,1)
-        plot3(EP(ii,1), EP(ii,2), EP(ii,3), 'b+', 'MarkerSize', msize);
-        text(EP(ii,1)+labeloffset_x, EP(ii,2), EP(ii,3)+labeloffset_z, ...
-            [num2str(ii) '(' Obj.EmitterLabel{ii} ')'], 'fontsize', fsize);
-    end
+% Plot EmitterPositions
+legendEntries(end+1) = plot3(EP(1,1), EP(1,2), EP(1,3), 'b+', 'MarkerSize', msize);
+text(EP(1,1)+labeloffset_x, EP(1,2), EP(1,3)+labeloffset_z, [num2str(1) '(' Obj.EmitterLabel{1} ')'], 'fontsize', fsize);
 
-    % create legend
-    legendDescription = {'Receivers: R(Label)'};
-    legendDescription(end+1) = {'Emitters: E(Label)'};
-    hl = legend(legendEntries, legendDescription, ...
-            'Location', 'Northeast', ...
-            'box', 'on', 'fontsize', fsize);
-    hl_pos = get(hl, 'Position');
-    set(hl, 'box', 'off', ...
-        'Position', [hl_pos(1)+0.15 hl_pos(2)+0.09 hl_pos(3) hl_pos(4)]);
+for ii=1:size(EP, 1)
+  linepoint = [0 36 0; EP(ii,1) 36 EP(ii,3)];
+  norm_linepoint = norm(linepoint(2,:)-linepoint(1,:));
+  linepoint = linepoint/norm_linepoint*30;
+  plot3(linepoint(:,1), linepoint(:,2), linepoint(:,3), 'LineWidth', 0.2, 'color', color_grey);
+end
+
+for ii=1:size(EP,1)
+  plot3(EP(ii,1), EP(ii,2), EP(ii,3), 'b+', 'MarkerSize', msize);
+  text(EP(ii,1)+labeloffset_x, EP(ii,2), EP(ii,3)+labeloffset_z, ...
+    [num2str(ii) '(' Obj.EmitterLabel{ii} ')'], 'fontsize', fsize);
+end
+
+% create legend
+legendDescription = {'Receivers: R(Label)'};
+legendDescription(end+1) = {'Emitters: E(Label)'};
+hl = legend(legendEntries, legendDescription, ...
+  'Location', 'Northeast', ...
+  'box', 'on', 'fontsize', fsize);
+hl_pos = get(hl, 'Position');
+set(hl, 'box', 'off', ...
+  'Position', [hl_pos(1)+0.15 hl_pos(2)+0.09 hl_pos(3) hl_pos(4)]);
 
 
-    xlabel('x (mm)', 'HorizontalAlignment', 'center', 'fontsize', fsize);
-    zlabel('z (mm)', 'HorizontalAlignment', 'center', 'fontsize', fsize);
+xlabel('x (mm)', 'HorizontalAlignment', 'center', 'fontsize', fsize);
+zlabel('z (mm)', 'HorizontalAlignment', 'center', 'fontsize', fsize);
 
-    view(0, 0);
-    axis equal;
-    axisLimits = [-32 32 -10 42 -33 33];
-    axis(axisLimits);
-    set(gca, 'fontsize', fsize);
+view(0, 0);
+axis equal;
+axisLimits = [-32 32 -10 42 -33 33];
+axis(axisLimits);
+set(gca, 'fontsize', fsize);
 
-    box on;
+box on;
 
 end
