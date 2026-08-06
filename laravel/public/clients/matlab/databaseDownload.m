@@ -1,64 +1,137 @@
 function databaseDownload(downloadPath, databaseID)
-% Downloads datafiles from the Ecosystem
+% Downloads datafiles from the SONICOM Ecosystem
 %
-% Parameters to be provided: 
+% Parameters:
 %   downloadPath: Local directory where the files will be downloaded.
-%   databaseID: ID of the database, see databaseList
+%   databaseID:   ID of the database, see databaseList.
 %
-% The local structure will be: downloadPath\datasetName\datasetDefName\DatafileName
+% The local structure will be:
+%   downloadPath/datasetName/datafileType/datafileName
 
-%% Check if the download path exists
-if ~isfolder(downloadPath)
+  %% Create the download directory
+  if ~isfolder(downloadPath)
+    [success, message] = mkdir(downloadPath);
+
+    if ~success
+      error('databaseDownload:createFolder', ...
+            'Failed to create download directory: %s. Error: %s', ...
+            char(downloadPath), char(message));
+    end
+  end
+
+  %% Retrieve the file list from the server
+  serverURL = sprintf( ...
+    'https://ecosystem.sonicom.eu/databases/%d/download?type=json', ...
+    databaseID);
+
   try
-    mkdir(downloadPath);
+    response = webread(serverURL);
+
+    % MATLAB may return a structure, while Octave may return JSON text
+    if ischar(response) || (isstring(response) && isscalar(response))
+      jsonData = jsondecode(char(response));
+    else
+      jsonData = response;
+    end
+
   catch ME
-    error('downloadFilesFromHTTPServer:createFolder', 'Failed to create download directory: %s.  Error: %s', downloadPath, ME.message);
+    error('databaseDownload:getFileList', ...
+          'Failed to retrieve file list from server: %s. Error: %s', ...
+          char(serverURL), char(ME.message));
   end
-end
 
-%% Fetch the list of files from the Ecosystem
-serverURL=['https://ecosystem.sonicom.eu/databases/' num2str(databaseID) '/download?type=json'];
-try
-  options=weboptions; options.CertificateFilename=(''); 
-  jsonData = webread(serverURL, options);
-  if ischar(jsonData)
-    error('downloadFilesFromHTTPServer:serverError','Server returned a string, expected JSON.  Server response: %s', jsonData);
+  %% Validate the server response
+  if ~isstruct(jsonData)
+    error('databaseDownload:invalidFormat', ...
+          'Server did not return a valid JSON structure.');
   end
-catch ME
-  error('downloadFilesFromHTTPServer:getFileList', 'Failed to retrieve file list from server: %s.  Error: %s', serverURL, ME.message);
-end
 
-%% Check if correct JSON
-if ~isstruct(jsonData) % check if structure
-  error('downloadFilesFromHTTPServer:invalidFormat', 'Server did not return a struct of file information.');
-end
-if ~isfield(jsonData, 'data') % check if data in the structure
-  error('downloadFilesFromHTTPServer:invalidFormat', 'Server did not return a JSON file information.');
-end
+  if ~isfield(jsonData, 'data')
+    error('databaseDownload:invalidFormat', ...
+          'JSON response does not contain a data field.');
+  end
 
-%% Iterate through the datafile list and download each file
-data=jsonData.data;
-if isempty(data)
-  disp('This Database does not contain any Datafiles'); 
-else
+  %% Retrieve the datafile list
+  data = jsonData.data;
+
+  if isempty(data)
+    disp('This database does not contain any datafiles.');
+    return;
+  end
+
+  %% Download each datafile
   for ii = 1:length(data)
-    fileURL = data(ii).DatafileURL; % Get the Datafile URL
-    fileName = data(ii).DatafileName; % Get the Datafile name
-    if ~exist(fullfile(downloadPath, data(ii).DatasetName),'dir')
-      mkdir(fullfile(downloadPath, data(ii).DatasetName)); % create Dataset directory
+
+    % MATLAB converts invalid JSON field names into valid field names.
+    % For example, "Datafile URL" becomes "DatafileURL".
+    fileURL     = data(ii).DatafileURL;
+    fileName    = data(ii).DatafileName;
+    datasetName = data(ii).DatasetName;
+    fileType    = data(ii).DatafileType;
+
+    % Convert values to character vectors for MATLAB and Octave compatibility
+    fileURL     = char(fileURL);
+    fileName    = char(fileName);
+    datasetName = char(datasetName);
+    fileType    = char(fileType);
+
+    % Encode spaces in URLs
+    fileURL = strrep(fileURL, ' ', '%20');
+
+    % Create the target directories
+    datasetPath = fullfile(downloadPath, datasetName);
+    typePath    = fullfile(datasetPath, fileType);
+
+    if ~isfolder(datasetPath)
+      [success, message] = mkdir(datasetPath);
+
+      if ~success
+        error('databaseDownload:createDatasetFolder', ...
+              'Failed to create dataset directory: %s. Error: %s', ...
+              datasetPath, message);
+      end
     end
-    if ~exist(fullfile(downloadPath, data(ii).DatasetName, data(ii).DatafileType),'dir')
-      mkdir(fullfile(downloadPath, data(ii).DatasetName, data(ii).DatafileType)); % create Datafile Type directory
+
+    if ~isfolder(typePath)
+      [success, message] = mkdir(typePath);
+
+      if ~success
+        error('databaseDownload:createTypeFolder', ...
+              'Failed to create datafile type directory: %s. Error: %s', ...
+              typePath, message);
+      end
     end
-      % create local absolute path for the Datafile
-    localFilePath = fullfile(downloadPath, data(ii).DatasetName, data(ii).DatafileType, fileName);  
-      % download the Datafile
+
+    % Create the local file path
+    localFilePath = fullfile(typePath, fileName);
+
+    disp(['Downloading ' fileName ...
+          ' from dataset ' datasetName '...']);
+
     try
-      disp(['Downloading ' fileName ' from Dataset ' data(ii).DatasetName '...']);
-      websave(localFilePath, fileURL, options);
+      % Use the appropriate download function for MATLAB or Octave
+      if exist('OCTAVE_VERSION', 'builtin') ~= 0
+
+        % GNU Octave download
+        [~, success, message] = urlwrite(fileURL, localFilePath);
+
+        if ~success
+          error('Download failed: %s', message);
+        end
+
+      else
+
+        % MATLAB download
+        websave(localFilePath, fileURL);
+
+      end
+
     catch ME
-      error('downloadFilesFromHTTPServer:downloadError', 'Failed to download file: %s from %s to %s. Error: %s', fileName, fileURL, localFilePath, ME.message);
+      error('databaseDownload:downloadError', ...
+            'Failed to download file: %s from %s to %s. Error: %s', ...
+            fileName, fileURL, localFilePath, char(ME.message));
     end
   end
-  disp('Download completed...');
+
+  disp('Download completed.');
 end
