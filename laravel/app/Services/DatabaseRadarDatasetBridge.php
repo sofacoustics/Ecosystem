@@ -538,6 +538,28 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		return true;
 	}
 
+  /*
+    Remove all data from the RADAR dataset, but keep the metadata
+    and the DOI
+
+    This just calls 'delete' for all the database's datasets
+  */
+  public function empty(): bool
+  {
+		foreach($this->database->datasets as $dataset) // For each Ecosystem(!) dataset
+		{
+			$radar = new DatasetRadarFolderBridge($dataset);
+			if(!$radar->delete())
+			{
+				// failed to upload an Ecosystem dataset
+				$this->message = $radar->message;
+				$this->details = $radar->details;
+				return false;
+			}
+		}
+		return true;
+  }
+
 	/*
 	 * Delete RADAR dataset corresponding to this database
 	 *
@@ -585,7 +607,7 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		return false;
 	}
 
-	// check if RADAR dataset exists or clearn up
+	// check if RADAR dataset exists or clean up
 	public function verifyOrRemove() : void
 	{
 		$start = microtime(true);

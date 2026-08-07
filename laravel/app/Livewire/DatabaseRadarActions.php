@@ -155,6 +155,7 @@ class DatabaseRadarActions extends Component
 		if(!$radar->upload())
 			$this->error = $radar->message.' ('.$radar->details.')';
 		$this->dispatch('status-message', $radar->message);
+		$this->refreshStatus();
 	}
 
 	public function publishToRadar()
@@ -162,6 +163,23 @@ class DatabaseRadarActions extends Component
 		$this->reset('error');
 		$this->dispatch('status-message', 'Starting upload to RADAR via job.');
 		DatabasePublishToRadar::dispatch($this->database);
+	}
+
+	/*
+		If there is an error uploading, we can use this function to empty the RADAR
+		dataset, but keep the metadata and the DOI
+	*/
+	public function emptyDataset()
+	{
+		$this->reset('error');
+		$radar = new DatabaseRadarDatasetBridge($this->database);
+    if(!$radar->empty())
+		{
+			$this->error = $radar->message.' ('.$radar->details.')';
+		}
+		else
+			$this->dispatch('status-message', 'We have emptied the RADAR dataset');
+		$this->refreshStatus();
 	}
 
 	/*

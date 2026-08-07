@@ -28,7 +28,7 @@ class DatabasePersistentPublicationRequested extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: config('app.name') . ': Persistent publication requested for the database "' . $this->database->title . '" (' . $this->database->id . ')',
+            subject: config('app.name') . ': Persistent publication requested for the database "' . $this->database->title . '" (' . $this->database->id . ') - awaiting approval',
         );
     }
 

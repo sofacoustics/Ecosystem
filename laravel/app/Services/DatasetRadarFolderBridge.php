@@ -76,7 +76,7 @@ class DatasetRadarFolderBridge extends RadarBridge
 		{
 			$this->dataset->radar_id = $this->getJsonValue('id', $response);
 			$this->dataset->radar_upload_url = $this->getJsonValue('uploadUrl', $response);
-			$this->dataset->save();
+			$this->dataset->save(); //jw:note - this currently *fires* the service for this datafile, which is *not* what we need!
 			app('log')->info('Created dataset as RADAR folder', [
 				'feature' => 'database-radar-dataset',
 				'database_id' => $this->dataset->database->id,

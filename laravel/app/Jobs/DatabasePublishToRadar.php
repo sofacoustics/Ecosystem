@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Mail;
 
 use App\Events\DatabasePublishedAwaitingApproval;
 use App\Events\DatabasePublishingFailed;
+use App\Mail\DatabasePersistentPublicationFailed;
 use App\Mail\DatabasePersistentPublicationRequested;
 use App\Mail\DatabasePersistentPublicationRequestedStarted;
 use App\Models\Database;
@@ -21,7 +22,7 @@ class DatabasePublishToRadar implements ShouldQueue
 	use Queueable;
 	use InteractsWithQueue; // for release() function
 
-	public $tries = 10; // The number of times the queued listener may be attempted.
+	public $tries = 1; // The number of times the queued listener may be attempted.
 	//public $backoff = 10; // The number of seconds to wait before retrying the queued listener. jw:note This appears to be ignored!
 	public $maxExceptions = 9; // The maximum number of unhandled exceptions to allow before failing.
 
@@ -93,10 +94,12 @@ class DatabasePublishToRadar implements ShouldQueue
 				'job_id' => $this->job->getJobId(),
 				'duration' => microtime(true) - $start
 			]);
+			$radar_details = $radar->details; 
 			// What happens if the upload went wrong, e.g., one of the RADAR element exists?
 			// This is an error which the user can't correct.
 			// How can we let the user know there was an error?
 
+			/*
 			// ok - we're going to delete the radar dataset and start again for 'tries'
 			app('log')->debug('Deleting database from RADAR so we can recover from a failed upload', [
 				'feature' => 'database-radar-dataset',
@@ -124,7 +127,37 @@ class DatabasePublishToRadar implements ShouldQueue
 					return;
 				}
 			}
-
+			 */
+			//
+			// empty the RADAR dataset of all data (except metadata and DOI)
+			//
+			if($radar->empty())
+			{
+				if ($this->attempts() < $this->tries) {
+					// Re-queue the job for later processing
+					app('log')->debug('Releasing job so we can retry', [
+						'feature' => 'database-radar-dataset',
+						'database_id' => $this->database->id,
+						'target_url' => config('services.radar.baseurl'),
+						'job_id' => $this->job->getJobId(),
+						'tries' => $this->tries,
+						'attempts' => $this->attempts(),
+						'duration' => microtime(true) - $start
+					]);
+					$this->release(10); // delay in seconds
+					return;
+				}
+				$userEmail = $this->database->user->email;
+				Mail::to($userEmail)->queue(new DatabasePersistentPublicationFailed($this->database, $radar_details));
+				app('log')->info('User informed of persistent publication failure per email', [
+					'feature' => 'database-radar-dataset',
+					'database_id' => $this->database->id,
+					'target_url' => config('services.radar.baseurl'),
+					'email' => $userEmail,
+					'job_id' => $this->job->getJobId(),
+					'duration' => microtime(true) - $start
+				]);
+			}
 			return;
 		}
 		else

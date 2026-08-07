@@ -55,6 +55,7 @@
 	@if($canUpload)
 		<x-livewire-button wire:click="uploadToRadar" loading="Uploading...">Upload to RADAR</x-livewire-button>
 	@endif
+	<x-livewire-button wire:click="emptyDataset" :disabled="empty($size)" loading="Emptying..." title="Empty the RADAR dataset (remove the data, but keep the metadata and DOI)">Empty dataset</x-livewire-button>
 
 	<x-livewire-button style='delete' wire:click="resetDOI"
 		wire:confirm="This will remove the DOI from the Ecosystem and all links to the Datathek. Nothing will happen at the Datathek!">
@@ -132,7 +133,7 @@
 							@if($scheduled[$loop->index])
 								Scheduled
 							@else
-								<x-button method="POST" class="inline" action="{{ route('datafiles.touch', [$log->datafile]) }}">Rerun service</x-button>
+								<x-button method="POST" class="inline" action="{{ route('datafiles.rerunservice', [$log->datafile]) }}">Rerun service</x-button>
 							@endif
 						</td>
 					</tr>

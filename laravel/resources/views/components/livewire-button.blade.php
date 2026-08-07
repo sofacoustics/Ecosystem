@@ -21,28 +21,31 @@
 	'loading' => null, // Optional: loading text, e.g., "Saving..."
 	'type' => 'submit', // Default to submit, can be overridden
 	'style' => 'submit', // Default 'submit'. Possible values: submit, delete
+	'disabled' => false,
 ])
 
 @php
-    // Determine the Livewire action (if any) for loading targeting
-    $wireClick = $attributes->wire('click')->value();
+	// Determine the Livewire action (if any) for loading targeting
+	$wireClick = $attributes->wire('click')->value();
 	if($style == 'delete')
 		$classColors = $buttonColorDelete;
+	else if($disabled)
+		$classColors = $buttonColorDisabled;
 	else
 		$classColors = $buttonColorEnabled;
 	$buttonClass = "$classColors $buttonStyle";
 @endphp
-
 <button
-    {{ $attributes->merge(['type' => $type, 'class' => $buttonClass]) }}
-    @if($wireClick) wire:loading.attr="disabled" @endif
+	{{ $attributes->merge(['type' => $type, 'class' => $buttonClass]) }}
+	@if($wireClick) wire:loading.attr="disabled" @endif
 	wire:loading.class.remove="{{ $classColors }}"
 	wire:loading.class="{{ $buttonColorDisabled }}"
->
-    @if ($loading && $wireClick)
-        <span wire:loading.remove wire:target="{{ $wireClick }}">{{ $slot }}</span>
-        <span wire:loading wire:target="{{ $wireClick }}">{{ $loading }}</span>
-    @else
-        {{ $slot }}
-    @endif
+	@disabled($disabled)
+	>
+	@if ($loading && $wireClick)
+		<span wire:loading.remove wire:target="{{ $wireClick }}">{{ $slot }}</span>
+		<span wire:loading wire:target="{{ $wireClick }}">{{ $loading }}</span>
+	@else
+		{{ $slot }}
+	@endif
 </button>
