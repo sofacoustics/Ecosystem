@@ -115,7 +115,7 @@ Route::delete('/datasets/{dataset}/deletefromradar', [DatasetController::class, 
 Route::resource('datafiles', DatafileController::class);
 Route::post('/datafiles/{datafile}/uploadtoradar', [DatafileController::class, 'uploadtoradar'])->name('datafiles.uploadtoradar');
 Route::delete('/datafiles/{datafile}/deletefromradar', [DatafileController::class, 'deletefromradar'])->name('datafiles.deletefromradar');
-Route::post('/datafiles/{datafile}/touch', [DatafileController::class, 'touch'])->name('datafiles.touch');
+Route::post('/datafiles/{datafile}/rerunservice', [DatafileController::class, 'rerunService'])->name('datafiles.rerunservice')->middleware('auth', 'role:admin');
 // DATASETDEFS
 Route::resource('datasetdefs', DatasetdefController::class);
 Route::get('datasetdefs/{datasetdef}/duplicate', [DatasetdefController::class, 'duplicate'])->name('datasetdefs.duplicate');

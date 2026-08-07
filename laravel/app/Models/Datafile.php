@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Storage;
 
+use App\Jobs\Service;
 
 class Datafile extends Model
 {
@@ -104,5 +105,29 @@ class Datafile extends Model
 			return true;
 		return false;
 
+	}
+
+	public function dispatchService()
+	{
+		app('log')->debug("datafile: dispatchService");
+		$widget = $this->datasetdef->widget;
+		if($widget)
+		{
+			app('log')->debug("datafile: dispatchService (widget: $widget->id, datafile: $this->id)");
+			$service = $widget->service;
+			if($service)
+			{
+				//jw:note If you want to debug a job using vscode, you *must* use the 'sync' queue, not the 'database' queue
+				Service::dispatch($widget, $this);
+			}
+		}
+		else
+		{
+			app('log')->warning("datafile: dispatchService - NO WIDGET defined", [
+				'feature' => 'widgets',
+				'datafile_id' => $this->id,
+				'datasetdef_id' => $this->datasetdef->id
+			]);
+		}
 	}
 }

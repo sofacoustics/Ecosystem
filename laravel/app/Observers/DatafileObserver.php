@@ -18,7 +18,8 @@ class DatafileObserver
     {
         //
         app('log')->debug("DatafileObserver::created");
-        $this->dispatchService($datafile);
+				//jw:note We now have an explicit function to start the service. This gives us more
+				//        control about when it is called
     }
 
     /**
@@ -27,7 +28,9 @@ class DatafileObserver
     public function updated(Datafile $datafile): void
     {
         app('log')->debug('DatafileObserver::updated()');
-        $this->dispatchService($datafile);
+				//jw:note we're no longer running a service when datafile attributes change, since they may be
+				//        attributes that require no re-rendering. Running the service can, however, be called
+				//        explicity via the Datafile::dispatchService() function. 
     }
 
     /**
@@ -79,26 +82,4 @@ class DatafileObserver
 	// private
 	////////////////////////////////////////////////////////////////////////////////
 
-    private function dispatchService(Datafile $datafile)
-    {
-        $widget = $datafile->datasetdef->widget;
-        if($widget)
-        {
-            app('log')->debug("dispatchService (widget: $widget->id, datafile: $datafile->id)");
-            $service = $widget->service;
-            if($service)
-            {
-				//jw:note If you want to debug a job using vscode, you *must* use the 'sync' queue, not the 'database' queue
-                Service::dispatch($widget, $datafile);
-            }
-        }
-		else
-		{
-			app('log')->warning("dispatchService - NO WIDGET defined", [
-				'feature' => 'widgets',
-				'datafile_id' => $datafile->id,
-				'datasetdef_id' => $datafile->datasetdef->id
-			]);
-		}
-    }
 }

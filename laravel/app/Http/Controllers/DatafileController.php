@@ -142,12 +142,11 @@ class DatafileController extends Controller
 		return redirect()->back()->with('error', 'This datafile is not associated with a RADAR file');
 	}
 
-	public function touch(Datafile $datafile)
+	public function rerunService(Datafile $datafile)
 	{
-		// update the modified data
-		$datafile->touch();
-		$datafile->save();
-
+		app('log')->debug("datafile controller: rerunService() - (datafile: $datafile->id)");
+		$datafile->dispatchService();
 		return redirect()->back();
 	}
+
 }

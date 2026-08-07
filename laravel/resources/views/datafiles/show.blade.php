@@ -15,7 +15,7 @@
 		<x-button method="DELETE" class="inline" action="{{ route('datafiles.destroy', [$datafile]) }}">Delete</x-button>
 	@endcan
 	@hasrole('admin')
-		<x-button method="POST" class="inline" action="{{ route('datafiles.touch', [$datafile]) }}">Rerun service</x-button>
+		<x-button method="POST" class="inline" action="{{ route('datafiles.rerunservice', [$datafile]) }}">Rerun service</x-button>
 	@endhasrole
 
 	<x-property name="Widget Name">

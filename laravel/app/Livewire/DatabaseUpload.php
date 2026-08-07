@@ -187,18 +187,17 @@ class DatabaseUpload extends Component
 			$datafile->mimetype = $file->getMimeType();
 			$datafile->save(); // save so datafile has ID (necessary for saving file)
 
-			if($existing)
-			{
-				$this->debug(1, "Touching datafile to set updated_at");
-				$datafile->touch(); // touch the file to reset 'updated_at' and trigger DatafileObserver
-			}
 			$directory = $datafile->directory();
 			$this->dispatch('saving-file', name: $datafile->name); // dispatch a browser event
 			$this->dispatch('showFlashMessage', ['type' => 'success', 'message' => 'storeAs']);
-				// Save the file to disk (=move from temporary location)
+			// Save the file to disk (=move from temporary location)
 			$file->storeAs("$directory", "$datafile->name", 'sonicom-data');
 			//jw:todo add to 'saved' and remove from '$uploads'
 			$this->saved[] = $originalName;
+
+			// now dispatch service
+			$this->debug(1, "Dispatching service from saveDatafile() for datafile $datafile->id");
+			$datafile->dispatchService();
 		}
 		// delete from livewire-tmp, but don't remove from uploads, since otherwise all hell
 		// will break loose with the index!
