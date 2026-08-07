@@ -89,8 +89,6 @@ Note: Once the DOI will be assigned, it will be a permanent part of your databas
 				@if($database->metadataValidate())
 					<p>In order to persistently publish your database, provide valid metadata first.</p>
 				@else
-					<x-alert type="status">Due to a bug in the DOI publishing code, the 'Publish with DOI' feature is currently unavailable. We're working on a fix!</x-alert>
-					{{-- 
 					<p>By clicking the button below, your database will be submitted for a persistent publication to the Datathek.</p>
 					<p>To this end, the following will happen:</p>
 					<ul class="list-disc list-outside px-5">
@@ -108,7 +106,6 @@ Note: This operation is irreversible and triggers a human to act!"
 						loading="Publishing with DOI...">
 						Publish with DOI
 					</x-livewire-button>
-					--}}
 				@endif
 			@elseif($radar_status==2)
 				<p>The database has been submitted for persistent publication.<br>
