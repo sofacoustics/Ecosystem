@@ -1,20 +1,21 @@
-%SRIRGeneral - Visualizes geometries
-% This script creates for the first 20 M's four views of the same the geometry of the measurement
+%SRIRGeneralAllM - Visualizes geometries
+% This script creates for the all M's four views of the same the geometry of the measurement
 % The filename syntax is 'SOFAfile_DIM_Midx_Mmax=M.png'
 % with
 %   SOFAfile: the filename of the input file
 %   DIM: iso, xz, yz, xy: the four views
 %   Midx: the index of the measurement
-%   M: the total number of measuerements display (limited to 20).
+%   M: the total number of measuerements display (unlimited!).
 %
 % #Author: Michael Mihocic: First version, loading and plotting a few figures, supporting a few conventions (31.08.2023)
 % #Author: Michael Mihocic: support of SRIRGeometry, SingleRoomMIMOSRIR SOFA files implemented (14.04.2025)
 % #Author: Michael Mihocic: conventions restriction removed (03.06.2025)
-% #Author: Michael Mihocic: file renamed from SRIRGeometry.m to SRIRGeneral.m (03.07.2025)
+% #Author: Michael Mihocic: file renamed from SRIRGeometry.m to SRIRGeneralAllM.m (03.07.2025)
 % #Author: Michael Mihocic: geometry figures enhanced, several figures and several views stored as png; plotting HRTFs removed (07.07.2025)
 % #Author: Michael Mihocic: logging improved (14.07.2025)
 % #Author: Piotr Majdak: major rework because of problems in plotting the room (25.12.2025).
 % #Author: Piotr Majdak: added path to shared functions, moved the call to SOFA Properties to shared (27.12.2025)
+% #Author: Michael Mihocic: SRIRGeneral.m adapted to SRIRGeneralAllM.m (12.08.2026)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -23,10 +24,10 @@
 % Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 % See the License for the specific language governing  permissions and limitations under the License.
 
-function SRIRGeneral(SOFAfile)
+function SRIRGeneralAllM(SOFAfile)
 
 	addpath('../shared'); % add the path to shared functions
-  logfile="SRIRGeneral.log";
+  logfile="SRIRGeneralAllM.log";
   fid = fopen(logfile, "w");
   s = pwd;
   disp(["pwd = " s]);
@@ -58,7 +59,8 @@ function SRIRGeneral(SOFAfile)
   fputs(fid, ["Successfully saved SOFA details to csv files\n"]);
 
   % ein geometry figure pro M: file name _x_y (y=anzahl M)
-  M=min(20, Obj.API.M); % plot for up to 20 M's only
+  % M=min(20, Obj.API.M); % plot for up to 20 M's only
+  M=Obj.API.M; % plot for all Ms
   for Midx = 1:M
       SOFAplotGeometry(Obj,'index',Midx);
       %mySOFAplotGeometry(Obj,Midx);
