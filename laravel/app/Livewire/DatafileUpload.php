@@ -113,6 +113,10 @@ class DatafileUpload extends Component
 		$this->file->storeAs("$directory", "$datafile->name", 'sonicom-data');
 			// clean up
 		$this->file->delete();
+
+		// now we've saved the file, we can trigger the service
+		$this->debug(1, "Dispatching service from save() for datafile $datafile->id");
+		$datafile->dispatchService();
 			//jw:note 'navigate: true' means that livewire retrieves the page in the background.
 			//jw:note This means we may be able to load multiple files concurrently.
 			//$this->redirect(url()->previous(), navigate: true);
