@@ -76,29 +76,31 @@ class DatafileUpload extends Component
 	{
 		if(!$this->file)
 		{
-			\Log::info("DatafileUpload::save() - $this->file is empty, so returning early!");
+			\Log::warning("DatafileUpload::save() - $this->file is empty, so returning early!");
 			return;
 		}
-		\Log::info("DatafileUpload::save()");
-				// https://www.iana.org/assignments/media-types/media-types.xhtml#audio
+		\Log::debug("DatafileUpload::save()");
+		// https://www.iana.org/assignments/media-types/media-types.xhtml#audio
 		$requiredMimetypes = $this->datasetdef->datafiletype->mimetypes;
-		\Log::info("Required MIME type: {$requiredMimetypes}");
+		\Log::debug("Required MIME type: {$requiredMimetypes}");
 		$mimetype = $this->file->getMimeType();
-		\Log::info("Uploaded file MIME type: {$mimetype}");
+		\Log::debug("Uploaded file MIME type: {$mimetype}");
 
 		$this->validate();
 		$this->authorize('update', $this->dataset); // check if dataset can be modified
 
-			// if datafile doesn't exist, create it here!
+		// if datafile doesn't exist, create it here!
 		if (!isset($this->datafile)) 
-		{		// create new Datafile
+		{		
+			// create new Datafile
 			$datafile = new Datafile();
-				// set mandatory fields
+			// set mandatory fields
 			$datafile->dataset_id = $this->dataset->id;
 			$datafile->datasetdef_id = $this->datasetdef->id;
 		} 
 		else 
-		{ 	// remove old files when editing existing file
+		{
+			// remove old files when editing existing file
 			$this->datafile->clean(); //jw:todo
 		}
 		$datafile->name = $this->file->getClientOriginalName();
@@ -111,15 +113,15 @@ class DatafileUpload extends Component
 		$directory = $datafile->directory();
 		$this->dispatch('showFlashMessage', ['type' => 'success', 'message' => 'storeAs']);
 		$this->file->storeAs("$directory", "$datafile->name", 'sonicom-data');
-			// clean up
+		// clean up
 		$this->file->delete();
 
 		// now we've saved the file, we can trigger the service
-		$this->debug(1, "Dispatching service from save() for datafile $datafile->id");
+		\Log::debug("Dispatching service from save() for datafile $datafile->id");
 		$datafile->dispatchService();
-			//jw:note 'navigate: true' means that livewire retrieves the page in the background.
-			//jw:note This means we may be able to load multiple files concurrently.
-			//$this->redirect(url()->previous(), navigate: true);
+		//jw:note 'navigate: true' means that livewire retrieves the page in the background.
+		//jw:note This means we may be able to load multiple files concurrently.
+		//$this->redirect(url()->previous(), navigate: true);
 		$this->redirect(url()->previous()); //jw:note if the whole dataset view was a livewire component, then we wouldn't have to redirect.
 	}
 
