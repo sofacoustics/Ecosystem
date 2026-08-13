@@ -137,6 +137,10 @@
 	@hasrole('admin')
 		<x-button method="GET" action="{{ route('databases.datathek', [$database->id]) }}" class="inline">Datathek</x-button>
 	@endhasrole
+	@hasrole('admin')
+		<x-button method="GET" action="{{ route('databases.services', [$database->id]) }}" class="inline">Services</x-button>
+	@endhasrole
+
 </p>
 
 <script>

@@ -404,6 +404,17 @@ class DatabaseController extends Controller
 		]);
 	}
 
+	/*
+	 * Display services status
+	 */
+	public function services(Database $database)
+	{
+		return view('databases.services', [
+			'database' => $database,
+			'tabTitle' => 'Services'
+		]);
+	}
+
 	public function copyDatasetdef(Datasetdef $A, Datasetdef $B)
 	{
 		$B->name = $A->name;
