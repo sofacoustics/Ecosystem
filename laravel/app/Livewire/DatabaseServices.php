@@ -4,10 +4,6 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-use App\Events\DatabasePersistentPublicationApproved;
-use App\Events\DatabasePersistentPublicationRejected;
-use App\Jobs\DatabasePublishToRadar;
-use App\Services\DatabaseRadarDatasetBridge;
 use Illuminate\Support\Facades\DB;
 use App\Models\Datafile;
 
@@ -18,23 +14,6 @@ class DatabaseServices extends Component
 {
 	public $database;
 
-	// RADAR properties
-	public $id;
-	public $state;
-	public $doi;
-	public $size;
-	public $radar_content;
-	public $isExpanded = false; // Initial state of the RADAR content: collapsed
-
-	// the RADAR state - used to display/hide buttons
-	public $pending = false;
-	public $review = false;
-	public $radar_status = null; // this will be set to the value of the database field 'radar_status'.
-	public $last_retrieved = null;
-
-	// true if we haven't uploaded yet
-	public $canUpload = false;
-
 	public $error; // any error message to display
 
 	public $logs_failed; // logs with fails
@@ -44,16 +23,6 @@ class DatabaseServices extends Component
 	public function mount($database)
 	{
 		$this->database = $database;
-		$this->radar_status = $database->radar_status;
-		if($database->radar_id)
-		{
-			$this->id = $database->radar_id;
-			$this->refreshStatus();
-		}
-		else
-		{
-			$this->dispatch('status-message', 'There is no RADAR dataset associated with this database!');
-		}
 
 		$this->jobs = collect();
 		$jobs = DB::table('jobs')->orderby('created_at')->get();
@@ -87,38 +56,6 @@ class DatabaseServices extends Component
 				$this->scheduled->push($datafiles->contains('id', $log->datafile->id));
 			}
 		}
-	}
-
-	public function toggleExpand()
-	{
-		$this->isExpanded = !$this->isExpanded; // Toggle the boolean value
-	}
-
-	// set RADAR state (pending, review, published)
-	public function setState($state)
-	{
-		$this->state = $state;
-		if($state == 'PENDING')
-			$this->pending = true;
-		else
-			$this->pending = false;
-		if($state == 'REVIEW')
-			$this->review = true;
-		else
-			$this->review = false;
-	}
-
-	public function createDataset()
-	{
-		$this->reset('error');
-		$radar = new DatabaseRadarDatasetBridge($this->database);
-		$this->dispatch('status-message', 'Starting RADAR dataset creation process.');
-		if($radar->create())
-			$this->dispatch('radar-status-changed', 'Dataset created'); // let other livewire components know the radar status has changed
-		else
-			$this->error = $radar->details;
-		$this->dispatch('status-message', $radar->message);
-		$this->refreshStatus();
 	}
 
 	public function render()
