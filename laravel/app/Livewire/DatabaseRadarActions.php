@@ -125,7 +125,7 @@ class DatabaseRadarActions extends Component
 	{
 		$this->reset('error');
 		$this->dispatch('status-message', 'Starting upload to RADAR via job.');
-		DatabasePublishToRadar::dispatch($this->database);
+		DatabasePublishToRadar::dispatch($this->database, auth()->user);
 	}
 
 	/*

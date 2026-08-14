@@ -13,6 +13,7 @@ use App\Mail\DatabasePersistentPublicationFailed;
 use App\Mail\DatabasePersistentPublicationRequested;
 use App\Mail\DatabasePersistentPublicationRequestedStarted;
 use App\Models\Database;
+use App\Models\User;
 use App\Services\DatabaseRadarDatasetBridge;
 
 use Throwable;
@@ -26,7 +27,6 @@ class DatabasePublishToRadar implements ShouldQueue
 	//public $backoff = 10; // The number of seconds to wait before retrying the queued listener. jw:note This appears to be ignored!
 	public $maxExceptions = 9; // The maximum number of unhandled exceptions to allow before failing.
 
-
 	public function backoff() : int
 	{
 		return 2; //jw:note appears to be ignored :-( retry_after respected
@@ -35,7 +35,8 @@ class DatabasePublishToRadar implements ShouldQueue
      * Create a new job instance.
      */
 	public function __construct(
-		public Database $database
+		public Database $database,
+		public User $user,
 	)
 	{
 		$this->queue = 'uploads';
@@ -177,8 +178,7 @@ class DatabasePublishToRadar implements ShouldQueue
 				$this->database->save();
 				$adminEmails = config('mail.to.admins');
 				// inform admins that they should review the request
-				Mail::raw("Dear Ecosystem Admins!\n\nThe persistent publication of the database " . $this->database->id . " has been requested. Please review it and accept or approve.\n\n	" . route('databases.show', $this->database->id), function ($message) {
-					$adminEmails = config('mail.to.admins');
+				Mail::raw("Dear Ecosystem Admins!\n\nThe persistent publication of the database " . $this->database->id . " has been requested by " . $this->user->name . ". Please review it and approve or reject.\n\n " . route('databases.show', $this->database->id), function ($message) use ($adminEmails) {
 					$message->to(explode(',',$adminEmails))
 						->subject(config('app.name') . ' Admin: Persistent publication requested');
 				});

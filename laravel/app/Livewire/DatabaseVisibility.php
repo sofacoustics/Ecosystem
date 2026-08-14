@@ -202,7 +202,7 @@ class DatabaseVisibility extends Component
 		$this->database->save();
 
 		// upload and review start now in job
-		DatabasePublishToRadar::dispatch($this->database);
+		DatabasePublishToRadar::dispatch($this->database, auth()->user());
 
 		return redirect()->route('databases.show', $this->database)->with('success', 'Your database is being published and you will be informed per email when the task has finished');
 	}
