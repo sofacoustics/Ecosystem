@@ -71,7 +71,7 @@
 				<x-td>{{ $datasetdef->description }}</x-td>
 				@role('admin') 
 					<x-td>{{ $datasetdef->datafiletype->id }}</x-td>
-					<x-td><x-button method="GET" action="{{ route('datasetdefs.rerun', [$datasetdef]) }}" class="inline">Rerun service</x-button></x-td>
+					<x-td><x-button method="POST" action="{{ route('datasetdefs.rerunservice', [$datasetdef]) }}" class="inline">Rerun service</x-button></x-td>
 				@endrole
 			</tr>
 		@endforeach

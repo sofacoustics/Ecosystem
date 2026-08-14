@@ -36,10 +36,8 @@ class Datasetdef extends Model
 		app('log')->info("rerunService for datasetdef $this->id");
 		foreach($this->datafiles as $datafile)
 		{
-			// touch datafile to cause service to rerun
 			app('log')->info("rerunService for datafile $datafile->id");
-			$datafile->touch();
-			$datafile->save();
+			$datafile->dispatchService();
 		}
 	}
 }

@@ -120,7 +120,7 @@ Route::post('/datafiles/{datafile}/rerunservice', [DatafileController::class, 'r
 // DATASETDEFS
 Route::resource('datasetdefs', DatasetdefController::class);
 Route::get('datasetdefs/{datasetdef}/duplicate', [DatasetdefController::class, 'duplicate'])->name('datasetdefs.duplicate');
-Route::get('datasetdefs/{datasetdef}/rerun', [DatasetdefController::class, 'rerunService'])->name('datasetdefs.rerun')->middleware('auth', 'role:admin');
+Route::post('datasetdefs/{datasetdef}/rerunservice', [DatasetdefController::class, 'rerunService'])->name('datasetdefs.rerunservice')->middleware('auth', 'role:admin');
 
 // CREATORS
 Route::resource('creators', CreatorController::class);
