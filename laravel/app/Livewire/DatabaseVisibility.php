@@ -152,15 +152,20 @@ class DatabaseVisibility extends Component
 			'target_url' => config('services.radar.baseurl'),
 			'duration' => microtime(true) - $start
 		]);
-		$adminEmails = config('mail.to.admins');
-		Mail::to(explode(',',$adminEmails))->queue(new DatabaseDOIAssigned($this->database));
-		app('log')->info("Sending DatabaseDOIAssigned email to $adminEmails", [
+		$userEmail =  $this->database->user->email;
+		Mail::to($userEmail)->queue(new DatabaseDOIAssigned($this->database));
+		app('log')->info("Sending DatabaseDOIAssigned email to $userEmail", [
 			'feature' => 'database-radar-dataset',
 			'database_id' => $this->database->id,
 			'user_id' => auth()->user()->id,
 			'target_url' => config('services.radar.baseurl'),
 			'duration' => microtime(true) - $start
 		]);
+		$adminEmails = config('mail.to.admins');
+		Mail::raw("Dear Ecosystem Admins!\n\nA DOI has been assigned to the database " . $this->database->id . " as requested by " . auth()->user()->name . ".\n\n " . route('databases.show', $this->database->id), function ($message) use ($adminEmails) {
+			$message->to(explode(',',$adminEmails))
+				->subject(config('app.name') . ' Admin: DOI assigned to database ' . $this->database->id);
+		});
 	}
 
 	public function submitToPublish()
