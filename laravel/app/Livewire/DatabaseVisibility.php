@@ -49,6 +49,11 @@ class DatabaseVisibility extends Component
 
 	public function expose()
 	{
+		app('log')->info('Exposing database', [
+			'feature' => 'database-visibility',
+			'database_id' => $this->database->id,
+			'user_id' => auth()->user()->id,
+		]);
 		$this->database->visible = true;
 		$this->database->save();
 		$this->visible = $this->database->visible;
@@ -57,6 +62,11 @@ class DatabaseVisibility extends Component
 
 	public function hide()
 	{
+		app('log')->info('Hiding database', [
+			'feature' => 'database-visibility',
+			'database_id' => $this->database->id,
+			'user_id' => auth()->user()->id,
+		]);
 		$this->database->visible = false;
 		$this->database->save();
 		$this->visible = $this->database->visible;
