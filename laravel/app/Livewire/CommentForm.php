@@ -63,11 +63,9 @@ class CommentForm extends Component
 
 		$this->comment->save();
 
-		$adminEmails = config('mail.to.admins');
-		$userEmail = $this->comment->user->email;
-		$recipients = "$adminEmails,$userEmail";
-		Mail::to(explode(',',$recipients))->queue(new NewComment($this->comment));
-		app('log')->info("New comment created. Sending NewComment email to $recipients");
+		Mail::to($this->comment->commentable->user->email)->queue(new NewComment($this->comment));
+		Mail::to(config('mail.to.admins'))->queue(new NewComment($this->comment, true));
+		app('log')->info("New comment " . $this->comment->id . " made on " . $this->comment->commentable_type . " (" . $this->comment->commentable->id . ")");
 
 		session()->flash('message', $isNew ? 'comment created successfully.' : 'comment updated successfully.');
 

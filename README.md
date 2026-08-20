@@ -451,3 +451,26 @@ We've got into the situation that running db:refresh --seed does not work. This 
 
 Going forward: If you make changes to a table which require changes to the seeded data, then put those changes in the seeder, not in the migration file. If you need to modify existing values in tables which are user generated, then do so in a migration on any rows that exist at the time of the migration. Run migrations with `./artisan migrate` and the static seeders with `./artisan db:seed --class StaticSeeder
 
+## Emails
+
+We send emails to the user and the admins in two separate commands, but using the same Mailable class/template. Use the $admin flag to specify which template section should be used. The following emails are sent:
+
+### Database
+
+- DOI Assignment
+- Persistent publication request (upload started)
+- Persistent publication request (upload finished - awaiting approval)
+- Persistent publication approval
+- Persistent publication rejection
+- Persistent publication failure
+- A comment has been made
+
+### Tool
+
+- DOI Assignment
+- Persistent publication request
+- Persistent publication approval
+- Persistent publication rejection
+- A comment has been made
+
+

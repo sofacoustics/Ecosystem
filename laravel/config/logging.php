@@ -102,6 +102,12 @@ return [
 			'level' => 'debug', // specify 'services_stack'
 		],
 
+		'mail' => [ 
+			'driver' => 'single',
+			'path' => storage_path('logs/laravel-mail.log'),
+			'level' => 'debug',
+		],
+
 		'stack' => [
 			'driver' => 'stack',
 			'channels' => ['single'],

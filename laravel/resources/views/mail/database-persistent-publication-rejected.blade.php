@@ -1,5 +1,9 @@
 <div>
-	<p>Dear {{ $database->user->name }},</p>
-	<p>The persistent publication of your database <a href="{{ route('databases.show', $database->id) }}">{{ $database->title }}</a> has been rejected. You will be contacted by the responsible person with an explanation and further instructions.</p>
-	<p>The SONICOM Ecosystem Team!</p>
+	<x-mail.header :admin="$admin" :user="$database->user" />
+	@if($admin)
+		<p>The persistent publication of the database <x-mail.database :database="$database" :admin="$admin" /> has been rejected by <x-mail.actor :actor="$actor" />. The database owner has been informed and is waiting for an admin to reach out!</p>
+	@else
+		<p>The persistent publication of your database <x-mail.database :database="$database" /> has been rejected. You will be contacted by the responsible person with an explanation and further instructions.</p>
+	@endif
+	<x-mail.footer :admin="$admin" />
 </div>

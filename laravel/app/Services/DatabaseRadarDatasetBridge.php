@@ -78,15 +78,8 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 			// start job to poll for publication date
 			DatabasePollForPublicationDate::dispatch($this->database);
 			// send user and admin an email
-			$adminEmails = config('mail.to.admins');
-			$recipients = $this->database->user->email;
-			Mail::to(explode(',',$recipients))->queue(new DatabasePersistentPublicationApproved($this->database));
-			app('log')->info("DatabasePersistentPublicationApproved email for database " . $this->database->title . " (" . $this->database->id . ") sent to $recipients");
-			Mail::raw("Dear Ecosystem Admins!\n\nThe persistent publication of the database " . $this->database->id . " has been approved by " . auth()->user()->name . ".\n\n " . route('databases.show', $this->database->id), function ($message) use ($adminEmails) {
-				$message->to(explode(',',$adminEmails))
-					->subject(config('app.name') . ' Admin: Persistent publication approved');
-			});
-
+			Mail::to($this->database->user->email)->queue(new DatabasePersistentPublicationApproved($this->database));
+			Mail::to(config('mail.to.admins'))->queue(new DatabasePersistentPublicationApproved($this->database, true));
 			$this->message = "RADAR Dataset successfully published";
 			return true;
 		}
@@ -189,15 +182,8 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 			if($this->database->radar_status == 3)
 			{
 				// send user and admin an email
-				$recipients = $this->database->user->email;
-				Mail::to(explode(',',$recipients))->queue(new DatabasePersistentPublicationRejected($this->database));
-				app('log')->info("DatabasePersistentPublicationRejected email for database " . $this->database->title . " (" . $this->database->id . ") sent to $recipients");
-        // inform admins that the request was rejected
-        Mail::raw("Dear Ecosystem Admins!\n\nThe persistent publication of the database " . $this->database->id . " has been rejected by " . auth()->user()->name . ".\n\n " . route('databases.show', $this->database->id), function ($message) {
-          $adminEmails = config('mail.to.admins');
-          $message->to(explode(',',$adminEmails))
-            ->subject(config('app.name') . ' Admin: Persistent publication rejected');
-        });
+				Mail::to($this->database->user->email)->queue(new DatabasePersistentPublicationRejected($this->database));
+				Mail::to(config('mail.to.admins'))->queue(new DatabasePersistentPublicationRejected($this->database, true));
 			}
 			// set status to "DOI assigned"
 			$this->database->radar_status = 1;

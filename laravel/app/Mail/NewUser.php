@@ -3,10 +3,10 @@
 namespace App\Mail;
 
 use App\Models\User;
+use App\Mail\Mailable;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -21,7 +21,9 @@ class NewUser extends Mailable
      */
 	public function __construct(
 		public User $user
-	) {}
+	) {
+		parent::__construct(); // call our Mailable constructor to initialise "$actor" property
+	}
 
     /**
      * Get the message envelope.
@@ -29,7 +31,7 @@ class NewUser extends Mailable
     public function envelope(): Envelope
     {
 		return new Envelope(
-            subject: config('app.name') . ': New Ecosystem user created and verified',
+            subject: config('app.name') . ': (ADMIN): New Ecosystem user created and verified',
 		);
     }
 

@@ -3,10 +3,10 @@
 namespace App\Mail;
 
 use App\Models\Comment;
+use App\Mail\Mailable;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -15,13 +15,15 @@ class NewComment extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct(
-        public Comment $comment
-    )
-    {}
+	/**
+	 * Create a new message instance.
+	 */
+	public function __construct(
+		public Comment $comment,
+		public $admin = false
+	) {
+		parent::__construct(); // call our Mailable constructor to initialise "$actor" property
+	}
 
     /**
      * Get the message envelope.
@@ -30,11 +32,11 @@ class NewComment extends Mailable
     {
         if($this->comment->commentable_type == "App\Models\Database")
             return new Envelope(
-                subject: config('app.name') . ': New Comment on database '. $this->comment->commentable->title,
+                subject: config('app.name') . ': ' . ($this->admin ? '(ADMIN): ' : '') . ' New Comment on database '. $this->comment->commentable->title,
             );
         else
             return new Envelope(
-                subject: config('app.name') . ': New Comment on tool ' . $this->comment->commentable->title,
+                subject: config('app.name') . ': ' . ($this->admin ? '(ADMIN): ' : '') . ' New Comment on tool ' . $this->comment->commentable->title,
             );
     }
 

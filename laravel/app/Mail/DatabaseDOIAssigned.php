@@ -3,10 +3,10 @@
 namespace App\Mail;
 
 use App\Models\Database;
+use App\Mail\Mailable;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -19,8 +19,11 @@ class DatabaseDOIAssigned extends Mailable
      * Create a new message instance.
      */
 	public function __construct(
-		public Database $database
-	) {}
+		public Database $database,
+		public $admin = false
+	) {
+		parent::__construct(); // call our Mailable constructor to initialise "$actor" property
+	}
 
     /**
      * Get the message envelope.
@@ -28,7 +31,7 @@ class DatabaseDOIAssigned extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: config('app.name') . ': DOI assigned to the database ' . $this->database->name . ' (id: ' . $this->database->id . ')',
+            subject: config('app.name') . ': ' . ($this->admin ? '(ADMIN): ' : '') . ' DOI assigned to the database "' . $this->database->title . '"' . ($this->admin ? ' (' . $this->database->id . ')' : ''),
         );
     }
 

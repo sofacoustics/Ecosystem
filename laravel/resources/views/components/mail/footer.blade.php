@@ -1,4 +1,11 @@
+@props([
+	'admin' => false,
+])
 <div>
-	<p>The SONICOM Ecosystem Team!</p>
+	@if($admin)
+		<p>The {{ config('app.name') }} Mail System</p>
+	@else
+		<p>The {{ config('app.name') }} Team!</p>
+	@endif
 </div>
 

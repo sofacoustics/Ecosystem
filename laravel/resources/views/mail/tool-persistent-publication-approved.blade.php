@@ -1,5 +1,9 @@
 <div>
-	<p>Dear {{ $tool->user->name }},</p>
-	<p>The persistent publication of your tool <a href="{{ route('tools.show', $tool->id) }}">{{ $tool->title }}</a> has been approved.</p>
-	<x-mail.footer />
+	<x-mail.header :admin="$admin" :user="$tool->user" />
+	@if($admin)
+		<p>The persistent publication of the tool <x-mail.tool :tool="$tool" :admin="$admin" /> has been approved by <x-mail.actor :actor="$actor" />.</p>
+	@else
+		<p>The persistent publication of your tool <x-mail.tool :tool="$tool" /> has been approved.</p>
+	@endif
+	<x-mail.footer :admin="$admin" />
 </div>

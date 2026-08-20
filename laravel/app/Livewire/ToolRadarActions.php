@@ -175,11 +175,8 @@ class ToolRadarActions extends Component
 				'duration' => microtime(true) - $start
 			]);
 			// send user and admin an email
-			$adminEmails = config('mail.to.admins');
-			$userEmail = $this->tool->user->email;
-			$recipients = $userEmail . ',' . $adminEmails;
-			Mail::to(explode(',',$recipients))->queue(new ToolPersistentPublicationRejected($this->tool));
-			app('log')->info("ToolPersistentPublicationRejected email for tool " . $this->tool->title . " (" . $this->tool->id . ") sent to $recipients");
+			Mail::to($this->tool->user->email)->queue(new ToolPersistentPublicationRejected($this->tool));
+			Mail::to(config('mail.to.admins'))->queue(new ToolPersistentPublicationRejected($this->tool, true));
 		}
 		// set status to "DOI assigned"
 		$this->tool->radar_status = 1;

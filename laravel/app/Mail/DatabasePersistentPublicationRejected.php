@@ -3,10 +3,10 @@
 namespace App\Mail;
 
 use App\Models\Database;
+use App\Mail\Mailable;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -19,8 +19,11 @@ class DatabasePersistentPublicationRejected extends Mailable
      * Create a new message instance.
      */
 	public function __construct(
-		public Database $database
-	) {}
+		public Database $database,
+		public $admin = false
+	) {
+		parent::__construct(); // call our Mailable constructor to initialise "$actor" property
+	}
 
     /**
      * Get the message envelope.
@@ -28,7 +31,7 @@ class DatabasePersistentPublicationRejected extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: config('app.name') . ': Persistent publication of the database "' . $this->database->title . '" (' . $this->database->id . ') has been rejected',
+            subject: config('app.name') . ': ' . ($this->admin ? '(ADMIN): ' : '') . ' Persistent publication of the database "' . $this->database->title . '"' . ($this->admin ? ' (' . $this->database->id . ')' : '') .' has been rejected',
         );
     }
 

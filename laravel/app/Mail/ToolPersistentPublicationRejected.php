@@ -3,10 +3,10 @@
 namespace App\Mail;
 
 use App\Models\Tool;
+use App\Mail\Mailable;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -19,8 +19,11 @@ class ToolPersistentPublicationRejected extends Mailable
      * Create a new message instance.
      */
 	public function __construct(
-		public Tool $tool
-	) {}
+		public Tool $tool,
+		public $admin = false
+	) {
+		parent::__construct(); // call our Mailable constructor to initialise "$actor" property
+	}
 
     /**
      * Get the message envelope.
@@ -28,7 +31,7 @@ class ToolPersistentPublicationRejected extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: config('app.name') . ': Persistent publication of the tool "' . $this->tool->title . '" (' . $this->tool->id . ') has been rejected',
+            subject: config('app.name') . ': ' . ($this->admin ? '(ADMIN): ' : '') . ' Persistent publication of the tool "' . $this->tool->title . '"' . ($this->admin ? ' (' . $this->tool->id . ')' : '') . ' has been rejected',
         );
     }
 

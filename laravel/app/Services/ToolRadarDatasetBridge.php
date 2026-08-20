@@ -73,12 +73,9 @@ class ToolRadarDatasetBridge extends RadarBridge
 			$this->tool->radar_status = 4;
 			$this->tool->publicationyear = $this->getNestedJsonValue('descriptiveMetadata.publicationYear', $response);
 			$this->tool->save();
-			// send user and admin an email
-			$adminEmails = config('mail.to.admins');
-			$userEmail = $this->tool->user->email;
-			$recipients = $userEmail . ',' . $adminEmails;
-			Mail::to(explode(',',$recipients))->queue(new ToolPersistentPublicationApproved($this->tool));
-			app('log')->info("ToolPersistentPublicationApproved email for tool " . $this->tool->title . " (" . $this->tool->id . ") sent to $recipients");
+
+			Mail::to($this->tool->user->email)->queue(new ToolPersistentPublicationApproved($this->tool));
+			Mail::to(config('mail.to.admins'))->queue(new ToolPersistentPublicationApproved($this->tool, true));
 			$this->message = "Tool successfully published";
 			return true;
 		}

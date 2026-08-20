@@ -123,15 +123,8 @@ class ToolDoi extends Component
 			'target_url' => config('services.radar.baseurl'),
 			'duration' => microtime(true) - $start
 		]);
-		$adminEmails = config('mail.to.admins');
-		Mail::to(explode(',',$adminEmails))->queue(new ToolDOIAssigned($this->tool));
-		app('log')->info("Sending toolDOIAssigned email to $adminEmails", [
-			'feature' => 'tool-radar-dataset',
-			'tool_id' => $this->tool->id,
-			'user_id' => auth()->user()->id,
-			'target_url' => config('services.radar.baseurl'),
-			'duration' => microtime(true) - $start
-		]);
+		Mail::to($this->tool->user->email)->queue(new ToolDOIAssigned($this->tool));
+		Mail::to(config('mail.to.admins'))->queue(new ToolDOIAssigned($this->tool, true));
 		$this->radar_status = $this->tool->radar_status;
 	}
 
@@ -183,14 +176,13 @@ class ToolDoi extends Component
 		}
 		else
 		{
-			$adminEmails = config('mail.to.admins');
-			Mail::to(explode(',',$adminEmails))->queue(new ToolPersistentPublicationRequested($this->tool));
 			app('log')->info('Persistent publication requested', [
 				'feature' => 'tool-radar-dataset',
 				'tool_id' => $this->tool->id,
 				'target_url' => config('services.radar.baseurl'),
-				'emails' => $adminEmails
 			]);
+			Mail::to($this->tool->user->email)->queue(new ToolPersistentPublicationRequested($this->tool));
+			Mail::to(config('mail.to.admins'))->queue(new ToolPersistentPublicationRequested($this->tool, true));
 			$this->dispatch('status-message', $radar->message);
 		}
 

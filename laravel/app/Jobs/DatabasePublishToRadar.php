@@ -55,6 +55,7 @@ class DatabasePublishToRadar implements ShouldQueue
 			'tries' => $this->tries,
 			'backoff' => $this->backoff(),
 			'maxExceptions' => $this->maxExceptions,
+			'user_id' => $this->user->id,
 			'timeout' => $this->timeout
 		]);
     }
@@ -73,16 +74,8 @@ class DatabasePublishToRadar implements ShouldQueue
 			'attempt' => $this->attempts()
 		]);
 		
-		$userEmail = $this->database->user->email;
-		Mail::to($userEmail)->queue(new DatabasePersistentPublicationRequestedStarted($this->database));
-		app('log')->info('User informed of persistent publication request starting per email', [
-			'feature' => 'database-radar-dataset',
-			'database_id' => $this->database->id,
-			'target_url' => config('services.radar.baseurl'),
-			'email' => $userEmail,
-			'job_id' => $this->job->getJobId(),
-			'duration' => microtime(true) - $start
-		]);
+		Mail::to($this->database->user->email)->queue(new DatabasePersistentPublicationRequestedStarted($this->database, actor: $this->user));
+		Mail::to(config('mail.to.admins'))->queue(new DatabasePersistentPublicationRequestedStarted($this->database, true, actor: $this->user));
 
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if(!$radar->upload())
@@ -155,16 +148,8 @@ class DatabasePublishToRadar implements ShouldQueue
 					$this->database->radar_status = 1;
 					$this->database->save();
 				}
-				$userEmail = $this->database->user->email;
-				Mail::to($userEmail)->queue(new DatabasePersistentPublicationFailed($this->database, $radar_details));
-				app('log')->info('User informed of persistent publication failure per email', [
-					'feature' => 'database-radar-dataset',
-					'database_id' => $this->database->id,
-					'target_url' => config('services.radar.baseurl'),
-					'email' => $userEmail,
-					'job_id' => $this->job->getJobId(),
-					'duration' => microtime(true) - $start
-				]);
+				Mail::to($this->database->user->email)->queue(new DatabasePersistentPublicationFailed($this->database, $radar_details, actor: $this->user));
+				Mail::to(config('mail.to.admins'))->queue(new DatabasePersistentPublicationFailed($this->database, $radar_details, true, actor: $this->user));
 			}
 			return;
 		}
@@ -183,31 +168,16 @@ class DatabasePublishToRadar implements ShouldQueue
 			{
 				$this->database->radar_status=3; // publishing finished. Wait for approval
 				$this->database->save();
-				$adminEmails = config('mail.to.admins');
-				// inform admins that they should review the request
-				Mail::raw("Dear Ecosystem Admins!\n\nThe persistent publication of the database " . $this->database->id . " has been requested by " . $this->user->name . ". Please review it and approve or reject.\n\n " . route('databases.show', $this->database->id), function ($message) use ($adminEmails) {
-					$message->to(explode(',',$adminEmails))
-						->subject(config('app.name') . ' Admin: Persistent publication requested');
-				});
 				app('log')->info('Persistent publication requested', [
 					'feature' => 'database-radar-dataset',
 					'database_id' => $this->database->id,
 					'target_url' => config('services.radar.baseurl'),
 					'job_id' => $this->job->getJobId(),
-					'emails' => $adminEmails
 				]);
 				$this->radar_status = $this->database->radar_status;
-				// send email to user to say their publication has been successfully uploaded and is awaiting approval.
-				$userEmail = $this->database->user->email;
-				Mail::to($userEmail)->queue(new DatabasePersistentPublicationRequested($this->database));
-				app('log')->info('User informed of persistent publication request per email', [
-					'feature' => 'database-radar-dataset',
-					'database_id' => $this->database->id,
-					'target_url' => config('services.radar.baseurl'),
-					'email' => $userEmail,
-					'job_id' => $this->job->getJobId(),
-					'duration' => microtime(true) - $start
-				]);
+				// send email to user to say their publication has been successfully uploaded and is awaiting approval and inform admins
+				Mail::to($this->database->user->email)->queue(new DatabasePersistentPublicationRequested($this->database, actor: $this->user));
+				Mail::to(config('mail.to.admins'))->queue(new DatabasePersistentPublicationRequested($this->database, true, actor: $this->user));
 				app('log')->info('Database now published to RADAR and awaiting approval', [
 					'feature' => 'database-radar-dataset',
 					'database_id' => $this->database->id,
