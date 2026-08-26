@@ -93,37 +93,9 @@ class DatabasePublishToRadar implements ShouldQueue
 			// This is an error which the user can't correct.
 			// How can we let the user know there was an error?
 
-			/*
-			// ok - we're going to delete the radar dataset and start again for 'tries'
-			app('log')->debug('Deleting database from RADAR so we can recover from a failed upload', [
-				'feature' => 'database-radar-dataset',
-				'database_id' => $this->database->id,
-				'radar_id' => $this->database->radar_id,
-				'target_url' => config('services.radar.baseurl'),
-				'details' => $radar->details,
-				'job_id' => $this->job->getJobId(),
-				'duration' => microtime(true) - $start
-			]);
-			if($radar->delete())
-			{
-				if ($this->attempts() < $this->tries) {
-					// Re-queue the job for later processing
-					app('log')->debug('Releasing job so we can retry', [
-						'feature' => 'database-radar-dataset',
-						'database_id' => $this->database->id,
-						'target_url' => config('services.radar.baseurl'),
-						'job_id' => $this->job->getJobId(),
-						'tries' => $this->tries,
-						'attempts' => $this->attempts(),
-						'duration' => microtime(true) - $start
-					]);
-					$this->release(10); // delay in seconds
-					return;
-				}
-			}
-			 */
 			//
-			// empty the RADAR dataset of all data (except metadata and DOI)
+			// empty the RADAR dataset of all data (but keeping the metadata and DOI) so the user
+			// can try and fix the error and publish (upload) again.
 			//
 			if($radar->empty())
 			{
