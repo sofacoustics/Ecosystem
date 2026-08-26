@@ -427,6 +427,18 @@ Octave-Version      Octave-Call         Graphics-Toolkit        Error
                                                                 fatal: caught signal Segmentation fault -- stopping myself...
                                                                 Segmentation fault (core dumped)
 
+### Log Levels
+
+Please use the log levels like this:
+
+- emergency: System is unusable; catastrophic failure requiring immediate attention.
+- alert: Immediate action required to prevent serious impact.
+- critical: Critical condition affecting core functionality.
+- error: Runtime error or failure that should be investigated.
+- warning: Something unexpected but not a failure; investigate but continue.
+- notice: Normal but significant event worth recording.
+- info: General informational message about routine operations.
+- debug: Detailed diagnostic information for development and troubleshooting.
 
 ## Deployment
 
