@@ -103,6 +103,18 @@ class Tool extends Model
 	
 	public function removefile()
 	{
+		if($this->status >= 2 && !is_null($this->doi)) {
+			app('log')->warning('Attempting to remove file from a published tool with DOI assigned', [
+				'feature' => 'tool-radar-dataset',
+				'tool_id' => $this->id,
+				'filename' => $this->filename,
+				'radar_id' => $this->radar_id,
+				'radar_status' => $this->radar_status,
+				'file_radar_id' => $this->file_radar_id,
+				'target_url' => config('services.radar.baseurl'),
+			]);
+			return false;
+		}
 		if ($this->filename)
 		{
 			if(Storage::disk('sonicom-data')->exists($this->directory()))
