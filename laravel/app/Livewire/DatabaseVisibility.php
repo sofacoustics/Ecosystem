@@ -102,8 +102,17 @@ class DatabaseVisibility extends Component
 		{
 			$this->dispatch('radar-status-changed', 'Validation failed');
 			$this->error = $radar->message.' RADAR Message: '.$radar->details;
-			// delete RADAR dataset if it has been created
-			$radar->delete();
+			// Since there is radar_id, let's check if there is a DOI too
+			// We should only delete a radar dataset on errors if there is *no* DOI
+			if(is_null($this->database->doi))
+				$radar->delete();
+			else
+				app('log')->error('The RADAR metadata is invalid for a database with a DOI!', [
+					'feature' => 'database-visibility',
+					'database_id' => $this->database->id,
+					'radar_id' => $this->database->radar_id,
+					'doi' => $this->database->doi,
+				]);
 			return;
 		}
 		if($radar->read())
