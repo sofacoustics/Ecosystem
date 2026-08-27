@@ -28,6 +28,11 @@
 					</a>
 				@endif
 			@endforeach
+			@role('admin')
+				@if (config('app.allow_log_viewer'))
+					<a href='/log-viewer'>Log-Viewer</a>
+				@endif
+			@endrole
 		</div>
 
 			<!-- Settings Dropdown -->

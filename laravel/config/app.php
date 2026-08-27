@@ -184,7 +184,13 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
-    ])->toArray(),
+		])->toArray(),
+
+
+		/*
+		 * Per default, you can't view the log-viewer
+		 */
+		'allow_log_viewer' => env('ALLOW_LOG_VIEWER', false),
 
     //'app_storage_path' => env('APP_STORAGE_PATH', base_path().'/storage'), //jw:note - this would put cache files on the external disk too!
 

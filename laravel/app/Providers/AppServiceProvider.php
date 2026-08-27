@@ -4,10 +4,14 @@ namespace App\Providers;
 
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+
+use Opcodes\LogViewer\Facades\LogViewer;
+
 /*
  * This *was* necessary to get livewire to upload files. However, it turns
  * out that simply setting the X-Forwarded-Proto header to https fixes *everything*!
@@ -16,6 +20,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Datafile;
+use App\Models\User;
 use App\Observers\DatafileObserver;
 
 class AppServiceProvider extends ServiceProvider
@@ -75,5 +80,14 @@ class AppServiceProvider extends ServiceProvider
 		//jw:note 2025-10
 		// This may also be necessary to be on the safe side. Leaving here as documenation
 		//URL::forceRootUrl(config('app.url'));
+
+		// define who can access the log viewer
+		LogViewer::auth(function (Request $request) {
+			if (!env('ALLOW_LOG_VIEWER', false)) {
+				return false;
+			}
+			// Return true to allow access for both the main page AND its API endpoints
+			return $request->user() && $request->user()->hasRole('admin');
+		});
 	}
 }

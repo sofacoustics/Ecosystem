@@ -8,6 +8,8 @@ use Throwable;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
+use Illuminate\Auth\AuthenticationException;
+
 class Handler extends ExceptionHandler
 {
     /**
@@ -19,7 +21,10 @@ class Handler extends ExceptionHandler
         'current_password',
         'password',
         'password_confirmation',
-    ];
+		];
+
+		protected $dontReport = [
+		];
 
     /**
      * Register the exception handling callbacks for the application.
@@ -31,7 +36,12 @@ class Handler extends ExceptionHandler
 				});
 
 				// Add custom 500 error rendering logic here
-        $this->renderable(function (Throwable $e, $request) {
+				$this->renderable(function (Throwable $e, $request) {
+						// Let Laravel handle authentication exceptions natively (redirects to /login)
+						if ($e instanceof AuthenticationException) {
+								return null;
+						}
+
             // Skip custom rendering for API requests or non-500 HTTP exceptions (e.g., 404, 403)
             if ($request->is('api/*') || ($e instanceof HttpExceptionInterface && $e->getStatusCode() !== 500)) {
                 return null; // Fallback to standard Laravel handling
@@ -40,10 +50,10 @@ class Handler extends ExceptionHandler
 
 						app('log')->debug("app/Exceptions/Handler.php register() function");
 
-            // Log exception alongside the error reference ID
-            logger()->error("Exception [{$errorId}]: " . $e->getMessage(), [
-                'exception' => $e,
-            ]);
+						// Log exception alongside the error reference ID
+						logger()->error("Exception [{$errorId}]: " . $e->getMessage(), [
+								'exception' => $e,
+						]);
 
             // Render resources/views/errors/500.blade.php with data
             return response()->view('errors.500', [
