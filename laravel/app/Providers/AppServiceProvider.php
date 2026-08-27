@@ -20,26 +20,26 @@ use App\Observers\DatafileObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        //
-    }
+	/**
+	 * Register any application services.
+	 */
+	public function register(): void
+	{
+			//
+	}
 
-    /**
-     * Bootstrap any application services.
-     */
-    public function boot(): void
-    {
-        //
-        Datafile::observe(DatafileObserver::class);
+	/**
+	 * Bootstrap any application services.
+	 */
+	public function boot(): void
+	{
+		//
+		Datafile::observe(DatafileObserver::class);
 
-        // Increase rate limit to avoid "429 Too Many Requests" error
-        //jw:note https://onlinecode.org/fixing-429-too-many-requests-in-laravel-11/
-        RateLimiter::for('global', function (Request $request) {
-            return Limit::perMinute(5000);
+		// Increase rate limit to avoid "429 Too Many Requests" error
+		//jw:note https://onlinecode.org/fixing-429-too-many-requests-in-laravel-11/
+		RateLimiter::for('global', function (Request $request) {
+			return Limit::perMinute(5000);
 		});
 
 		// global variables available in all blades
@@ -60,20 +60,20 @@ class AppServiceProvider extends ServiceProvider
 			config(['mail.to.admins' => implode(',',$admin_emails)]);
 		}
 
-        //$this->app->useStoragePath(config('app.app_storage_path')); //jw:note this could be used to put all files including cache on external disk in conjunctino with app.php
+		//$this->app->useStoragePath(config('app.app_storage_path')); //jw:note this could be used to put all files including cache on external disk in conjunctino with app.php
 
-        //jw:note throw excption if attemptinng to fill and unfillable attribute (https://laravel.com/docs/11.x/eloquent#mass-assignment-json-columns) for local development (production should still ignore silently).
-        Model::preventSilentlyDiscardingAttributes($this->app->isLocal());
+		//jw:note throw excption if attemptinng to fill and unfillable attribute (https://laravel.com/docs/11.x/eloquent#mass-assignment-json-columns) for local development (production should still ignore silently).
+		Model::preventSilentlyDiscardingAttributes($this->app->isLocal());
 		//jw:note 2025-10
 		// For some reason, ubuntu-vm-2 (ecosystem.sonicom.eu) is not recognising this by
 		// forwarded headers alone!. Here we can force it to use https
 		$appUrl = config('app.url');
 		$scheme = parse_url($appUrl, PHP_URL_SCHEME);
 		if ($scheme === 'https') {
-	        URL::forceScheme('https');
+			URL::forceScheme('https');
 		}
 		//jw:note 2025-10
 		// This may also be necessary to be on the safe side. Leaving here as documenation
 		//URL::forceRootUrl(config('app.url'));
-    }
+	}
 }
