@@ -68,7 +68,7 @@
 				</x-alert>
 			@endif
 			<!-- validation errors -->
-			@if ($errors->any())
+			@if (isset($errors) && $errors->any())
 				<div>
 					<ul>
 						@foreach ($errors->all() as $error)
