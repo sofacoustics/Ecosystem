@@ -34,6 +34,11 @@ use Illuminate\Database\Eloquent\Model;
 //	'All Received Headers' => $request->headers->all(),
 //	]);
 //});
+//
+//jw:test test '500' error page
+//Route::get('/test-500', function() {
+//	abort(500, 'Simulated Internal Server Error');
+//});
 
 
 /*
