@@ -100,6 +100,8 @@ class CreatorForm extends Component
 		
 		$this->creator->creatorable_id = $this->creatorable_id;
 		$this->creator->creatorable_type = $this->creatorable_type;
+		$this->familyName = trim($this->familyName);
+		$this->givenName = trim($this->givenName);
 
 		switch($this->option)
 		{
