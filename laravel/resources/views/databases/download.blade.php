@@ -44,10 +44,10 @@
 			<ul class="list-disc list-outside ps-5 mt-2 space-y-1">
 				<li><a href="{{ asset('clients/matlab/databaseDownload.m') }}" download>
 					<img src="{{ asset('images/Matlab_Logo.png') }}" alt="Matlab" title="Example code for Matlab" style="height: 2em; display: inline-block;"/></a>
-				Start with: <code>databaseDownload("destination_directory",{{ $database->id }});</code></li>
+				Start with: <code>databaseDownload('destination_directory',{{ $database->id }});</code></li>
 				<li><a href="{{ asset('clients/octave/databaseDownload.m') }}" download>
 					<img src="{{ asset('images/Gnu-octave-logo.svg') }}" alt="Octave" title="Example code for Octave" style="height: 2em; display: inline-block;"/></a>
-				Start with: <code>databaseDownload("destination_directory",{{ $database->id }});</code></li>
+				Start with: <code>databaseDownload('destination_directory',{{ $database->id }});</code></li>
 				</li> 
 				<li><a href="{{ asset('clients/python/databaseDownload.py') }}" download>
 					<img src="{{ asset('images/python-logo-only.png') }}" alt="Python" title="Example code for Python" style="height: 2em; display: inline-block;"/></a>
