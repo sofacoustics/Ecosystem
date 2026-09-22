@@ -4,6 +4,11 @@
 % #Author: Michael Mihocic: Dimensions displayed, 2 tables created (23.06.2025)
 % #Author: Piotr Majdak: added path to shared functions, moved the call to SOFA Properties to shared (27.12.2025)
 %
+%SofaProperties - Function to load SOFA files (with flag 'nodata'), create and 2 csv files describing SOFA properties
+%
+% #Author: Michael Mihocic, Piotr Majdak
+% #Author: Michael Mihocic: adding flag 'nodata' to improve processing time (22.09.2026)
+%
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
 % You may not use this work except in compliance with the License.
@@ -40,7 +45,7 @@ function SofaProperties(SOFAfile)
 	end
 
 	%% Load SOFA file
-	Obj=SOFAload(SOFAfile);
+	Obj=SOFAload(SOFAfile,'nodata');
 
 	SaveSOFAproperties(Obj, SOFAfile);
 	if isoctave; fputs(fid, ["Successfully saved SOFA details to csv files\n"]); end
