@@ -31,37 +31,50 @@ class Handler extends ExceptionHandler
 	 */
 	public function register(): void
 	{
+		// 1. REPORTING (Logging)
 		$this->reportable(function (Throwable $e) {
-			//
-		});
-
-		// Add custom 500 error rendering logic here
-		$this->renderable(function (Throwable $e, $request) {
-			// Let Laravel handle authentication exceptions natively (redirects to /login)
-			if ($e instanceof AuthenticationException) {
-					return null;
-			}
-
-			// Skip custom rendering for API requests or non-500 HTTP exceptions (e.g., 404, 403)
-			if ($request->is('api/*') || ($e instanceof HttpExceptionInterface && $e->getStatusCode() !== 500)) {
-				return null; // Fallback to standard Laravel handling
+			// Skip logging validation/auth failures
+			if ($e instanceof \Illuminate\Validation\ValidationException || $e instanceof \Illuminate\Auth\AuthenticationException) {
+				return;
 			}
 
 			$errorId = 'ERR-' . strtoupper(Str::random(8));
+			request()->attributes->set('errorId', $errorId);
 
-			app('log')->debug("app/Exceptions/Handler.php register() function");
-
-			// Log exception alongside the error reference ID
 			logger()->error("Exception [{$errorId}]: " . $e->getMessage(), [
-					'exception' => $e,
+				'exception' => $e,
 			]);
+		});
 
-			// Render resources/views/errors/500.blade.php with data
+		// 2. RENDERING (UI Response)
+		$this->renderable(function (Throwable $e, $request) {
+			// Skip custom logic for API requests
+			if ($request->is('api/*')) {
+				return null;
+			}
+
+			// If it's an HTTP exception (e.g., 404, 403, 422, 302), ONLY handle it if status code is 500
+			if ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface) {
+				if ($e->getStatusCode() !== 500) {
+					return null; // Let Laravel render normal 404, 403, 422, etc.
+				}
+			} 
+			// If it's NOT an HTTP exception, check if it's a validation, auth, or redirect exception
+			else if (
+				$e instanceof \Illuminate\Validation\ValidationException ||
+				$e instanceof \Illuminate\Auth\AuthenticationException ||
+				$e instanceof \Illuminate\Http\Exceptions\HttpResponseException
+			) {
+				return null; // Let Laravel handle normal validation redirects/responses
+			}
+
+			// If execution reaches here, it is a genuine unhandled 500 PHP crash/Error!
+			$errorId = $request->attributes->get('errorId') ?? 'ERR-' . strtoupper(Str::random(8));
+
 			return response()->view('errors.500', [
 				'errorId' => $errorId,
-				'message' => $e instanceof HttpExceptionInterface ? $e->getMessage() : null,
-						], 500);
-
+				'message' => $e->getMessage(),
+			], 500);
 		});
 	}
 }
