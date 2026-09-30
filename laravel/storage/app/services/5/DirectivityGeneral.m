@@ -7,8 +7,9 @@
 % #Author: Michael Mihocic: figure creation finished, Octave also supported; SOFA properties stored to csv files (09.07.2025)
 % #Author: Michael Mihocic: directivity creation based on R as parameter; first M is plotted; some bugs fixed (15.07.2025)
 % #Author: Piotr Majdak: added path to shared functions, moved the call to SOFA Properties to shared (27.12.2025)
-% #Author: Piotr Majdak: title "no valid data" if all data are NaNs, skips frequency if too far away (20.1.2025)
-% #Author: Piotr Majdak: cleaned up, mySOFA... functions removed (20.1.2025)
+% #Author: Piotr Majdak: title "no valid data" if all data are NaNs, skips frequency if too far away (20.1.2026)
+% #Author: Piotr Majdak: cleaned up, mySOFA... functions removed (20.1.2026)
+% #Author: Michael Mihocic: Fix when no pos is within 10° radius -> take lowest value; minor fixes; comments updated (30.09.2026)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -21,7 +22,7 @@
 function DirectivityGeneral(SOFAfile)
 
 	addpath('../shared'); % add the path to shared functions
-	isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
+	% isoctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
 
 	logfile="DirectivityGeneral.log";
 	fid = fopen(logfile, "w");
@@ -42,7 +43,7 @@ function DirectivityGeneral(SOFAfile)
     SOFAfile = fn;
 	end
 
-	Obj=SOFAload(SOFAfile); 	% Load SOFA file
+	Obj=SOFAload(SOFAfile); 	% Load SOFA file; 'mpdata' not possible
 
 	SaveSOFAproperties(Obj, SOFAfile);
 	fputs(fid, ["Successfully saved SOFA details to csv files\n"]);
@@ -79,7 +80,15 @@ function DirectivityGeneral(SOFAfile)
     freq = double(Obj.N);  % Frequency axis from file
     pos = Obj.ReceiverPosition(:,:);
 
-    mask = abs(pos(:,2)) <= 10; % get indices of azi 0 +/-10 deg
+    % Filter positions for horizontal ring; default tolerance: elevation within +/- 10 deg
+    mask = abs(pos(:,2)) <= 10;
+
+    % Update 09.2026: Fallback, if no positions fall within +/- 10 deg, select positions closest to elevation 0
+    if ~any(mask)
+        min_elev = min(abs(pos(:,2)));
+        mask = abs(abs(pos(:,2)) - min_elev) < 1e-3;
+    end
+
     pos_filtered = pos(mask, :);
     TF_filtered = TF(mask, :);
 
