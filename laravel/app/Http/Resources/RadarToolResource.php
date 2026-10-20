@@ -29,7 +29,7 @@ class RadarToolResource extends JsonResource
 			[
 				'schema' => [
 					'key' => 'RDDM',
-					'version' => '9.2',
+					'version' => '9.3',
 				],
                 'responsibleEmail' => $tool->user->email
 			],
