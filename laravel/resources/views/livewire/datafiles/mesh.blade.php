@@ -3,21 +3,13 @@
 
 
 	@if (substr($datafile->name, -4) === '.ply') 
-		<style>
-			#ply-viewer-container {
-				width: 100%;
-				height: 600px; /* Specify the height here, otherwise it may end up being 0! */
-				min-height: 400px; /* ensure it doesn't collapse */
-			}
-		</style>
-		<div 
-			id="ply-viewer-container" 
-			data-model="{{ $datafile->asset('') }}">
-		</div>
-		{{-- 
-			This pushes the Vite directive into the @stack('scripts') location
-			in your master layout. This script will ONLY be loaded on this page.
-		--}}
+		<progress id="progress{{ $datafile->id }}" value="0" max="1" class="w-full bg-gray-200 h-4 rounded-full transition-all duration-500"></progress>
+    <div
+        class="ply-viewer-container"
+        id="ply-viewer-container{{ $datafile->id }}"
+        data-model="{{ $datafile->asset('') }}"
+				style="width: 100%; height: 600px; min-height: 400px;"
+    </div>		
 		@push('scripts')
 			@vite('resources/js/ply-viewer.js')
 		@endpush
