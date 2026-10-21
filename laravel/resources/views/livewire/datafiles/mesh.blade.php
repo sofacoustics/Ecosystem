@@ -3,15 +3,24 @@
 
 
 	@if (substr($datafile->name, -4) === '.ply') 
-		<progress id="progress{{ $datafile->id }}" value="0" max="1" class="w-full bg-gray-200 h-4 rounded-full transition-all duration-500"></progress>
-    <div
-        class="ply-viewer-container"
-        id="ply-viewer-container{{ $datafile->id }}"
-        data-model="{{ $datafile->asset('') }}"
+		
+		<progress
+				id="progress{{ $datafile->id }}"
+				value="0"
+				max="1"
+				class="w-full bg-gray-200 h-4 rounded-full transition-all duration-500"
+		></progress>
+
+		<div
+				class="ply-viewer-container"
+				id="ply-viewer-container{{ $datafile->id }}"
+				data-model="{{ $datafile->asset('') }}"
+				data-progressbar="progress{{ $datafile->id }}"
 				style="width: 100%; height: 600px; min-height: 400px;"
-    </div>		
+		></div>
+
 		@push('scripts')
-			@vite('resources/js/ply-viewer.js')
+				@vite('resources/js/ply-viewer.js')
 		@endpush
 
 	@else
