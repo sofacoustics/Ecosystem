@@ -24,6 +24,7 @@ class WidgetSeeder extends Seeder
 				'key' => 'properties',
 				'name' => 'Properties',
 				'description' => 'Display datafile properties.',
+				'service_id' => null,
 				'view' => 'properties',
 			],
 			// 2
@@ -31,7 +32,7 @@ class WidgetSeeder extends Seeder
 				'key' => 'sofa-hrtf-general',
 				'name' => 'SOFA: HRTF General',
 				'description' => 'Plot HRTF-related figures: ETC, magnitude spectra (logarithmic and linear frequencies), ITD, and the geometry.',
-				'service_id' => 1,
+				'service_id' => Service::where('key', 'octave-hrtf-general')->first()->id,
 				'view' => 'hrtf-general',
 			],
 			// 3
@@ -39,6 +40,7 @@ class WidgetSeeder extends Seeder
 				'key' => 'image',
 				'name' => 'Image',
 				'description' => 'Display an image (PNG, JPG, WEBP, SVG, animated or static).',
+				'service_id' => null,
 				'view' => 'image',
 			],
 			// 4
@@ -54,6 +56,7 @@ class WidgetSeeder extends Seeder
 				'key' => 'audio',
 				'name' => 'Audio',
 				'description' => 'Display an audio player for the audio file.',
+				'service_id' => null,
 				'view' => 'audio',
 			],
 			// 6
@@ -69,7 +72,7 @@ class WidgetSeeder extends Seeder
 				'key' => 'sofa-srir-general',
 				'name' => 'SOFA: SRIR General',
 				'description' => 'Plot the geometry, and aplitude spectra of SRIRs.',
-				'service_id' => 4,
+				'service_id' => Service::where('key', 'octave-srir-geometry-per-m')->first()->id,
 				'view' => 'srir-general',
 			],
 			// 8
@@ -77,7 +80,7 @@ class WidgetSeeder extends Seeder
 				'key' => 'sofa-directivities-polar',
 				'name' => 'SOFA: Directivities Polar',
 				'description' => 'Plot the directivities as polar plots.',
-				'service_id' => 5,
+				'service_id' => Service::where('key', 'octave-directivities-general')->first()->id,
 				'view' => 'directivity-general',
 			],
 			// 9
@@ -85,7 +88,7 @@ class WidgetSeeder extends Seeder
 				'key' => 'sofa-metadata',
 				'name' => 'SOFA: Metadata',
 				'description' => 'Show SOFA Properties.',
-				'service_id' => 6,
+				'service_id' => Service::where('key', 'octave-sofa-properties')->first()->id,
 				'view' => 'sofa-properties',
 			],
 			// 10
@@ -93,6 +96,7 @@ class WidgetSeeder extends Seeder
 				'key' => 'geometry-mesh',
 				'name' => 'Geometry: Mesh',
 				'description' => 'Show Geometry as a mesh.',
+				'service_id' => null,
 				'view' => 'mesh',
 			],
 			// 11
@@ -100,7 +104,7 @@ class WidgetSeeder extends Seeder
 				'key' => 'geometry-bezierppm',
 				'name' => 'Geometry: BezierPPM',
 				'description' => 'Render a mesh with the BezierPPM.',
-				'service_id' => 7,
+				'service_id' => Service::where('key', 'blender-render-ppm')->first()->id,
 				'view' => 'bezierppm',
 			],
 			// 12
@@ -108,6 +112,7 @@ class WidgetSeeder extends Seeder
 				'key' => 'image-spherical',
 				'name' => 'Image: Spherical (JPG)',
 				'description' => 'Show a 360° image (interactive).',
+				'service_id' => null,
 				'view' => 'image-360',
 			],
 			// 13
@@ -115,7 +120,7 @@ class WidgetSeeder extends Seeder
 				'key' => 'sofa-annotated-receiver',
 				'name' => 'SOFA: AnnotatedReceiver',
 				'description' => 'Plot the progress of receivers.',
-				'service_id' => 8,
+				'service_id' => Service::where('key', 'octave-annotated-receiver')->first()->id,
 				'view' => 'annotated-receiver',
 			],
 			// 14
@@ -123,7 +128,7 @@ class WidgetSeeder extends Seeder
 				'key' => 'sofa-headphones-general',
 				'name' => 'SOFA: Headphones General',
 				'description' => 'Plot spectra of headphones.',
-				'service_id' => 9,
+				'service_id' => Service::where('key', 'octave-headphones')->first()->id,
 				'view' => 'headphones-general',
 			],
 			// 15
@@ -131,14 +136,15 @@ class WidgetSeeder extends Seeder
 				'key' => 'sofa-selfone',
 				'name' => 'SOFA: Selfone',
 				'description' => 'Plot data of a headphone with multiple microphones and drivers (Selfone): energy distribution, amplitude spectra, and the geometry.',
-				'view' => 'headphones-selfone',
 				'service_id' => Service::where('key', 'octave-selfone')->first()->id,
+				'view' => 'headphones-selfone',
 			],
 			// 16
 			[
 				'key' => 'csv-table',
 				'name' => 'CSV Table',
 				'description' => 'Display CSV data as a table',
+				'service_id' => null,
 				'view' => 'csv-table',
 			],
 
