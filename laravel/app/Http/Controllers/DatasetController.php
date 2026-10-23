@@ -12,6 +12,12 @@ use Illuminate\Support\Facades\Cache;
 
 class DatasetController extends Controller
 {
+	public function __construct()
+	{
+		// Automatically protects: index, show, create, store, edit, update, destroy using DatasetPolicy
+		$this->authorizeResource(Dataset::class, 'dataset');
+	}
+
 	/**
 	 * Display a listing of the resource.
 	 */
@@ -26,7 +32,6 @@ class DatasetController extends Controller
 	 */
 	public function create(Database $database)
 	{
-		$this->authorize('create', $database);
 		Cache::forget('database' . $database->id);
 		return view('datasets.create', ['database' => $database]);
 	}
@@ -44,8 +49,6 @@ class DatasetController extends Controller
 	 */
 	public function show(Dataset $dataset)
 	{
-		if (!($dataset->database->visible))
-			$this->authorize('view', $dataset);	// if database not visible, check if the user allowed to see the dataset
 		return view('datasets.show', ['dataset' => $dataset]);
 	}
 
@@ -72,7 +75,6 @@ class DatasetController extends Controller
 	 */
 	public function destroy(Dataset $dataset)
 	{
-		$this->authorize('delete', $dataset);
 		$dataset->database->touch();
 		$dataset->delete();
 		Cache::forget('database' . $dataset->database->id);
