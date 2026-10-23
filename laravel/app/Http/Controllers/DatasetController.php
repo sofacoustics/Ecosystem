@@ -31,12 +31,6 @@ class DatasetController extends Controller
 		return view('datasets.create', ['database' => $database]);
 	}
 
-	public function bulkupload(Database $database)
-	{		// PM: Do we need this function at all???
-	  dd("if you see this, DatasetController::bulkupload has been called");
-		return view('datasets.bulkupload', ['database' => $database]);
-	}
-
 	/**
 	 * Store a newly created resource in storage.
 	 */

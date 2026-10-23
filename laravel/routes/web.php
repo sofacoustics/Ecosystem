@@ -76,75 +76,119 @@ Route::view('/scenarios', 'pages.scenarios')->name('scenarios');
 Route::view('/challenges', 'pages.challenges')->name('challenges');
 Route::view('/terms-of-use', 'pages.terms-of-use')->name('terms-of-use');
 
-// DATABASE (auth specified in __construct())
-//
+////////////////////////////////////////////////////////////////////////////////
+// DATABASE
+////////////////////////////////////////////////////////////////////////////////
 //jw:note If you specify 'database' where the id is in the URL, then it will be used to get model data for the controller method
 //jw:note 'implicit binding' https://laravel.com/docs/11.x/routing#implicit-binding
-Route::resource('databases', DatabaseController::class);
-Route::get('/databases/{database}/datathek', [DatabaseController::class, 'datathek'])->name('databases.datathek')->middleware('admin'); // display Datathek status and actions for admin testing
-Route::get('/databases/{database}/services', [DatabaseController::class, 'services'])->name('databases.services')->middleware('admin'); // display Services status and actions for admin testing
-Route::get('/databases/{database}/servicelog/removejob', [ServiceLogController::class, 'removejob'])->name('servicelog.removejob')->middleware('admin');
-Route::get('/databases/{database}/datasetdefs', [DatabaseController::class, 'datasetdefs'])->name('databases.datasetdefs');
-Route::get('/databases/{database}/datasetdefs/up', [DatabaseController::class, 'datasetdefup'])->name('datasetdefs.up');
-Route::get('/databases/{database}/datasetdefs/down', [DatabaseController::class, 'datasetdefdown'])->name('datasetdefs.down');
-Route::get('/databases/{database}/creators', [CreatorController::class, 'index'])->name('databases.creators');
-Route::get('/databases/{database}/creators/up', [CreatorController::class, 'up'])->name('creators.up');
-Route::get('/databases/{database}/creators/down', [CreatorController::class, 'down'])->name('creators.down');
-Route::get('/databases/{database}/publishers', [PublisherController::class, 'index'])->name('databases.publishers');
-Route::get('/databases/{database}/publishers/up', [PublisherController::class, 'up'])->name('publishers.up');
-Route::get('/databases/{database}/publishers/down', [PublisherController::class, 'down'])->name('publishers.down');
-Route::get('/databases/{database}/subjectareas', [SubjectAreaController::class, 'index'])->name('databases.subjectareas');
-Route::get('/databases/{database}/rightsholders', [RightsholderController::class, 'index'])->name('databases.rightsholders');
-Route::get('/databases/{database}/rightsholders/up', [RightsholderController::class, 'up'])->name('rightsholders.up');
-Route::get('/databases/{database}/rightsholders/down', [RightsholderController::class, 'down'])->name('rightsholders.down');
-Route::get('/databases/{database}/keywords', [KeywordController::class, 'index'])->name('databases.keywords');
-Route::get('/databases/{database}/keywords/up', [KeywordController::class, 'up'])->name('keywords.up');
-Route::get('/databases/{database}/keywords/down', [KeywordController::class, 'down'])->name('keywords.down');
-Route::get('/databases/{database}/relatedidentifiers', [RelatedIdentifierController::class, 'index'])->name('databases.relatedidentifiers');
-Route::get('/databases/{database}/relatedidentifiers/up', [RelatedIdentifierController::class, 'up'])->name('relatedidentifiers.up');
-Route::get('/databases/{database}/relatedidentifiers/down', [RelatedIdentifierController::class, 'down'])->name('relatedidentifiers.down');
-Route::get('/databases/{database}/update', [DatabaseController::class, 'upload'])->name('databases.upload');
-Route::get('/databases/{database}/download', [DatabaseController::class, 'download'])->name('databases.download');
-Route::get('/databases/{database}/purge', [DatabaseController::class, 'purge'])->name('databases.purge');
-Route::get('/databases/{database}/showdatasets', [DatabaseController::class, 'showdatasets'])->name('databases.showdatasets');
-Route::get('/databases/{database}/comments', [CommentController::class, 'index'])->name('databases.comments');
-Route::get('/databases/{database}/datasets/bulkupload', [DatasetController::class, 'bulkupload'])->name('databases.datasets.bulkupload');
-Route::get('/databases/{database}/visibility', [DatabaseController::class, 'visibility'])->name('databases.visibility');
-Route::get('/databases/{database}/duplicate', [DatabaseController::class, 'duplicate'])->name('databases.duplicate');
 
+// All CRUD routes are protected in the controller __construct() function by the $this->authorizeResource(Database::class, 'database'); function
+Route::resource('databases', DatabaseController::class);
+
+// Grouping all non CRUD routes so we don't need to specify /database/{database} for every route
+Route::prefix('databases/{database}')->group(function () {
+
+	// admin routes
+	Route::middleware(['auth', 'admin'])->group(function () {
+		Route::get('/datathek', [DatabaseController::class, 'datathek'])->name('databases.datathek'); // display Datathek status and actions for admin testing
+		Route::get('/services', [DatabaseController::class, 'services'])->name('databases.services'); // display Services status and actions for admin testing
+		Route::get('/servicelog/removejob', [ServiceLogController::class, 'removejob'])->name('servicelog.removejob');
+	});
+
+	// owner routes ('own' policy)
+	Route::middleware(['auth', 'can:own,database'])->group(function () { 
+		Route::get('/update', [DatabaseController::class, 'upload'])->name('databases.upload'); // bulk upload
+		Route::get('/subjectareas', [SubjectAreaController::class, 'index'])->name('databases.subjectareas');
+		Route::get('/rightsholders', [RightsholderController::class, 'index'])->name('databases.rightsholders');
+		Route::get('/rightsholders/up', [RightsholderController::class, 'up'])->name('rightsholders.up');
+		Route::get('/rightsholders/down', [RightsholderController::class, 'down'])->name('rightsholders.down');
+		Route::get('/keywords', [KeywordController::class, 'index'])->name('databases.keywords');
+		Route::get('/keywords/up', [KeywordController::class, 'up'])->name('keywords.up');
+		Route::get('/keywords/down', [KeywordController::class, 'down'])->name('keywords.down');
+		Route::get('/relatedidentifiers', [RelatedIdentifierController::class, 'index'])->name('databases.relatedidentifiers');
+		Route::get('/creators', [CreatorController::class, 'index'])->name('databases.creators');
+		Route::get('/creators/up', [CreatorController::class, 'up'])->name('creators.up');
+		Route::get('/creators/down', [CreatorController::class, 'down'])->name('creators.down');
+		Route::get('/publishers', [PublisherController::class, 'index'])->name('databases.publishers');
+		Route::get('/publishers/up', [PublisherController::class, 'up'])->name('publishers.up');
+		Route::get('/publishers/down', [PublisherController::class, 'down'])->name('publishers.down');
+		Route::get('/purge', [DatabaseController::class, 'purge'])->name('databases.purge');
+		Route::get('/relatedidentifiers/up', [RelatedIdentifierController::class, 'up'])->name('relatedidentifiers.up');
+		Route::get('/relatedidentifiers/down', [RelatedIdentifierController::class, 'down'])->name('relatedidentifiers.down');
+		Route::get('/visibility', [DatabaseController::class, 'visibility'])->name('databases.visibility');
+		Route::get('/datasetdefs/up', [DatabaseController::class, 'datasetdefup'])->name('datasetdefs.up');
+		Route::get('/datasetdefs/down', [DatabaseController::class, 'datasetdefdown'])->name('datasetdefs.down');
+		Route::get('/duplicate', [DatabaseController::class, 'duplicate'])->name('databases.duplicate');
+	});
+
+	// auth routes (logged in users)
+	Route::middleware(['auth'])->group(function () {
+		Route::get('/comments', [CommentController::class, 'index'])->name('databases.comments');
+	});
+
+	// public routes ('view' policy protects hidden databases)
+	Route::middleware(['auth', 'can:view,database'])->group(function () {
+		Route::get('/download', [DatabaseController::class, 'download'])->name('databases.download');
+		Route::get('/datasetdefs', [DatabaseController::class, 'datasetdefs'])->name('databases.datasetdefs');
+		Route::get('/showdatasets', [DatabaseController::class, 'showdatasets'])->name('databases.showdatasets');
+	});
+});
+
+////////////////////////////////////////////////////////////////////////////////
 // DATASET
+////////////////////////////////////////////////////////////////////////////////
 Route::resource('datasets', DatasetController::class);
 Route::resource('databases.datasets', DatasetController::class); // /databases/{{database}}/datasets (https://davecalnan.blog/laravel-routing-gotchas)
 Route::post('/datasets/{dataset}/uploadtoradar', [DatasetController::class, 'uploadtoradar'])->name('datasets.uploadtoradar');
 Route::delete('/datasets/{dataset}/deletefromradar', [DatasetController::class, 'deletefromradar'])->name('datasets.deletefromradar');
+////////////////////////////////////////////////////////////////////////////////
 // DATAFILES
+////////////////////////////////////////////////////////////////////////////////
 Route::resource('datafiles', DatafileController::class);
 Route::post('/datafiles/{datafile}/uploadtoradar', [DatafileController::class, 'uploadtoradar'])->name('datafiles.uploadtoradar');
 Route::delete('/datafiles/{datafile}/deletefromradar', [DatafileController::class, 'deletefromradar'])->name('datafiles.deletefromradar');
 Route::post('/datafiles/{datafile}/rerunservice', [DatafileController::class, 'rerunService'])->name('datafiles.rerunservice')->middleware('auth', 'role:admin');
+////////////////////////////////////////////////////////////////////////////////
 // DATASETDEFS
+////////////////////////////////////////////////////////////////////////////////
 Route::resource('datasetdefs', DatasetdefController::class);
 Route::get('datasetdefs/{datasetdef}/duplicate', [DatasetdefController::class, 'duplicate'])->name('datasetdefs.duplicate');
 Route::post('datasetdefs/{datasetdef}/rerunservice', [DatasetdefController::class, 'rerunService'])->name('datasetdefs.rerunservice')->middleware('auth', 'role:admin');
-
+////////////////////////////////////////////////////////////////////////////////
 // CREATORS
+////////////////////////////////////////////////////////////////////////////////
 Route::resource('creators', CreatorController::class);
+////////////////////////////////////////////////////////////////////////////////
 // Publishers
+////////////////////////////////////////////////////////////////////////////////
 Route::resource('publishers', PublisherController::class);
+////////////////////////////////////////////////////////////////////////////////
 // SubjectAreas
+////////////////////////////////////////////////////////////////////////////////
 Route::resource('subjectareas', SubjectAreaController::class);
+////////////////////////////////////////////////////////////////////////////////
 // Rightsholders
+////////////////////////////////////////////////////////////////////////////////
 Route::resource('rightsholders', RightsholderController::class);
+////////////////////////////////////////////////////////////////////////////////
 // Keywords
+////////////////////////////////////////////////////////////////////////////////
 Route::resource('keywords', KeywordController::class);
-// Keywords
+////////////////////////////////////////////////////////////////////////////////
+// RelatedIdentifiers
+////////////////////////////////////////////////////////////////////////////////
 Route::resource('relatedidentifiers', RelatedIdentifierController::class);
+////////////////////////////////////////////////////////////////////////////////
 // Comments
-Route::resource('comments', CommentController::class);
-
+////////////////////////////////////////////////////////////////////////////////
+Route::resource('comments', CommentController::class)->only('index','create','edit','update','destroy');
+////////////////////////////////////////////////////////////////////////////////
 /// WIDGETs
+////////////////////////////////////////////////////////////////////////////////
 Route::resource('widgets', WidgetController::class);
+////////////////////////////////////////////////////////////////////////////////
 /// TOOLS
+////////////////////////////////////////////////////////////////////////////////
 Route::resource('tools', ToolController::class);
 Route::get('/tools/{tool}/comments', [CommentController::class, 'index'])->name('tools.comments');
 Route::get('/tools/{tool}/upload', [ToolController::class, 'upload'])->name('tools.upload');
@@ -157,11 +201,13 @@ Route::get('/tools/{tool}/keywords', [KeywordController::class, 'index'])->name(
 Route::get('/tools/{tool}/relatedidentifiers', [RelatedIdentifierController::class, 'index'])->name('tools.relatedidentifiers');
 Route::get('/tools/{tool}/datathek', [ToolController::class, 'datathek'])->name('tools.datathek')->middleware('admin'); // display Datathek status and actions for admin testing
 Route::get('/tools/{tool}/duplicate', [ToolController::class, 'duplicate'])->name('tools.duplicate');
-
+////////////////////////////////////////////////////////////////////////////////
 /// SERVICEs
+////////////////////////////////////////////////////////////////////////////////
 Route::resource('services', ServiceController::class);
-
+////////////////////////////////////////////////////////////////////////////////
 /// PROFILE
+////////////////////////////////////////////////////////////////////////////////
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
