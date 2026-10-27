@@ -11,6 +11,7 @@
 % #Author: Piotr Majdak: added path to shared functions, moved the call to SOFA Properties to shared (27.12.2025)
 % #Author: Michael Mihocic: title added to median plane log figures; ignoring mylog function on Matlab (16.06.2026)
 % #Author: Michael Mihocic: supporting 'SimpleFreeFieldSOS' data type (data is converted to FIR); added robustness for non-integer length values after conversion (18.06.2026)
+% #Author: Michael Mihocic: slow plotting of loop-in-loop significantly improved (27.10.2026)
 %
 % Copyright (C) Acoustics Research Institute - Austrian Academy of Sciences
 % Licensed under the EUPL, Version 1.2 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "License")
@@ -855,12 +856,21 @@ switch Obj0.GLOBAL_SOFAConventions
         for ii=2:size(EP,1)
           plot3(SP(1,1)+EP(ii,1), SP(1,2)+EP(ii,2), SP(1,3)+EP(ii,3),'b+','MarkerSize',8);
         end
-        % plot all Emitters for each Source
-        for jj=2:size(SP,1)
-          for ii=1:size(EP,1)
-            plot3(SP(jj,1)+EP(ii,1), SP(jj,2)+EP(ii,2), SP(jj,3)+EP(ii,3),'b+');
-          end
-        end
+        % plot all Emitters for each Source, long loop in loop processing removed
+        %        for jj=2:size(SP,1)
+        %          for ii=1:size(EP,1)
+        %            plot3(SP(jj,1)+EP(ii,1), SP(jj,2)+EP(ii,2), SP(jj,3)+EP(ii,3),'b+');
+        %          end
+        %S        end
+
+        % All combinations SP(jj,:) + EP(ii,:), more efficient than the 2 loops above:
+        X = SP(:,1) + EP(:,1).';   % 1730 x 25
+        Y = SP(:,2) + EP(:,2).';   % 1730 x 25
+        Z = SP(:,3) + EP(:,3).';   % 1730 x 25
+
+        plot3(X(:), Y(:), Z(:), 'b+');
+
+
       end
     end
     if exist('LV','var')
