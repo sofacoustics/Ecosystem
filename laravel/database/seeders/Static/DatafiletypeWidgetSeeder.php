@@ -113,6 +113,7 @@ class DatafiletypeWidgetSeeder extends Seeder
 		$datafiletype = Datafiletype::where('key', 'other-any-type')->first();
 		$datafiletype->widgets()->sync([
 			Widget::where('key', 'properties')->first()->id => ['is_active' => 1],
+			Widget::where('key', 'csv-table')->first()->id => ['is_active' => 1],
 		]);
 		$datafiletype = Datafiletype::where('key', 'neural-network-pytorch')->first();
 		$datafiletype->widgets()->sync([
