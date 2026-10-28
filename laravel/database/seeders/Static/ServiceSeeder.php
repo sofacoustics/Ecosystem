@@ -110,6 +110,15 @@ class ServiceSeeder extends Seeder
 				'parameters' => 'Selfone.m',
 				'timeout' => '900',
 			],
+			// 11
+			[
+				'key' => 'octave-srir-geometry-all-m',
+				'name' => 'Octave: SRIR General (all M)',
+				'description' => 'Plot SRIR General, all measurements.',
+				'exe' => 'sudo -u sonicom /opt/scripts/run-octave-gui.sh',
+				'parameters' => 'SRIRGeneralAllM.m',
+				'timeout' => '900'
+			],
 		];
 
 		foreach ($services as $service) {

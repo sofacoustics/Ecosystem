@@ -39,6 +39,7 @@ class DatafiletypeWidgetSeeder extends Seeder
 			Widget::where('key', 'properties')->first()->id => ['is_active' => 1],
 			Widget::where('key', 'sofa-metadata')->first()->id => ['is_active' => 1],
 			Widget::where('key', 'sofa-srir-general')->first()->id => ['is_active' => 1],
+			Widget::where('key', 'sofa-srir-general-all-m')->first()->id => ['is_active' => 1],
 		]);
 		$datafiletype = Datafiletype::where('key', 'spatial-acoustics-directivities-sofa')->first();
 		$datafiletype->widgets()->sync([

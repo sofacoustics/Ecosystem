@@ -147,7 +147,14 @@ class WidgetSeeder extends Seeder
 				'service_id' => null,
 				'view' => 'csv-table',
 			],
-
+			// 17
+			[
+				'key' => 'sofa-srir-general-all-m',
+				'name' => 'SOFA: SRIR General (all M)',
+				'description' => 'Plot the geometry, and aplitude spectra of SRIRs, all measurements.',
+				'service_id' => Service::where('key', 'octave-srir-geometry-all-m')->first()->id,
+				'view' => 'srir-general',
+			],
 		];
 
 		foreach ($widgets as $widget) {
