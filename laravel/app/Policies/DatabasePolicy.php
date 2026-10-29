@@ -13,7 +13,7 @@ class DatabasePolicy
 	 */
 	public function viewAny(?User $user): bool
 	{
-		return true; // anyone can view the database index page. Filter out hidden databases in the index() controller function
+		return true;
 	}
 
 	/**
@@ -21,17 +21,19 @@ class DatabasePolicy
 	 */
 	public function view(?User $user, Database $database): Response
 	{
-		// Access only if public or owned by the user or admin
-		if($database->visible === 1) {
-			return Response::allow();
+			// Access only if public or owned by the user or admin
+		if(isset($user->id))
+		{
+			if(auth()->user()->hasRole('admin'))
+				$access = true;
+			else
+				$access = ($user->id == $database->user_id) || $database->visible;
 		}
-    if ($user === null) {
-        return Response::deny('You must be logged in to access this hidden database.');
-    }
-		if($user->hasRole('admin') || $user->id === $database->user_id) {
-			return Response::allow();
-		}
-		return Response::deny('You must be logged in to access this hidden database.');
+		else
+			$access = $database->visible; // visible only
+		return $access
+					? Response::allow()
+					: Response::deny('You can not see this database because it is not public and you do not own it!');
 	}
 
 	/**
@@ -99,36 +101,4 @@ class DatabasePolicy
 			? Response::allow()
 			: Response::deny('You can not delete this database because you do not own it or it is locked for persistent publication!');
 	}
-
-
-	/**
-	 * Protect the download function
-	 */
-	public function download(?User $user, Database $database): Response
-	{
-		if($database->visible == 1) {
-			return Response::allow();
-		}
-    if ($user === null) {
-        return Response::deny('You must be logged in to access this hidden database.');
-    }
-		if($user->hasRole('admin') || $user->id === $database->user_id) {
-			return Response::allow();
-		}
-		return Response::deny('You may not download this database because it is currently hidden!');
-	}
-
-	/**
-	 * Protect 'comment' function
-	 */
-	public function comment(User $user, Database $database): Response
-	{
-		if($database->visible == 1) {
-			return Response::allow();
-		}
-		// return Response::deny('You may not comment on hidden databases!');
-		return Response::allow();
-	}
-
-
 }

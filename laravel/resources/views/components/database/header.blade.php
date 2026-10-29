@@ -100,7 +100,7 @@
 	@if(count($database->datasetdefs))
 		<x-button class="inline" method="GET" action="{{ route('databases.showdatasets', $database->id) }}">Datasets</x-button>
 	@endif
-	
+
 	@if(count($database->datasets))
 		<x-button class="inline" method="GET" action="{{ route('databases.download', $database->id) }}">Downloads</x-button>
 	@endif
