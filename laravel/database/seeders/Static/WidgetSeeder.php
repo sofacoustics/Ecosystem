@@ -70,7 +70,7 @@ class WidgetSeeder extends Seeder
 			// 7
 			[
 				'key' => 'sofa-srir-general',
-				'name' => 'SOFA: SRIR General',
+				'name' => 'SOFA: SRIR General (visualize first 20 Ms)',
 				'description' => 'Plot the geometry, and aplitude spectra of SRIRs.',
 				'service_id' => Service::where('key', 'octave-srir-geometry-per-m')->first()->id,
 				'view' => 'srir-general',
@@ -150,7 +150,7 @@ class WidgetSeeder extends Seeder
 			// 17
 			[
 				'key' => 'sofa-srir-general-all-m',
-				'name' => 'SOFA: SRIR General (all M)',
+				'name' => 'SOFA: SRIR General (visualize all Ms)',
 				'description' => 'Plot the geometry, and aplitude spectra of SRIRs, all measurements.',
 				'service_id' => Service::where('key', 'octave-srir-geometry-all-m')->first()->id,
 				'view' => 'srir-general',
