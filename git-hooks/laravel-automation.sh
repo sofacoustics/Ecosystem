@@ -41,7 +41,7 @@ else
 	echo "No config changes detected. Skipping config cache."
 fi
 # Check for changes in route files
-if echo "$changed_files" | grep -qE '^laravel/route/.*\.php'; then
+if echo "$changed_files" | grep -qE '^laravel/routes/.*\.php'; then
 	echo "Route changes detected. Recaching route..."
 	php artisan route:cache
 else
