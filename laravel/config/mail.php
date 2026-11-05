@@ -108,9 +108,7 @@ return [
 	| then all users with the 'admin' role will be added in the AppServiceProvider
 	|
 	 */
-	'to' => [
-		'admins' => env('MAIL_ADMINS', ''),
-	],
+	'admins' => env('MAIL_ADMINS') ? explode(',', env('MAIL_ADMINS')) : [],
 
     /*
     |--------------------------------------------------------------------------
