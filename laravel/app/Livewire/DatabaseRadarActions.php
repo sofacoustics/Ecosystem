@@ -7,10 +7,14 @@ use Livewire\Component;
 use App\Events\DatabasePersistentPublicationApproved;
 use App\Events\DatabasePersistentPublicationRejected;
 use App\Jobs\DatabasePublishToRadar;
-use App\Services\DatabaseRadarDatasetBridge;
-use Illuminate\Support\Facades\DB;
+use App\Jobs\DatasetUploadBatchToRadar;
 use App\Models\Datafile;
-
+use App\Models\User;
+use App\Services\DatabaseRadarDatasetBridge;
+use Illuminate\Bus\Batch;
+use Illuminate\Support\Facades\Bus; 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -118,6 +122,77 @@ class DatabaseRadarActions extends Component
 		if(!$radar->upload())
 			$this->error = $radar->message.' ('.$radar->details.')';
 		$this->dispatch('status-message', $radar->message);
+		$this->refreshStatus();
+	}
+
+	/*
+	 * Upload the database in batches to RADAR
+	 */
+	public function uploadToRadarInBatches()
+	{
+		$this->reset('error');
+		$this->dispatch('status-message', 'Starting upload to radar in batches.');
+
+		// 1. Ensure $user is defined in this scope
+		$user = auth()->user(); 
+		$userId = $user->id; // Extract the ID to avoid serialization/stale data issues
+
+
+		// 1. Send email that upload has started
+
+		//jw:todo
+
+		$nChunks = 2; // the number of datafiles per job
+		$jobs = [];
+
+		$this->database->datasets()->chunkById($nChunks, function ($datasets) use (&$jobs) {
+				$datasetIds = $datasets->pluck('id')->toArray();
+				// Push the job instance into your array
+				$jobs[] = new DatasetUploadBatchToRadar($datasetIds);
+		});
+
+		Log::info('Total jobs to dispatch: ' . count($jobs));
+
+		// Now $jobs is populated, so you can dispatch your batch here:
+		$batch = Bus::batch($jobs)
+			->onQueue('uploads')
+			->then(function (Batch $batch) use ($userId) {
+				// Executed once ALL jobs in the batch complete successfully!
+				// Re-query the user inside the callback using the ID
+				$user = User::find($userId);
+				//jw:todo Mail::to($user)->send(new UploadCompletedNotification());
+				app('log')->info('DatasetBatchUploadToRadar "then"', [
+					'feature' => 'database-radar-dataset',
+					'database_id' => $this->database->id,
+					'radar_id' => $this->database->radar_id,
+					'target_url' => config('services.radar.baseurl')
+				]);
+			})
+			->catch(function (Batch $batch, Throwable $e) use ($userId) {
+				// Executed if any job in the batch fails permanently
+				$user = User::find($userId);
+				//jw:todo Mail::to($user)->send(new UploadFailedNotification($e));
+				app('log')->info('DatasetBatchUploadToRadar "catch"', [
+					'feature' => 'database-radar-dataset',
+					'database_id' => $this->database->id,
+					'radar_id' => $this->database->radar_id,
+					'target_url' => config('services.radar.baseurl')
+				]);
+			})
+			->finally(function (Batch $batch) {
+					// Executed once the batch has finished (success or failure)
+					// Good place for cleanup tasks (e.g., deleting temporary records)
+
+					app('log')->info('DatasetBatchUploadToRadar "finally"', [
+						'feature' => 'database-radar-dataset',
+						'database_id' => $this->database->id,
+						'radar_id' => $this->database->radar_id,
+						'target_url' => config('services.radar.baseurl')
+					]);
+
+			})
+			->dispatch();
+
 		$this->refreshStatus();
 	}
 

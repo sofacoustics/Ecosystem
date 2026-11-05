@@ -54,6 +54,10 @@
 	@if($canUpload)
 		<x-livewire-button wire:click="uploadToRadar" loading="Uploading...">Upload to RADAR</x-livewire-button>
 	@endif
+
+	<x-livewire-button wire:click="uploadToRadarInBatches" loading="Uploading...">Upload to RADAR in batches</x-livewire-button>
+
+
 	<x-livewire-button wire:click="emptyDataset" :disabled="empty($size)" loading="Emptying..." title="Empty the RADAR dataset (remove the data, but keep the metadata and DOI)">Empty dataset</x-livewire-button>
 
 	<x-livewire-button style='delete' wire:click="resetDOI"
