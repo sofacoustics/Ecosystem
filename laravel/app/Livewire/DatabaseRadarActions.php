@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\Attributes\On;
 
 use App\Actions\DatabaseDispatchDatasetsInBatchToRadar;
 use App\Events\DatabasePersistentPublicationApproved;
@@ -41,6 +42,16 @@ class DatabaseRadarActions extends Component
 	public $canUpload = false;
 
 	public $error; // any error message to display
+
+	#[On('echo:sonicom-ecosystem,.database-published-awaiting-approval')]
+	public function handleDatabasePublishedAwaitingApproval($event)
+	{
+		// Access the 'id' from the broadcast payload
+		$id = $event['id'] ?? null; 
+		if($id == $this->database->id) {
+			$this->refreshStatus(); // refresh if this database has been published and is awaiting approval
+		}
+	}
 
 	public function mount($database)
 	{
@@ -324,8 +335,6 @@ class DatabaseRadarActions extends Component
 			$this->setState('');
 		}
 		$this->radar_status = $this->database->radar_status;
-		// This will run console.log in the browser
-		$this->js("console.log('Poll executed at: ' + new Date().toLocaleTimeString())");
 	}
 }
 
