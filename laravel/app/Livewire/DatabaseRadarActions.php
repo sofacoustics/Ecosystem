@@ -4,10 +4,11 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
+use App\Actions\DatabaseDispatchDatasetsInBatchToRadar;
 use App\Events\DatabasePersistentPublicationApproved;
 use App\Events\DatabasePersistentPublicationRejected;
 use App\Jobs\DatabasePublishToRadar;
-use App\Jobs\DatasetUploadBatchToRadar;
+use App\Jobs\DatabasePublishInBatchToRadar;
 use App\Models\Datafile;
 use App\Models\User;
 use App\Services\DatabaseRadarDatasetBridge;
@@ -132,66 +133,9 @@ class DatabaseRadarActions extends Component
 	{
 		$this->reset('error');
 		$this->dispatch('status-message', 'Starting upload to radar in batches.');
+		$userId = auth()->user()->id;
 
-		// 1. Ensure $user is defined in this scope
-		$user = auth()->user(); 
-		$userId = $user->id; // Extract the ID to avoid serialization/stale data issues
-
-
-		// 1. Send email that upload has started
-
-		//jw:todo
-
-		$nChunks = 2; // the number of datafiles per job
-		$jobs = [];
-
-		$this->database->datasets()->chunkById($nChunks, function ($datasets) use (&$jobs) {
-				$datasetIds = $datasets->pluck('id')->toArray();
-				// Push the job instance into your array
-				$jobs[] = new DatasetUploadBatchToRadar($datasetIds);
-		});
-
-		Log::info('Total jobs to dispatch: ' . count($jobs));
-
-		// Now $jobs is populated, so you can dispatch your batch here:
-		$batch = Bus::batch($jobs)
-			->onQueue('uploads')
-			->then(function (Batch $batch) use ($userId) {
-				// Executed once ALL jobs in the batch complete successfully!
-				// Re-query the user inside the callback using the ID
-				$user = User::find($userId);
-				//jw:todo Mail::to($user)->send(new UploadCompletedNotification());
-				app('log')->info('DatasetBatchUploadToRadar "then"', [
-					'feature' => 'database-radar-dataset',
-					'database_id' => $this->database->id,
-					'radar_id' => $this->database->radar_id,
-					'target_url' => config('services.radar.baseurl')
-				]);
-			})
-			->catch(function (Batch $batch, Throwable $e) use ($userId) {
-				// Executed if any job in the batch fails permanently
-				$user = User::find($userId);
-				//jw:todo Mail::to($user)->send(new UploadFailedNotification($e));
-				app('log')->info('DatasetBatchUploadToRadar "catch"', [
-					'feature' => 'database-radar-dataset',
-					'database_id' => $this->database->id,
-					'radar_id' => $this->database->radar_id,
-					'target_url' => config('services.radar.baseurl')
-				]);
-			})
-			->finally(function (Batch $batch) {
-					// Executed once the batch has finished (success or failure)
-					// Good place for cleanup tasks (e.g., deleting temporary records)
-
-					app('log')->info('DatasetBatchUploadToRadar "finally"', [
-						'feature' => 'database-radar-dataset',
-						'database_id' => $this->database->id,
-						'radar_id' => $this->database->radar_id,
-						'target_url' => config('services.radar.baseurl')
-					]);
-
-			})
-			->dispatch();
+		app(DatabaseDispatchDatasetsInBatchToRadar::class)->handle($this->database, $userId, false); // 'false' means we don't test 'review' here (separate test function).
 
 		$this->refreshStatus();
 	}
@@ -200,7 +144,14 @@ class DatabaseRadarActions extends Component
 	{
 		$this->reset('error');
 		$this->dispatch('status-message', 'Starting upload to RADAR via job.');
-		DatabasePublishToRadar::dispatch($this->database, auth()->user);
+		DatabasePublishToRadar::dispatch($this->database, auth()->user());
+	}
+
+	public function publishInBatchToRadar()
+	{
+		$this->reset('error');
+		$this->dispatch('status-message', 'Starting upload to RADAR via batch job.');
+		DatabasePublishInBatchToRadar::dispatch($this->database, auth()->user());
 	}
 
 	/*
@@ -347,7 +298,7 @@ class DatabaseRadarActions extends Component
 	}
 
 	public function refreshStatus()
-    {
+  {
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if($radar->read())
 		{
@@ -373,8 +324,9 @@ class DatabaseRadarActions extends Component
 			$this->setState('');
 		}
 		$this->radar_status = $this->database->radar_status;
+		// This will run console.log in the browser
+		$this->js("console.log('Poll executed at: ' + new Date().toLocaleTimeString())");
 	}
-	
 }
 
 

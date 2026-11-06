@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Dataset;
+use App\Services\DatasetRadarFolderBridge;
 
 use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -12,7 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class DatasetUploadBatchToRadar implements ShouldQueue
+class DatasetUploadInBatchToRadar implements ShouldQueue
 {
 	use Queueable;
 	use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -33,7 +34,6 @@ class DatasetUploadBatchToRadar implements ShouldQueue
 		// $this->queue = 'uploads'; // this is set in the Bus::batch call
 	}
 
-// Alternatively, if you want progressive backoff, you can use a method instead:
   public function backoff(): array
 	{
 		return [30, 60, 120]; // 30s, then 60s, then 120s
@@ -55,7 +55,7 @@ class DatasetUploadBatchToRadar implements ShouldQueue
 			'timeout' => $this->timeout
 		]);
 
-		Log::info("Processing job {$this->job->getJobId()} in batch {$this->batchId}");
+		Log::debug("Processing job {$this->job->getJobId()} in batch {$this->batchId}");
 
 		if ($this->batch()->cancelled()) {
 			return;
@@ -69,7 +69,27 @@ class DatasetUploadBatchToRadar implements ShouldQueue
 
 		foreach ($datasets as $dataset) {
 			// Perform your file upload logic for each dataset here...
-			Log::info("Processing dataset $dataset->id in job {$this->job->getJobId()} in batch {$this->batchId}");
+			Log::debug("Processing dataset $dataset->id in job {$this->job->getJobId()} in batch {$this->batchId}");
+
+			$radar = new DatasetRadarFolderBridge($dataset);
+			if(!$radar->upload())
+			{
+				// failed to upload an Ecosystem dataset
+				$this->message = $radar->message;
+				$this->details = $radar->details;
+				Log::error('Failed to upload dataset to radar', [
+					'feature' => 'database-radar-dataset',
+					'target_url' => config('services.radar.baseurl'),
+					'queue' => $this->queue,
+					'batch_id' => $this->batchId,
+					'job_id' => $this->job->getJobId(),
+					'tries' => $this->tries,
+					'backoff' => $this->backoff(),
+					'maxExceptions' => $this->maxExceptions,
+					'timeout' => $this->timeout
+				]);
+				break;
+			}
 		}
 	}
 }

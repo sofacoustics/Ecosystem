@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Jobs\DatabasePublishToRadar;
+use App\Jobs\DatabasePublishInBatchToRadar;
 use App\Mail\DatabaseDOIAssigned;
 use App\Models\Database;
 
@@ -204,7 +205,8 @@ class DatabaseVisibility extends Component
 		$this->database->save();
 
 		// upload and review start now in job
-		DatabasePublishToRadar::dispatch($this->database, auth()->user());
+		//DatabasePublishToRadar::dispatch($this->database, auth()->user());
+		DatabasePublishInBatchToRadar::dispatch($this->database, auth()->user());
 
 		return redirect()->route('databases.show', $this->database)->with('success', 'Your database is being published and you will be informed per email when the task has finished');
 	}
