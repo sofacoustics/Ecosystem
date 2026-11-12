@@ -34,10 +34,10 @@ class DatabaseController extends Controller
 {
 	public function __construct()
 	{
-			// https://laracasts.com/discuss/channels/general-discussion/apply-middleware-for-certain-methods?page=0
-			// Users must be authenticated for all functions except index and show.
-			// Guests will be redirected to login page
-		$this->middleware('auth', ['except' => ['index', 'show', 'download', 'showdatasets', 'datasetdefs', 'radarShow', 'radar']]);
+		// Automatically protects: index, show, create, store, edit, update, destroy
+		$this->authorizeResource(Database::class, 'database');
+
+		// moved non CRUD middleware authentication to routes/web.php
 	}
 
 		/**
@@ -123,7 +123,6 @@ class DatabaseController extends Controller
 		 */
 	public function visibility(Database $database)
 	{
-		$this->authorize('own', $database);
 		$user = \App\Models\User::where('id', $database->user_id)->first();
 		return view('databases.visibility', [ 'database' => $database, 'user' => $user ]);
 	}

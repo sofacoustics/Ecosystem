@@ -7,7 +7,6 @@ use App\Http\Resources\DatabaseCollection;
 use App\Http\Resources\DatabaseResource;
 use App\Models\Database;
 
-use App\Http\Controllers\Api\Radar\DatasetController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -44,10 +43,3 @@ Route::get('/databases/{id}', function ($id) {
 // Use Api controller so we can eager load databases
 Route::get('/databases/{database}', [ App\Http\Controllers\Api\DatabaseController::class, 'show']); // this is unused currently and it is not extended to Tools!
 
-////////////////////////////////////////////////////////////////////////////////
-// RADAR API
-////////////////////////////////////////////////////////////////////////////////
-//  /datasets
-Route::get('/radar/datasets', [ App\Http\Controllers\Api\Radar\DatasetController::class, 'index' ]);
-Route::get('/radar/datasets/{id}', [ App\Http\Controllers\Api\Radar\DatasetController::class, 'show' ]);
-//Route::post('/radar/datasets/{id}', [ App\Http\Controllers\Api\Radar\DatasetController::class, 'testupdate' ]);
