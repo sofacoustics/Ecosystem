@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Actions\DatabaseDispatchDatasetsInBatchToRadar;
 use App\Events\DatabasePublishedAwaitingApproval;
 use App\Events\DatabasePublishingFailed;
+use App\Exceptions\ReferenceException;
 use App\Mail\DatabasePersistentPublicationFailed;
 use App\Mail\DatabasePersistentPublicationRequested;
 use App\Mail\DatabasePersistentPublicationRequestedStarted;
@@ -29,7 +30,7 @@ class DatabasePublishInBatchToRadar implements ShouldQueue
 	//public $backoff = 10; // The number of seconds to wait before retrying the queued listener. jw:note This appears to be ignored!
 	public $maxExceptions = 3; // The maximum number of unhandled exceptions to allow before failing.
 
-	public function backoff() : int
+	public function backoff() : array
 	{
 		return [30, 120, 600];
 	}
