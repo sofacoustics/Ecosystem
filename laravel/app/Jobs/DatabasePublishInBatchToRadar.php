@@ -27,11 +27,11 @@ class DatabasePublishInBatchToRadar implements ShouldQueue
 
 	public $tries = 2; // The number of times the queued listener may be attempted.
 	//public $backoff = 10; // The number of seconds to wait before retrying the queued listener. jw:note This appears to be ignored!
-	public $maxExceptions = 9; // The maximum number of unhandled exceptions to allow before failing.
+	public $maxExceptions = 3; // The maximum number of unhandled exceptions to allow before failing.
 
 	public function backoff() : int
 	{
-		return 2; //jw:note appears to be ignored :-( retry_after respected
+		return [30, 120, 600];
 	}
     /**
      * Create a new job instance.
@@ -98,7 +98,6 @@ class DatabasePublishInBatchToRadar implements ShouldQueue
 
 
 	/**
-	 *      
    * This method is called when the job fails (including timeout failures).
    */
 	public function failed(?Throwable $exception) : void

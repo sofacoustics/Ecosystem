@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Exceptions\ReferenceException;
 use App\Jobs\DatabasePublishToRadar;
 use App\Jobs\DatabasePublishInBatchToRadar;
 use App\Mail\DatabaseDOIAssigned;
@@ -84,6 +85,7 @@ class DatabaseVisibility extends Component
 		$this->error = "";
 		$this->warning = "";
 		$logContext = [
+			'method' => __METHOD__,
 			'feature' => 'database-visibility',
 			'database_id' => $this->database->id,
 			'target_url' => config('services.radar.baseurl'),
@@ -96,6 +98,7 @@ class DatabaseVisibility extends Component
 			// create RADAR dataset
 			if(!$this->database->radar_id)
 			{
+					Log::debug("Creating RADAR dataset", [...$logContext, 'duration' => microtime(true) - $start]);
 					if($radar->create())
 					{
 						$this->dispatch('radar-status-changed', 'Dataset created'); // let other livewire components know the radar status has changed
@@ -161,17 +164,17 @@ class DatabaseVisibility extends Component
 			$this->database->radar_status = $this->radar_status = 1;
 			$this->database->doi = $this->doi;
 			$this->database->save();
-			app('log')->info('DOI assigned to database', [
-				...$logContext,
-				'duration' => microtime(true) - $start
-			]);
+			Log::info('DOI assigned to database', [...$logContext, 'duration' => microtime(true) - $start]);
 			Mail::to($this->database->user->email)->queue(new DatabaseDOIAssigned($this->database));
 			Mail::to(config('mail.to.admins'))->queue(new DatabaseDOIAssigned($this->database, true));
-    } catch (\Throwable $e) {
-			Log::notice("DatabaseVisibility::assignDOI(): Caught exception when trying to assign a DOI. (". $e->getMessage().")");
-			Mail::to($this->database->user->email)->queue(new DatabaseDOIAssignmentFailed($this->database));
-			Mail::to(config('mail.to.admins'))->queue(new DatabaseDOIAssignmentFailed($this->database, true, $e->getMessage()));
-			throw $e; // rethrow the exception so the default handling also occurs (output reference code for user).
+		} catch (\Throwable $e) {
+			// Wrap it in your custom exception to generate the reference
+			$throwableException = new ReferenceException("Assigning the DOI to database '".$this->database->id."' failed due to an exception", 0, $e);
+			$reference = $throwableException->getReference();
+			//jw:note Don't log here, do it in Handler.php Log::notice("DatabaseVisibility::assignDOI(): Caught exception when trying to assign a DOI. (". $e->getMessage().")");
+			Mail::to($this->database->user->email)->queue(new DatabaseDOIAssignmentFailed($this->database, false, $reference));
+			Mail::to(config('mail.to.admins'))->queue(new DatabaseDOIAssignmentFailed($this->database, true, $reference, $e->getMessage()));
+			throw $throwableException; // rethrow our exception with the reference so the default handling also occurs (output reference code for user and log).
 		}
 	}
 

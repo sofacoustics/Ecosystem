@@ -39,7 +39,11 @@ class Handler extends ExceptionHandler
 				return;
 			}
 
-			$errorId = 'ERR-' . strtoupper(Str::random(8));
+			// Check if our custom exception has the reference, otherwise generate one here
+			$errorId = method_exists($e, 'getReference') 
+				? $e->getReference() 
+			  : 'ERR-' . strtoupper(str::random(8));
+			//$errorId = 'ERR-' . strtoupper(Str::random(8));
 			
 			// SAFE CHECK: Prevent silent crashes during Livewire/Console requests
 			if (request() && request()->attributes) {
