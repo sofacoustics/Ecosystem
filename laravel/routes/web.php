@@ -126,8 +126,8 @@ Route::prefix('databases/{database}')->group(function () {
 		Route::get('/comments', [CommentController::class, 'index'])->name('databases.comments');
 	});
 
-	// public routes ('view' policy protects hidden databases)
-	Route::middleware(['auth', 'can:view,database'])->group(function () {
+	// public routes, also for guests ('view' policy protects hidden databases)
+	Route::middleware(['can:view,database'])->group(function () {
 		Route::get('/download', [DatabaseController::class, 'download'])->name('databases.download');
 		Route::get('/datasetdefs', [DatabaseController::class, 'datasetdefs'])->name('databases.datasetdefs');
 		Route::get('/showdatasets', [DatabaseController::class, 'showdatasets'])->name('databases.showdatasets');

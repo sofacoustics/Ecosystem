@@ -14,8 +14,9 @@ class DatasetController extends Controller
 {
 	public function __construct()
 	{
-		// Automatically protects: index, show, create, store, edit, update, destroy using DatasetPolicy
-		$this->authorizeResource(Dataset::class, 'dataset');
+		// Automatically protects: index, show, store, edit, update, destroy using DatasetPolicy.
+		// 'create' is excluded because DatasetPolicy::create needs the parent Database; it is authorized in create().
+		$this->authorizeResource(Dataset::class, 'dataset', ['except' => ['create']]);
 	}
 
 	/**
@@ -32,6 +33,7 @@ class DatasetController extends Controller
 	 */
 	public function create(Database $database)
 	{
+		$this->authorize('create', [Dataset::class, $database]); // DatasetPolicy::create($user, $database)
 		Cache::forget('database' . $database->id);
 		return view('datasets.create', ['database' => $database]);
 	}

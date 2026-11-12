@@ -45,7 +45,7 @@ class DatasetPolicy
 			$access = ($user->id == $database->user_id && $database->radar_status < 2);
 		return $access
 			? Response::allow()
-			: Response::deny('You can not create a dataset because it is not public and you do not own it!');
+			: Response::deny('You can not create a dataset because you do not own this database or it is locked for persistent publication!');
 	}
 
 	/**
