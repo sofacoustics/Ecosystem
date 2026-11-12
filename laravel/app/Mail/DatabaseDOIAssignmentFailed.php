@@ -20,7 +20,8 @@ class DatabaseDOIAssignmentFailed extends Mailable
      */
 	public function __construct(
 		public Database $database,
-		public $admin = false
+		public $admin = false,
+		public $details = "Test details" 
 	) {
 		parent::__construct(); // call our Mailable constructor to initialise "$actor" property
 	}

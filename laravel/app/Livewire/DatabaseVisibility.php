@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Jobs\DatabasePublishToRadar;
 use App\Jobs\DatabasePublishInBatchToRadar;
 use App\Mail\DatabaseDOIAssigned;
+use App\Mail\DatabaseDOIAssignmentFailed;
 use App\Models\Database;
 
 use App\Http\Resources\DatabaseResource;
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 use Livewire\Component;
+
+use Throwable;
 
 /*
  * https://neon.tech/guides/laravel-livewire-blog#implementing-the-blog-functionality
@@ -80,90 +83,96 @@ class DatabaseVisibility extends Component
 		$this->dispatch('status-message', 'Starting DOI assignment');
 		$this->error = "";
 		$this->warning = "";
+		$logContext = [
+			'feature' => 'database-visibility',
+			'database_id' => $this->database->id,
+			'target_url' => config('services.radar.baseurl'),
+			'radar_id' => $this->database->radar_id,
+			'doi' => $this->database->doi,
+		];
 
-		$radar = new DatabaseRadarDatasetBridge($this->database);
-		// create RADAR dataset
-		if(!$this->database->radar_id)
-		{
-			if($radar->create())
+		try {
+			$radar = new DatabaseRadarDatasetBridge($this->database);
+			// create RADAR dataset
+			if(!$this->database->radar_id)
 			{
-				$this->dispatch('radar-status-changed', 'Dataset created'); // let other livewire components know the radar status has changed
-				$this->dispatch('status-message', $radar->message);
-				$content_created = $radar->content;
+					if($radar->create())
+					{
+						$this->dispatch('radar-status-changed', 'Dataset created'); // let other livewire components know the radar status has changed
+						$this->dispatch('status-message', $radar->message);
+						$content_created = $radar->content;
+					}
+					else
+					{
+						$this->dispatch('status-message', $radar->message);
+						$this->error = $radar->message.' RADAR Message: '.$radar->details.' *** Content created: *** '.json_encode($radar->content);
+						return;
+					}
 			}
-			else
+			// validate metadata
+			else if(!$radar->metadataValidate())
 			{
-				$this->dispatch('status-message', $radar->message);
-				$this->error = $radar->message.' RADAR Message: '.$radar->details.' *** Content created: *** '.json_encode($radar->content);
+				$this->dispatch('radar-status-changed', 'Validation failed');
+				$this->error = $radar->message.' RADAR Message: '.$radar->details;
+				// Since there is radar_id, let's check if there is a DOI too
+				// We should only delete a radar dataset on errors if there is *no* DOI
+				if(is_null($this->database->doi))
+					$radar->delete();
+				else
+					Log::error('The RADAR metadata is invalid for a database with a DOI!', $logContext);
 				return;
 			}
-		}
-		// validate metadata
-		else if(!$radar->metadataValidate())
-		{
-			$this->dispatch('radar-status-changed', 'Validation failed');
-			$this->error = $radar->message.' RADAR Message: '.$radar->details;
-			// Since there is radar_id, let's check if there is a DOI too
-			// We should only delete a radar dataset on errors if there is *no* DOI
-			if(is_null($this->database->doi))
-				$radar->delete();
-			else
-				app('log')->error('The RADAR metadata is invalid for a database with a DOI!', [
-					'feature' => 'database-visibility',
-					'database_id' => $this->database->id,
-					'radar_id' => $this->database->radar_id,
-					'doi' => $this->database->doi,
-				]);
-			return;
-		}
-		if($radar->read())
-		{
-			$state = $radar?->radar_dataset?->state ?? 'INVALID RADAR STATE';
-			if($state  == "PENDING")
+			if($radar->read())
 			{
-				// we need to start the review process in order to get the DOI
-				if(!$radar->startreview())
+				$state = $radar?->radar_dataset?->state ?? 'INVALID RADAR STATE';
+				if($state  == "PENDING")
 				{
-					$this->error = $radar->message.' RADAR Message: '.$radar->details;
-					return;
+					// we need to start the review process in order to get the DOI
+					if(!$radar->startreview())
+					{
+						$this->error = $radar->message.' RADAR Message: '.$radar->details;
+						return;
+					}
 				}
 			}
-		}
-		else
-		{
-			$this->error = $radar->message.' RADAR Message: '.$radar->details;
-			return;
-		}
-		// retrieve doi
-		if($radar->getDOI())
-		{
-			$this->doi = $radar->doi; 
-			$this->dispatch('status-message', $radar->message);
-		}
-		else
-		{
-			$this->error = $radar->message.' RADAR Message: '.$radar->details;
-			return;
-		}
-		// stop review process
-		if(!$radar->endreview())
-		{
-			$this->error = $radar->details;
-			return;
-		}
+			else
+			{
+				$this->error = $radar->message.' RADAR Message: '.$radar->details;
+				return;
+			}
+			// retrieve doi
+			if($radar->getDOI())
+			{
+				$this->doi = $radar->doi; 
+				$this->dispatch('status-message', $radar->message);
+			}
+			else
+			{
+				$this->error = $radar->message.' RADAR Message: '.$radar->details;
+				return;
+			}
+			// stop review process
+			if(!$radar->endreview())
+			{
+				$this->error = $radar->details;
+				return;
+			}
 
-		$this->database->radar_status = $this->radar_status = 1;
-		$this->database->doi = $this->doi;
-		$this->database->save();
-		app('log')->info('DOI assigned to database', [
-			'feature' => 'database-radar-dataset',
-			'database_id' => $this->database->id,
-			'user_id' => auth()->user()->id,
-			'target_url' => config('services.radar.baseurl'),
-			'duration' => microtime(true) - $start
-		]);
-		Mail::to($this->database->user->email)->queue(new DatabaseDOIAssigned($this->database));
-		Mail::to(config('mail.to.admins'))->queue(new DatabaseDOIAssigned($this->database, true));
+			$this->database->radar_status = $this->radar_status = 1;
+			$this->database->doi = $this->doi;
+			$this->database->save();
+			app('log')->info('DOI assigned to database', [
+				...$logContext,
+				'duration' => microtime(true) - $start
+			]);
+			Mail::to($this->database->user->email)->queue(new DatabaseDOIAssigned($this->database));
+			Mail::to(config('mail.to.admins'))->queue(new DatabaseDOIAssigned($this->database, true));
+    } catch (\Throwable $e) {
+			Log::notice("DatabaseVisibility::assignDOI(): Caught exception when trying to assign a DOI. (". $e->getMessage().")");
+			Mail::to($this->database->user->email)->queue(new DatabaseDOIAssignmentFailed($this->database));
+			Mail::to(config('mail.to.admins'))->queue(new DatabaseDOIAssignmentFailed($this->database, true, $e->getMessage()));
+			throw $e; // rethrow the exception so the default handling also occurs (output reference code for user).
+		}
 	}
 
 	public function submitToPublish()

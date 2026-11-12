@@ -45,7 +45,7 @@ class SendAdminEmail implements ShouldQueue
 
 		$eventClass = get_class($event);
 		//
-		app('log')->debug('SendAdminEmail::handle() for event ' . $eventClass);
+		app('log')->debug('SendAdminEmail::handle() for event ' . $eventClass. '. Doing nothing at the moment!!!');
 		//jw:todo we could use this for a more generic admin email setup...
-    }
+	}
 }

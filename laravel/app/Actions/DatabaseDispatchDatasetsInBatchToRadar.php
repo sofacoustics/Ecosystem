@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
+use Throwable;
+
 use App\Services\DatabaseRadarDatasetBridge;
 
 /*
@@ -38,11 +40,11 @@ class DatabaseDispatchDatasetsInBatchToRadar
 		];
 		if($database->radar_id === null) {
 			Log::error('DatabaseDispatchDatasetsInBatchToRadar(): radar_id is null', $logContext);
-			throw new \RuntimeException('DatabaseDispatchDatasetsInBatchToRadar(): can\'t dispatch datasets in batch to RADAR because the radar_id is null');
+			//jw:todo commenting out to see if RADAR throws an exception: throw new \RuntimeException('DatabaseDispatchDatasetsInBatchToRadar(): can\'t dispatch datasets in batch to RADAR because the radar_id is null');
 		}
 
 		$jobs = [];
-		$nChunks = 10;
+		$nChunks = 1; // number of datasets per chunk
 
 		$database->datasets()->chunkById($nChunks, function ($datasets) use (&$jobs) {
 			$datasetIds = $datasets->pluck('id')->toArray();
@@ -76,19 +78,25 @@ class DatabaseDispatchDatasetsInBatchToRadar
 				//
 				$actor = User::find($actorId);
 
+				// Cancel remaining jobs in this batch
+				Log::debug("DatabaseDispatchDatasetsInBatchToRadar(CATCH): cancelling remaining batch jobs", $logContext);
+				$batch->cancel();
+
 				//jw:todo Do we need to send an email here?
 
 				// Empty RADAR dataset
-				$radar = new DatabaseRadarDatasetBridge($this->database);
-				Log::info('DatabaseDispatchDatasetsInBatchToRadar(): emptying RADAR dataset since batch dataset upload failed!', $logContext);
-				if($radar->empty()) {
-					Log::error('DatabaseDispatchDatasetsInBatchToRadar(): emptying the RADAR dataset failed!', $logContext);
-					throw new \RuntimeException('DatabaseDispatchDatasetsInBatchToRadar(): Emptying the RADAR dataset due to upload exception failed');
+				$radar = new DatabaseRadarDatasetBridge($database);
+				Log::info('DatabaseDispatchDatasetsInBatchToRadar(): since the batch dataset upload failed, we\'ll empty the RADAR dataset!', $logContext);
+				if(!$radar->empty()) {
+					Log::error('DatabaseDispatchDatasetsInBatchToRadar(): failed to empty the RADAR dataset!', $logContext);
+					//jw:tmp commenting out to see if RADAR throws an exception: throw new \RuntimeException('DatabaseDispatchDatasetsInBatchToRadar(): Emptying the RADAR dataset due to upload exception failed');
 				}
 			})
 			->finally(function (Batch $batch) use ($database, $logContext) {
 				// Executed once the batch has finished (success or failure)
 				// Good place for cleanup tasks (e.g., deleting temporary records)
+
+				//jw:todo do we need to set the radar_status here?
 
 				Log::debug('DatabaseDispatchDatasetsInBatchToRadar "finally"', $logContext);
 			})
