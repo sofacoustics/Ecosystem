@@ -47,9 +47,10 @@ class DatabaseDispatchDatasetsInBatchToRadar
 		$jobs = [];
 		$nChunks = 1; // number of datasets per chunk. Any number which you are sure can upload within the DatasetDispatchDatasetsInBatchToRadar job timeout
 
-		$database->datasets()->chunkById($nChunks, function ($datasets) use (&$jobs) {
-			$datasetIds = $datasets->pluck('id')->toArray();
-			$jobs[] = new DatasetUploadInBatchToRadar($datasetIds);
+
+		$actor = User::find($actorId);
+		$database->datasets()->chunkById($nChunks, function ($datasets) use ($database, $actor, &$jobs) {
+			$jobs[] = new DatasetUploadInBatchToRadar($datasets, $database, $actor);
 		});
 
 		Log::debug('Batch prepared', [

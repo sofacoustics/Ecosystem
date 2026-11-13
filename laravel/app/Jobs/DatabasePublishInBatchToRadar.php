@@ -120,7 +120,17 @@ class DatabasePublishInBatchToRadar implements ShouldQueue
 			Log::error('Job failed: ' . get_class($this) . '. Exception: ' . $exception->getMessage(), $logContext);
 		}
 
-	  Mail::to(config('mail.to.admins'))->queue(new DatabasePersistentPublicationFailed($this->database, $exception->getMessage(), true, actor: $this->user));
+		//jw:todo set radar_status
+		Log::debug("radar_status currently ".$this->database->radar_status, $logContext);
+		// reset radar_status back to '1' so the user can try again
+		if($this->database->radar_status = 2) {
+			Log::debug('Resetting radar_status for database ' . $this->database->id . ' from ' . $this->database->radar_status . ' to 1');
+			$this->database->radar_status = 1;
+			$this->database->save();
+		}
+
+	  Mail::to($this->database->user->email)->queue(new DatabasePersistentPublicationFailed($this->database, $exception, false, actor: $this->user));
+	  Mail::to(config('mail.to.admins'))->queue(new DatabasePersistentPublicationFailed($this->database, $exception, true, actor: $this->user));
 
 		// fire event saying database has *failed* to published!
 		DatabasePublishingFailed::dispatch($this->database->id);

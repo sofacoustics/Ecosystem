@@ -3,22 +3,31 @@
 namespace App\Jobs;
 
 use App\Exceptions\ReferenceException;
+use App\Mail\DatabasePersistentPublicationFailed;
+use App\Models\Database;
 use App\Models\Dataset;
+use App\Models\User;
 use App\Services\DatasetRadarFolderBridge;
 
 use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Throwable;
 
 class DatasetUploadInBatchToRadar implements ShouldQueue
 {
 	use Queueable;
 	use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+	public Collection $datasets;
+	public Database $database;
+	public User	$user;
 
   //jw:todo set timeout to something higher and tries and maxexceptions back to 3 and 4 respectively??
 
@@ -30,23 +39,27 @@ class DatasetUploadInBatchToRadar implements ShouldQueue
   public int $backoff = 30;
 	public $maxExceptions = 2; // The maximum number of unhandled exceptions to allow before failing.
 
-	private $logContext;
+	public $logContext;
 
 	/**
 	 * Create a new job instance.
 	 */
-	public function __construct(public array $datasetIds)
+	public function __construct(Collection $datasets, Database $database, User $user)
 	{
+		$this->datasets = $datasets;
+		$this->database = $database;
+		$this->user = $user;
+
 		// $this->queue = 'uploads'; // this is set in the Bus::batch call
 		$this->logContext = [
 			'feature' => 'database-radar-dataset',
+			'database_id' => $this->database->id,
 			'target_url' => config('services.radar.baseurl'),
 			'tries' => $this->tries,
 			'backoff' => $this->backoff(),
 			'maxExceptions' => $this->maxExceptions,
 			'timeout' => $this->timeout
 		];
-
 	}
 
   public function backoff(): array
@@ -74,12 +87,12 @@ class DatasetUploadInBatchToRadar implements ShouldQueue
 		}
 
 		// Fetch the datasets for this specific batch from the database
-		$datasets = Dataset::whereIn('id', $this->datasetIds)->get();
+		//$datasets = Dataset::whereIn('id', $this->datasetIds)->get();
 
 		sleep(5);
 
 		try {
-			foreach ($datasets as $dataset) {
+			foreach ($this->datasets as $dataset) {
 				// Perform your file upload logic for each dataset here...
 				Log::debug("Processing dataset $dataset->id in job {$this->job->getJobId()} in batch {$this->batchId}", $logContext);
 
@@ -125,6 +138,17 @@ class DatasetUploadInBatchToRadar implements ShouldQueue
 				$errorMessage = $exception->getPrevious()?->getMessage() ?? $errorMessage;
 		}
 		Log::error("DatasetUploadInBatchToRadar job failed due to unexpected error ($errorReference)", $logContext);
+		Log::debug("radar_status currently ".$this->database->radar_status, $logContext);
+
+		// reset radar_status back to '1' so the user can try again
+		if($this->database->radar_status = 2) {
+			Log::debug('Resetting radar_status for database ' . $this->database->id . ' from ' . $this->database->radar_status . ' to 1');
+			$this->database->radar_status = 1;
+			$this->database->save();
+		}
+
+	  Mail::to($this->database->user->email)->queue(new DatabasePersistentPublicationFailed($this->database, $exception, false, actor: $this->user));
+	  Mail::to(config('mail.to.admins'))->queue(new DatabasePersistentPublicationFailed($this->database, $exception, true, actor: $this->user));
 		//jw:todo check that this is logged
 		//jw:todo maybe send an email here rather than logging
 
