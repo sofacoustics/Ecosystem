@@ -47,7 +47,7 @@ class DatabasePersistentPublicationFailed extends Mailable
 		// If it's an Exception, extract the message (and maybe the file/line)
 		$this->radar_details = "TODO: the details will go here!";
 		if ($radar_details instanceof ReferenceException) {
-			$this->radar_details = sprintf("Error: %s, Previous Error: %s", $radar_details->getMessage(), $radar_details->getPrevious()?->getMessage() ?? 'No previous error message');
+			$this->radar_details = sprintf("Error: %s\nPrevious Error: %s", $radar_details->getMessage(), $radar_details->getPrevious()?->getMessage() ?? 'No previous error message');
 		} else {
 			$this->radar_details = $radar_details;
 		}

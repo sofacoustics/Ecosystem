@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Exceptions\ReferenceException;
 use App\Models\Database;
 use App\Mail\Mailable;
 
@@ -13,7 +14,10 @@ use Illuminate\Queue\SerializesModels;
 
 class DatabaseDOIAssignmentFailed extends Mailable
 {
-    use Queueable, SerializesModels;
+	use Queueable, SerializesModels;
+
+	public $exceptionReference = '';
+	public $exceptionDetail = '';
 
     /**
      * Create a new message instance.
@@ -21,10 +25,12 @@ class DatabaseDOIAssignmentFailed extends Mailable
 	public function __construct(
 		public Database $database,
 		public $admin = false,
-		public $exceptionReference = "",
-		public $details = "" 
+		public ReferenceException $exception
 	) {
 		parent::__construct(); // call our Mailable constructor to initialise "$actor" property
+	
+		$this->exceptionReference = $exception->getReference();
+		$this->exceptionDetail = sprintf("Error: %s\nPrevious Error:%s", $exception->getMessage(), $exception->getPrevious()->getMessage());;
 	}
 
     /**
