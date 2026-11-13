@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Exceptions\ReferenceException;
 use App\Models\Dataset;
 use App\Services\DatasetRadarFolderBridge;
 
@@ -29,12 +30,23 @@ class DatasetUploadInBatchToRadar implements ShouldQueue
   public int $backoff = 30;
 	public $maxExceptions = 2; // The maximum number of unhandled exceptions to allow before failing.
 
+	private $logContext;
+
 	/**
 	 * Create a new job instance.
 	 */
 	public function __construct(public array $datasetIds)
 	{
 		// $this->queue = 'uploads'; // this is set in the Bus::batch call
+		$this->logContext = [
+			'feature' => 'database-radar-dataset',
+			'target_url' => config('services.radar.baseurl'),
+			'tries' => $this->tries,
+			'backoff' => $this->backoff(),
+			'maxExceptions' => $this->maxExceptions,
+			'timeout' => $this->timeout
+		];
+
 	}
 
   public function backoff(): array
@@ -48,18 +60,14 @@ class DatasetUploadInBatchToRadar implements ShouldQueue
 	public function handle(): void
 	{
 		$logContext = [
-			'feature' => 'database-radar-dataset',
-			'target_url' => config('services.radar.baseurl'),
+			...$this->logContext,
 			'queue' => $this->queue,
 			'batch_id' => $this->batchId,
 			'job_id' => $this->job->getJobId(),
-			'tries' => $this->tries,
-			'backoff' => $this->backoff(),
-			'maxExceptions' => $this->maxExceptions,
-			'timeout' => $this->timeout
+			'method' => __METHOD__,
 		];
 
-		Log::debug("DatasetUploadInBatchToRadar::handle(): Processing job {$this->job->getJobId()} in batch {$this->batchId}", $logContext);
+		Log::debug("Processing job {$this->job->getJobId()} in batch {$this->batchId} (".$this->attempts()."/".$this->tries.")", $logContext);
 
 		if ($this->batch()->cancelled()) {
 			return;
@@ -73,7 +81,7 @@ class DatasetUploadInBatchToRadar implements ShouldQueue
 		try {
 			foreach ($datasets as $dataset) {
 				// Perform your file upload logic for each dataset here...
-				Log::debug("DatasetUploadInBatchToRadar::try(): Processing dataset $dataset->id in job {$this->job->getJobId()} in batch {$this->batchId}", $logContext);
+				Log::debug("Processing dataset $dataset->id in job {$this->job->getJobId()} in batch {$this->batchId}", $logContext);
 
 				$radar = new DatasetRadarFolderBridge($dataset);
 				if(!$radar->upload()) {
@@ -85,10 +93,12 @@ class DatasetUploadInBatchToRadar implements ShouldQueue
 				}
 			}
     } catch (\Throwable $e) {
-			Log::notice("DatasetUploadInBatchToRadar::catch(): Upload failed (".$this->attempts()."/".$this->tries." attempts) ", $logContext);
+			$referenceException = new ReferenceException("Dataset upload to RADAR failed in job: ".$this->job->getJobId()." batch: ".$this->batchId, 0, $e);
+			$reference = $referenceException->getReference();
+			//Log::notice("Upload failed (catch "$reference": ".$this->attempts()."/".$this->tries." attempts) ", $logContext);
 
 			// Re-throw so Laravel records the job failure
-			throw $e;
+			throw $referenceException;
     }
 	}
 
@@ -97,11 +107,31 @@ class DatasetUploadInBatchToRadar implements ShouldQueue
 	 */
 	public function failed(Throwable $exception)
 	{
-			Log::error("DatasetUploadInBatchToRadar::failed(): Job failed due to unexpected error. See exception log");
-			// Log the failure and perform any database status updates for this specific item
-			//jw:note We don't need this exception logging here, since the exception is also logged for app/Exceptions/Handler.php
-			//Log::error("DatasetUploadInBatchToRadar::failed(): Job failed due to unexpected error: " . $exception->getMessage());
+		$logContext = [
+			...$this->logContext,
+			'queue' => $this->queue,
+			'batch_id' => $this->batchId,
+			'job_id' => $this->job->getJobId(),
+			'method' => __METHOD__
+		];
 
-			//jw:todo do we need to set radar_status here or do we do this in the batch job 'catch' or 'finally' section?
+		// 1. Extract the error reference we generated in handle()
+		$errorReference = null;
+		$errorMessage = $exception?->getMessage();
+
+		if ($exception instanceof ReferenceException) {
+				$errorReference = $exception->getReference();
+				// Get the real underlying error message for the admin email
+				$errorMessage = $exception->getPrevious()?->getMessage() ?? $errorMessage;
+		}
+		Log::error("DatasetUploadInBatchToRadar job failed due to unexpected error ($errorReference)", $logContext);
+		//jw:todo check that this is logged
+		//jw:todo maybe send an email here rather than logging
+
+		// Log the failure and perform any database status updates for this specific item
+		//jw:note We don't need this exception logging here, since the exception is also logged for app/Exceptions/Handler.php
+		//Log::error("DatasetUploadInBatchToRadar::failed(): Job failed due to unexpected error: " . $exception->getMessage());
+
+		//jw:todo do we need to set radar_status here or do we do this in the batch job 'catch' or 'finally' section? 
 	}
 }

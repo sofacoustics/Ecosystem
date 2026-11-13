@@ -33,25 +33,26 @@ class DatabaseDispatchDatasetsInBatchToRadar
 	public function handle(Database $database, int $actorId, bool $shouldReview = true): void
 	{
 		$logContext = [
-				'feature' => 'database-radar-dataset',
-				'database_id' => $database->id,
-				'radar_id' => $database->radar_id,
-				'target_url' => config('services.radar.baseurl')
+			'method' => __METHOD__,	
+			'feature' => 'database-radar-dataset',
+			'database_id' => $database->id,
+			'radar_id' => $database->radar_id,
+			'target_url' => config('services.radar.baseurl')
 		];
 		if($database->radar_id === null) {
-			Log::error('DatabaseDispatchDatasetsInBatchToRadar(): radar_id is null', $logContext);
+			Log::error('Trying to upload datasets to RADAR when the radar_id is null', $logContext);
 			//jw:todo commenting out to see if RADAR throws an exception: throw new \RuntimeException('DatabaseDispatchDatasetsInBatchToRadar(): can\'t dispatch datasets in batch to RADAR because the radar_id is null');
 		}
 
 		$jobs = [];
-		$nChunks = 1; // number of datasets per chunk
+		$nChunks = 1; // number of datasets per chunk. Any number which you are sure can upload within the DatasetDispatchDatasetsInBatchToRadar job timeout
 
 		$database->datasets()->chunkById($nChunks, function ($datasets) use (&$jobs) {
 			$datasetIds = $datasets->pluck('id')->toArray();
 			$jobs[] = new DatasetUploadInBatchToRadar($datasetIds);
 		});
 
-		Log::debug('DatabaseDispatchDatasetsInBatchToRadar(): preparing', [
+		Log::debug('Batch prepared', [
 			...$logContext,
 			'nChunks' => $nChunks,
 			'nJobs' => count($jobs)
@@ -63,13 +64,13 @@ class DatabaseDispatchDatasetsInBatchToRadar
 				//
 				// SUCCESS: Executed once ALL jobs in the batch complete successfully!
 				//
-				Log::debug('DatabaseDispatchDatasetsInBatchToRadar "then"', $logContext);
+				Log::debug('Batch successful (then)', $logContext);
 				if($shouldReview) {
-					Log::debug('DatabaseDispatchDatasetsInBatchToRadar: should review');
+					Log::debug('Will now transition to review status', $logContext);
 					app(DatabaseTransitionToReview::class)->handle($database,User::find($actorId));
 				}
 				else {
-					Log::debug('DatabaseDispatchDatasetsInBatchToRadar: explicitly *not* reviewing');
+					Log::debug('Explicitly *not* reviewing, since probably called from DatabaseRadarActions', $logContext);
 				}
 			})
 			->catch(function (Batch $batch, Throwable $e) use ($database, $actorId, $logContext) {
@@ -79,16 +80,16 @@ class DatabaseDispatchDatasetsInBatchToRadar
 				$actor = User::find($actorId);
 
 				// Cancel remaining jobs in this batch
-				Log::debug("DatabaseDispatchDatasetsInBatchToRadar(CATCH): cancelling remaining batch jobs", $logContext);
+				Log::debug("Cancelling remaining batch jobs (catch)", $logContext);
 				$batch->cancel();
 
 				//jw:todo Do we need to send an email here?
 
 				// Empty RADAR dataset
 				$radar = new DatabaseRadarDatasetBridge($database);
-				Log::info('DatabaseDispatchDatasetsInBatchToRadar(): since the batch dataset upload failed, we\'ll empty the RADAR dataset!', $logContext);
+				Log::info('Emptying RADAR dataset since batch upload failed.', $logContext);
 				if(!$radar->empty()) {
-					Log::error('DatabaseDispatchDatasetsInBatchToRadar(): failed to empty the RADAR dataset!', $logContext);
+					Log::error('Failed to empty the RADAR dataset.', $logContext);
 					//jw:tmp commenting out to see if RADAR throws an exception: throw new \RuntimeException('DatabaseDispatchDatasetsInBatchToRadar(): Emptying the RADAR dataset due to upload exception failed');
 				}
 			})
@@ -98,12 +99,18 @@ class DatabaseDispatchDatasetsInBatchToRadar
 
 				//jw:todo do we need to set the radar_status here?
 
-				Log::debug('DatabaseDispatchDatasetsInBatchToRadar "finally"', $logContext);
+				Log::debug('TODO: check there is nothing to clean up (finally)', $logContext);
+				Log::debug('radar_id = '.$database->radar_id.' radar_status = '.$database->radar_status, $logContext);
+				if($database->radar_status == 2) {
+					Log::error('The radar_status of '.$database->radar_status.' is invalid, since dataset uploading failed', $logContext);
+					//jw:todo send an exception?
+				}
+
 			})
 			->dispatch();
 
 		// Log the batch ID immediately upon start
-		Log::debug('DatabaseDispatchDatasetsInBatchToRadar(): upload batch dispatched', [
+		Log::debug('Upload batch '.$batch->id.' dispatched', [
 			...$logContext,
 			'batch_id' => $batch->id,
 			'nChunks' => $nChunks,

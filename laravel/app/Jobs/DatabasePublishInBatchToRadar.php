@@ -50,7 +50,8 @@ class DatabasePublishInBatchToRadar implements ShouldQueue
 		//  supervisor stopwaitsecs should be greater than $timeout
 		//  The config/queue.php retry_after should be greater than all of them (although my tests indicate that this isn't correct! It can be much shorter)
 		$this->timeout = 3600;
-		Log::debug('DatabasePublishInBatchToRadar::__construct', [
+		Log::debug('Constructing DatabasePublishInBatchToRadar job', [
+			'method' => __METHOD__,
 			'feature' => 'database-radar-dataset',
 			'database_id' => $this->database->id,
 			'target_url' => config('services.radar.baseurl'),
@@ -69,6 +70,7 @@ class DatabasePublishInBatchToRadar implements ShouldQueue
 	public function handle(): void
 	{
 		$logContext = [
+			'method' => __METHOD__,
 			'feature' => 'database-radar-dataset',
 			'database_id' => $this->database->id,
 			'target_url' => config('services.radar.baseurl'),
@@ -77,7 +79,7 @@ class DatabasePublishInBatchToRadar implements ShouldQueue
 		];
 
 		$start = microtime(true);
-		Log::info('DatabasePublishInBatchToRadar: Starting publishing database in batch to RADAR dataset', $logContext);		
+		Log::info('Starting publishing database in batch to RADAR dataset', $logContext);		
 		Mail::to($this->database->user->email)->queue(new DatabasePersistentPublicationRequestedStarted($this->database, actor: $this->user));
 		Mail::to(config('mail.to.admins'))->queue(new DatabasePersistentPublicationRequestedStarted($this->database, true, actor: $this->user));
 
@@ -90,13 +92,15 @@ class DatabasePublishInBatchToRadar implements ShouldQueue
 			// 2. Upload the datasets in batches
 			app(DatabaseDispatchDatasetsInBatchToRadar::class)->handle($this->database, $this->user->id);
 		} catch (Throwable $e) {
-				// Catches synchronous failures (e.g., database connection down)
-				Log::error("DatabasePublishInBatchToRadar: job failed: " . $e->getMessage(), $logContext);
-				
-				throw $e; // Fail the parent job so Laravel registers it as failed
+			$referenceException = new ReferenceException("Publishing database '".$this->database->id."' to RADAR in batch failed due to an exception", 0, $e);
+			$reference = $referenceException->getReference();
+			// Catches synchronous failures (e.g., database connection down)
+			Log::error("Job ". $this->job->getJobId()." failed ($reference)", $logContext);
+
+			//jw:todo maybe we want to 'throw' this exception in the failed() function, not here.	
+			throw $referenceException; // Fail the parent job so Laravel registers it as failed
 		}
 	}
-
 
 	/**
    * This method is called when the job fails (including timeout failures).
@@ -111,9 +115,9 @@ class DatabasePublishInBatchToRadar implements ShouldQueue
 		];
 		// Check if the failure is due to a timeout by inspecting the exception message
 		if (str_contains($exception->getMessage(), 'timed out')) {
-			Log::alert('DatabasePublishInBatchToRadar: Job failed due to timeout: ' . get_class($this) . '. Exception: ' . $exception->getMessage(), $logContext);
+			Log::alert('Job failed due to timeout: ' . get_class($this) . '. Exception: ' . $exception->getMessage(), $logContext);
 		} else {
-			Log::error('DatabasePublishInBatchToRadar: Job failed: ' . get_class($this) . '. Exception: ' . $exception->getMessage(), $logContext);
+			Log::error('Job failed: ' . get_class($this) . '. Exception: ' . $exception->getMessage(), $logContext);
 		}
 
 	  Mail::to(config('mail.to.admins'))->queue(new DatabasePersistentPublicationFailed($this->database, $exception->getMessage(), true, actor: $this->user));
