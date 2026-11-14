@@ -49,6 +49,7 @@ Consequences: migrations must be safe to run on live data (no destructive change
 
 ## Rules
 
+- **Always plan first.** Before changing any code or deploying the project (pushing, merging, or anything that triggers the deployment hooks), present a plan and wait for the user's approval. The plan should cover the files to be changed, the approach, the risks (migrations, seeders, config, RADAR), and what to test manually on the dev server. Do not start editing or deploying until the plan is approved.
 - **Never read, print, modify or commit `.env*` files** (`.env`, `.env.dev`, `.env.live`, backups). They contain credentials. Only `.env.example` may be edited.
 - Do not run `migrate:fresh`, `migrate:reset`, `db:wipe` or test seeders unless explicitly asked.
 - Do not call the RADAR API or trigger DOI actions.
