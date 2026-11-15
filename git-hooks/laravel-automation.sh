@@ -33,34 +33,13 @@ else
 	echo "No static seeder updates found. Skipping seeder step."
 fi
 
-# Check for changes in config files
-if echo "$changed_files" | grep -qE '^laravel/config/.*\.php'; then
-	echo "Config changes detected. Recaching config..."
-	php artisan config:cache
-else
-	echo "No config changes detected. Skipping config cache."
-fi
-# Check for changes in route files
-if echo "$changed_files" | grep -qE '^laravel/routes/.*\.php'; then
-	echo "Route changes detected. Recaching route..."
-	php artisan route:cache
-else
-	echo "No route changes detected. Skipping route cache."
-fi
-# Check for changes in view files
-if echo "$changed_files" | grep -qE '^laravel/resources/views/.*\.php'; then
-	echo "View changes detected. Recaching views..."
-	php artisan view:cache
-else
-	echo "No view changes detected. Skipping view cache."
-fi
-# Check if event files changed in the merge
-if echo "$changed_files" | grep -qE '^laravel/app/Events/.*\.php'; then
-  echo "Event files changed. Caching events..."
-  php artisan event:cache
-else
-  echo "No event file changes detected. Skipping event cache."
-fi
+# Always clear and rebuild the Laravel caches (config, events, routes, views).
+# Changes outside config/, routes/ etc. also affect the caches, e.g. package
+# updates via composer.lock (stale Livewire route -> 404 for livewire.js) or
+# config/version.php, which is regenerated on every run.
+echo "Clearing and rebuilding Laravel caches..."
+php artisan optimize:clear
+php artisan optimize
 
 echo "Running ./artisan storage:unlink && ./artisan storage:link"
 ./artisan storage:unlink && ./artisan storage:link

@@ -42,10 +42,10 @@ Web platform for publishing acoustic databases (SOFA, HRTFs, SRIRs, etc.) and to
 - runs `composer install`, `npm ci && npm run build`
 - runs `php artisan migrate --force` if migrations changed
 - runs `db:seed --class StaticSeeder` if static seeders changed
-- recaches config/routes/views/events if those changed
+- always clears and rebuilds the Laravel caches (`optimize:clear` + `optimize`: config, events, routes, views), since package updates (`composer.lock`) and the generated `config/version.php` also affect them
 - restarts queues via `supervisorctl`
 
-Consequences: migrations must be safe to run on live data (no destructive changes without explicit agreement), and config changes require a config recache.
+Consequences: migrations must be safe to run on live data (no destructive changes without explicit agreement), and code must not call `env()` outside `config/` (config is always cached).
 
 ## Rules
 
