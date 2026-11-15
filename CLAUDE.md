@@ -32,6 +32,7 @@ Web platform for publishing acoustic databases (SOFA, HRTFs, SRIRs, etc.) and to
 ## Development & testing workflow
 
 - There is no local runtime. Changes are copied to a **dev server** and tested there in the browser. Claude cannot run the app, so state clearly what was changed and what should be tested manually.
+- The user copies the modified (uncommitted) files to the dev server and tests them there. Only if the fix works, the user commits manually. So code on the dev server may be ahead of git: don't assume uncommitted changes are not deployed. Copied files do not trigger the deploy hook, so queue workers (`php artisan queue:restart` / `supervisorctl restart all`) and caches (`php artisan optimize`) may need a manual restart/rebuild — mention this when relevant.
 - The dev server is connected to a **RADAR test endpoint**; the live server to production RADAR. DOI assignment/publishing on production cannot be undone.
 - `laravel/tests/` contains only the default Breeze tests; there is no meaningful automated test suite.
 - Main branch: `dev`.
@@ -50,6 +51,7 @@ Consequences: migrations must be safe to run on live data (no destructive change
 ## Rules
 
 - **Always plan first.** Before changing any code or deploying the project (pushing, merging, or anything that triggers the deployment hooks), present a plan and wait for the user's approval. The plan should cover the files to be changed, the approach, the risks (migrations, seeders, config, RADAR), and what to test manually on the dev server. Do not start editing or deploying until the plan is approved.
+- **Never run `git commit`** (or push, merge, amend, rebase). The user commits manually after testing on the dev server. Suggest a commit message if useful.
 - **Never read, print, modify or commit `.env*` files** (`.env`, `.env.dev`, `.env.live`, backups). They contain credentials. Only `.env.example` may be edited.
 - Do not run `migrate:fresh`, `migrate:reset`, `db:wipe` or test seeders unless explicitly asked.
 - Do not call the RADAR API or trigger DOI actions.
