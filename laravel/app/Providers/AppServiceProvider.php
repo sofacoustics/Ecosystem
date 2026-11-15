@@ -58,12 +58,10 @@ class AppServiceProvider extends ServiceProvider
 		View::share('buttonStyle', 'font-bold mx-1 my-1 py-1 px-2 rounded');
 		View::share('adminInfo', "bg-$admin_color-100 border border-$admin_color-500");
 
-		// if there is no .env setting for admin email list, then get list from the database
-		if(config('mail.to.admins') == "")
-		{
-			$admin_emails = \App\Models\User::role('admin')->pluck('email')->toArray();
-			config(['mail.to.admins' => implode(',',$admin_emails)]);
-		}
+		// admin email recipients: all users with the 'admin' role.
+		// Must be an array: Mail::to() treats a comma-separated string as one (invalid) address.
+		$admin_emails = \App\Models\User::role('admin')->pluck('email')->filter()->values()->all();
+		config(['mail.to.admins' => $admin_emails]);
 
 		//$this->app->useStoragePath(config('app.app_storage_path')); //jw:note this could be used to put all files including cache on external disk in conjunctino with app.php
 

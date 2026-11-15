@@ -103,13 +103,6 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
 	],
 
-	/*
-	| A list of users who should receive admin emails. Note that if this is empty,
-	| then all users with the 'admin' role will be added in the AppServiceProvider
-	|
-	 */
-	'admins' => env('MAIL_ADMINS') ? explode(',', env('MAIL_ADMINS')) : [],
-
     /*
     |--------------------------------------------------------------------------
     | Markdown Mail Settings
