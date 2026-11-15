@@ -154,7 +154,7 @@ class Database extends Model
 
 	public function getRadarJson() : String
 	{
-		$response = Http::get(env('APP_URL')."/api/databases/".$this->id."?format=radar");
+		$response = Http::get(config('app.url')."/api/databases/".$this->id."?format=radar");
 		$jsonData = $response->json();
 		return json_encode($jsonData);
 	}

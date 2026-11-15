@@ -83,7 +83,7 @@ class AppServiceProvider extends ServiceProvider
 
 		// define who can access the log viewer
 		LogViewer::auth(function (Request $request) {
-			if (!env('ALLOW_LOG_VIEWER', false)) {
+			if (!config('log-viewer.allow_access')) {
 				return false;
 			}
 			// Return true to allow access for both the main page AND its API endpoints
