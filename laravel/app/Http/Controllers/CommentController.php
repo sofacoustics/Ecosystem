@@ -10,6 +10,13 @@ use App\Models\Tool;
 
 class CommentController extends Controller
 {
+
+	public function __construct()
+	{
+		// Automatically protects: index, show, create, store, edit, update, destroy
+		$this->authorizeResource(Comment::class, 'comment');
+	}
+
 	public function index($id)
 	{
 		$route = Route::current();

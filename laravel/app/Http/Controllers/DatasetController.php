@@ -12,6 +12,13 @@ use Illuminate\Support\Facades\Cache;
 
 class DatasetController extends Controller
 {
+	public function __construct()
+	{
+		// Automatically protects: index, show, store, edit, update, destroy using DatasetPolicy.
+		// 'create' is excluded because DatasetPolicy::create needs the parent Database; it is authorized in create().
+		$this->authorizeResource(Dataset::class, 'dataset', ['except' => ['create']]);
+	}
+
 	/**
 	 * Display a listing of the resource.
 	 */
@@ -26,15 +33,9 @@ class DatasetController extends Controller
 	 */
 	public function create(Database $database)
 	{
-		$this->authorize('create', $database);
+		$this->authorize('create', [Dataset::class, $database]); // DatasetPolicy::create($user, $database)
 		Cache::forget('database' . $database->id);
 		return view('datasets.create', ['database' => $database]);
-	}
-
-	public function bulkupload(Database $database)
-	{		// PM: Do we need this function at all???
-	  dd("if you see this, DatasetController::bulkupload has been called");
-		return view('datasets.bulkupload', ['database' => $database]);
 	}
 
 	/**
@@ -50,8 +51,6 @@ class DatasetController extends Controller
 	 */
 	public function show(Dataset $dataset)
 	{
-		if (!($dataset->database->visible))
-			$this->authorize('view', $dataset);	// if database not visible, check if the user allowed to see the dataset
 		return view('datasets.show', ['dataset' => $dataset]);
 	}
 
@@ -78,7 +77,6 @@ class DatasetController extends Controller
 	 */
 	public function destroy(Dataset $dataset)
 	{
-		$this->authorize('delete', $dataset);
 		$dataset->database->touch();
 		$dataset->delete();
 		Cache::forget('database' . $dataset->database->id);

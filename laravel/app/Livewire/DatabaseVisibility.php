@@ -176,6 +176,8 @@ class DatabaseVisibility extends Component
 			Mail::to(config('mail.to.admins'))->queue(new DatabaseDOIAssignmentFailed($this->database, true, $reference, $e->getMessage()));
 			throw $throwableException; // rethrow our exception with the reference so the default handling also occurs (output reference code for user and log).
 		}
+		// reload the page so that non-Livewire parts (e.g., the header) show the new DOI
+		return redirect()->route('databases.visibility', $this->database)->with('success', 'A DOI has been assigned to your database: '.$this->doi);
 	}
 
 	public function submitToPublish()

@@ -1,0 +1,23 @@
+# Normalize line endings: store and check out text files with LF (production runs on Linux).
+# laravel/ has its own .gitattributes with the same rule.
+* text=auto eol=lf
+
+# Shell scripts must always be LF, otherwise they fail on the servers.
+*.sh text eol=lf
+git-hooks/* text eol=lf
+octave/build-* text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.sofa binary
+*.mat binary
+*.wav binary
+*.stl binary
+*.ply binary
+*.zip binary
+*.gz binary

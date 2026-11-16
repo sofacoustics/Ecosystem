@@ -170,9 +170,9 @@ class ProfileController extends Controller
 				auth()->user()->update(['orcid_verified_at' => now()]);
 
 					// send 'NewUser' email
-				$adminEmails = config('mail.to.admins'); 
-				Mail::to(explode(',',$adminEmails))->queue(new NewUser($request->user()));
-				app('log')->info("New user " . $request->user()->name . " (". $request->user()->id . ") created. Sending NewUser email to $adminEmails"); 
+				$adminEmails = config('mail.to.admins');
+				Mail::to($adminEmails)->queue(new NewUser($request->user()));
+				app('log')->info("New user " . $request->user()->name . " (". $request->user()->id . ") created. Sending NewUser email to " . implode(', ', $adminEmails));
 
 				return redirect()->route('profile.edit')->with('status', 'ORCID Link successful...');
 			} 

@@ -126,6 +126,8 @@ class ToolDoi extends Component
 		Mail::to($this->tool->user->email)->queue(new ToolDOIAssigned($this->tool));
 		Mail::to(config('mail.to.admins'))->queue(new ToolDOIAssigned($this->tool, true));
 		$this->radar_status = $this->tool->radar_status;
+		// reload the page so that non-Livewire parts (e.g., the header) show the new DOI
+		return redirect()->route('tools.doi', $this->tool)->with('success', 'A DOI has been assigned to your tool: '.$this->doi);
 	}
 
 	public function submitToPublish()

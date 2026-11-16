@@ -18,6 +18,11 @@ return [
 
     'enabled' => env('LOG_VIEWER_ENABLED', true),
 
+    // Additional switch checked in AppServiceProvider (LogViewer::auth). Only admins
+    // get access, and only if ALLOW_LOG_VIEWER=true in .env. Read here and not via
+    // env() in code, because env() returns null once config is cached.
+    'allow_access' => env('ALLOW_LOG_VIEWER', false),
+
     'api_only' => env('LOG_VIEWER_API_ONLY', false),
 
     'require_auth_in_production' => true,

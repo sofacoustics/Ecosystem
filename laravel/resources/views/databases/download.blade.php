@@ -22,7 +22,7 @@
 				@endif
 			</li>
 		@endif
-		<li><b>List of all Datafiles in this Database (JSON format):</b> 
+		<li><b>List of all Datafiles in this Database:</b> 
 			<a href="{{ route('databases.download', ['database' => $database->id, 'type' => 'json']) }}">
 			{{ route('databases.download', ['database' => $database->id, 'type' => 'json']) }}
 			</a>
@@ -40,20 +40,30 @@
 	}
 </style>
 		
-		<li><b>Remote clients:</b>
+		<li><b>Scripts:</b>
 			<ul class="list-disc list-outside ps-5 mt-2 space-y-1">
-				<li><a href="{{ asset('clients/matlab/databaseDownload.m') }}" download>
-					<img src="{{ asset('images/Matlab_Logo.png') }}" alt="Matlab" title="Example code for Matlab" style="height: 2em; display: inline-block;"/></a>
-				Start with: <code>databaseDownload('destination_directory',{{ $database->id }});</code></li>
-				<li><a href="{{ asset('clients/octave/databaseDownload.m') }}" download>
-					<img src="{{ asset('images/Gnu-octave-logo.svg') }}" alt="Octave" title="Example code for Octave" style="height: 2em; display: inline-block;"/></a>
-				Start with: <code>databaseDownload('destination_directory',{{ $database->id }});</code></li>
-				</li> 
-				<li><a href="{{ asset('clients/python/databaseDownload.py') }}" download>
-					<img src="{{ asset('images/python-logo-only.png') }}" alt="Python" title="Example code for Python" style="height: 2em; display: inline-block;"/></a>
-				Start with: <code> python databaseDownload.py "destination_directory" -id {{ $database->id }}</code></li>
+				<li>Matlab 
+					<a href="https://mathworks.com/products/matlab.html">
+					<img src="{{ asset('images/Matlab_Logo.png') }}" alt="Matlab" title="Matlab" style="height: 2em; display: inline-block;"/></a>
+					: Download
+					<a href="{{ asset('clients/matlab/databaseDownload.m') }}" download>this script</a> and 
+					start in Matlab with: <code>databaseDownload('destination_directory',{{ $database->id }});</code>
 				</li>
-				<li>The code above retrieves the list of Datafiles in this Database and downloads them to the local directory <code>destination_directory</code>. 
+				<li>Octave 
+					<a href="https://octave.org/">
+					<img src="{{ asset('images/Gnu-octave-logo.svg') }}" alt="Octave" title="Octave" style="height: 2em; display: inline-block;"/></a>
+					: Download 
+					<a href="{{ asset('clients/octave/databaseDownload.m') }}" download>this script</a> and
+					start in Octave with: <code>databaseDownload('destination_directory',{{ $database->id }});</code>
+				</li> 
+				<li>Python
+					<a href="https://www.python.org/">
+					<img src="{{ asset('images/python-logo-only.png') }}" alt="Python" title="Python" style="height: 2em; display: inline-block;"/></a>
+					: Download
+					<a href="{{ asset('clients/python/databaseDownload.py') }}" download>this script</a> and
+					start it in a terminal with: <code> python databaseDownload.py "destination_directory" -id {{ $database->id }}</code></li>
+				</li>
+				<li><b>Note:</b> These scripts retrieve the list of all Datafiles in this Database and download them to the local directory <code>destination_directory</code> 
 			</ul>
 		</li>
 	</ul>
