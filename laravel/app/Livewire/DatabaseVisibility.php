@@ -163,6 +163,8 @@ class DatabaseVisibility extends Component
 		]);
 		Mail::to($this->database->user->email)->queue(new DatabaseDOIAssigned($this->database));
 		Mail::to(config('mail.to.admins'))->queue(new DatabaseDOIAssigned($this->database, true));
+		// reload the page so that non-Livewire parts (e.g., the header) show the new DOI
+		return redirect()->route('databases.visibility', $this->database)->with('success', 'A DOI has been assigned to your database: '.$this->doi);
 	}
 
 	public function submitToPublish()
