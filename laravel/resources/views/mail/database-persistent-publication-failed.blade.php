@@ -6,7 +6,7 @@
 		@if(filled($exceptionReference))
 				<p>Exception Reference: {{ $exceptionReference }}</p>
 		@endif
-		<p>{{ $radar_details }}</p>
+		<p style="white-space: pre-line;">{{ $radar_details }}</p>
 	@else
 		<p>The persistent publication of your database <x-mail.database :database="$database" /> has failed.</p>
 		@if(filled($exceptionReference))

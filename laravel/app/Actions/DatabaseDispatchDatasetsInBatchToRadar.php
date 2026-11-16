@@ -26,7 +26,6 @@ use App\Services\DatabaseRadarDatasetBridge;
  * 		app(\App\Actions\DatabaseDispatchDatasetsInBatchToRadar::class)->handle($this->database, $actorId);
  *
  * This means that we can use the same code in, e.g., our Livewire Datathek Info page and in our DatabasePublishToRadar job
- *
  */
 class DatabaseDispatchDatasetsInBatchToRadar
 {
@@ -40,13 +39,13 @@ class DatabaseDispatchDatasetsInBatchToRadar
 			'target_url' => config('services.radar.baseurl')
 		];
 		if($database->radar_id === null) {
-			Log::error('Trying to upload datasets to RADAR when the radar_id is null', $logContext);
-			//jw:todo commenting out to see if RADAR throws an exception: throw new \RuntimeException('DatabaseDispatchDatasetsInBatchToRadar(): can\'t dispatch datasets in batch to RADAR because the radar_id is null');
+			// This is picked up by the DatabasePublishInBatchToRadar job,
+			// since it is thrown before we start the DatasetUploadInBatchToRadar batch jobs
+			throw new \Exception('Trying to upload datasets to RADAR when the radar_id is null.');
 		}
 
 		$jobs = [];
 		$nChunks = 1; // number of datasets per chunk. Any number which you are sure can upload within the DatasetDispatchDatasetsInBatchToRadar job timeout
-
 
 		$actor = User::find($actorId);
 		$database->datasets()->chunkById($nChunks, function ($datasets) use ($database, $actor, &$jobs) {
@@ -84,7 +83,8 @@ class DatabaseDispatchDatasetsInBatchToRadar
 				Log::debug("Cancelling remaining batch jobs (catch)", $logContext);
 				$batch->cancel();
 
-				//jw:todo Do we need to send an email here?
+				//jw:question: Do we need to send an email here?
+				//jw:answer:   No - the email is sent in the DatasetUploadInBatchToRadar job's 'failed()' function
 
 				// Empty RADAR dataset
 				$radar = new DatabaseRadarDatasetBridge($database);
@@ -98,13 +98,15 @@ class DatabaseDispatchDatasetsInBatchToRadar
 				// Executed once the batch has finished (success or failure)
 				// Good place for cleanup tasks (e.g., deleting temporary records)
 
-				//jw:todo do we need to set the radar_status here?
+				//jw:q Do we need to set the radar_status here?
+				//jw:a No. This is also done in the DatasetUploadInBatchToRadar job's 'failed()' function
 
 				Log::debug('TODO: check there is nothing to clean up (finally)', $logContext);
 				Log::debug('radar_id = '.$database->radar_id.' radar_status = '.$database->radar_status, $logContext);
 				if($database->radar_status == 2) {
 					Log::error('The radar_status of '.$database->radar_status.' is invalid, since dataset uploading failed', $logContext);
-					//jw:todo send an exception?
+					//jw:q Do we need to throw and exception here?
+					//jw:a No. This is also done in the DatasetUploadInBatchToRadar job's 'failed()' function
 				}
 
 			})

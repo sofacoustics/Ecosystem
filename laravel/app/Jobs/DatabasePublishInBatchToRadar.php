@@ -97,7 +97,8 @@ class DatabasePublishInBatchToRadar implements ShouldQueue
 			// Catches synchronous failures (e.g., database connection down)
 			Log::error("Job ". $this->job->getJobId()." failed ($reference)", $logContext);
 
-			//jw:todo maybe we want to 'throw' this exception in the failed() function, not here.	
+			// Re-throw the exception so it gets logged correctly.
+			// It is then also processed in the failed() function
 			throw $referenceException; // Fail the parent job so Laravel registers it as failed
 		}
 	}
@@ -120,7 +121,6 @@ class DatabasePublishInBatchToRadar implements ShouldQueue
 			Log::error('Job failed: ' . get_class($this) . '. Exception: ' . $exception->getMessage(), $logContext);
 		}
 
-		//jw:todo set radar_status
 		Log::debug("radar_status currently ".$this->database->radar_status, $logContext);
 		// reset radar_status back to '1' so the user can try again
 		if($this->database->radar_status = 2) {
