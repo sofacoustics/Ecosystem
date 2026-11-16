@@ -15,7 +15,7 @@ class SubjectAreaController extends Controller
 		$route = Route::current();
 		if($route->named('databases.subjectareas'))
 		{
-			$subjectareaable = Database::find($id);
+			$subjectareaable = $id instanceof Database ? $id : Database::find($id); // {database} is bound to a model (AppServiceProvider)
 			if($subjectareaable == null) return; // no entry found
 			return view('databases.subjectareas.index', ['subjectareaable' =>$subjectareaable]);
 		}

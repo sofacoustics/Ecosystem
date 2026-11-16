@@ -16,7 +16,7 @@ class CreatorController extends Controller
 		$route = Route::current();
 		if($route->named('databases.creators'))
 		{
-			$creatorable = Database::find($id);
+			$creatorable = $id instanceof Database ? $id : Database::find($id); // {database} is bound to a model (AppServiceProvider)
 			if($creatorable == null) return; // no entry found
 			return view('databases.creators.index', ['creatorable' =>$creatorable]);
 		}
@@ -64,7 +64,8 @@ class CreatorController extends Controller
 	
 	public function up($id)
 	{
-		$creatorA = Creator::where('id', $id)->get()->first();
+		$creatorA = Creator::findOrFail($id);
+		$this->authorize('update', $creatorA->creatorable); // only owners of the parent (or admins) may reorder
 		$creatorB = Creator::where('creatorable_id',$creatorA->creatorable_id)->where('creatorable_type',$creatorA->creatorable_type)->where('id','<', $id)->get()->last();
 		$temp = new Creator;
 		$temp = $this->copyCreator($creatorA, $temp); 
@@ -77,7 +78,8 @@ class CreatorController extends Controller
 
 	public function down($id)
 	{
-		$creatorA = Creator::where('id', $id)->get()->first();
+		$creatorA = Creator::findOrFail($id);
+		$this->authorize('update', $creatorA->creatorable); // only owners of the parent (or admins) may reorder
 		$creatorB = Creator::where('creatorable_id',$creatorA->creatorable_id)->where('creatorable_type',$creatorA->creatorable_type)->where('id','>', $id)->get()->first();
 		$temp = new Creator;
 		$temp = $this->copyCreator($creatorA, $temp); 

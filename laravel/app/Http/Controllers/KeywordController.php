@@ -15,7 +15,7 @@ class KeywordController extends Controller
 		$route = Route::current();
 		if($route->named('databases.keywords'))
 		{
-			$keywordable = Database::find($id);
+			$keywordable = $id instanceof Database ? $id : Database::find($id); // {database} is bound to a model (AppServiceProvider)
 			if($keywordable == null) return; // no entry found
 			return view('databases.keywords.index', ['keywordable' =>$keywordable]);
 		}
@@ -60,7 +60,8 @@ class KeywordController extends Controller
 	
 	public function up($id)
 	{
-		$keywordA = Keyword::where('id', $id)->get()->first();
+		$keywordA = Keyword::findOrFail($id);
+		$this->authorize('update', $keywordA->keywordable); // only owners of the parent (or admins) may reorder
 		$keywordB = Keyword::where('keywordable_id',$keywordA->keywordable_id)->where('keywordable_type',$keywordA->keywordable_type)->where('id','<', $id)->get()->last();
 		$temp = new Keyword;
 		$temp = $this->copyKeyword($keywordA, $temp); 
@@ -73,7 +74,8 @@ class KeywordController extends Controller
 
 	public function down($id)
 	{
-		$keywordA = Keyword::where('id', $id)->get()->first();
+		$keywordA = Keyword::findOrFail($id);
+		$this->authorize('update', $keywordA->keywordable); // only owners of the parent (or admins) may reorder
 		$keywordB = Keyword::where('keywordable_id',$keywordA->keywordable_id)->where('keywordable_type',$keywordA->keywordable_type)->where('id','>', $id)->get()->first();
 		$temp = new Keyword;
 		$temp = $this->copyKeyword($keywordA, $temp); 

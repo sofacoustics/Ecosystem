@@ -429,7 +429,8 @@ class DatabaseController extends Controller
 	
 	public function datasetdefup($id)
 	{
-		$datasetdefA = Datasetdef::where('id', $id)->get()->first();
+		$datasetdefA = Datasetdef::findOrFail($id);
+		$this->authorize('update', $datasetdefA->database); // only owners of the parent (or admins) may reorder
 		$datasetdefB = Datasetdef::where('database_id',$datasetdefA->database_id)->where('id','<', $id)->get()->last();
 		$temp = new Datasetdef;
 		$temp = $this->copyDatasetdef($datasetdefA, $temp); 
@@ -442,7 +443,8 @@ class DatabaseController extends Controller
 
 	public function datasetdefdown($id)
 	{
-		$datasetdefA = Datasetdef::where('id', $id)->get()->first();
+		$datasetdefA = Datasetdef::findOrFail($id);
+		$this->authorize('update', $datasetdefA->database); // only owners of the parent (or admins) may reorder
 		$datasetdefB = Datasetdef::where('database_id',$datasetdefA->database_id)->where('id','>', $id)->get()->first();
 		$temp = new Datasetdef;
 		$temp = $this->copyDatasetdef($datasetdefA, $temp); 

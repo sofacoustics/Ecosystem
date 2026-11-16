@@ -15,7 +15,7 @@ class RelatedIdentifierController extends Controller
 		$route = Route::current();
 		if($route->named('databases.relatedidentifiers'))
 		{
-			$relatedidentifierable = Database::find($id);
+			$relatedidentifierable = $id instanceof Database ? $id : Database::find($id); // {database} is bound to a model (AppServiceProvider)
 			if($relatedidentifierable == null) return; // no entry found
 			return view('databases.relatedidentifiers.index', ['relatedidentifierable' =>$relatedidentifierable]);
 		}
@@ -60,7 +60,8 @@ class RelatedIdentifierController extends Controller
 
 	public function up($id)
 	{
-		$relatedidentifierA = RelatedIdentifier::where('id', $id)->get()->first();
+		$relatedidentifierA = RelatedIdentifier::findOrFail($id);
+		$this->authorize('update', $relatedidentifierA->relatedidentifierable); // only owners of the parent (or admins) may reorder
 		$relatedidentifierB = RelatedIdentifier::where('relatedidentifierable_id',$relatedidentifierA->relatedidentifierable_id)
 			->where('relatedidentifierable_type',$relatedidentifierA->relatedidentifierable_type)
 			->where('id','<', $id)
@@ -77,7 +78,8 @@ class RelatedIdentifierController extends Controller
 
 	public function down($id)
 	{
-		$relatedidentifierA = RelatedIdentifier::where('id', $id)->get()->first();
+		$relatedidentifierA = RelatedIdentifier::findOrFail($id);
+		$this->authorize('update', $relatedidentifierA->relatedidentifierable); // only owners of the parent (or admins) may reorder
 		$relatedidentifierB = RelatedIdentifier::where('relatedidentifierable_id',$relatedidentifierA->relatedidentifierable_id)
 			->where('relatedidentifierable_type',$relatedidentifierA->relatedidentifierable_type)
 			->where('id','>', $id)

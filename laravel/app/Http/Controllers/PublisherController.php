@@ -15,7 +15,7 @@ class PublisherController extends Controller
 		$route = Route::current();
 		if($route->named('databases.publishers'))
 		{
-			$publisherable = Database::find($id);
+			$publisherable = $id instanceof Database ? $id : Database::find($id); // {database} is bound to a model (AppServiceProvider)
 			if($publisherable == null) return; // no entry found
 			return view('databases.publishers.index', ['publisherable' =>$publisherable]);
 		}
@@ -58,7 +58,8 @@ class PublisherController extends Controller
 	
 	public function up($id)
 	{
-		$publisherA = Publisher::where('id', $id)->get()->first();
+		$publisherA = Publisher::findOrFail($id);
+		$this->authorize('update', $publisherA->publisherable); // only owners of the parent (or admins) may reorder
 		$publisherB = Publisher::where('publisherable_id',$publisherA->publisherable_id)->where('publisherable_type',$publisherA->publisherable_type)->where('id','<', $id)->get()->last();
 		$temp = new Publisher;
 		$temp = $this->copyPublisher($publisherA, $temp); 
@@ -71,7 +72,8 @@ class PublisherController extends Controller
 
 	public function down($id)
 	{
-		$publisherA = Publisher::where('id', $id)->get()->first();
+		$publisherA = Publisher::findOrFail($id);
+		$this->authorize('update', $publisherA->publisherable); // only owners of the parent (or admins) may reorder
 		$publisherB = Publisher::where('publisherable_id',$publisherA->publisherable_id)->where('publisherable_type',$publisherA->publisherable_type)->where('id','>', $id)->get()->first();
 		//dd([$publisherA->id, $publisherB->id]); 
 		$temp = new Publisher;

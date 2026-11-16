@@ -22,7 +22,7 @@ class CommentController extends Controller
 		$route = Route::current();
 		if($route->named('databases.comments'))
 		{
-			$commentable = Database::find($id);
+			$commentable = $id instanceof Database ? $id : Database::find($id); // {database} is bound to a model (AppServiceProvider)
 			if($commentable == null) return; // no entry found
 			return view('databases.comments.index', ['commentable' =>$commentable]);
 		}

@@ -6,6 +6,7 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -19,6 +20,7 @@ use Opcodes\LogViewer\Facades\LogViewer;
  */
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Database;
 use App\Models\Datafile;
 use App\Models\User;
 use App\Observers\DatafileObserver;
@@ -40,6 +42,11 @@ class AppServiceProvider extends ServiceProvider
 	{
 		//
 		Datafile::observe(DatafileObserver::class);
+
+		// Always bind {database} route parameters to a Database model, even if the controller
+		// method does not type-hint it (e.g. CreatorController::index($id)). Otherwise route
+		// middleware such as 'can:own,database' receives a plain id and always denies access.
+		Route::model('database', Database::class);
 
 		// Increase rate limit to avoid "429 Too Many Requests" error
 		//jw:note https://onlinecode.org/fixing-429-too-many-requests-in-laravel-11/

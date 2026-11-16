@@ -15,7 +15,7 @@ class RightsholderController extends Controller
 		$route = Route::current();
 		if($route->named('databases.rightsholders'))
 		{
-			$rightsholderable = Database::find($id);
+			$rightsholderable = $id instanceof Database ? $id : Database::find($id); // {database} is bound to a model (AppServiceProvider)
 			if($rightsholderable == null) return; // no entry found
 			return view('databases.rightsholders.index', ['rightsholderable' =>$rightsholderable]);
 		}
@@ -59,7 +59,8 @@ class RightsholderController extends Controller
 	
 	public function up($id)
 	{
-		$rightsholderA = Rightsholder::where('id', $id)->get()->first();
+		$rightsholderA = Rightsholder::findOrFail($id);
+		$this->authorize('update', $rightsholderA->rightsholderable); // only owners of the parent (or admins) may reorder
 		$rightsholderB = Rightsholder::where('rightsholderable_id',$rightsholderA->rightsholderable_id)->where('rightsholderable_type',$rightsholderA->rightsholderable_type)->where('id','<', $id)->get()->last();
 		$temp = new Rightsholder;
 		$temp = $this->copyRightsholder($rightsholderA, $temp); 
@@ -72,7 +73,8 @@ class RightsholderController extends Controller
 
 	public function down($id)
 	{
-		$rightsholderA = Rightsholder::where('id', $id)->get()->first();
+		$rightsholderA = Rightsholder::findOrFail($id);
+		$this->authorize('update', $rightsholderA->rightsholderable); // only owners of the parent (or admins) may reorder
 		$rightsholderB = Rightsholder::where('rightsholderable_id',$rightsholderA->rightsholderable_id)->where('rightsholderable_type',$rightsholderA->rightsholderable_type)->where('id','>', $id)->get()->first();
 		$temp = new Rightsholder;
 		$temp = $this->copyRightsholder($rightsholderA, $temp); 

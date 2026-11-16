@@ -100,24 +100,12 @@ Route::prefix('databases/{database}')->group(function () {
 		Route::get('/update', [DatabaseController::class, 'upload'])->name('databases.upload'); // bulk upload
 		Route::get('/subjectareas', [SubjectAreaController::class, 'index'])->name('databases.subjectareas');
 		Route::get('/rightsholders', [RightsholderController::class, 'index'])->name('databases.rightsholders');
-		Route::get('/rightsholders/up', [RightsholderController::class, 'up'])->name('rightsholders.up');
-		Route::get('/rightsholders/down', [RightsholderController::class, 'down'])->name('rightsholders.down');
 		Route::get('/keywords', [KeywordController::class, 'index'])->name('databases.keywords');
-		Route::get('/keywords/up', [KeywordController::class, 'up'])->name('keywords.up');
-		Route::get('/keywords/down', [KeywordController::class, 'down'])->name('keywords.down');
 		Route::get('/relatedidentifiers', [RelatedIdentifierController::class, 'index'])->name('databases.relatedidentifiers');
 		Route::get('/creators', [CreatorController::class, 'index'])->name('databases.creators');
-		Route::get('/creators/up', [CreatorController::class, 'up'])->name('creators.up');
-		Route::get('/creators/down', [CreatorController::class, 'down'])->name('creators.down');
 		Route::get('/publishers', [PublisherController::class, 'index'])->name('databases.publishers');
-		Route::get('/publishers/up', [PublisherController::class, 'up'])->name('publishers.up');
-		Route::get('/publishers/down', [PublisherController::class, 'down'])->name('publishers.down');
 		Route::get('/purge', [DatabaseController::class, 'purge'])->name('databases.purge');
-		Route::get('/relatedidentifiers/up', [RelatedIdentifierController::class, 'up'])->name('relatedidentifiers.up');
-		Route::get('/relatedidentifiers/down', [RelatedIdentifierController::class, 'down'])->name('relatedidentifiers.down');
 		Route::get('/visibility', [DatabaseController::class, 'visibility'])->name('databases.visibility');
-		Route::get('/datasetdefs/up', [DatabaseController::class, 'datasetdefup'])->name('datasetdefs.up');
-		Route::get('/datasetdefs/down', [DatabaseController::class, 'datasetdefdown'])->name('datasetdefs.down');
 		Route::get('/duplicate', [DatabaseController::class, 'duplicate'])->name('databases.duplicate');
 	});
 
@@ -132,6 +120,25 @@ Route::prefix('databases/{database}')->group(function () {
 		Route::get('/datasetdefs', [DatabaseController::class, 'datasetdefs'])->name('databases.datasetdefs');
 		Route::get('/showdatasets', [DatabaseController::class, 'showdatasets'])->name('databases.showdatasets');
 	});
+});
+
+// Reordering of metadata entries and dataset definitions.
+// These are called with the id of the entry (not of the database), thus they are not in the
+// 'databases/{database}' group. Authorization ('update' on the parent database or tool) is
+// done in the controllers.
+Route::middleware(['auth'])->group(function () {
+	Route::get('/rightsholders/{rightsholder}/up', [RightsholderController::class, 'up'])->name('rightsholders.up');
+	Route::get('/rightsholders/{rightsholder}/down', [RightsholderController::class, 'down'])->name('rightsholders.down');
+	Route::get('/keywords/{keyword}/up', [KeywordController::class, 'up'])->name('keywords.up');
+	Route::get('/keywords/{keyword}/down', [KeywordController::class, 'down'])->name('keywords.down');
+	Route::get('/creators/{creator}/up', [CreatorController::class, 'up'])->name('creators.up');
+	Route::get('/creators/{creator}/down', [CreatorController::class, 'down'])->name('creators.down');
+	Route::get('/publishers/{publisher}/up', [PublisherController::class, 'up'])->name('publishers.up');
+	Route::get('/publishers/{publisher}/down', [PublisherController::class, 'down'])->name('publishers.down');
+	Route::get('/relatedidentifiers/{relatedidentifier}/up', [RelatedIdentifierController::class, 'up'])->name('relatedidentifiers.up');
+	Route::get('/relatedidentifiers/{relatedidentifier}/down', [RelatedIdentifierController::class, 'down'])->name('relatedidentifiers.down');
+	Route::get('/datasetdefs/{datasetdef}/up', [DatabaseController::class, 'datasetdefup'])->name('datasetdefs.up');
+	Route::get('/datasetdefs/{datasetdef}/down', [DatabaseController::class, 'datasetdefdown'])->name('datasetdefs.down');
 });
 
 ////////////////////////////////////////////////////////////////////////////////
