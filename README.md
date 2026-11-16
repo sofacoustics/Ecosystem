@@ -495,3 +495,5 @@ Run the following to install the currently checked in version of the Ecosystem:
 To apply all patches, run the following:
 
     cd laravel && composer update
+
+jw:note
