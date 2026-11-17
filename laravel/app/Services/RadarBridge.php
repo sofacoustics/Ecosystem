@@ -51,8 +51,9 @@ class RadarBridge
 	{
 		$url = $this->apiurl.$endpoint;
 		$response = Http::withToken($this->access_token)->get("$url");
-	$this->status = $response->status();
-	return $this->ensureUTF8($response);
+		$this->status = $response->status();
+		$response->throw(); // Throw an exception if a client or server error occurred...
+		return $this->ensureUTF8($response);
 	}
 
 	/*
@@ -64,6 +65,7 @@ class RadarBridge
 		$url = $this->apiurl.$endpoint;
 		$response = Http::withToken($this->access_token)->put("$url", $json);
 		$this->status = $response->status();
+		$response->throw();
 		return $this->ensureUTF8($response);
 	}
 
@@ -76,9 +78,9 @@ class RadarBridge
 		$url = $this->apiurl.$endpoint;
 		$response = Http::withToken($this->access_token)->post($url, $json);
 		$this->status = $response->status();
-		//$response->throw(); // Throw an exception if a client or server error occurred...
-        return $this->ensureUTF8($response);
-    }
+		$response->throw(); // Throw an exception if a client or server error occurred...
+    return $this->ensureUTF8($response);
+	}
 
 	/*
 	 * Make a POST request to the RADAR API with the specified endpoint including a file
@@ -94,8 +96,8 @@ class RadarBridge
 			->attach('file', file_get_contents($path), $name, ['Content-Type' => $mimetype])
 			->post($url);
 		$this->status = $response->status();
-		//$response->throw(); // Throw an exception if a client or server error occurred...
-        return $this->ensureUTF8($response);
+		$response->throw(); // Throw an exception if a client or server error occurred...
+    return $this->ensureUTF8($response);
 	}
 
 	/*
@@ -107,6 +109,7 @@ class RadarBridge
 		$response = Http::withToken($this->access_token)
 			->delete($url);
 		$this->status = $response->status();
+		$response->throw(); // Throw an exception if a client or server error occurred...
 		return $this->ensureUTF8($response);
 	}
 

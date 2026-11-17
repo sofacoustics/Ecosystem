@@ -3,14 +3,20 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\Attributes\On;
 
+use App\Actions\DatabaseDispatchDatasetsInBatchToRadar;
 use App\Events\DatabasePersistentPublicationApproved;
 use App\Events\DatabasePersistentPublicationRejected;
 use App\Jobs\DatabasePublishToRadar;
-use App\Services\DatabaseRadarDatasetBridge;
-use Illuminate\Support\Facades\DB;
+use App\Jobs\DatabasePublishInBatchToRadar;
 use App\Models\Datafile;
-
+use App\Models\User;
+use App\Services\DatabaseRadarDatasetBridge;
+use Illuminate\Bus\Batch;
+use Illuminate\Support\Facades\Bus; 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -36,6 +42,16 @@ class DatabaseRadarActions extends Component
 	public $canUpload = false;
 
 	public $error; // any error message to display
+
+	#[On('echo:sonicom-ecosystem,.database-published-awaiting-approval')]
+	public function handleDatabasePublishedAwaitingApproval($event)
+	{
+		// Access the 'id' from the broadcast payload
+		$id = $event['id'] ?? null; 
+		if($id == $this->database->id) {
+			$this->refreshStatus(); // refresh if this database has been published and is awaiting approval
+		}
+	}
 
 	public function mount($database)
 	{
@@ -121,11 +137,32 @@ class DatabaseRadarActions extends Component
 		$this->refreshStatus();
 	}
 
+	/*
+	 * Upload the database in batches to RADAR
+	 */
+	public function uploadToRadarInBatches()
+	{
+		$this->reset('error');
+		$this->dispatch('status-message', 'Starting upload to radar in batches.');
+		$userId = auth()->user()->id;
+
+		app(DatabaseDispatchDatasetsInBatchToRadar::class)->handle($this->database, $userId, false); // 'false' means we don't test 'review' here (separate test function).
+
+		$this->refreshStatus();
+	}
+
 	public function publishToRadar()
 	{
 		$this->reset('error');
 		$this->dispatch('status-message', 'Starting upload to RADAR via job.');
-		DatabasePublishToRadar::dispatch($this->database, auth()->user);
+		DatabasePublishToRadar::dispatch($this->database, auth()->user());
+	}
+
+	public function publishInBatchToRadar()
+	{
+		$this->reset('error');
+		$this->dispatch('status-message', 'Starting upload to RADAR via batch job.');
+		DatabasePublishInBatchToRadar::dispatch($this->database, auth()->user());
 	}
 
 	/*
@@ -272,7 +309,7 @@ class DatabaseRadarActions extends Component
 	}
 
 	public function refreshStatus()
-    {
+  {
 		$radar = new DatabaseRadarDatasetBridge($this->database);
 		if($radar->read())
 		{
@@ -299,7 +336,6 @@ class DatabaseRadarActions extends Component
 		}
 		$this->radar_status = $this->database->radar_status;
 	}
-	
 }
 
 

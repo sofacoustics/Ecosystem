@@ -54,7 +54,10 @@
 	@if($canUpload)
 		<x-livewire-button wire:click="uploadToRadar" loading="Uploading...">Upload to RADAR</x-livewire-button>
 	@endif
-	<x-livewire-button wire:click="emptyDataset" :disabled="empty($size)" loading="Emptying..." title="Empty the RADAR dataset (remove the data, but keep the metadata and DOI)">Empty dataset</x-livewire-button>
+
+	<x-livewire-button wire:click="uploadToRadarInBatches" loading="Uploading...">Upload to RADAR in batches</x-livewire-button>
+
+	<x-livewire-button wire:click="emptyDataset" :disabled="empty($size)" loading="Emptying..." title="Empty the RADAR dataset (remove the data, but keep the metadata and DOI)">Empty RADAR dataset</x-livewire-button>
 
 	<x-livewire-button style='delete' wire:click="resetDOI"
 		wire:confirm="This will remove the DOI from the Ecosystem and all links to the Datathek. Nothing will happen at the Datathek!">
@@ -67,7 +70,8 @@
 	<x-livewire-button wire:click="publishToRadar" loading="Publishing to RADAR via job">
 		Publish to RADAR via job
 	</x-livewire-button>
-	@if($error)
-		<x-alert>{{ $error }}</x-alert>
-	@endif
+	<x-livewire-button wire:click="publishInBatchToRadar" loading="Publishing to RADAR via batch job">
+		Publish to RADAR via batch job
+	</x-livewire-button>
+
 </div>

@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
@@ -38,15 +39,32 @@ class Handler extends ExceptionHandler
 				return;
 			}
 
-			$errorId = 'ERR-' . strtoupper(Str::random(8));
-			request()->attributes->set('errorId', $errorId);
+			// Check if our custom exception has the reference, otherwise generate one here
+			$errorId = method_exists($e, 'getReference') 
+				? $e->getReference() 
+			  : 'ERR-' . strtoupper(str::random(8));
+			//$errorId = 'ERR-' . strtoupper(Str::random(8));
+			
+			// SAFE CHECK: Prevent silent crashes during Livewire/Console requests
+			if (request() && request()->attributes) {
+				request()->attributes->set('errorId', $errorId);
+			}
 
-			logger()->error("Exception [{$errorId}]: " . $e->getMessage(), [
-				'exception' => $e,
+			// A. Log a CLEAN message to the ERROR log (No stacktrace)
+			Log::error("Exception [{$errorId}]: " . $e->getMessage(), [
+					'userId' => auth()->id(), 
 			]);
+
+			// B. Log the FULL stacktrace to the DEBUG log
+			Log::debug("Stacktrace for [{$errorId}]: " . $e->getMessage(), [
+					'exception' => $e,
+			]);
+
+			// STOP Laravel from running its default log handler after this.
+			return false; 
 		});
 
-		// 2. RENDERING (UI Response)
+		// 2. RENDERING (UI Response) - THIS WILL STILL RUN PERFECTLY
 		$this->renderable(function (Throwable $e, $request) {
 			// Skip custom logic for API requests
 			if ($request->is('api/*')) {
@@ -58,7 +76,7 @@ class Handler extends ExceptionHandler
 				if ($e->getStatusCode() !== 500) {
 					return null; // Let Laravel render normal 404, 403, 422, etc.
 				}
-			} 
+			}
 			// If it's NOT an HTTP exception, check if it's a validation, auth, or redirect exception
 			else if (
 				$e instanceof \Illuminate\Validation\ValidationException ||
