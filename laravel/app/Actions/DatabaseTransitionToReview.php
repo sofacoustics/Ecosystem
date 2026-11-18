@@ -34,33 +34,54 @@ class DatabaseTransitionToReview
 	{
 		Log::debug('DatabaseTransitionToReview::handle()');
 
-		$delays = [0, 10, 60];
+		// RADAR may still be processing freshly uploaded (large) files and then rejects
+		// 'startreview' with a 422 ("You cannot perform this action on the dataset.").
+		// Wait before the first attempt and retry with increasing delays (~8.5 min in total).
+		// Note: RadarBridge::post() throws on 4xx/5xx, so exceptions are treated as "not ready yet".
+		$delays = [10, 30, 60, 120, 300];
 		$success = false;
 		$radar = null;
+		$lastException = null;
+		$logContext = [
+			'feature' => 'database-radar-dataset',
+			'database_id' => $database->id,
+			'radar_id' => $database->radar_id,
+			'target_url' => config('services.radar.baseurl'),
+			'batch_id' => $batchId,
+		];
 
 		// attempt to start review. Try a couple of times
 		foreach ($delays as $index => $delay) {
-			if ($delay > 0) {
-				Log::debug("DatabaseTransitionToReview: RADAR not ready on attempt {$index}, waiting {$delay} seconds...", [
-					'feature' => 'database-radar-dataset',
-					'database_id' => $database->id,
-					'target_url' => config('services.radar.baseurl'),
-					'batch_id' => $batchId, 
+			$attempt = $index + 1;
+			Log::debug("DatabaseTransitionToReview: waiting {$delay} seconds before attempt {$attempt}/".count($delays)." to start the RADAR review", $logContext);
+			sleep($delay);
+
+			try {
+				$radar = new DatabaseRadarDatasetBridge($database);
+				if ($radar->startreview()) {
+					$success = true;
+					break;
+				}
+				Log::notice("DatabaseTransitionToReview: starting RADAR review failed on attempt {$attempt}", [
+					...$logContext,
+					'message' => $radar->message,
+					'details' => $radar->details,
 				]);
-				sleep($delay);
-			}
-
-			$radar = new DatabaseRadarDatasetBridge($database);
-
-			if ($radar->startreview()) {
-				$success = true;
-				break;
+			} catch (\Throwable $e) {
+				$lastException = $e;
+				Log::notice("DatabaseTransitionToReview: starting RADAR review threw an exception on attempt {$attempt}", [
+					...$logContext,
+					'exception' => $e->getMessage(),
+				]);
 			}
 		}
 
 		if (!$success) {
 			throw new \RuntimeException(
-				'DatabaseTransitionToReview: Failed to start RADAR review: ' . ($radar->message ?? 'Unknown error') . ' (' . ($radar->details ?? '') . ')'
+				'DatabaseTransitionToReview: Failed to start RADAR review after '.count($delays).' attempts: '
+					.($lastException?->getMessage() ?? (($radar->message ?? 'Unknown error').' ('.($radar->details ?? '').')')),
+				0,
+				$lastException
 			);
 		}
 

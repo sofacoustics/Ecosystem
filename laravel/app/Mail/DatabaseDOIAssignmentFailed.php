@@ -25,12 +25,12 @@ class DatabaseDOIAssignmentFailed extends Mailable
 	public function __construct(
 		public Database $database,
 		public $admin = false,
-		public ReferenceException $exception
+		ReferenceException $exception // not a public property: queued mails are serialized, and exceptions (e.g., HTTP responses) may not be serializable
 	) {
 		parent::__construct(); // call our Mailable constructor to initialise "$actor" property
 	
 		$this->exceptionReference = $exception->getReference();
-		$this->exceptionDetail = sprintf("Error: %s\nPrevious Error:%s", $exception->getMessage(), $exception->getPrevious()->getMessage());;
+		$this->exceptionDetail = sprintf("Error: %s\nPrevious Error:%s", $exception->getMessage(), $exception->getPrevious()?->getMessage() ?? '');
 	}
 
     /**

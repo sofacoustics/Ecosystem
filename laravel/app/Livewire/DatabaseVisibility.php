@@ -172,8 +172,8 @@ class DatabaseVisibility extends Component
 			$throwableException = new ReferenceException("Assigning the DOI to database '".$this->database->id."' failed due to an exception", 0, $e);
 			$reference = $throwableException->getReference();
 			//jw:note Don't log here, do it in Handler.php Log::notice("DatabaseVisibility::assignDOI(): Caught exception when trying to assign a DOI. (". $e->getMessage().")");
-			Mail::to($this->database->user->email)->queue(new DatabaseDOIAssignmentFailed($this->database, false, $reference));
-			Mail::to(config('mail.to.admins'))->queue(new DatabaseDOIAssignmentFailed($this->database, true, $reference, $e->getMessage()));
+			Mail::to($this->database->user->email)->queue(new DatabaseDOIAssignmentFailed($this->database, false, $throwableException));
+			Mail::to(config('mail.to.admins'))->queue(new DatabaseDOIAssignmentFailed($this->database, true, $throwableException));
 			throw $throwableException; // rethrow our exception with the reference so the default handling also occurs (output reference code for user and log).
 		}
 		// reload the page so that non-Livewire parts (e.g., the header) show the new DOI
