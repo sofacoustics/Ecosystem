@@ -30,8 +30,13 @@
 			@endforeach
 			@role('admin')
 				@if (config('app.allow_log_viewer'))
-					<a href='/log-viewer'>Log-Viewer</a>
+					<a href="/log-viewer" class="block mt-4 lg:inline-block lg:mt-0 text-black-200 hover:text-black-300 mr-4">
+						Log-Viewer
+					</a>
 				@endif
+				<a href="{{ route('admin.services') }}" class="block mt-4 lg:inline-block lg:mt-0 text-black-200 hover:text-black-300 mr-4">
+					Services
+				</a>
 			@endrole
 		</div>
 

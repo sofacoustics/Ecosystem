@@ -19,6 +19,14 @@ class ServiceController extends Controller
     }
 
     /**
+     * Display the status of service jobs and failed service logs (admin only)
+     */
+    public function status()
+    {
+        return view('services.status', ['tabTitle' => 'Services']);
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()

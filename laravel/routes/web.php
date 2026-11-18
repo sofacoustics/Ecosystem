@@ -91,8 +91,6 @@ Route::prefix('databases/{database}')->group(function () {
 	// admin routes
 	Route::middleware(['auth', 'admin'])->group(function () {
 		Route::get('/datathek', [DatabaseController::class, 'datathek'])->name('databases.datathek'); // display Datathek status and actions for admin testing
-		Route::get('/services', [DatabaseController::class, 'services'])->name('databases.services'); // display Services status and actions for admin testing
-		Route::get('/servicelog/removejob', [ServiceLogController::class, 'removejob'])->name('servicelog.removejob');
 	});
 
 	// owner routes ('own' policy)
@@ -211,6 +209,11 @@ Route::get('/tools/{tool}/duplicate', [ToolController::class, 'duplicate'])->nam
 ////////////////////////////////////////////////////////////////////////////////
 /// SERVICEs
 ////////////////////////////////////////////////////////////////////////////////
+// admin: status of service jobs and failed service logs (not database specific)
+Route::middleware(['auth', 'admin'])->group(function () {
+	Route::get('/admin/services', [ServiceController::class, 'status'])->name('admin.services');
+	Route::get('/admin/services/jobs/{id}/remove', [ServiceLogController::class, 'removejob'])->name('servicelog.removejob');
+});
 Route::resource('services', ServiceController::class);
 ////////////////////////////////////////////////////////////////////////////////
 /// PROFILE
