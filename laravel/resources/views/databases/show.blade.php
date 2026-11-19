@@ -111,7 +111,7 @@ Parameters:
 		<ul class="list-disc list-outside px-5">
 			@forelse ($database->relatedidentifiers as $relatedidentifier)
 			<li>
-				<x-relatedidentifier.list :relatedidentifier=$relatedidentifier />
+				Database <x-relatedidentifier.list :relatedidentifier=$relatedidentifier />
 			</li> 
 			@empty
 				@cannot('update', $database)

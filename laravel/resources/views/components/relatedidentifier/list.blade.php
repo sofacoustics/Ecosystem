@@ -1,6 +1,6 @@
 
 			@if(\App\Models\RelatedIdentifier::isInternalLink($relatedidentifier->name) == 1)
-			{{$relatedidentifier->relatedidentifierable->title}} <b>{{ strtolower(\App\Models\RelatedIdentifier::displayRelation($relatedidentifier->relationtype)) }}</b>
+				{{$relatedidentifier->relatedidentifierable->title}} <b>{{ strtolower(\App\Models\RelatedIdentifier::displayRelation($relatedidentifier->relationtype)) }}</b>
 				@if(\App\Models\RelatedIdentifier::internalName($relatedidentifier->name) == null)
 					<a href="{{ \App\Models\RelatedIdentifier::internalUrl($relatedidentifier->name) }}" target="_blank">a deleted Database</a>.
 				@else

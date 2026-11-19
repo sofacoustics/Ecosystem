@@ -132,7 +132,7 @@ Parameters:
 		<ul class="list-disc list-outside px-5">
 			@forelse ($tool->relatedidentifiers as $relatedidentifier)
 			<li>
-				<x-relatedidentifier.list :relatedidentifier=$relatedidentifier />
+				Tool <x-relatedidentifier.list :relatedidentifier=$relatedidentifier />
 			</li> 
 			@empty
 				@cannot('update', $tool)

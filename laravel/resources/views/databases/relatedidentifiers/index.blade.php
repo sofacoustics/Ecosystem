@@ -42,7 +42,7 @@
 						</td>
 					@endcan
 					<td class="px-4">
-						<x-relatedidentifier.list :relatedidentifier=$relatedidentifier />
+						Database <x-relatedidentifier.list :relatedidentifier=$relatedidentifier />
 					</td>
 				</tr>
 			@endforeach
