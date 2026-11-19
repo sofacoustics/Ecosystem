@@ -327,6 +327,8 @@ class Tool extends Model
 		
 		$str = $str . ' (<b>' . $py . '</b>). ';
 		$str = $str . '"' . $this->title . '", <i>The SONICOM Ecosystem: Tool #' . $this->id . '</i>.'; 
+		if($this->doi)
+			$str = $str . ' DOI: ' . $this->doi . '.';
 		$str = $str . ' URL: ' . route('tools.show', $this->id) . '.'; 
 		return $str;
 	}
