@@ -437,6 +437,20 @@ Please use the log levels like this:
 - info: General informational message about routine operations.
 - debug: Detailed diagnostic information for development and troubleshooting.
 
+## Maintenance mode
+
+Use Laravel's maintenance mode to show visitors that the website is being updated. Run in the `laravel` folder on the server:
+
+    php artisan down --render="errors::503" --retry=60 --refresh=60 --secret="<some-token>"
+    php artisan up
+
+- The page shown is `resources/views/errors/503.blade.php`. It is self-contained (inline CSS, no app layout, no Vite assets), so it also works while the app is being updated.
+- `--render` renders the page once and stores it as static HTML in `storage/framework/maintenance.php`; all requests get it with HTTP 503 until `php artisan up`.
+- `--refresh=60` makes the visitors' browsers reload every 60 seconds, so they get the website back automatically after `up`.
+- `--secret`: open `https://<server>/<some-token>` once to get a bypass cookie and use the website normally (e.g. to check an update) while visitors still see the maintenance page.
+- Queue workers do not process new jobs while in maintenance mode.
+- The deployment hook (`git-hooks/laravel-automation.sh`) does not switch maintenance mode on or off automatically.
+
 ## Deployment
 
 Trying PHP deployer (but not using it yet)
