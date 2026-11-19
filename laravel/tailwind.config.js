@@ -1,4 +1,3 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 
 /** get access to .env varaibles including expansion */
@@ -19,11 +18,9 @@ export default {
     ],
 
     theme: {
-        extend: {
-            fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-            },
-        },
+        // No custom font: Tailwind's default system font stack is used, so no
+        // font is loaded from an external service (blocked by our CSP).
+        extend: {},
     },
 
 	safelist: [
