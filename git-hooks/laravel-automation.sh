@@ -15,6 +15,19 @@ echo "<?php return ['string' => '$(git describe --tags)'];" > config/version.php
 echo "Running 'composer install'"
 composer install
 
+# Fix storage/cache ACLs (www-data + sonicom) BEFORE anything below writes to
+# storage/framework/cache: migrations, static seeders (spatie permission cache)
+# and 'artisan optimize' (laravel-data structure cache). Otherwise cache
+# subdirectories created by www-data without sonicom ACLs make these steps fail
+# with "file_put_contents(...): No such file or directory".
+# Files created later (public/build, storage link) inherit the default ACLs set
+# by the script, so a second run at the end is not needed.
+if [ -f /usr/local/bin/laravel-fix-perms ] ; then
+	echo "Setting www-data ACLs with /usr/local/bin/laravel-fix-perms"
+	echo "Running 'sudo /usr/local/bin/laravel-fix-perms $(realpath ../laravel)'"
+	sudo /usr/local/bin/laravel-fix-perms $(realpath ../laravel)
+fi
+
 changed_files="$(git diff --name-only HEAD@{1} HEAD)"
 echo "changed_files: $changed_files"
 
@@ -46,12 +59,6 @@ echo "Running ./artisan storage:unlink && ./artisan storage:link"
 
 echo "Running 'npm ci and npm run build'"
 npm ci && npm run build
-
-if [ -f /usr/local/bin/laravel-fix-perms ] ; then
-	echo "Setting www-data ACLs with /usr/local/bin/laravel-fix-perms"
-	echo "Running 'sudo /usr/local/bin/laravel-fix-perms $(realpath ../laravel)'"
-	sudo /usr/local/bin/laravel-fix-perms $(realpath ../laravel)
-fi
 
 echo "Restarting all queues with 'sudo supervisorctl restart all'"
 sudo supervisorctl restart all
