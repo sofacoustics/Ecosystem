@@ -52,6 +52,7 @@ class RadarBridge
 		$url = $this->apiurl.$endpoint;
 		$response = Http::withToken($this->access_token)->get("$url");
 		$this->status = $response->status();
+		$this->logFailedResponse('GET', $endpoint, $response);
 		$response->throw(); // Throw an exception if a client or server error occurred...
 		return $this->ensureUTF8($response);
 	}
@@ -65,6 +66,7 @@ class RadarBridge
 		$url = $this->apiurl.$endpoint;
 		$response = Http::withToken($this->access_token)->put("$url", $json);
 		$this->status = $response->status();
+		$this->logFailedResponse('PUT', $endpoint, $response);
 		$response->throw();
 		return $this->ensureUTF8($response);
 	}
@@ -78,6 +80,7 @@ class RadarBridge
 		$url = $this->apiurl.$endpoint;
 		$response = Http::withToken($this->access_token)->post($url, $json);
 		$this->status = $response->status();
+		$this->logFailedResponse('POST', $endpoint, $response);
 		$response->throw(); // Throw an exception if a client or server error occurred...
     return $this->ensureUTF8($response);
 	}
@@ -96,6 +99,7 @@ class RadarBridge
 			->attach('file', file_get_contents($path), $name, ['Content-Type' => $mimetype])
 			->post($url);
 		$this->status = $response->status();
+		$this->logFailedResponse('POST (file)', $endpoint, $response);
 		$response->throw(); // Throw an exception if a client or server error occurred...
     return $this->ensureUTF8($response);
 	}
@@ -170,6 +174,25 @@ class RadarBridge
 	 * Ensure that encoding is UTF-8. Reencode if necessary (RADAR has been returning
 	 * ISO-8859-1, even if requesting UTF-8
 	 */
+	/*
+	 * Log the complete body of a failed RADAR response (4xx/5xx). The exception
+	 * thrown afterwards by $response->throw() truncates the body to ~120
+	 * characters, which hides e.g. RADAR's metadata validation messages.
+	 */
+	protected function logFailedResponse(string $method, string $endpoint, \Illuminate\Http\Client\Response $response) : void
+	{
+		if (!$response->failed())
+			return;
+		app('log')->error('RADAR request failed', [
+			'feature' => 'radar',
+			'method' => $method,
+			'endpoint' => $endpoint,
+			'target_url' => config('services.radar.baseurl'),
+			'status' => $response->status(),
+			'body' => $response->body(),
+		]);
+	}
+
 	private function ensureUTF8(\Illuminate\Http\Client\Response $response)
 	{
 		$contentType = $response->getHeader('Content-Type'); // e.g., "text/html; charset=ISO-8859-1"

@@ -117,7 +117,25 @@ class DatabaseRadarDatasetBridge extends RadarBridge
 		$endpoint = '/datasets/'.$this->database->radar_id.'/startreview';
 		$this->content = null; // save the content sent to RADAR
 		$this->endpoint = $endpoint; // save the endpoint sent to RADAR
-		$response = $this->post($endpoint);
+		try {
+			$response = $this->post($endpoint);
+		} catch (\Illuminate\Http\Client\RequestException $e) {
+			// RADAR rejected the request (e.g. 422: metadata validation failed when
+			// starting the review). Return false with RADAR's complete message
+			// instead of throwing, so callers can show it to the user.
+			$this->message = "Starting the RADAR dataset review process failed";
+			$this->details = $e->response?->body() ?? $e->getMessage();
+			app('log')->error('Failed to start database review process', [
+				'feature' => 'database-radar-dataset',
+				'database_id' => $this->database->id,
+				'radar_id' => $this->database->radar_id,
+				'target_url' => config('services.radar.baseurl'),
+				'status' => $this->status,
+				'details' => $this->details,
+				'duration' => microtime(true) - $start
+			]);
+			return false;
+		}
 		if($this->status == 200)
 		{
 			$this->message = "Review process of the RADAR dataset successfully started";

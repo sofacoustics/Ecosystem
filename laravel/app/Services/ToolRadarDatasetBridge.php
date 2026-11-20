@@ -112,7 +112,24 @@ class ToolRadarDatasetBridge extends RadarBridge
 		$endpoint = '/datasets/'.$this->tool->radar_id.'/startreview';
 		$this->content = null;
 		$this->endpoint = $endpoint;
-		$response = $this->post($endpoint);
+		try {
+			$response = $this->post($endpoint);
+		} catch (\Illuminate\Http\Client\RequestException $e) {
+			// RADAR rejected the request (e.g. 422: metadata validation failed when
+			// starting the review). Return false with RADAR's complete message
+			// instead of throwing, so callers can show it to the user.
+			$this->message = "Starting the RADAR dataset review process failed";
+			$this->details = $e->response?->body() ?? $e->getMessage();
+			app('log')->error('Failed to start tool review process', [
+				'feature' => 'tool-radar-dataset',
+				'tool_id' => $this->tool->id,
+				'radar_id' => $this->tool->radar_id,
+				'target_url' => config('services.radar.baseurl'),
+				'status' => $this->status,
+				'details' => $this->details,
+			]);
+			return false;
+		}
 		if($this->status == 200)
 		{
 			$this->message = "Dataset review process successfully started";
