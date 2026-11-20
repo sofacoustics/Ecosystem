@@ -22,7 +22,7 @@
 					<x-button class="inline" method="GET" action="{{ route('databases.index') }}">Browse databases</x-button>
 				</td>
 				<td class="text-center align-middle">
-					<x-button class="inline" method="GET" action="{{ route('tools.index') }}">Browse tools</x-button>
+					<x-button class="inline" method="GET" action="{{ route('tools.index') }}">Browse tools &amp; docs</x-button>
 				</td>
 			</tr>
 			<tr>
@@ -30,7 +30,7 @@
 					A database is a collection of data stored in a structured way. A database consists of datasets, all of which have the same structure specified by the dataset definition.
 				</td>
 				<td class="text-center align-middle px-6 py-2">
-					Tools are files which do not need the structure of a database. They can be of the category software, model, text, physical object, or something else. 
+					Tools &amp; Docs are resources that do not need the structure of a database, for example software (toolboxes, plugins), models, documentation, manuals and reports (e.g. PDF files), descriptions of physical objects, or something else. 
 				</td>
 			</tr>
 			

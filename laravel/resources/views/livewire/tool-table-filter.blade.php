@@ -1,5 +1,15 @@
 <div>
 
+	{{-- quick filters by resource type (same filter as the "... by Type" dropdown) --}}
+	<div class="flex flex-wrap gap-2 mb-2">
+		<button type="button" wire:click="$set('filters.resourcetype', 0)"
+			class="rounded px-3 py-1 {{ (int) $filters['resourcetype'] === 0 ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300' }}">All</button>
+		@foreach($quickFilters as $id => $label)
+			<button type="button" wire:click="$set('filters.resourcetype', {{ $id }})"
+				class="rounded px-3 py-1 {{ (int) $filters['resourcetype'] === (int) $id ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300' }}">{{ $label }}</button>
+		@endforeach
+	</div>
+
 	<table class="table-auto border border-slate-399">
 		<thead class="bg-gray-50">
 			<th class="border p-2"></th>
@@ -8,8 +18,8 @@
 			<th>
 				<select wire:model.live="filters.resourcetype">
 					<option value="0">... by Type</option>
-					@foreach(\App\Models\Tool::resourcetypesList() as $r => $t)
-						<option value="{{ $r+1 }}">{{ $t->display }}</option>
+					@foreach($resourcetypes as $rt)
+						<option value="{{ $rt->id }}">{{ $rt->value === 'TEXT' ? 'Text & Documentation' : $rt->display }}</option>
 					@endforeach
 					@error('resourcetype') <span class="text-red-500">{{ $message }}</span> @enderror
 				</select>
@@ -123,7 +133,7 @@
 						<small>{{ $tool->additionaltitle }}</small>
 					</td>
 					<td class="px-6 py-4 text-center">{{ $tool->productionyear }}</td>
-					<td class="px-6 py-4 text-center">{{ \App\Models\Tool::resourcetypeDisplay($tool->resourcetype) }}</td>
+					<td class="px-6 py-4 text-center">{{ \App\Models\Tool::resourcetypeLabel($tool->resourcetype) }}</td>
 					@auth
 						<td class="px-6 py-4 text-center">{{ \App\Livewire\ToolTableFilter::userName($tool->user_id) }}</td>
 					@endauth

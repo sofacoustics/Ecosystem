@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Tool;
 use App\Models\Keyword;
+use App\Models\Metadataschema;
 
 class ToolTableFilter extends Component
 {
@@ -86,10 +87,33 @@ class ToolTableFilter extends Component
 		$this->tools = $query->get();
 	}
 
+	// Quick filter buttons above the table: resource type value => button label
+	private const QUICK_FILTERS = [
+		'SOFTWARE' => 'Software',
+		'MODEL' => 'Models',
+		'TEXT' => 'Docs',
+		'PHYSICAL_OBJECT' => 'Physical Objects',
+		'OTHER' => 'Other',
+	];
+
 	public function render()
 	{
 		$this->applyFilters();
-		return view('livewire.tool-table-filter');
+
+		// resource types with their real ids (= values stored in tools.resourcetype)
+		$resourcetypes = Metadataschema::where('name', 'resourceType')->orderBy('id')->get(['id', 'value', 'display']);
+		$quickFilters = [];
+		foreach (self::QUICK_FILTERS as $value => $label)
+		{
+			$rt = $resourcetypes->firstWhere('value', $value);
+			if ($rt)
+				$quickFilters[$rt->id] = $label;
+		}
+
+		return view('livewire.tool-table-filter', [
+			'resourcetypes' => $resourcetypes,
+			'quickFilters' => $quickFilters,
+		]);
 	}
 
 	public function clearFilters() 

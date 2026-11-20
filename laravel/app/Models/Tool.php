@@ -231,6 +231,24 @@ class Tool extends Model
 		return \App\Models\Metadataschema::display($resourcetype);
 	}
 
+	/*
+	 * Label of the resource type for the tool list: like resourcetypeDisplay(),
+	 * but 'TEXT' is shown as 'Text & Documentation' so that users see that
+	 * documents (e.g. PDF documentation) are tools too. Display only: RADAR and
+	 * the JSON export keep using resourcetypeValue()/resourcetypeDisplay().
+	 */
+	static function resourcetypeLabel($resourcetype)
+	{
+		if ($resourcetype === null)
+			return '';
+		$row = \App\Models\Metadataschema::find(abs($resourcetype));
+		if (!$row)
+			return '';
+		if ($row->value === 'TEXT')
+			return 'Text & Documentation';
+		return $row->display;
+	}
+
 	static function resourcetypeValue($resourcetype)
 	{
 		return \App\Models\Metadataschema::value($resourcetype);
