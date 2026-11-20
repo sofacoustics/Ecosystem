@@ -113,12 +113,19 @@ class DatabasePublishToRadar implements ShouldQueue
 					$this->release(10); // delay in seconds
 					return;
 				}
-				// reset radar_status back to '1' so the user can try again
+				// reset radar_status back to '1' so the user can try again, but only if
+				// publishing is still in progress (2). Never reset a database which is
+				// in review (3) or persistently published (4).
+				// Reload first: this job may have run for a long time.
+				$this->database->refresh();
 				app('log')->debug('radar_status for database ' . $this->database->id . ' is ' . $this->database->radar_status);
-				if($this->database->radar_status = 2) {
+				if($this->database->radar_status == 2) {
 					app('log')->info('Resetting radar_status for database ' . $this->database->id . ' from ' . $this->database->radar_status . ' to 1');
 					$this->database->radar_status = 1;
 					$this->database->save();
+				}
+				else {
+					app('log')->info('radar_status for database ' . $this->database->id . ' is ' . $this->database->radar_status . ', not 2: not resetting');
 				}
 				Mail::to($this->database->user->email)->queue(new DatabasePersistentPublicationFailed($this->database, $radar_details, actor: $this->user));
 				Mail::to(config('mail.to.admins'))->queue(new DatabasePersistentPublicationFailed($this->database, $radar_details, true, actor: $this->user));
