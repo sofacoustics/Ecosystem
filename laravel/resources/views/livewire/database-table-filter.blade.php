@@ -17,7 +17,10 @@
 		<thead class="bg-gray-50">
 			@auth
 				<th class="border p-2">
-					<button wire:click="sortBy('visible')">
+					{{-- tooltip describes the order after the next click (ascending: hidden first; descending: visible first) --}}
+					<button wire:click="sortBy('visible')" title="{{ ($sortField === 'visible' && $sortAsc)
+						? 'Click to sort by the visibility with exposed databases on top'
+						: 'Click to sort by the visibility with private databases on top' }}">
 						<img id="visible" src="{{ asset('images/visible.svg') }}" alt="Visible?" style="display: block; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em;">
 						@if ($sortField === 'visible')
 							@if ($sortAsc)
