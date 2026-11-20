@@ -107,10 +107,12 @@
 			@foreach($tools as $tool)
 				<tr>
 					<td class="text-center">
-						@if($tool->doi)
-							<img id="doi" src="{{ asset('images/DOI.svg') }}" alt="DOI"  style="display: block; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em;">
+						@if(empty($tool->doi))
+							<img id="nodoi" src="{{ asset('images/noDOI.png') }}" alt="noDOI" title="No DOI assigned" style="display: block; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em;">
+						@elseif($tool->radar_status == 4)
+							<img id="doi" src="{{ asset('images/DOI.svg') }}" alt="DOI" title="Persistently published with DOI" style="display: block; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em;">
 						@else
-							<img id="nodoi" src="{{ asset('images/noDOI.png') }}" alt="noDOI" style="display: block; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em;">
+							<img id="doiassigned" src="{{ asset('images/DOI.svg') }}" alt="DOI assigned" title="DOI assigned (not yet persistently published)" style="display: block; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em; filter: grayscale(100%);">
 						@endif
 					</td>
 					<td class="px-6 py-4 whitespace-normal">

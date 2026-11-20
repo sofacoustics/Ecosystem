@@ -18,6 +18,8 @@ class ToolTableFilter extends Component
 		'resourcetype' => 0,
 	];
 
+	private const SORTABLE_FIELDS = ['doi', 'title', 'productionyear', 'resourcetype', 'updated_at'];
+
 	public $sortField = 'title'; // Default sorting field
 	public $sortAsc = true; // Default sorting order
 	
@@ -37,18 +39,19 @@ class ToolTableFilter extends Component
 
 	public function applyFilters()
 	{
-		$query = DB::table('tools'); 
+		// One query for all filters (before, the keyword filter replaced the query
+		// and a title filter set before was lost).
+		$query = Tool::query();
 
 		if (!empty($this->filters['title'])) 
 		{
 			$query->where('title', 'like', '%' . $this->filters['title'] . '%');
-			$this->tools = $query->get();
 		}
 
 		if (!empty($this->filters['keyword'])) 
 		{
-				$query = Tool::whereHas('keywords', function ($q) {
-					$q->where('keywordName', 'like', '%' . $this->filters['keyword'] . '%'); });
+			$query->whereHas('keywords', function ($q) {
+				$q->where('keywordName', 'like', '%' . $this->filters['keyword'] . '%'); });
 		}
 
 		if (!empty($this->filters['productionyear'])) 
@@ -61,7 +64,26 @@ class ToolTableFilter extends Component
 			$query->where('resourcetype', '=', $this->filters['resourcetype']);
 		}
 
-		$this->tools = $query->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')->get();
+		// sortField is a public Livewire property and can be changed by the
+		// client: only allow the columns offered in the table.
+		if (!in_array($this->sortField, self::SORTABLE_FIELDS, true))
+		{
+			$this->sortField = 'title';
+		}
+		$direction = $this->sortAsc ? 'asc' : 'desc';
+
+		if ($this->sortField === 'doi')
+		{
+			// sort by DOI state: 0 = no DOI, 1 = DOI assigned, 2 = persistently published (radar_status 4)
+			$query->orderByRaw("CASE WHEN doi IS NULL OR doi = '' THEN 0 WHEN radar_status = 4 THEN 2 ELSE 1 END " . $direction)
+				->orderBy('title', 'asc');
+		}
+		else
+		{
+			$query->orderBy($this->sortField, $direction);
+		}
+
+		$this->tools = $query->get();
 	}
 
 	public function render()
