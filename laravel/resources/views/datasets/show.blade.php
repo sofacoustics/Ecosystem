@@ -26,6 +26,7 @@
 			<x-property name="Datafile Name">
 				<a href="{{ route('datafiles.show', $datafile->id) }}">{{ $datafile->name }}</a>@hasrole('admin') (ID: {{ $datafile->id }})@endhasrole
 			</x-property>
+			<x-button class="inline" action="{{ asset($datafile->url()) }}">Download</x-button>
 			@hasrole('admin')
 				@if($datafile->radar_id)
 					<x-property name="RADAR id">{{ $datafile->radar_id}}</x-property>
