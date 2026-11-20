@@ -19,6 +19,8 @@ class DatabaseTableFilter extends Component
 		'keyword' => '',
 	];
 
+	private const SORTABLE_FIELDS = ['visible', 'doi', 'title', 'productionyear', 'updated_at'];
+
 	public $sortField = 'title'; // Default sorting field
 	public $sortAsc = true; // Default sorting order
 	
@@ -56,7 +58,26 @@ class DatabaseTableFilter extends Component
 			$query->where('productionyear', 'like', '%' . $this->filters['productionyear'] . '%');
 		}
 
-		$this->databases = $query->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')->get();
+		// sortField is a public Livewire property and can be changed by the
+		// client: only allow the columns offered in the table.
+		if (!in_array($this->sortField, self::SORTABLE_FIELDS, true))
+		{
+			$this->sortField = 'title';
+		}
+		$direction = $this->sortAsc ? 'asc' : 'desc';
+
+		if ($this->sortField === 'doi')
+		{
+			// sort by DOI state: 0 = no DOI, 1 = DOI assigned, 2 = persistently published (radar_status 4)
+			$query->orderByRaw("CASE WHEN doi IS NULL OR doi = '' THEN 0 WHEN radar_status = 4 THEN 2 ELSE 1 END " . $direction)
+				->orderBy('title', 'asc');
+		}
+		else
+		{
+			$query->orderBy($this->sortField, $direction);
+		}
+
+		$this->databases = $query->get();
 	}
 
 	public function render()
