@@ -22,7 +22,10 @@
 		</thead>
 		<thead class="bg-gray-50">
 			<th class="border p-2 min-w-[10ch]">
-				<button wire:click="sortBy('doi')">
+				{{-- tooltip describes the order after the next click (ascending: no DOI first; descending: published first) --}}
+				<button wire:click="sortBy('doi')" title="{{ ($sortField === 'doi' && $sortAsc)
+					? 'Click to sort by DOI state with tools permanently published with DOI at the top'
+					: 'Click to sort by DOI state with tools without DOI at the top' }}">
 					<img id="doi" src="{{ asset('images/DOI.svg') }}" alt="DOI?"  style="display: block; margin: 0 auto; width: 100%; height: auto; max-width: 2em; min-width: 2em;">
 					@if ($sortField === 'doi')
 						@if ($sortAsc)
