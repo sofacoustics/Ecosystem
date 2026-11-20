@@ -62,11 +62,11 @@ class DatafiletypeSeeder extends Seeder
 			],
 			[ 
 				'key' => 'human-and-alike-geometry-non-parametric',
-				'name' => 'Human and alike: Geometry: non-parametric (PLY, STL)',
+				'name' => 'Human and alike: Geometry: non-parametric (PLY, STL, OBJ)',
 				'default_widget' => Widget::where('key', 'geometry-mesh')->first()->id,
-				'extension' => '.ply,.stl',
+				'extension' => '.ply,.stl,.obj', // OBJ files are shown by the STL viewer (mesh.blade.php), which parses .obj natively
 				'mimetypes' => null,
-				'description' => 'Point cloud and/or mesh of a human and alike (PLY or STL file)', 
+				'description' => 'Point cloud and/or mesh of a human and alike (PLY, STL or OBJ file)', 
 			],
 			[ 
 				'key' => 'human-and-alike-geometry-parametric-csv',
