@@ -6,7 +6,7 @@ use App\Actions\DatabaseTransitionToReview;
 use App\Events\DatabasePublishedAwaitingApproval;
 use App\Events\DatabasePublishingFailed;
 use App\Exceptions\ReferenceException;
-use App\Jobs\DatasetUploadInBatchToRadar;
+use App\Jobs\DatasetUploadBatchLoader;
 use App\Mail\DatabasePersistentPublicationFailed;
 use App\Mail\DatabasePersistentPublicationRequested;
 use App\Mail\DatabasePersistentPublicationRequestedStarted;
@@ -30,6 +30,11 @@ use App\Services\DatabaseRadarDatasetBridge;
  */
 class DatabaseDispatchDatasetsInBatchToRadar
 {
+	// Number of datasets per loader job. Each loader adds one DatasetUploadInBatchToRadar
+	// job per dataset to the batch. Dispatching all upload jobs at once took too long for
+	// large databases (14 400 datasets exceeded the 3600 s timeout of DatabasePublishInBatchToRadar).
+	const JOBS_PER_PIECE = 1000; 
+
 	public function handle(Database $database, int $actorId, bool $shouldReview = true): void
 	{
 		$logContext = [
@@ -45,21 +50,22 @@ class DatabaseDispatchDatasetsInBatchToRadar
 			throw new \Exception('Trying to upload datasets to RADAR when the radar_id is null.');
 		}
 
-		$jobs = [];
-		$nChunks = 1; // number of datasets per chunk. Any number which you are sure can upload within the DatasetDispatchDatasetsInBatchToRadar job timeout
-
 		$actor = User::find($actorId);
-		$database->datasets()->chunkById($nChunks, function ($datasets) use ($database, $actor, &$jobs) {
-			$jobs[] = new DatasetUploadInBatchToRadar($datasets, $database, $actor);
-		});
+		$datasetIds = $database->datasets()->orderBy('id')->pluck('id');
+		$loaders = [];
+		foreach ($datasetIds->chunk(self::JOBS_PER_PIECE) as $piece) {
+			$loaders[] = new DatasetUploadBatchLoader($piece->values()->all(), $database, $actor);
+		}
 
 		Log::debug('Batch prepared', [
 			...$logContext,
-			'nChunks' => $nChunks,
-			'nJobs' => count($jobs)
+			'jobsPerPiece' => self::JOBS_PER_PIECE,
+			'nDatasets' => $datasetIds->count(),
+			'nLoaders' => count($loaders)
 		]);
 
-		$batch = Bus::batch($jobs)
+		// The upload jobs are added to the batch by the loader jobs (see DatasetUploadBatchLoader)
+		$batch = Bus::batch($loaders)
 			->onQueue('uploads')
 			->then(function (Batch $batch) use ($database, $shouldReview, $actorId, $logContext) {
 				//
@@ -153,8 +159,8 @@ class DatabaseDispatchDatasetsInBatchToRadar
 		Log::debug('Upload batch '.$batch->id.' dispatched', [
 			...$logContext,
 			'batch_id' => $batch->id,
-			'nChunks' => $nChunks,
-			'nJobs' => count($jobs)
+			'nDatasets' => $datasetIds->count(),
+			'nLoaders' => count($loaders)
 		]);
 	}
 }
