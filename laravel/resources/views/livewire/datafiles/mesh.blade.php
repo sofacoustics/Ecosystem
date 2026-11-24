@@ -49,7 +49,11 @@
 				document.getElementById("stl_cont{{ $datafile->id }}"),
 				{
 					loading_progress_callback:stl_progress{{ $datafile->id }},
-					models: [{filename:"{{ $datafile->asset('',true) }}"}],
+					models: [{
+						filename:"{{ $datafile->asset('',true) }}",
+						rotationx: Math.PI/2, // initial view: 90° around x
+						rotationy: Math.PI, // initial view: 180° around y
+					}],
 				}
 			);
 					

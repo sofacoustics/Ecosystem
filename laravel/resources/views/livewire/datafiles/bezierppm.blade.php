@@ -10,10 +10,11 @@
 		(
 			document.getElementById("stl_cont{{ $datafile->id }}"),
 			{
-				models:
-				[
-					{filename:"{{ $datafile->asset('_1.stl','notimestamp') }}"}
-				]
+				models: [{
+						filename:"{{ $datafile->asset('_1.stl','notimestamp') }}",
+						rotationx: Math.PI/2, // initial view: 90° around x
+						rotationy: Math.PI, // initial view: 180° around y
+					}],
 			}
 		);
 	</script>
