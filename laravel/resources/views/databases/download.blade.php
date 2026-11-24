@@ -11,8 +11,19 @@
 			<img id="copyURL" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 1.5em; display: inline-block;">
 			<input type="text" id="textURL" value="{{ route('databases.show', ['database' => $database->id]) }}" class="hidden">
 		</li>
+		<li><b>List of all Datafiles in this Database:</b> 
+			<a href="{{ route('databases.download', ['database' => $database->id, 'type' => 'json']) }}">
+			{{ route('databases.download', ['database' => $database->id, 'type' => 'json']) }}
+			</a>
+			<img id="copyJSON" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 1.5em; display: inline-block;">
+			<input type="text" id="textJSON" value="{{ route('databases.download', ['database' => $database->id, 'type' => 'json']) }}" class="hidden">
+			<ul class="list-disc list-outside ps-5 mt-2 space-y-1">
+				<li>URL to each Datafile can be found in the field "Datafile URL"</li>
+			</ul>
+		</li>		
+		<br>
 		@if($database->doi)
-			<li><b>URL to a TAR file with all datafiles:</b>
+			<li><b>Download all Datafiles in a single TAR file:</b>
 				@if($database->radar_status==4)
 					<a href="https://datathek.oeaw.ac.at/radar-backend/archives/{{ substr($database->doi,9) }}/versions/1/content">
 						https://datathek.oeaw.ac.at/radar-backend/archives/{{ substr($database->doi,9) }}/versions/1/content
@@ -21,14 +32,8 @@
 					https://datathek.oeaw.ac.at/radar-backend/archives/{{ substr($database->doi,9) }}/versions/1/content (The link will be active after persistent publication of this Database)
 				@endif
 			</li>
+			<br>
 		@endif
-		<li><b>List of all Datafiles in this Database:</b> 
-			<a href="{{ route('databases.download', ['database' => $database->id, 'type' => 'json']) }}">
-			{{ route('databases.download', ['database' => $database->id, 'type' => 'json']) }}
-			</a>
-			<img id="copyJSON" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 1.5em; display: inline-block;">
-			<input type="text" id="textJSON" value="{{ route('databases.download', ['database' => $database->id, 'type' => 'json']) }}" class="hidden">
-		</li>
 <style>
 	code {
 			padding: 2px 4px;
@@ -40,7 +45,7 @@
 	}
 </style>
 		
-		<li><b>Scripts:</b>
+		<li><b>Download all Datafiles with a script:</b>
 			<ul class="list-disc list-outside ps-5 mt-2 space-y-1">
 				<li>Matlab 
 					<a href="https://mathworks.com/products/matlab.html">
@@ -66,6 +71,7 @@
 				<li><b>Note:</b> These scripts retrieve the list of all Datafiles in this Database and download them to the local directory <code>destination_directory</code> 
 			</ul>
 		</li>
+
 	</ul>
 	
 	<script>
