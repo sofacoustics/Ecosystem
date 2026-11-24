@@ -4,6 +4,10 @@
 			  nFilesExisting: @entangle('nFilesExisting'),
 
 			  nFilesInDir: -1, // Number of files in the local directory. -1: not picked yet.
+				reading: false, // true while the picked directory is being read
+				readingPhase: '', // 'wait': waiting for the browser (no progress available), 'scan': listing files, 'prepare': loading file infos
+				readingCount: 0, // number of files found ('scan') or prepared ('prepare')
+				readingTotal: 0, // total number of files to prepare ('prepare')
   			allFiles: [], // All files from the picked local directory
 	  		directory: '', // Root of the local directory  
 				
@@ -59,8 +63,21 @@
 				<input id="directory-picker" type="file" webkitdirectory directory style="display:none"
 																			x-bind:disabled="uploading">
 			</div>
-			<span x-show="nFilesInDir == -1">After picking the directory, please stand by while we parse the directory structure...</span>
-			<span x-show="nFilesInDir == 0">Directory not picked or no files in the selected directory. Nothing to do...</span>
+			<span x-show="nFilesInDir == -1 && !reading">After picking the directory, please stand by while we parse the directory structure...</span>
+			<span x-show="nFilesInDir == 0 && !reading">Directory not picked or no files in the selected directory. Nothing to do...</span>
+			<div x-show="reading" x-cloak>
+				<p x-show="readingPhase == 'wait'" class="animate-pulse">Reading the directory, please stand by. This may take a while for directories with many files...</p>
+				<p x-show="readingPhase == 'scan'" class="animate-pulse">Reading the directory: <b><span x-text="readingCount"></span></b> files found so far...</p>
+				<div x-show="readingPhase == 'prepare'">
+					<p>Preparing the files: <span x-text="readingCount"></span> / <span x-text="readingTotal"></span></p>
+					<div x-show="readingTotal > 1000" class="relative h-2 mt-2 rounded-full bg-base-200">
+						<div
+							x-bind:style="'width: ' + (readingTotal > 0 ? Math.round(100 * readingCount / readingTotal) : 0) + '%;'"
+							class="absolute top-0 left-0 h-full bg-orange-500 rounded-full">
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 				
 		<template x-if="nFilesInDir > 0"><div>
@@ -261,35 +278,42 @@
 		//	Events
 		////////////////////////////////////////////////////////////////////////////////
 		
-		// Trigger the actual directory picker when clicked on the fake but nicely looking button
+		// Trigger the directory picker when clicked on the fake but nicely looking button.
+		//   Chrome/Edge: File System Access API (showDirectoryPicker), we read the directory ourselves and show the progress.
+		//   Other browsers (Firefox, Safari): hidden <input webkitdirectory>, the browser reads the directory without progress.
 	document.querySelector('#actual-directory-picker').addEventListener('click', e =>
-	{ 
+	{
 		let data = Alpine.$data(document.getElementById('alpineComponent'));
-		setTimeout(() => { document.querySelector('#directory-picker').click(); } ,0); 
+		if (data.reading || data.uploading) return; // do not pick again while reading or uploading
+		if (typeof window.showDirectoryPicker === 'function')
+		{
+			pickDirectoryWithProgress(data); // must be called directly within the click (user gesture)
+		}
+		else
+		{
+				// The browser reads the directory after the user picked it and we cannot see the progress.
+				// Show a "please stand by" message until the 'change' (or 'cancel') event arrives.
+			data.reading = true;
+			data.readingPhase = 'wait';
+			document.querySelector('#directory-picker').value = ''; // otherwise picking the same directory again fires no 'change'
+			setTimeout(() => { document.querySelector('#directory-picker').click(); } ,0);
+		}
 	});
 
-		// Processes the actual directory picker
-		//   Updated variables: allFiles, directory, nFilesInDir
+		// Fallback picker: the dialog was closed without picking a directory
+	document.getElementById("directory-picker").addEventListener("cancel", () => {
+		let data = Alpine.$data(document.getElementById('alpineComponent'));
+		data.reading = false;
+		data.readingPhase = '';
+	});
+
+		// Processes the fallback directory picker
 	document.getElementById("directory-picker").addEventListener(
 		"change",
 		(e) => {
 			console.log("directory-picker: change");
-			let files = Array.from(event.target.files);
-				// sort alphabetically
-			files.sort((a, b) => a.webkitRelativePath.localeCompare(b.webkitRelativePath));
 			let data = Alpine.$data(document.getElementById('alpineComponent'));
-			data.allFiles = files;
-			data.nFilesInDir = files.length;
-			if (files.length > 0) { // Extract the first file's relative path and get the directory name					
-				const firstFilePath = files[0].webkitRelativePath;
-				data.directory = firstFilePath.split('/')[0]; // First segment is the directory name;
-			}
-			data.nDatasetsFound = -1; // Apply filter not applied yet
-			 // clear the form
-			a = document.getElementById("skipped"); if (a!=null) a.innerHTML = "";
-			a = document.getElementById("skipped-list"); if (a!=null) a.innerHTML = "";
-			a = document.getElementById("analysis-summary"); if (a!=null) a.innerHTML = "";
-			a = tableBody = document.getElementById('results'); if (a!=null) a.getElementsByTagName('tbody')[0].innerHTML = "";
+			setPickedFiles(data, Array.from(e.target.files));
 		},
 		false,
 	);
@@ -620,6 +644,113 @@
 	////////////////////////////////////////////////////////////////////////////////
 	//	Javascript functions
 	////////////////////////////////////////////////////////////////////////////////
+
+		// Store the files of the picked directory (from either picker) and reset the form
+		//   Updated variables: allFiles, directory, nFilesInDir, nDatasetsFound, reading
+	function setPickedFiles(data, files)
+	{
+		console.time("setPickedFiles");
+			// sort alphabetically (Intl.Collator: same order as localeCompare, but faster)
+		const collator = new Intl.Collator();
+		files.sort((a, b) => collator.compare(a.webkitRelativePath, b.webkitRelativePath));
+		data.allFiles = files;
+		data.nFilesInDir = files.length;
+		if (files.length > 0) { // Extract the first file's relative path and get the directory name
+			const firstFilePath = files[0].webkitRelativePath;
+			data.directory = firstFilePath.split('/')[0]; // First segment is the directory name;
+		}
+		data.nDatasetsFound = -1; // Apply filter not applied yet
+		 // clear the form
+		let a;
+		a = document.getElementById("skipped"); if (a!=null) a.innerHTML = "";
+		a = document.getElementById("skipped-list"); if (a!=null) a.innerHTML = "";
+		a = document.getElementById("analysis-summary"); if (a!=null) a.innerHTML = "";
+		a = document.getElementById('results'); if (a!=null) a.getElementsByTagName('tbody')[0].innerHTML = "";
+		data.reading = false;
+		data.readingPhase = '';
+		console.timeEnd("setPickedFiles");
+	}
+
+		// Let the browser repaint (to update the progress)
+	function yieldToBrowser()
+	{
+		return new Promise(resolve => setTimeout(resolve, 0));
+	}
+
+		// Chrome/Edge: pick and read the directory with the File System Access API, showing the progress.
+		//   Phase 'scan': list all files recursively (total unknown, show the count)
+		//   Phase 'prepare': get the File objects (total known, show a progress bar if > 1000 files)
+		// The File objects get the property webkitRelativePath ("<directory>/<subdirs>/<name>"),
+		// as provided by <input webkitdirectory>, so that the rest of the code works unchanged.
+	async function pickDirectoryWithProgress(data)
+	{
+		let dirHandle;
+		try {
+			dirHandle = await window.showDirectoryPicker({ mode: 'read' });
+		} catch (e) {
+			if (e.name !== 'AbortError') // AbortError: dialog cancelled by the user
+			{
+				console.error('showDirectoryPicker:', e);
+				window.alert("The directory could not be opened: " + e.message);
+			}
+			return;
+		}
+		console.time("pickDirectoryWithProgress");
+		data.reading = true;
+		data.readingPhase = 'scan';
+		data.readingCount = 0;
+		data.readingTotal = 0;
+		try {
+				// Phase 'scan'
+			let entries = []; // { handle: FileSystemFileHandle, path: relative path incl. the picked directory }
+			let stack = [ { handle: dirHandle, path: dirHandle.name } ];
+			while (stack.length > 0)
+			{
+				const dir = stack.pop();
+				for await (const [name, child] of dir.handle.entries())
+				{
+					if (child.kind === 'file')
+					{
+						entries.push({ handle: child, path: dir.path + '/' + name });
+						if (entries.length % 200 == 0)
+						{
+							data.readingCount = entries.length;
+							await yieldToBrowser();
+						}
+					}
+					else if (child.kind === 'directory')
+						stack.push({ handle: child, path: dir.path + '/' + name });
+				}
+			}
+			data.readingCount = entries.length;
+
+				// Phase 'prepare'
+			data.readingPhase = 'prepare';
+			data.readingTotal = entries.length;
+			data.readingCount = 0;
+			await yieldToBrowser();
+			let files = new Array(entries.length);
+			const chunk = 50; // number of files requested in parallel
+			for (let i = 0; i < entries.length; i += chunk)
+			{
+				const part = entries.slice(i, i + chunk);
+				const partFiles = await Promise.all(part.map(entry => entry.handle.getFile()));
+				partFiles.forEach((file, k) => {
+					Object.defineProperty(file, 'webkitRelativePath', { value: part[k].path });
+					files[i + k] = file;
+				});
+				data.readingCount = Math.min(i + chunk, entries.length);
+				await yieldToBrowser();
+			}
+			setPickedFiles(data, files);
+		} catch (e) {
+			console.error('pickDirectoryWithProgress:', e);
+			window.alert("Error while reading the directory: " + e.message);
+			data.reading = false;
+			data.readingPhase = '';
+		}
+		console.timeEnd("pickDirectoryWithProgress");
+	}
 
 	function _createPendingFiles(data)
 	{
