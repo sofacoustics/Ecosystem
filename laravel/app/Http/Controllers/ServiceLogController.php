@@ -69,5 +69,33 @@ class ServiceLogController extends Controller
 		DB::table('jobs')->where('id', $id)->delete();
 		return redirect()->back();
 	}
+
+	/**
+	 * Remove all queued Service jobs (App\Jobs\Service). Other jobs (e.g. RADAR uploads) are
+	 * not touched, because removing them would leave their batch (and the publication) stuck.
+	 */
+	public function removealljobs()
+	{
+		$ids = [];
+		foreach(DB::table('jobs')->select('id', 'payload')->cursor() as $job)
+		{
+			$payload = json_decode($job->payload, true);
+			if(($payload['displayName'] ?? null) === \App\Jobs\Service::class)
+				$ids[] = $job->id;
+		}
+		foreach(array_chunk($ids, 1000) as $chunk)
+			DB::table('jobs')->whereIn('id', $chunk)->delete();
+		return redirect()->back();
+	}
+
+	/**
+	 * Remove a single service log entry. The status page is reloaded afterwards, so an older
+	 * log of the same datafile becomes the latest one (and is listed if it failed too).
+	 */
+	public function removelog($id)
+	{
+		DB::table('service_logs')->where('id', $id)->delete();
+		return redirect()->back();
+	}
 			
 }

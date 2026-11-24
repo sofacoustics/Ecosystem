@@ -71,6 +71,12 @@ class Handler extends ExceptionHandler
 				return null;
 			}
 
+			// Debug mode (APP_DEBUG=true, dev only!): let Laravel render its detailed error page
+			// (message + stacktrace). The error is still logged with its reference code above.
+			if (config('app.debug')) {
+				return null;
+			}
+
 			// If it's an HTTP exception (e.g., 404, 403, 422, 302), ONLY handle it if status code is 500
 			if ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface) {
 				if ($e->getStatusCode() !== 500) {

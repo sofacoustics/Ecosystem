@@ -87,12 +87,12 @@ class DatafileListener extends Component
 	{
 		// get latest service log
 		$this->latestLog = ServiceLog::where('datafile_id', $this->datafile->id)->latest()->first();
-		\Log::debug('DatafileListener: datafiletype name = ' . ($this->datafiletype->name ?? 'NULL'));
+		// \Log::info('DatafileListener: datafiletype name = ' . ($this->datafiletype->name ?? 'NULL'));
 
 		$view = 'livewire.datafiles.generic'; // default view for any datafile
 		if($this->widget)
 		{
-			\Log::debug('DatafileListener: widget id = ' . $this->widget->id . ' widget view = ' . ($this->widget->view ?? 'NULL'));
+			// \Log::debug('DatafileListener: widget id = ' . $this->widget->id . ' widget view = ' . ($this->widget->view ?? 'NULL'));
 			if($this->widget->is_active($this->datafiletype)) // if widget available and active then use it
 				if(View::exists("livewire.datafiles." . $this->widget->view)) // if view exist, use it
 					$view = "livewire.datafiles." . $this->widget->view;	

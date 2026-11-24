@@ -213,6 +213,8 @@ Route::get('/tools/{tool}/duplicate', [ToolController::class, 'duplicate'])->nam
 Route::middleware(['auth', 'admin'])->group(function () {
 	Route::get('/admin/services', [ServiceController::class, 'status'])->name('admin.services');
 	Route::get('/admin/services/jobs/{id}/remove', [ServiceLogController::class, 'removejob'])->name('servicelog.removejob');
+	Route::delete('/admin/services/jobs', [ServiceLogController::class, 'removealljobs'])->name('servicelog.removealljobs'); // Service jobs only
+	Route::delete('/admin/services/logs/{id}', [ServiceLogController::class, 'removelog'])->name('servicelog.removelog'); // single log entry
 });
 Route::resource('services', ServiceController::class);
 ////////////////////////////////////////////////////////////////////////////////

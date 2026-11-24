@@ -9,5 +9,5 @@ laravel/config/version.php
 laravel-jetstream
 octave/octave-10.2.0/
 octave/gl2ps-1.4.2/
-/laravel/.env.bak
 git-hooks/pre-commit
+laravel/testing/
