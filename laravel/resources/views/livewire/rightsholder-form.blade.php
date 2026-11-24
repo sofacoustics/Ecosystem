@@ -47,15 +47,15 @@
 			<div class="mb-4">
 				<label for="nameIdentifier" class="{{ $labelClass }}">Name Identifier:</label>
 				@if ($nameIdentifierSchemeIndex==2)<!-- ROR -->
-					<input wire:model="nameIdentifier" type="text" 
+					<input wire:model.blur="nameIdentifier" type="text" 
 										placeholder="ROR identifier."
 										id="nameIdentifier" class="{{ $inputClass }}" />
 				@elseif ($nameIdentifierSchemeIndex==1)<!-- ORCID -->
-					<input wire:model="nameIdentifier" type="text" 
+					<input wire:model.blur="nameIdentifier" type="text" 
 										placeholder="ORCID."
 										id="nameIdentifier" class="{{ $inputClass }}" />
 				@else <!-- Other -->
-					<input wire:model="nameIdentifier" type="text" 
+					<input wire:model.blur="nameIdentifier" type="text" 
 										placeholder="Identifier as free text."
 										id="nameIdentifier" class="{{ $inputClass }}" />
 				@endif

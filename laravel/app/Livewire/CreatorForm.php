@@ -90,9 +90,25 @@ class CreatorForm extends Component
 		$this->nameIdentifierSchemeIndex = 1; // ORCID
 	}
 
+	/*
+	 * Remove the URL prefix if a link has been entered (called when the input field loses focus).
+	 * Person: nameIdentifier is an ORCID. Affiliation/institution: affiliationIdentifier is a ROR.
+	 */
+	public function updatedNameIdentifier()
+	{
+		$this->nameIdentifier = Creator::stripNameIdentifier($this->nameIdentifier, 1); // ORCID
+	}
+
+	public function updatedAffiliationIdentifier()
+	{
+		$this->affiliationIdentifier = Creator::stripNameIdentifier($this->affiliationIdentifier, 2); // ROR
+	}
+
 	public function save()
 	{
 		//$this->validate();
+		$this->updatedNameIdentifier(); // in case the form was submitted directly after pasting a link
+		$this->updatedAffiliationIdentifier();
 
 		$isNew = !$this->creator;
 		if($isNew)

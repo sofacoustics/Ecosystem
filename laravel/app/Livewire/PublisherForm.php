@@ -91,8 +91,25 @@ class PublisherForm extends Component
 		$this->reload();
 	}
 	
+	/*
+	 * If a link (ORCID, ROR, DOI) has been entered, switch to the corresponding scheme
+	 * and remove the URL prefix (called when the input field loses focus).
+	 */
+	public function updatedNameIdentifier()
+	{
+		$detected = Publisher::detectNameIdentifier($this->nameIdentifier);
+		if($detected)
+		{
+			$this->nameIdentifierSchemeIndex = (string) $detected['scheme']; // string like the <select> values (0 == null in PHP)
+			$this->nameIdentifier = $detected['id'];
+			if($detected['schemeURI'])
+				$this->schemeURIother = $detected['schemeURI'];
+		}
+	}
+
 	public function save()
 	{
+		$this->updatedNameIdentifier(); // in case the form was submitted directly after pasting a link
 		$this->validate();
 
 		$isNew = !$this->publisher;

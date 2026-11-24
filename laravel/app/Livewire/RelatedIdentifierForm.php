@@ -195,8 +195,23 @@ class RelatedIdentifierForm extends Component
 		$this->save('tool',$rules); 
 	}
 
-	public function saveExternal() 
-	{ 
+	/*
+	 * If a link (e.g., https://doi.org/...) has been entered, switch to the corresponding
+	 * identifier type and remove the URL prefix. Called when the input field loses focus.
+	 */
+	public function updatedName()
+	{
+		$detected = RelatedIdentifier::detectExternalType($this->name);
+		if($detected)
+		{
+			$this->name = $detected['name'];
+			$this->relatedidentifiertype = $detected['type'];
+		}
+	}
+
+	public function saveExternal()
+	{
+		$this->updatedName(); // in case the form was submitted directly after pasting a link
 		$rules = [
 			'name' => ['required','max:255'],
 			'relatedidentifiertype' => 'required',

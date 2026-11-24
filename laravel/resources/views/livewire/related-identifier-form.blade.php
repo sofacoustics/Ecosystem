@@ -102,7 +102,7 @@
 								@endforeach
 							</select>
 							
-							<input wire:model="name" type="text" 
+							<input wire:model.blur="name" type="text"
 								placeholder="... the identifier, e.g., a DOI or an URL (depending on the following type)"
 								id="name"
 								class="{{ $inputClass }}"/>

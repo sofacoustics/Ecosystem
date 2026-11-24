@@ -62,7 +62,7 @@
 					</tr>
 					<tr>
 						<td class="px-4"><div class="mb-4">
-							<input wire:model="nameIdentifier" type="text" 
+							<input wire:model.blur="nameIdentifier" type="text" 
 											placeholder="ORCID of the creator (without https://orcid.org/)"
 											id="nameIdentifier" class="{{ $inputClass }}" />
 						</div></td>
@@ -93,7 +93,7 @@
 					</tr>
 					<tr>
 						<td class="px-4"><div class="mb-4">
-							<input wire:model="affiliationIdentifier" type="text" 
+							<input wire:model.blur="affiliationIdentifier" type="text" 
 												placeholder="ROR of the affiliation (without https://ror.org/)."
 												id="affiliationIdentifier" class="{{ $inputClass }}" />
 							@error('affiliationIdentifier')
@@ -123,7 +123,7 @@
 					</tr>
 					<tr>
 						<td class="px-4"><div class="mb-4">
-							<input wire:model="affiliationIdentifier" type="text" 
+							<input wire:model.blur="affiliationIdentifier" type="text" 
 												placeholder="ROR of the institution (without https://ror.org/)."
 												id="affiliationIdentifier" class="{{ $inputClass }}" />
 							@error('affiliationIdentifier')

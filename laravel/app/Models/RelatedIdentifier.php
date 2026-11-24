@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+use App\Support\IdentifierUrl;
+
 class RelatedIdentifier extends Model
 {
 	use HasFactory;
@@ -96,25 +98,38 @@ class RelatedIdentifier extends Model
 		}
 	}
 
+	/*
+	 * Identifier types which are expanded to a link (see App\Support\IdentifierUrl).
+	 * Values: display names of the relatedIdentifierType (Metadataschema).
+	 * ROR and ORCID are not relatedIdentifierTypes in RADAR, thus such links stay URLs.
+	 */
+	const URL_TYPES = ['arXiv', 'DOI', 'IGSN', 'PMID', 'w3Id'];
+
 	static function externalUrl($type, $name)
 	{
-		switch(\App\Models\Metadataschema::display($type))
-		{
-			case "URL":
-				return $name;
-			case "arXiv":
-				return "http://arxiv.org/abs/".$name;
-			case "DOI":
-				return "https://doi.org/".$name;
-			case "IGSN":
-				return "http://hdl.handle.net/10273/".$name;
-			case "PMID":
-				return "https://pubmed.ncbi.nlm.nih.gov/".$name;
-			case "w3Id":
-				return "https://w3id.org/".$name;
-			default: // "ARK", "URN", "bibcode", "EAN13", "EISSN", "ePIC", "Handle", "ISBN", "ISSN", "ISTC", "LISSN", "LSID", "PURL", "UPC"
-				return null;
-		}
+		$display = \App\Models\Metadataschema::display($type);
+		if($display === "URL")
+			return $name;
+		if(in_array($display, self::URL_TYPES, true))
+			return IdentifierUrl::url($display, $name);
+		// "ARK", "URN", "bibcode", "EAN13", "EISSN", "ePIC", "Handle", "ISBN", "ISSN", "ISTC", "LISSN", "LSID", "PURL", "UPC"
+		return null;
+	}
+
+	/*
+	 * Detect if $name is a link of an identifier type which we can expand (see URL_TYPES).
+	 * Returns ['type' => Metadataschema id of the relatedIdentifierType, 'name' => identifier without the URL prefix],
+	 * or null if not detected.
+	 */
+	static function detectExternalType($name)
+	{
+		$detected = IdentifierUrl::detect($name, self::URL_TYPES);
+		if(!$detected)
+			return null;
+		$type = \App\Models\Metadataschema::where('name', 'relatedIdentifierType')->where('display', $detected['type'])->value('id');
+		if($type === null)
+			return null;
+		return ['type' => $type, 'name' => $detected['id']];
 	}
 
 }
