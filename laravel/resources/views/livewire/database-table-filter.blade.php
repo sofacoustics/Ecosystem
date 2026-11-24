@@ -86,11 +86,53 @@
 					@endif
 				</button>
 			</th>
-			<th class="border p-2"># Datasets</th>
+			<th class="border p-2">
+				<button wire:click="sortBy('datasets')"># Datasets
+					@if ($sortField === 'datasets')
+						@if ($sortAsc)
+							<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
+							</svg>
+						@else
+							<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+							</svg>
+						@endif
+					@endif
+				</button>
+			</th>
 			@auth
-				<th class="border p-2">Uploaded by</th>
+				<th class="border p-2">
+					<button wire:click="sortBy('user')">Uploaded by
+						@if ($sortField === 'user')
+							@if ($sortAsc)
+								<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
+								</svg>
+							@else
+								<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+								</svg>
+							@endif
+						@endif
+					</button>
+				</th>
 			@endauth
-			<th class="border p-2">Keywords</th>
+			<th class="border p-2">
+				<button wire:click="sortBy('keywords')" title="Sort by the first keyword; databases without keywords are listed at the end">Keywords
+					@if ($sortField === 'keywords')
+						@if ($sortAsc)
+							<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
+							</svg>
+						@else
+							<svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+							</svg>
+						@endif
+					@endif
+				</button>
+			</th>
 			<th class="border p-2">
 				<button wire:click="sortBy('updated_at')">Last update
 					@if ($sortField === 'updated_at')
@@ -134,7 +176,7 @@
 						<small>{{ $database->additionaltitle }}</small>
 					</td>
 					<td class="px-6 py-4 text-center">{{ $database->productionyear }}</td>
-					<td class="px-6 py-4 text-center">{{ \App\Livewire\DatabaseTableFilter::countDatasets($database->id) }}</td>
+					<td class="px-6 py-4 text-center">{{ $database->datasets_count }}</td>
 					@auth
 						<td class="px-6 py-4 text-center">{{ \App\Livewire\DatabaseTableFilter::userName($database->user_id) }}</td>
 					@endauth

@@ -19,7 +19,7 @@ class DatabaseTableFilter extends Component
 		'keyword' => '',
 	];
 
-	private const SORTABLE_FIELDS = ['visible', 'doi', 'title', 'productionyear', 'updated_at'];
+	private const SORTABLE_FIELDS = ['visible', 'doi', 'title', 'productionyear', 'datasets', 'user', 'keywords', 'updated_at'];
 
 	public $sortField = 'title'; // Default sorting field
 	public $sortAsc = true; // Default sorting order
@@ -64,17 +64,44 @@ class DatabaseTableFilter extends Component
 		{
 			$this->sortField = 'title';
 		}
+		// 'Uploaded by' is shown to logged-in users only: do not reveal the order to guests
+		if ($this->sortField === 'user' && !auth()->check())
+		{
+			$this->sortField = 'title';
+		}
 		$direction = $this->sortAsc ? 'asc' : 'desc';
 
-		if ($this->sortField === 'doi')
+		$query->withCount('datasets'); // datasets_count, used for display and sorting
+
+		switch ($this->sortField)
 		{
-			// sort by DOI state: 0 = no DOI, 1 = DOI assigned, 2 = persistently published (radar_status 4)
-			$query->orderByRaw("CASE WHEN doi IS NULL OR doi = '' THEN 0 WHEN radar_status = 4 THEN 2 ELSE 1 END " . $direction)
-				->orderBy('title', 'asc');
-		}
-		else
-		{
-			$query->orderBy($this->sortField, $direction);
+			case 'doi':
+				// sort by DOI state: 0 = no DOI, 1 = DOI assigned, 2 = persistently published (radar_status 4)
+				$query->orderByRaw("CASE WHEN doi IS NULL OR doi = '' THEN 0 WHEN radar_status = 4 THEN 2 ELSE 1 END " . $direction)
+					->orderBy('title', 'asc');
+				break;
+			case 'datasets':
+				$query->orderBy('datasets_count', $direction)
+					->orderBy('title', 'asc');
+				break;
+			case 'user':
+				// name of the user who uploaded the database
+				$query->orderBy(User::select('name')->whereColumn('users.id', 'databases.user_id')->limit(1), $direction)
+					->orderBy('title', 'asc');
+				break;
+			case 'keywords':
+				// first keyword as displayed (lowest id; the order can be changed by the owner with up/down),
+				// databases without keywords at the end in both directions
+				$query->orderByRaw('NOT EXISTS (SELECT 1 FROM keywords WHERE keywords.keywordable_id = databases.id AND keywords.keywordable_type = ?)', [Database::class])
+					->orderBy(Keyword::select('keywordName')
+						->whereColumn('keywords.keywordable_id', 'databases.id')
+						->where('keywords.keywordable_type', Database::class)
+						->orderBy('keywords.id')
+						->limit(1), $direction)
+					->orderBy('title', 'asc');
+				break;
+			default:
+				$query->orderBy($this->sortField, $direction);
 		}
 
 		$this->databases = $query->get();

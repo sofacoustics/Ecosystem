@@ -19,7 +19,7 @@ class ToolTableFilter extends Component
 		'resourcetype' => 0,
 	];
 
-	private const SORTABLE_FIELDS = ['doi', 'title', 'productionyear', 'resourcetype', 'updated_at'];
+	private const SORTABLE_FIELDS = ['doi', 'title', 'productionyear', 'resourcetype', 'user', 'keywords', 'updated_at'];
 
 	public $sortField = 'title'; // Default sorting field
 	public $sortAsc = true; // Default sorting order
@@ -71,17 +71,38 @@ class ToolTableFilter extends Component
 		{
 			$this->sortField = 'title';
 		}
+		// 'Uploaded by' is shown to logged-in users only: do not reveal the order to guests
+		if ($this->sortField === 'user' && !auth()->check())
+		{
+			$this->sortField = 'title';
+		}
 		$direction = $this->sortAsc ? 'asc' : 'desc';
 
-		if ($this->sortField === 'doi')
+		switch ($this->sortField)
 		{
-			// sort by DOI state: 0 = no DOI, 1 = DOI assigned, 2 = persistently published (radar_status 4)
-			$query->orderByRaw("CASE WHEN doi IS NULL OR doi = '' THEN 0 WHEN radar_status = 4 THEN 2 ELSE 1 END " . $direction)
-				->orderBy('title', 'asc');
-		}
-		else
-		{
-			$query->orderBy($this->sortField, $direction);
+			case 'doi':
+				// sort by DOI state: 0 = no DOI, 1 = DOI assigned, 2 = persistently published (radar_status 4)
+				$query->orderByRaw("CASE WHEN doi IS NULL OR doi = '' THEN 0 WHEN radar_status = 4 THEN 2 ELSE 1 END " . $direction)
+					->orderBy('title', 'asc');
+				break;
+			case 'user':
+				// name of the user who uploaded the tool
+				$query->orderBy(User::select('name')->whereColumn('users.id', 'tools.user_id')->limit(1), $direction)
+					->orderBy('title', 'asc');
+				break;
+			case 'keywords':
+				// first keyword as displayed (lowest id; the order can be changed by the owner with up/down),
+				// tools without keywords at the end in both directions
+				$query->orderByRaw('NOT EXISTS (SELECT 1 FROM keywords WHERE keywords.keywordable_id = tools.id AND keywords.keywordable_type = ?)', [Tool::class])
+					->orderBy(Keyword::select('keywordName')
+						->whereColumn('keywords.keywordable_id', 'tools.id')
+						->where('keywords.keywordable_type', Tool::class)
+						->orderBy('keywords.id')
+						->limit(1), $direction)
+					->orderBy('title', 'asc');
+				break;
+			default:
+				$query->orderBy($this->sortField, $direction);
 		}
 
 		$this->tools = $query->get();
