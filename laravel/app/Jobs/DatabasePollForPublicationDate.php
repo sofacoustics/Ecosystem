@@ -23,6 +23,9 @@ class DatabasePollForPublicationDate implements ShouldQueue
 		public Database $database
 	) 
 	{
+		// Strip loaded relations (e.g. all datasets loaded by checkForIncompleteDatasets()): otherwise
+		// they are serialized with the job and reloaded on every restore (memory exhaustion for 14 400 datasets)
+		$this->database = $database->withoutRelations();
 		app('log')->debug('DatabasePollForPublicationDate::__construct()', [
 			'feature' => 'database-radar-dataset',
 			'database_id' => $this->database->id,

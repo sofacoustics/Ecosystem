@@ -42,6 +42,9 @@ class DatabasePublishInBatchToRadar implements ShouldQueue
 		public User $user,
 	)
 	{
+		// Strip loaded relations (e.g. all datasets loaded by checkForIncompleteDatasets()): otherwise
+		// they are serialized with the job and reloaded on every restore (memory exhaustion for 14 400 datasets)
+		$this->database = $database->withoutRelations();
 		$this->queue = 'uploads';
 		// 1 hour
 		// Note that the

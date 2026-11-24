@@ -50,6 +50,10 @@ class DatabaseDispatchDatasetsInBatchToRadar
 			throw new \Exception('Trying to upload datasets to RADAR when the radar_id is null.');
 		}
 
+		// Strip loaded relations: $database is captured by the batch closures below and passed to the
+		// loader jobs. With relations (e.g. all datasets) every restore would reload them (memory exhaustion).
+		$database = $database->withoutRelations();
+
 		$actor = User::find($actorId);
 		$datasetIds = $database->datasets()->orderBy('id')->pluck('id');
 		$loaders = [];

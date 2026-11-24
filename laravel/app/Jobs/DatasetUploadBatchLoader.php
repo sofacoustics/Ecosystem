@@ -52,7 +52,9 @@ class DatasetUploadBatchLoader implements ShouldQueue
 	public function __construct(array $datasetIds, Database $database, User $user)
 	{
 		$this->datasetIds = $datasetIds;
-		$this->database = $database;
+		// Strip loaded relations (e.g. all datasets loaded by checkForIncompleteDatasets()): otherwise
+		// they are serialized with the job and reloaded on every restore (memory exhaustion for 14 400 datasets)
+		$this->database = $database->withoutRelations();
 		$this->user = $user;
 
 		// $this->queue is set in the Bus::batch call
