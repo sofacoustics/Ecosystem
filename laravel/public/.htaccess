@@ -1,4 +1,5 @@
-# Allow uploads up to 3 GiB (see Livewire rule in config/livewire.php)
+# PHP upload limits, deliberately above the actual limit (Livewire rule in config/livewire.php),
+# so that too large files are rejected with a proper validation message instead of a 413 error.
 <IfModule mod_php.c>
     php_value upload_max_filesize 3200M
     php_value post_max_size 3300M
