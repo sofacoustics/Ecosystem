@@ -125,9 +125,22 @@ class RadarBridge
 			$url = $endpoint; // absolute endpoint, e.g. file upload
 		else
 			$url = $this->apiurl.$endpoint;
-		$response = Http::withToken($this->access_token)
-			->attach('file', file_get_contents($path), $name, ['Content-Type' => $mimetype])
-			->post($url);
+		// Stream the file instead of reading it into memory (files may be several GB)
+		$stream = fopen($path, 'r');
+		if($stream === false)
+			throw new \RuntimeException("Cannot open file for upload: $path");
+		try
+		{
+			$response = Http::withToken($this->access_token)
+				->timeout(3600) // large files may take long (default timeout is 30 s)
+				->attach('file', $stream, $name, ['Content-Type' => $mimetype])
+				->post($url);
+		}
+		finally
+		{
+			if(is_resource($stream))
+				fclose($stream);
+		}
 		$this->status = $response->status();
 		$this->logFailedResponse('POST (file)', $endpoint, $response);
 		$response->throw(); // Throw an exception if a client or server error occurred...
