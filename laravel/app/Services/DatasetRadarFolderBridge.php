@@ -115,48 +115,66 @@ class DatasetRadarFolderBridge extends RadarBridge
 		if($this->dataset->radar_id == null)
 			return true; // nothing to delete
 
+		$logContext = [
+			'feature' => 'database-radar-dataset',
+			'database_id' => $this->dataset->database_id,
+			'dataset_id' => $this->dataset->id,
+			'target_url' => config('services.radar.baseurl'),
+			'radar_id' => $this->dataset->radar_id,
+		];
 		$endpoint = '/folders/'.$this->dataset->radar_id;
-		$response = $this->httpdelete($endpoint);
-		if($response->status() == 204)
-		{
-			$logDetails = array(
-				'feature' => 'database-radar-dataset',
-				'database_id' => $this->dataset->database->id,
-				'dataset_id' => $this->dataset->id,
-				'target_url' => config('services.radar.baseurl'),
-				'radar_id' => $this->dataset->radar_id
-			);
-			$this->message = 'Successfully deleted the folder '.$this->dataset->radar_id.' from the RADAR server';
-			$this->dataset->radar_id = null;
-			$this->dataset->radar_upload_url = null;
-			$this->dataset->save();
-			// reset RADAR ids for datafiles
-			foreach($this->dataset->datafiles as $datafile)
-			{
-				$datafile->radar_id = null;
-				$datafile->datasetdef_radar_id = null;
-				$datafile->datasetdef_radar_upload_url = null;
-				$datafile->save();
+		try {
+			$response = $this->httpdelete($endpoint);
+		} catch (\Illuminate\Http\Client\RequestException $e) {
+			if($this->status == 404) {
+				// The folder does not exist (any more) at RADAR, e.g. deleted by a previous attempt:
+				// the goal is reached, so just reset the RADAR IDs in the Ecosystem.
+				$this->message = 'The RADAR folder '.$this->dataset->radar_id.' does not exist (any more)';
+				app('log')->notice('Dataset folder not found at RADAR: resetting its RADAR IDs', $logContext);
+				$this->resetRadarIds();
+				return true;
 			}
-			app('log')->info('Deleted dataset from RADAR', $logDetails);
-			return true;
-		}
-		else
-		{
+			// RADAR rejected the request (e.g. 422: "Während eines Ingest/Upload können keine Daten
+			// gelöscht werden" while an upload is running). Return false with RADAR's complete
+			// message instead of throwing, so callers can show it to the user.
+			// $this->status contains the HTTP status code.
 			$this->message = 'Failed to delete the associated RADAR folder '.$this->dataset->radar_id;
-			$this->details = $response->content();
-			$logDetails = array(
-				'feature' => 'database-radar-dataset',
-				'database_id' => $this->dataset->database->id,
-				'dataset_id' => $this->dataset->id,
-				'target_url' => config('services.radar.baseurl'),
-				'radar_id' => $this->dataset->radar_id
-			);
-			app('log')->info('Failed to delete dataset folder from RADAR', $logDetails);
+			$this->details = $e->response?->body() ?? $e->getMessage();
+			app('log')->error('Failed to delete dataset folder from RADAR', [
+				...$logContext,
+				'status' => $this->status,
+				'details' => $this->details,
+			]);
 			return false;
 		}
-
+		if($response->status() == 204)
+		{
+			$this->message = 'Successfully deleted the folder '.$this->dataset->radar_id.' from the RADAR server';
+			$this->resetRadarIds();
+			app('log')->info('Deleted dataset from RADAR', $logContext);
+			return true;
+		}
+		$this->message = 'Failed to delete the associated RADAR folder '.$this->dataset->radar_id;
+		$this->details = $response->content();
+		app('log')->info('Failed to delete dataset folder from RADAR', [...$logContext, 'status' => $response->status()]);
 		return false;
+	}
+
+	/*
+	 * Reset the RADAR IDs of the dataset and its datafiles (after deleting its RADAR folder)
+	 */
+	private function resetRadarIds(): void
+	{
+		$this->dataset->radar_id = null;
+		$this->dataset->radar_upload_url = null;
+		$this->dataset->save();
+		foreach($this->dataset->datafiles as $datafile)
+		{
+			$datafile->radar_id = null;
+			$datafile->datasetdef_radar_id = null;
+			$datafile->datasetdef_radar_upload_url = null;
+			$datafile->save();
+		}
 	}
 
 	/*

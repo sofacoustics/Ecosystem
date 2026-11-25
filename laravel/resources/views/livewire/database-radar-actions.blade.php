@@ -12,6 +12,12 @@
 3: Copying done and waiting for approval
 4: Approved and persistently published"
 	>{{ $radar_status }}</x-property>
+	@if($radar_status == 2 && $totalDatasets !== null)
+		{{-- refresh the copy progress every 30 s while publishing (database queries only) --}}
+		<div wire:poll.30s="updateCopyProgress">
+			<x-property name="Copied datasets">{{ $copiedDatasets }} of {{ $totalDatasets }}</x-property>
+		</div>
+	@endif
 
 	<div class="expandable-box" wire:click="toggleExpand">
 		@if ($isExpanded)
@@ -40,6 +46,15 @@
 		</x-livewire-button>
 	@endif
 
+	{{-- status 2, or jobs still open (a batch may still run after the status has been reset, e.g. after an upload error) --}}
+	@if($radar_status == 2 || $publishing)
+		<x-livewire-button wire:click="stopPublishing" loading="Stopping..."
+			title="Cancel the upload to RADAR and reset the status to 'DOI assigned'. Files already uploaded are kept, so publishing again continues where it stopped."
+			wire:confirm="This will stop publishing this database: the upload batch will be cancelled and the status set back to 'DOI assigned'. Files already uploaded to RADAR are kept (use 'Empty RADAR dataset' afterwards, when no upload is running any more). Continue?">
+			Stop publishing
+		</x-livewire-button>
+	@endif
+
 	<hr>
 	<p>For testing purposes</p>
 	@if($id == null)
@@ -57,7 +72,15 @@
 
 	<x-livewire-button wire:click="uploadToRadarInBatches" loading="Uploading...">Upload to RADAR in batches</x-livewire-button>
 
-	<x-livewire-button wire:click="emptyDataset" :disabled="empty($size)" loading="Emptying..." title="Empty the RADAR dataset (remove the data, but keep the metadata and DOI)">Empty RADAR dataset</x-livewire-button>
+	@if($emptying)
+		<x-livewire-button :disabled="true" title="A background job is deleting the RADAR folders of this database. Use 'Refresh Status' to check.">Emptying RADAR dataset in progress...</x-livewire-button>
+	@else
+		<x-livewire-button wire:click="emptyDataset" :disabled="empty($size)" loading="Starting..."
+			title="Empty the RADAR dataset in the background (remove the data, but keep the metadata and DOI)"
+			wire:confirm="This will delete all uploaded files of this database from the RADAR dataset (DOI and metadata are kept). It runs in the background and takes about 1 s per dataset. Continue?">
+			Empty RADAR dataset
+		</x-livewire-button>
+	@endif
 
 	<x-livewire-button style='delete' wire:click="resetDOI"
 		wire:confirm="This will remove the DOI from the Ecosystem and all links to the Datathek. Nothing will happen at the Datathek!">

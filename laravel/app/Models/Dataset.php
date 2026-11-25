@@ -24,7 +24,12 @@ class Dataset extends Model
 			if($model->radar_id)
 			{
 				$radar = new DatasetRadarFolderBridge($model);
-				$radar->delete();
+				if(!$radar->delete())
+				{
+					// abort deleting the dataset (as before, when delete() threw an exception),
+					// otherwise the RADAR folder would remain without its Ecosystem dataset
+					throw new \RuntimeException($radar->message.' ('.$radar->details.')');
+				}
 			}
 			$model->datafiles->each->delete();
 		});

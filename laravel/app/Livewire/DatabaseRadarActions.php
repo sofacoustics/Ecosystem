@@ -6,11 +6,14 @@ use Livewire\Component;
 use Livewire\Attributes\On;
 
 use App\Actions\DatabaseDispatchDatasetsInBatchToRadar;
+use App\Actions\DatabaseStopPublishingToRadar;
 use App\Events\DatabasePersistentPublicationApproved;
 use App\Events\DatabasePersistentPublicationRejected;
+use App\Jobs\DatabaseEmptyRadar;
 use App\Jobs\DatabasePublishToRadar;
 use App\Jobs\DatabasePublishInBatchToRadar;
 use App\Models\Datafile;
+use App\Models\Dataset;
 use App\Models\User;
 use App\Services\DatabaseRadarDatasetBridge;
 use Illuminate\Bus\Batch;
@@ -36,6 +39,11 @@ class DatabaseRadarActions extends Component
 	public $pending = false;
 	public $review = false;
 	public $radar_status = null; // this will be set to the value of the database field 'radar_status'.
+	public bool $publishing = false; // true if an upload batch or publish job of this database is open (shows "Stop publishing")
+	public bool $emptying = false; // true if a DatabaseEmptyRadar job of this database is queued or running
+	// copy progress while publishing (radar_status 2), null otherwise
+	public ?int $copiedDatasets = null; // datasets with RADAR folder and all datafiles uploaded
+	public ?int $totalDatasets = null;
 	public $last_retrieved = null;
 
 	// true if we haven't uploaded yet
@@ -172,13 +180,43 @@ class DatabaseRadarActions extends Component
 	public function emptyDataset()
 	{
 		$this->reset('error');
-		$radar = new DatabaseRadarDatasetBridge($this->database);
-    if(!$radar->empty())
+		if(!auth()->user()->hasRole('admin'))
 		{
-			$this->error = $radar->message.' ('.$radar->details.')';
+			$this->error = "Your user is not allowed to use this function";
+			return;
 		}
-		else
-			$this->dispatch('status-message', 'We have emptied the RADAR dataset');
+		if(app(DatabaseStopPublishingToRadar::class)->isEmptying($this->database))
+		{
+			$this->error = 'Emptying the RADAR dataset is already running.';
+			return;
+		}
+		// in the background: one RADAR request per dataset (about 1 s each)
+		$n = $this->database->datasets()->whereNotNull('radar_id')->count();
+		DatabaseEmptyRadar::dispatch($this->database, auth()->user());
+		$this->dispatch('status-message', "Emptying the RADAR dataset ($n folders) has started in the background. This takes about 1 s per folder. The progress is logged; use 'Refresh Status' to check.");
+		$this->refreshStatus();
+	}
+
+	/*
+	 * Stop a running "Publish with DOI" (radar_status 2): cancel the upload batch, delete the
+	 * queued jobs and reset radar_status to 1. Uploaded files are kept, so publishing again
+	 * continues where it stopped. Use "Empty RADAR dataset" afterwards to remove them.
+	 */
+	public function stopPublishing()
+	{
+		$this->reset('error');
+		if(!auth()->user()->hasRole('admin'))
+		{
+			$this->error = "Your user is not allowed to use this function";
+			return;
+		}
+
+		$action = app(DatabaseStopPublishingToRadar::class);
+		if(!$action->handle($this->database, auth()->user()))
+			$this->error = $action->message;
+		$this->dispatch('status-message', $action->message);
+		$this->dispatch('radar-status-changed', 'Publishing stopped'); // let other livewire components know the radar status has changed
+		$this->database->refresh();
 		$this->refreshStatus();
 	}
 
@@ -335,6 +373,43 @@ class DatabaseRadarActions extends Component
 			$this->setState('');
 		}
 		$this->radar_status = $this->database->radar_status;
+		$this->publishing = app(DatabaseStopPublishingToRadar::class)->isPublishing($this->database);
+		$this->emptying = app(DatabaseStopPublishingToRadar::class)->isEmptying($this->database);
+		$this->updateCopyProgress();
+	}
+
+	/*
+	 * Number of datasets copied to RADAR while publishing (radar_status 2). A dataset counts as
+	 * copied if it has a RADAR folder and all its datafiles have been uploaded.
+	 * Polled every 30 s by the view while radar_status is 2 (database queries only, no RADAR request).
+	 */
+	public function updateCopyProgress()
+	{
+		$oldStatus = $this->radar_status;
+		$this->database->refresh();
+		$this->radar_status = $this->database->radar_status;
+		if($this->radar_status != $oldStatus && $oldStatus == 2)
+		{
+			// publishing has finished or was stopped: refresh everything once (calls this function again)
+			$this->refreshStatus();
+			return;
+		}
+
+		if($this->radar_status == 2)
+		{
+			$this->totalDatasets = $this->database->datasets()->count();
+			$this->copiedDatasets = Dataset::where('database_id', $this->database->id)
+				->whereNotNull('radar_id')
+				->whereDoesntHave('datafiles', function ($query) {
+					$query->whereNull('radar_id');
+				})
+				->count();
+		}
+		else
+		{
+			$this->copiedDatasets = null;
+			$this->totalDatasets = null;
+		}
 	}
 }
 

@@ -21,11 +21,38 @@ class RadarBridge
 	var $details; // details about error
 	var $status;  // the last response status code
 
+	/*
+	 * Optional token sharing (used by long-running jobs such as DatabaseEmptyRadar, which create
+	 * thousands of bridge objects): normally, every bridge object requests its own token. With
+	 * shareToken(true), the token is requested once and reused by all following bridge objects
+	 * until shareToken(false) or forgetSharedToken() (e.g. after a 401) is called.
+	 * Queue workers are long-running processes, so always switch it off again (finally).
+	 */
+	private static bool $shareToken = false;
+	private static ?array $sharedToken = null;
+
+	public static function shareToken(bool $share): void
+	{
+		self::$shareToken = $share;
+		self::$sharedToken = null;
+	}
+
+	public static function forgetSharedToken(): void
+	{
+		self::$sharedToken = null;
+	}
+
 	public function __construct()
 	{
 
 		$this->workspace = config('services.radar.workspace');
 		$this->apiurl = config('services.radar.baseurl').'/radar/api';
+
+		if(self::$shareToken && self::$sharedToken !== null) {
+			$this->access_token = self::$sharedToken['access_token'];
+			$this->refresh_token = self::$sharedToken['refresh_token'];
+			return;
+		}
 
 		// Store RADAR credentials in the .env file
 		$response = Http::post($this->apiurl."/tokens", [
@@ -41,6 +68,9 @@ class RadarBridge
 		$body = json_decode($response->body(),true); //jw:todo do we need this 'preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $body)); function?
 		$this->access_token = $body['access_token'];
 		$this->refresh_token = $body['refresh_token'];
+		if(self::$shareToken) {
+			self::$sharedToken = ['access_token' => $this->access_token, 'refresh_token' => $this->refresh_token];
+		}
 	}
 
 	/*
@@ -113,6 +143,7 @@ class RadarBridge
 		$response = Http::withToken($this->access_token)
 			->delete($url);
 		$this->status = $response->status();
+		$this->logFailedResponse('DELETE', $endpoint, $response);
 		$response->throw(); // Throw an exception if a client or server error occurred...
 		return $this->ensureUTF8($response);
 	}

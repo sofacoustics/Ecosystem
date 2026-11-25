@@ -558,18 +558,22 @@ class DatabaseRadarDatasetBridge extends RadarBridge
   */
   public function empty(): bool
   {
-		foreach($this->database->datasets as $dataset) // For each Ecosystem(!) dataset
+		// Synchronous: one RADAR request per dataset. For large databases use the queued job
+		// DatabaseEmptyRadar instead (e.g. "Empty RADAR dataset" on the Datathek page).
+		// Continue after errors, so that as many folders as possible are deleted.
+		$success = true;
+		foreach($this->database->datasets()->whereNotNull('radar_id')->lazyById(100) as $dataset) // For each Ecosystem(!) dataset
 		{
 			$radar = new DatasetRadarFolderBridge($dataset);
-			if(!$radar->delete())
+			if(!$radar->delete() && $success)
 			{
-				// failed to upload an Ecosystem dataset
+				// report the first failure
 				$this->message = $radar->message;
 				$this->details = $radar->details;
-				return false;
+				$success = false;
 			}
 		}
-		return true;
+		return $success;
   }
 
 	/*

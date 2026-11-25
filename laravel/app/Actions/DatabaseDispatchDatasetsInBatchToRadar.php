@@ -6,6 +6,7 @@ use App\Actions\DatabaseTransitionToReview;
 use App\Events\DatabasePublishedAwaitingApproval;
 use App\Events\DatabasePublishingFailed;
 use App\Exceptions\ReferenceException;
+use App\Jobs\DatabaseEmptyRadar;
 use App\Jobs\DatasetUploadBatchLoader;
 use App\Mail\DatabasePersistentPublicationFailed;
 use App\Mail\DatabasePersistentPublicationRequested;
@@ -34,6 +35,11 @@ class DatabaseDispatchDatasetsInBatchToRadar
 	// job per dataset to the batch. Dispatching all upload jobs at once took too long for
 	// large databases (14 400 datasets exceeded the 3600 s timeout of DatabasePublishInBatchToRadar).
 	const JOBS_PER_PIECE = 1000; 
+
+	public static function batchName(Database $database): string
+	{
+		return 'radar-publish-database-'.$database->id;
+	}
 
 	public function handle(Database $database, int $actorId, bool $shouldReview = true): void
 	{
@@ -70,6 +76,8 @@ class DatabaseDispatchDatasetsInBatchToRadar
 
 		// The upload jobs are added to the batch by the loader jobs (see DatasetUploadBatchLoader)
 		$batch = Bus::batch($loaders)
+			// the name is used by DatabaseStopPublishingToRadar to find the batch of a database
+			->name(self::batchName($database))
 			->onQueue('uploads')
 			->then(function (Batch $batch) use ($database, $shouldReview, $actorId, $logContext) {
 				//
@@ -122,13 +130,10 @@ class DatabaseDispatchDatasetsInBatchToRadar
 				//jw:question: Do we need to send an email here?
 				//jw:answer:   No - the email is sent in the DatasetUploadInBatchToRadar job's 'failed()' function
 
-				// Empty RADAR dataset
-				$radar = new DatabaseRadarDatasetBridge($database);
-				Log::info('Emptying RADAR dataset since batch upload failed.', $logContext);
-				if(!$radar->empty()) {
-					Log::error('Failed to empty the RADAR dataset.', $logContext);
-					//jw:tmp commenting out to see if RADAR throws an exception: throw new \RuntimeException('DatabaseDispatchDatasetsInBatchToRadar(): Emptying the RADAR dataset due to upload exception failed');
-				}
+				// Empty RADAR dataset in the background (one RADAR request per dataset, may take hours).
+				// It runs on the 'uploads' queue, i.e. after the remaining (cancelled) upload jobs.
+				Log::info('Emptying RADAR dataset since batch upload failed (DatabaseEmptyRadar job).', $logContext);
+				DatabaseEmptyRadar::dispatch($database, $actor);
 			})
 			->finally(function (Batch $batch) use ($database, $logContext) {
 				// Executed once the batch has finished (success or failure)
