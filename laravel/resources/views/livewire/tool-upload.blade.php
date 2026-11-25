@@ -2,6 +2,7 @@
 		<p><b>Current file name:</b> <a href="{{ asset($tool->url()) }}" download>{{ $tool->filename }}</a></p>
 		
 		<p>On upload, this file will be deleted and replaced by the new one.</p>
+		<p>Maximal file size: {{ \App\Support\UploadLimit::formatted() }}</p>
 
     @can('update', $tool)
         <form wire:submit="save">

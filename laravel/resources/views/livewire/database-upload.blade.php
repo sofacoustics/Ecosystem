@@ -55,7 +55,7 @@
 			<p>We found <b><span x-text="nFilesExisting"></span></b> datafiles already present in your Ecosystem Database.</p>	
 		
 			<h3>1) Pick a local directory with all your datafiles:</h3>
-			<p>Maximal size per file: 2 GB</p>		
+			<p>Maximal size per file: {{ \App\Support\UploadLimit::formatted() }}</p>		
 			<div>
 				<x-button id="actual-directory-picker" 
 								x-bind:class="nFilesToUpload == 0 | uploading? '{{ $buttonColorDisabled }}' : '{{ $buttonColorEnabled }}'"

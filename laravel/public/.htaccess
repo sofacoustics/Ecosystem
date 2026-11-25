@@ -1,3 +1,11 @@
+# Allow uploads up to 3 GiB (see Livewire rule in config/livewire.php)
+<IfModule mod_php.c>
+    php_value upload_max_filesize 3200M
+    php_value post_max_size 3300M
+    php_value max_input_time 3600
+    php_value max_execution_time 600
+</IfModule>
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
