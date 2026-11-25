@@ -11,25 +11,29 @@ Parameters:
 		<x-tool.header :tool=$tool />
 	</x-slot>
 	<h2>The File</h2>
+		<ul class="list-disc list-outside px-5">
 		@if($tool->filesize())
-			<li><b>File Name:</b> {{ $tool->filename }}
+			<li><b>File Name:</b> {{ $tool->filename }}</li>
 			<li>
 				<b>Download Link:</b> <a href="{{ asset($tool->url()) }}" download>{{ $tool->filename }}</a>
 				<img id="copyButton" src="{{ asset('images/copy-to-clipboard.png') }}" alt="Copy to Clipboard" style="height: 2em; display: inline-block;">
-				<input type="text" id="textToCopy" value="{{ asset($tool->url()) }}" class="hidden"><br>
-			<li><b>File Size:</b> {{ $tool->filesize() }} bytes 
+				<input type="text" id="textToCopy" value="{{ asset($tool->url()) }}" class="hidden">
+			</li>
+			<li><b>File Size:</b> {{ $tool->filesize() }} bytes
 				@if($tool->filesize() > 10240)
-				= {{ round($tool->filesize() / 1024, 2) }} kbytes 
+				= {{ round($tool->filesize() / 1024, 2) }} kbytes
 					@if($tool->filesize() > (1024*10240))
-						= {{ round($tool->filesize() / 1024 / 1024, 2)  }} MB 
-						@if($tool->filesize() > (1024*102410240))
+						= {{ round($tool->filesize() / 1024 / 1024, 2)  }} MB
+						@if($tool->filesize() > (1024*1024*10240))
 							= {{ round($tool->filesize() / 1024 / 1024 / 1024, 2) }} GB
 						@endif
 					@endif
 				@endif
+			</li>
 		@else
 			<li><b>File Name:</b> File not provided yet, upload a file</li>
 		@endif
+		</ul>
 
 	<hr>
 	
@@ -232,7 +236,8 @@ Parameters:
 		@endcan
 
 <script>
-document.getElementById('copyButton').addEventListener('click', function() {
+// copyButton exists only if a file has been uploaded
+document.getElementById('copyButton')?.addEventListener('click', function() {
 		// Get the text from the input field
 		var textToCopy = document.getElementById('textToCopy').value;
 

@@ -609,10 +609,12 @@
 
 	// Process the upload
 	$js('doUpload', (data) => {
+		data = _createPendingFiles(data); // create the list with PendingFiles
+			// Check the file sizes before uploading anything (too large files would be uploaded completely and rejected afterwards)
+		if(!_checkFileSizes(data)) return;
 	  uploadStart = performance.now();
 		response=confirm("This will start the upload and this might take a long time. Do not leave this page while uploading.\n\nTo cancel the upload, refresh or close the page. ");
 		if(response==false) return;
-		data = _createPendingFiles(data); // create the list with PendingFiles
 		data.nUploaded = 0;
 		data.error = false;
 		$wire.set('uploading', true); // set immediately. This is used within the Livewire component
@@ -792,6 +794,22 @@
 		// update the actual number of files to upload, so Livewire knows how many files to expect.
 		console.timeEnd("createPendingFiles");
 		return(data);
+	}
+
+		// Check if any of the pending files exceeds the maximal upload size (App\Support\UploadLimit)
+		//   Returns true if all files are OK, otherwise shows the too large files and returns false.
+	function _checkFileSizes(data)
+	{
+		const maxBytes = {{ \App\Support\UploadLimit::maxBytes() ?? 0 }}; // 0: no limit
+		if(maxBytes <= 0) return true;
+		const tooLarge = data.pendingFiles.filter((file) => file.size > maxBytes);
+		if(tooLarge.length == 0) return true;
+		const nShow = 10;
+		let list = tooLarge.slice(0, nShow).map((file) => "  " + (file.webkitRelativePath || file.name) + " (" + (file.size / 1024**3).toFixed(2) + " GB)").join("\n");
+		if(tooLarge.length > nShow) list += "\n  ... and " + (tooLarge.length - nShow) + " more";
+		window.alert(tooLarge.length + " file(s) exceed the maximal size per file of {{ \App\Support\UploadLimit::formatted() }}:\n\n" + list +
+			"\n\nPlease remove or reduce these files, or deselect the corresponding datasets. Nothing has been uploaded.");
+		return false;
 	}
 
 	function _checkAll(data)
