@@ -74,7 +74,7 @@ return [
             'mov', 'avi', 'wmv', 'mp3', 'm4a',
             'jpg', 'jpeg', 'mpga', 'webp', 'wma',
         ],
-        'max_upload_time' => 5, // Max duration (in minutes) before an upload is invalidated...
+        'max_upload_time' => 60, // Max duration (in minutes) before an upload is invalidated. Large files (up to 3 GiB) need much more than the default of 5 min.
     ],
 
     /*
