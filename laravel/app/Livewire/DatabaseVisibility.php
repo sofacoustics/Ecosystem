@@ -222,7 +222,7 @@ class DatabaseVisibility extends Component
 		//DatabasePublishToRadar::dispatch($this->database, auth()->user());
 		DatabasePublishInBatchToRadar::dispatch($this->database, auth()->user());
 
-		return redirect()->route('databases.show', $this->database)->with('success', 'Your database is being published and you will be informed per email when the task has finished');
+		return redirect()->route('databases.visibility', $this->database)->with('success', 'Your database is being published and you will be informed per email when the task has finished');
 	}
 
 	public function render()
