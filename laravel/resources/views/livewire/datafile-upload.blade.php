@@ -11,6 +11,7 @@
                 <div x-show="!uploading">
                     <input type="file" wire:model="file"
                         accept="@if ($datasetdef->datafiletype->extension != '') {{ $datasetdef->datafiletype->extension }}@else{{ $datasetdef->datafiletype->mimetypes }} @endif">
+                    <span class="text-sm text-gray-600">Maximal file size: {{ \App\Support\UploadLimit::formatted() }}</span>
                 </div>
 
                 {{-- use x-cloak so that progress bar doesn't pop up on page load before alpine variables are set --}}
