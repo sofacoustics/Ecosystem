@@ -13,11 +13,13 @@ use App\Models\Keyword;
 
 class DatabaseTableFilter extends Component
 {
-	public $filters = [
+	private const DEFAULT_FILTERS = [
 		'title' => '',
 		'productionyear' => '',
 		'keyword' => '',
 	];
+
+	public $filters = self::DEFAULT_FILTERS;
 
 	private const SORTABLE_FIELDS = ['visible', 'doi', 'title', 'productionyear', 'datasets', 'user', 'keywords', 'updated_at'];
 
@@ -40,6 +42,8 @@ class DatabaseTableFilter extends Component
 
 	public function applyFilters()
 	{
+		$this->normalizeFilters();
+
 		if (!empty($this->filters['keyword'])) 
 		{
 			$query = Database::whereHas('keywords', function ($q) {
@@ -107,6 +111,22 @@ class DatabaseTableFilter extends Component
 		$this->databases = $query->get();
 	}
 
+	// $filters is a public Livewire property and can be replaced by a crafted request
+	// (e.g. filters = [] or arrays as values): keep only the known keys, fill in missing
+	// ones and drop invalid values, so that such requests show the unfiltered list instead of a 500.
+	private function normalizeFilters()
+	{
+		$filters = is_array($this->filters) ? $this->filters : [];
+		$normalized = self::DEFAULT_FILTERS;
+		foreach (self::DEFAULT_FILTERS as $key => $default)
+		{
+			if (!array_key_exists($key, $filters) || !is_scalar($filters[$key]))
+				continue;
+			$normalized[$key] = is_int($default) ? (int) $filters[$key] : (string) $filters[$key];
+		}
+		$this->filters = $normalized;
+	}
+
 	public function render()
 	{
 		$this->applyFilters();
@@ -115,11 +135,7 @@ class DatabaseTableFilter extends Component
 
 	public function clearFilters() 
 	{
-		$this->filters = [
-			'title' => '',
-			'productionyear' => '',
-			'keyword' => '',
-		];
+		$this->filters = self::DEFAULT_FILTERS;
 		$this->applyFilters();
 	}
 		

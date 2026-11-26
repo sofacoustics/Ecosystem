@@ -12,12 +12,14 @@ use App\Models\Metadataschema;
 
 class ToolTableFilter extends Component
 {
-	public $filters = [
+	private const DEFAULT_FILTERS = [
 		'title' => '',
 		'productionyear' => '',
 		'keyword' => '',
 		'resourcetype' => 0,
 	];
+
+	public $filters = self::DEFAULT_FILTERS;
 
 	private const SORTABLE_FIELDS = ['doi', 'title', 'productionyear', 'resourcetype', 'user', 'keywords', 'updated_at'];
 
@@ -40,6 +42,8 @@ class ToolTableFilter extends Component
 
 	public function applyFilters()
 	{
+		$this->normalizeFilters();
+
 		// One query for all filters (before, the keyword filter replaced the query
 		// and a title filter set before was lost).
 		$query = Tool::query();
@@ -117,6 +121,22 @@ class ToolTableFilter extends Component
 		'OTHER' => 'Other',
 	];
 
+	// $filters is a public Livewire property and can be replaced by a crafted request
+	// (e.g. filters = [] or arrays as values): keep only the known keys, fill in missing
+	// ones and drop invalid values, so that such requests show the unfiltered list instead of a 500.
+	private function normalizeFilters()
+	{
+		$filters = is_array($this->filters) ? $this->filters : [];
+		$normalized = self::DEFAULT_FILTERS;
+		foreach (self::DEFAULT_FILTERS as $key => $default)
+		{
+			if (!array_key_exists($key, $filters) || !is_scalar($filters[$key]))
+				continue;
+			$normalized[$key] = is_int($default) ? (int) $filters[$key] : (string) $filters[$key];
+		}
+		$this->filters = $normalized;
+	}
+
 	public function render()
 	{
 		$this->applyFilters();
@@ -139,12 +159,7 @@ class ToolTableFilter extends Component
 
 	public function clearFilters() 
 	{
-		$this->filters = [
-			'title' => '',
-			'productionyear' => '',
-			'keyword' => '',
-			'resourcetype' => 0,
-		];
+		$this->filters = self::DEFAULT_FILTERS;
 		$this->applyFilters();
 	}
 	
